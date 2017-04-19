@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.order;
+package com.edusoho.kuozhi.clean.module.order.confirm;
 
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;

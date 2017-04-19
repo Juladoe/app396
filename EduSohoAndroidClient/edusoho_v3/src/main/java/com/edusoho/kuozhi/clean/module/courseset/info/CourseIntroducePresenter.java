@@ -1,8 +1,9 @@
 package com.edusoho.kuozhi.clean.module.courseset.info;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 
 import java.util.List;
 
@@ -30,7 +31,9 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
 
     @Override
     public void subscribe() {
-        getCourseSetIntro(mCourseSetId)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseSet(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<CourseSet>() {
@@ -48,7 +51,10 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
                 .flatMap(new Func1<CourseSet, Observable<List<CourseMember>>>() {
                     @Override
                     public Observable<List<CourseMember>> call(CourseSet courseSet) {
-                        return getCourseSetMember(mCourseSetId,0, SHOW_MEMBER_COUNT);
+                        return HttpUtils.getInstance()
+                                .createApi(CourseSetApi.class)
+                                .getCourseSetMembers(mCourseSetId, 0, SHOW_MEMBER_COUNT);
+
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -70,14 +76,6 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
                         }
                     }
                 });
-    }
-
-    private Observable<CourseSet> getCourseSetIntro(int id){
-        return RetrofitService.getCourseSet(id);
-    }
-
-    private Observable<List<CourseMember>> getCourseSetMember(int id,int offset,int limit) {
-        return RetrofitService.getCourseSetMembers(id,offset,limit);
     }
 
     @Override

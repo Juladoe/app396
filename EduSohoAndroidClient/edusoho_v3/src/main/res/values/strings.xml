@@ -462,8 +462,10 @@
     <string name="course_info">课程简介</string>
     <string name="free_mode">学习方式: 自由式学习</string>
     <string name="locked_mode">学习方式: 解锁式学习</string>
+    <string name="validity">有效期:&#160;%s</string>
     <string name="validity_day">有效期: %1$s天</string>
-    <string name="validity_forever">有效期:  永久</string>
+    <string name="validity_forever">有效期:&#160;永久</string>
+    <string name="validity_past">有效期:&#160;已过期</string>
     <string name="input_pay_password">输入支付密码</string>
     <string name="setting_password_hint">设置/重置密码: \n网页版—个人设置—安全设置—支付密码</string>
 

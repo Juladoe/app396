@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.clean.module.courseset.plan;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
+import com.edusoho.kuozhi.clean.api.PluginsApi;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 
 import java.util.List;
 
@@ -30,7 +32,9 @@ class CourseProjectsPresenter implements CourseProjectsContract.Presenter {
 
     @Override
     public void subscribe() {
-        getCourseProjects(mCourseSetId)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseProjects(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<List<CourseProject>>() {
@@ -43,7 +47,9 @@ class CourseProjectsPresenter implements CourseProjectsContract.Presenter {
                 .flatMap(new Func1<List<CourseProject>, Observable<List<VipInfo>>>() {
                     @Override
                     public Observable<List<VipInfo>> call(List<CourseProject> list) {
-                        return getVipInfo();
+                        return HttpUtils.getInstance()
+                                .createApi(PluginsApi.class)
+                                .getVipInfo();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -73,11 +79,4 @@ class CourseProjectsPresenter implements CourseProjectsContract.Presenter {
 
     }
 
-    private Observable<List<CourseProject>> getCourseProjects(int courseSetId) {
-        return RetrofitService.getCourseProjects(courseSetId);
-    }
-
-    private Observable<List<VipInfo>> getVipInfo() {
-        return RetrofitService.getVipInfo();
-    }
 }

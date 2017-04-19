@@ -3,13 +3,17 @@ package com.edusoho.kuozhi.clean.module.courseset;
 import android.content.Context;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
+import com.edusoho.kuozhi.clean.api.PluginsApi;
+import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment;
 import com.edusoho.kuozhi.clean.module.courseset.plan.CourseProjectsFragment;
 import com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment;
@@ -67,7 +71,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     private void isJoin() {
         if (EdusohoApp.app.loginUser != null) {
-            getCourseSetMember(mCourseSetId, EdusohoApp.app.loginUser.id)
+            HttpUtils.getInstance()
+                    .createApi(CourseSetApi.class)
+                    .getCourseSetMember(mCourseSetId, EdusohoApp.app.loginUser.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
@@ -98,7 +104,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     }
 
     private void getCourseSet() {
-        getCourseSet(mCourseSetId)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseSet(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<CourseSet>() {
@@ -119,7 +127,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 .flatMap(new Func1<CourseSet, Observable<List<CourseProject>>>() {
                     @Override
                     public Observable<List<CourseProject>> call(CourseSet courseSet) {
-                        return getCourseProjects(mCourseSetId);
+                        return HttpUtils
+                                .getInstance()
+                                .createApi(CourseSetApi.class)
+                                .getCourseProjects(mCourseSetId);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -133,7 +144,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 .flatMap(new Func1<List<CourseProject>, Observable<List<VipInfo>>>() {
                     @Override
                     public Observable<List<VipInfo>> call(List<CourseProject> list) {
-                        return getVipInfo();
+                        return HttpUtils
+                                .getInstance()
+                                .createApi(PluginsApi.class)
+                                .getVipInfo();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -157,7 +171,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     }
 
     private void getFavoriteInfo() {
-        getFavorite(EdusohoApp.app.token, mCourseSetId)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .getFavorite(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<JsonObject>() {
@@ -183,7 +200,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     }
 
     private void getDiscountInfo(int discountId) {
-        RetrofitService.getDiscountInfo(discountId)
+        HttpUtils.getInstance()
+                .createApi(PluginsApi.class)
+                .getDiscountInfo(discountId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Discount>() {
@@ -243,8 +262,8 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         return;
                     }
                     long currentTime = System.currentTimeMillis();
-                    if (END_DATE_MODE.equals(courseProject.expiryMode) && courseProject.expiryEndDate <= currentTime
-                            || DATE_MODE.equals(courseProject.expiryMode) && courseProject.expiryEndDate <= currentTime) {
+                    if (END_DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.expiryEndDate) <= currentTime
+                            || DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.expiryEndDate) <= currentTime) {
                         mView.showToast(R.string.course_date_limit);
                         return;
                     }
@@ -285,7 +304,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             mView.goToLoginActivity();
             return;
         }
-        RetrofitService.favoriteCourseSet(EdusohoApp.app.token, mCourseSetId)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .favoriteCourseSet(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<JsonObject>() {
@@ -314,7 +336,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             mView.goToLoginActivity();
             return;
         }
-        RetrofitService.cancelFavoriteCourseSet(EdusohoApp.app.token, mCourseSetId)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .cancelFavoriteCourseSet(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<JsonObject>() {
@@ -363,7 +388,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     }
 
     private void joinFreeOrVipCourse(String joinWay) {
-        RetrofitService.joinFreeOrVipCourse(EdusohoApp.app.token, mCourseProjects.get(0).id, joinWay)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseApi.class)
+                .joinFreeOrVipCourse(mCourseProjects.get(0).id, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<JsonObject>() {
@@ -389,26 +417,6 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         }
                     }
                 });
-    }
-
-    private Observable<CourseSet> getCourseSet(int courseSetId) {
-        return RetrofitService.getCourseSet(courseSetId);
-    }
-
-    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId, int userId) {
-        return RetrofitService.getCourseSetMember(courseSetId,userId);
-    }
-
-    private Observable<List<CourseProject>> getCourseProjects(int courseSetId) {
-        return RetrofitService.getCourseProjects(courseSetId);
-    }
-
-    private Observable<List<VipInfo>> getVipInfo() {
-        return RetrofitService.getVipInfo();
-    }
-
-    private Observable<JsonObject> getFavorite(String token, int courseSetId) {
-        return RetrofitService.getFavorite(token, courseSetId);
     }
 
 }

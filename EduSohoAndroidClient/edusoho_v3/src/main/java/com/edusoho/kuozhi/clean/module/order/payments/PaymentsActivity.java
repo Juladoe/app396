@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.payments;
+package com.edusoho.kuozhi.clean.module.order.payments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -20,7 +20,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
-import com.edusoho.kuozhi.clean.module.courseset.alipay.AlipayActivity;
+import com.edusoho.kuozhi.clean.module.order.alipay.AlipayActivity;
+import com.edusoho.kuozhi.clean.module.order.payments.PaymentsContract.Presenter;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -29,7 +30,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
  * Created by DF on 2017/4/7.
  */
 
-public class PaymentsActivity extends BaseFinishActivity implements View.OnClickListener, PaymentsContract.View {
+public class PaymentsActivity extends BaseFinishActivity implements android.view.View.OnClickListener, PaymentsContract.View {
 
     private static final String ORDER_INFO = "order_info";
     private static final String ORDER_PRICE = "order_price";
@@ -48,7 +49,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     private EditText mInputPw;
     private View mAvailableLayout;
 
-    private PaymentsContract.Presenter mPresenter;
+    private Presenter mPresenter;
 
     private OrderInfo mOrderInfo;
     private float mOrderPrice;

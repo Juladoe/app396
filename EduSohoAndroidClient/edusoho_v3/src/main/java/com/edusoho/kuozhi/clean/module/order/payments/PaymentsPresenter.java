@@ -1,10 +1,11 @@
-package com.edusoho.kuozhi.clean.module.courseset.payments;
+package com.edusoho.kuozhi.clean.module.order.payments;
 
 import android.support.annotation.NonNull;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.OrderApi;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
-import com.edusoho.kuozhi.clean.module.courseset.payments.PaymentsContract.View;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.module.order.payments.PaymentsContract.Presenter;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.JsonObject;
 
@@ -23,7 +24,7 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/7.
  */
 
-class PaymentsPresenter implements com.edusoho.kuozhi.clean.module.courseset.payments.PaymentsContract.Presenter {
+class PaymentsPresenter implements Presenter {
 
     static final String ALIPAY = "alipay";
     static final String COIN = "coin";
@@ -37,11 +38,11 @@ class PaymentsPresenter implements com.edusoho.kuozhi.clean.module.courseset.pay
     private static final String STATUS = "status";
     private static final String STATUS_PAID = "paid";
 
-    private View mView;
+    private PaymentsContract.View mView;
     private OrderInfo mOrderInfo;
     private int mPosition;
 
-    PaymentsPresenter(View mView, OrderInfo orderInfo, int position) {
+    PaymentsPresenter(PaymentsContract.View mView, OrderInfo orderInfo, int position) {
         this.mView = mView;
         this.mOrderInfo = orderInfo;
         this.mPosition = position;
@@ -54,7 +55,10 @@ class PaymentsPresenter implements com.edusoho.kuozhi.clean.module.courseset.pay
     @Override
     public void createOrderAndPay(final String payment, String password, float orderPrice) {
         Map<String, String> map = createParameter(payment, password, orderPrice);
-        RetrofitService.createOrder(EdusohoApp.app.token , map)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(OrderApi.class)
+                .createOrder(map)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(new Func1<JsonObject, Observable<JsonObject>>() {
@@ -62,8 +66,10 @@ class PaymentsPresenter implements com.edusoho.kuozhi.clean.module.courseset.pay
                     public Observable<JsonObject> call(JsonObject jsonObject) {
                         if (jsonObject != null) {
                             int orderId = jsonObject.get(ORDER_ID).getAsInt();
-                            return RetrofitService.goPay(EdusohoApp.app.token, orderId,
-                                    mOrderInfo.targetType, payment);
+                            return HttpUtils.getInstance()
+                                    .addTokenHeader(EdusohoApp.app.token)
+                                    .createApi(OrderApi.class)
+                                    .goPay(orderId, mOrderInfo.targetType, payment);
                         }
                         return null;
                     }

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.alipay;
+package com.edusoho.kuozhi.clean.module.order.alipay;
 
 import android.content.Context;
 import android.content.Intent;

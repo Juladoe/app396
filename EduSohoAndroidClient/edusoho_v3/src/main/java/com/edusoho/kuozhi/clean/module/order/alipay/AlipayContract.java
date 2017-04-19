@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.alipay;
+package com.edusoho.kuozhi.clean.module.order.alipay;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;

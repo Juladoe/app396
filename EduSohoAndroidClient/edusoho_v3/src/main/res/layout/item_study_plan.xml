@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_item"
     android:paddingTop="@dimen/common_15"
     android:layout_width="match_parent"
@@ -32,6 +33,32 @@
             android:layout_marginTop="@dimen/common_6"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/common_18" />
+
+        <TextView
+            android:id="@+id/tv_price_old"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/common_maring0"
+            android:layout_below="@id/tv_class_type"
+            android:layout_toRightOf="@id/tv_price"
+            android:layout_marginTop="@dimen/common_6"
+            android:textColor="@color/secondary2_font_color"
+            android:textSize="@dimen/font_l" />
+
+        <TextView
+            android:id="@+id/tv_discount"
+            android:text="@string/discount"
+            android:visibility="gone"
+            android:layout_below="@id/tv_class_type"
+            android:layout_toRightOf="@id/tv_price_old"
+            android:layout_marginLeft="21dp"
+            android:textColor="@color/disabled2_hint_color"
+            android:textSize="@dimen/font_xxs"
+            android:layout_marginTop="@dimen/common_6"
+            android:background="@color/secondary_color"
+            android:gravity="center"
+            android:layout_width="@dimen/common_22"
+            android:layout_height="@dimen/common_16" />
 
         <TextView
             android:id="@+id/tv_task"

@@ -21,7 +21,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
-import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -38,7 +39,10 @@ public class SelectProjectDialog extends ESBottomDialog implements
         ESBottomDialog.BottomDialogContentView, SelectProjectDialogContract.View {
 
     private final String IS_FREE = "1";
-    private final String FREE_STATE = "freeState";
+    private final String FREE_STATE = "freeMode";
+    private static final String END_DATE_MODE = "end_date";
+    private static final String DAYS_MODE = "days";
+    private static final String DATE_MODE = "date";
 
     private RadioGroup mRg;
     private View mDiscount;
@@ -215,13 +219,13 @@ public class SelectProjectDialog extends ESBottomDialog implements
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
             if (mCourseProject.price == mCourseProject.originPrice) {
                 mDiscount.setVisibility(View.GONE);
-                mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.price));
+                mDiscountPrice.setText(String.format(getString(R.string.yuan_symbol), mCourseProject.price));
                 return;
             }
             mDiscount.setVisibility(View.VISIBLE);
-            mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.price));
+            mDiscountPrice.setText(String.format(getString(R.string.yuan_symbol), mCourseProject.price));
             mOriginalPrice.setVisibility(View.VISIBLE);
-            mOriginalPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.originPrice));
+            mOriginalPrice.setText(String.format(getString(R.string.yuan_symbol), mCourseProject.originPrice));
             mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
     }
@@ -244,7 +248,14 @@ public class SelectProjectDialog extends ESBottomDialog implements
     }
 
     private void setOtherView() {
-        if ("days".equals(mCourseProject.expiryMode)) {
+        long currentTime = System.currentTimeMillis();
+        if (END_DATE_MODE.equals(mCourseProject.expiryMode) || DATE_MODE.equals(mCourseProject.expiryMode)) {
+            if (TimeUtils.getMillisecond(mCourseProject.expiryEndDate) <= currentTime) {
+                mValidity.setText(R.string.validity_past);
+            } else {
+                mValidity.setText(String.format(getContext().getString(R.string.validity), mCourseProject.expiryEndDate.substring(0, 9)));
+            }
+        } else if (DAYS_MODE.equals(mCourseProject.expiryMode)){
             mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseProject.expiryDays));
         } else {
             mValidity.setText(R.string.validity_forever);

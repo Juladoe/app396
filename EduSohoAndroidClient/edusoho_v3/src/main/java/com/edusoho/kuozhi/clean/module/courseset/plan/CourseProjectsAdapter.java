@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.module.courseset.plan;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -77,11 +78,22 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
 
     private void loadPrice(CourseProjectViewHolder holder, CourseProject courseProject) {
         if (IS_FREE.equals(courseProject.isFree)) {
+            holder.mDiscount.setVisibility(View.GONE);
+            holder.mOriginalPrice.setVisibility(View.GONE);
             holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {
-            holder.mPrice.setText(String.format(mContext.getString(R.string.yuan_symbol), courseProject.price));
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
+            holder.mPrice.setText(String.format(mContext.getString(R.string.yuan_symbol), courseProject.price));
+            if (courseProject.price == courseProject.originPrice) {
+                holder.mDiscount.setVisibility(View.GONE);
+                holder.mOriginalPrice.setVisibility(View.GONE);
+                return;
+            }
+            holder.mDiscount.setVisibility(View.VISIBLE);
+            holder.mOriginalPrice.setVisibility(View.VISIBLE);
+            holder.mOriginalPrice.setText(String.format(mContext.getString(R.string.yuan_symbol), courseProject.originPrice));
+            holder.mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
     }
 
@@ -161,8 +173,10 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
 
         private final View mRlItem;
         private final View mHot;
+        private final View mDiscount;
         private final TextView mClassType;
         private final TextView mPrice;
+        private final TextView mOriginalPrice;
         private final TextView mTask;
         private final FlowLayout mFlayout;
         private final TextView mVip;
@@ -170,6 +184,8 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
 
         CourseProjectViewHolder(View itemView) {
             super(itemView);
+            mDiscount = itemView.findViewById(R.id.tv_discount);
+            mOriginalPrice = (TextView) itemView.findViewById(R.id.tv_price_old);
             mRlItem = itemView.findViewById(R.id.rl_item);
             mHot = itemView.findViewById(R.id.iv_hot);
             mClassType = (TextView) itemView.findViewById(R.id.tv_class_type);

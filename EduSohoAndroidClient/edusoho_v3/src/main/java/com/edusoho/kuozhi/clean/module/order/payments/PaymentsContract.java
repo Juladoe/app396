@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.payments;
+package com.edusoho.kuozhi.clean.module.order.payments;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;

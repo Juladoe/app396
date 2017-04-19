@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.order;
+package com.edusoho.kuozhi.clean.module.order.confirm;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +16,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
-import com.edusoho.kuozhi.clean.module.courseset.dialog.coupons.CouponsDialog;
-import com.edusoho.kuozhi.clean.module.courseset.payments.PaymentsActivity;
+import com.edusoho.kuozhi.clean.module.order.dialog.coupons.CouponsDialog;
+import com.edusoho.kuozhi.clean.module.order.payments.PaymentsActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -45,8 +45,6 @@ public class ConfirmOrderActivity extends BaseFinishActivity
     private TextView mTotal;
     private TextView mOriginal;
     private LoadDialog mProcessDialog;
-
-    private ConfirmOrderContract.Presenter mPresenter;
 
     private float mTotalPrice;
     private float mPayPrice;
@@ -93,7 +91,8 @@ public class ConfirmOrderActivity extends BaseFinishActivity
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
-        mPresenter = new ConfirmOrderPresenter(this, mCourseSetId, mCourseId);
+
+        ConfirmOrderContract.Presenter mPresenter = new ConfirmOrderPresenter(this, mCourseSetId, mCourseId);
         mPresenter.subscribe();
     }
 

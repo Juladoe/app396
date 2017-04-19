@@ -19,13 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.dialog.courses.SelectProjectDialog;
-import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -115,8 +114,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity
 
     private void isJoin() {
         initView();
-        // TODO: 2017/4/17  需要修改，不能直接写在这里
-        RetrofitService.init();
         mPresenter = new CourseUnLearnPresenter(mCourseSetId, this);
         mPresenter.subscribe();
     }

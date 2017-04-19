@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.clean.module.courseset.dialog.courses;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.JsonObject;
 
@@ -40,8 +42,8 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
             return;
         }
         long currentTime = System.currentTimeMillis();
-        if (END_DATE_MODE.equals(courseProject.expiryMode) && courseProject.expiryEndDate <= currentTime
-              || DATE_MODE.equals(courseProject.expiryMode) && courseProject.expiryEndDate <= currentTime) {
+        if (END_DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.expiryEndDate) <= currentTime
+              || DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.expiryEndDate) <= currentTime) {
             mView.showToastOrFinish(R.string.course_date_limit, false);
             return;
         }
@@ -56,7 +58,10 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
     }
 
     private void joinFreeOrVipCourse(int courseId, String joinWay) {
-        RetrofitService.joinFreeOrVipCourse(EdusohoApp.app.token, courseId, joinWay)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseApi.class)
+                .joinFreeOrVipCourse(courseId, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {

@@ -1,10 +1,7 @@
 package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseItem;
-import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.Review;
@@ -16,7 +13,6 @@ import java.util.List;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -50,7 +46,6 @@ public interface CourseApi {
 
     @FormUrlEncoded
     @POST("courses/{id}/members")
-    Observable<JsonObject> joinFreeOrVipCourse(@Header("X-Auth-Token") String token,
-                                               @Path("id") int courseId, @Field("joinWay") String joinWay);
+    Observable<JsonObject> joinFreeOrVipCourse(@Path("id") int courseId, @Field("joinWay") String joinWay);
 
 }

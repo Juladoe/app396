@@ -1,9 +1,12 @@
-package com.edusoho.kuozhi.clean.module.courseset.order;
+package com.edusoho.kuozhi.clean.module.order.confirm;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
+import com.edusoho.kuozhi.clean.api.OrderApi;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderContract;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import rx.Subscriber;
@@ -28,7 +31,10 @@ class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
 
     @Override
     public void subscribe() {
-        RetrofitService.postOrderInfo(EdusohoApp.app.token, "course", mCourseId)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(OrderApi.class)
+                .postOrderInfo("course", mCourseId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<OrderInfo>() {
@@ -51,7 +57,9 @@ class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
                         }
                     }
                 });
-        RetrofitService.getCourseSet(mCourseSetId)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseSet(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseSet>() {

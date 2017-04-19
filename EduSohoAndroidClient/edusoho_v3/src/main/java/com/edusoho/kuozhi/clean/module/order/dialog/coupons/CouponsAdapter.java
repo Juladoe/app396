@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.dialog.coupons;
+package com.edusoho.kuozhi.clean.module.order.dialog.coupons;
 
 import android.content.Context;
 import android.view.LayoutInflater;
