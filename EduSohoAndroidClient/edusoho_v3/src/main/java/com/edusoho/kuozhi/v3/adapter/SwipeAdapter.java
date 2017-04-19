@@ -22,10 +22,9 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduBadgeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by JesseHuang on 15/6/7.
@@ -40,8 +39,9 @@ public class SwipeAdapter extends BaseAdapter {
     public SwipeAdapter(Context ctx, int id) {
         mContext = ctx;
         mLayoutId = id;
-        mList = new ArrayList<>();
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
+        mList = new CopyOnWriteArrayList<>();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.user_avatar).
+                showImageOnFail(R.drawable.user_avatar).showImageOnLoading(null).build();
     }
 
     @Override
@@ -66,41 +66,18 @@ public class SwipeAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public boolean getContainItem(New compareModel) {
-        for (New newModel : mList) {
-            if (newModel.fromId == compareModel.fromId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void addItem(New newModel) {
         mList.add(0, newModel);
         notifyDataSetChanged();
     }
 
     public void updateItem(New newModel) {
-        Iterator<New> iterator = mList.iterator();
-        int pos = 0;
-        while (iterator.hasNext()) {
-            New item = iterator.next();
+        int size = mList.size();
+        for (int i = 0; i < size; i++) {
+            New item = mList.get(i);
             if (item.fromId == newModel.fromId) {
-                iterator.remove();
-                mList.add(pos, newModel);
-                notifyDataSetChanged();
-                break;
-            }
-            pos++;
-        }
-    }
-
-    public void updateItem(int fromId, String type) {
-        Iterator<New> iterator = mList.iterator();
-        while (iterator.hasNext()) {
-            New item = iterator.next();
-            if (item.fromId == fromId && type.equals(item.getType())) {
-                item.setUnread(0);
+                mList.remove(i);
+                mList.add(i, newModel);
                 notifyDataSetChanged();
                 break;
             }
@@ -120,24 +97,6 @@ public class SwipeAdapter extends BaseAdapter {
         }
     }
 
-    public void deleteItemByFromIds(List<Integer> fromIds, String type) {
-        try {
-            Iterator<New> iterator = mList.iterator();
-            while (iterator.hasNext()) {
-                New item = iterator.next();
-                for (int fromId : fromIds) {
-                    if (fromId == item.fromId && type.equals(item.type)) {
-                        iterator.remove();
-                        break;
-                    }
-                }
-            }
-            notifyDataSetChanged();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     @Override
     public int getCount() {
         return mList.size();
@@ -145,6 +104,9 @@ public class SwipeAdapter extends BaseAdapter {
 
     @Override
     public New getItem(int position) {
+        if (position < 0 || position > mList.size()) {
+            return null;
+        }
         return mList.get(position) != null ? mList.get(position) : null;
     }
 
@@ -190,7 +152,7 @@ public class SwipeAdapter extends BaseAdapter {
         viewHolder.tvParent.setVisibility(item.parentId == 0 ? View.GONE : View.VISIBLE);
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
-        viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
+        viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime));
         return convertView;
     }
 

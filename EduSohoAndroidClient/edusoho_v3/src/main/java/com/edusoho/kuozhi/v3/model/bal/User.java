@@ -1,5 +1,10 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
+import android.text.TextUtils;
+
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.PushUtil;
+
 import java.io.Serializable;
 
 /**
@@ -9,40 +14,16 @@ public class User implements Serializable {
     public String nickname;
     public String email;
     public String password;
-    public String payPassword;
-    public String payPasswordSalt;
     public int id;
     public String avatar;
-    public String smallAvatar;
     public UserRole[] roles;
-    public String salt;
     public String uri;
     public String title;
-    public String tags;
     public String type;
     public String point;
-    public String coin;
     public String mediumAvatar;
-    public String largeAvatar;
-    public String emailVerified;
-    public String setup;
-    public String promoted;
-    public String promotedTime;
-    public String locked;
-    public String lastPasswordFailTime;
-    public String lockDeadline;
-    public String consecutivePasswordErrorTimes;
-    public String loginTime;
-    public String loginIp;
-    public String loginSessionId;
-    public String approvalTime;
-    public String approvalStatus;
-    public String newMessageNum;
-    public String newNotificationNum;
-    public String createdIp;
     public String createdTime;
     public String about;
-    public String signature;
     public String role;
     /**
      * 关注
@@ -53,10 +34,33 @@ public class User implements Serializable {
      */
     public String follower;
 
-    public int dataType;
-
-
     public Vip vip;
 
     public String thirdParty;
+
+    public String getMediumAvatar() {
+        int schemIndex = mediumAvatar.lastIndexOf("http://");
+        if (schemIndex != -1) {
+            return mediumAvatar.substring(schemIndex);
+        }
+        if (mediumAvatar.startsWith("//")) {
+            return "http:" + mediumAvatar;
+        }
+        return mediumAvatar;
+    }
+
+    public String userRole2String() {
+        if (roles == null || roles.length == 0) {
+            return "学员";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (UserRole userRole : roles) {
+            if (userRole != null) {
+                sb.append(userRole.getRoleName()).append(" ");
+            }
+        }
+
+        return sb.toString();
+    }
 }

@@ -14,10 +14,13 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussChatActivity;
+import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -114,7 +117,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder instanceof LessonTitleViewHolder) {
             final NewsCourseEntity entity = mDataList.get(position);
             String lessonTitle = entity.getContent();
-            if (entity.getIsLessonfinished() == true) {
+            if (entity.getIsLessonfinished()) {
                 ((LessonTitleViewHolder) holder).lessonState.setImageResource(R.drawable.icon_lesson_state_finished);
             } else {
                 ((LessonTitleViewHolder) holder).lessonState.setImageResource(R.drawable.icon_lesson_state_half);
@@ -146,7 +149,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         }
         if (holder instanceof NormalNotificationViewHolder) {
 
-            NewsCourseEntity entity = mDataList.get(position);
+            final NewsCourseEntity entity = mDataList.get(position);
             if (entity.getBodyType().equals("lesson.finish")) {
                 ((NormalNotificationViewHolder) holder).notificationType.setBackgroundResource(R.drawable.process_lesson_start_bg);
                 ((NormalNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_lesson_start));
@@ -161,6 +164,25 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((NormalNotificationViewHolder) holder).notificationType.setText("课时开始");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
                 ((NormalNotificationViewHolder) holder).notificationContent.setText(String.format("您已经开始了课时『%s』的学习", textContont));
+            }
+            if (entity.getBodyType().equals("question.created")) {
+                NormalNotificationViewHolder normalNotificationViewHolder = (NormalNotificationViewHolder) holder;
+                normalNotificationViewHolder.notificationType.setText(String.format("[问答]%s", entity.getTitle()));
+                normalNotificationViewHolder.notificationContent.setText(entity.getContent());
+                normalNotificationViewHolder.notificationContent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CoreEngine.create(mContext).runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(ThreadDiscussActivity.TARGET_ID, entity.getCourseId());
+                                startIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
+                                startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, entity.getThreadId());
+                                startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
+                            }
+                        });
+                    }
+                });
             }
             ((NormalNotificationViewHolder) holder).notificationTime.setText("系统 发布于" + AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()), null));
             ((NormalNotificationViewHolder) holder).TVMoreInfo.setVisibility(View.GONE);
@@ -218,10 +240,10 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                         mApp.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(ThreadDiscussActivity.TARGET_ID, entity.getCourseId());
-                                startIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
-                                startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, entity.getThreadId());
-                                startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
+                                startIntent.putExtra(AbstractIMChatActivity.FROM_ID, entity.getThreadId());
+                                startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, "question");
+                                startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, entity.getCourseId());
+                                startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, "course");
                             }
                         });
                     }

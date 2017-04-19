@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -9,13 +10,18 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.RequestUtil;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
+import com.edusoho.kuozhi.v3.util.volley.ModelVolleyRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 
 /**
@@ -23,15 +29,34 @@ import java.lang.reflect.Field;
  */
 public abstract class ModelProvider {
 
-    protected Context mContext;
     protected VolleySingleton mVolley;
     protected Gson mGson;
+    protected Context mContext;
     private static final String TAG = "ModelProvider";
 
     public ModelProvider(Context context) {
         this.mContext = context;
         this.mGson = new Gson();
         this.mVolley = VolleySingleton.getInstance(context);
+    }
+
+    protected String getToken() {
+        Map<String, String> tokenMap = ApiTokenUtil.getToken(mContext);
+        return tokenMap.containsKey("token") ? tokenMap.get("token") : "";
+    }
+
+    protected String getHost() {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        return school == null ? "" : school.host;
+    }
+
+    protected String getDomain() {
+        Uri hostUri = Uri.parse(getHost());
+        if (hostUri != null) {
+            return hostUri.getHost();
+        }
+
+        return "";
     }
 
     public static <T> T initProvider(Context context, Class<T> targetClass) {
@@ -94,32 +119,7 @@ public abstract class ModelProvider {
             int method, final RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, final Response.ErrorListener errorListener
     ) {
         mVolley.getRequestQueue();
-        BaseVolleyRequest request = new BaseVolleyRequest(
-                method, requestUrl, responseListener, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse == null) {
-                    return;
-                }
-                if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
-                    return;
-                }
-                if (errorListener != null) {
-                    errorListener.onErrorResponse(error);
-                }
-            }
-        }) {
-            @Override
-            protected T getResponseData(NetworkResponse response) {
-                String jsonStr = RequestUtil.handleRequestError(response.data);
-                try {
-                    return mGson.fromJson(jsonStr, typeToken.getType());
-                } catch (Exception e) {
-                }
-                return null;
-            }
-        };
-
+        BaseVolleyRequest request = new ModelVolleyRequest<T>(method, requestUrl, typeToken, responseListener, errorListener);
         request.setTag(requestUrl.url);
         return request;
     }

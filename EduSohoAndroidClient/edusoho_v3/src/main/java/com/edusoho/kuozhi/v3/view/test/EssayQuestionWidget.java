@@ -16,7 +16,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.EditText;
@@ -200,7 +199,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         if ("noAnswer".equals(testResult.status)) {
             myAnswer = "未答题";
         } else {
-            myAnswer = listToStr(testResult.answer);
+            myAnswer = listToStr(coverResultAnswer(testResult.answer));
         }
 
         String html = "你的答案:<p></p>" + myAnswer;

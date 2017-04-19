@@ -13,7 +13,7 @@ public enum TypeBusinessEnum {
         return this.name;
     }
 
-    private TypeBusinessEnum(String n, int i) {
+    TypeBusinessEnum(String n, int i) {
         this.name = n;
         this.index = i;
     }

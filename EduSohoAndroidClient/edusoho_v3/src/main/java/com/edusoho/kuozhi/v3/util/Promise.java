@@ -30,6 +30,18 @@ public class Promise {
         return this;
     }
 
+    public Promise next(PromiseCallback callback) {
+        if (mLastResolveObj != null) {
+            return callback.invoke(mLastResolveObj);
+        }
+
+        if (callback != null) {
+            mInvokeQueue.add(callback);
+        }
+
+        return this;
+    }
+
     public void resolve(Object obj) {
         PromiseCallback callback = mInvokeQueue.poll();
         if (callback == null) {

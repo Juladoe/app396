@@ -25,7 +25,12 @@ public class ModelDecor {
     }
 
     public <T> T decor(String json, TypeToken<T> typeToken) {
-        return gson.fromJson(
-                json, typeToken.getType());
+        try {
+            return gson.fromJson(
+                    json, typeToken.getType());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

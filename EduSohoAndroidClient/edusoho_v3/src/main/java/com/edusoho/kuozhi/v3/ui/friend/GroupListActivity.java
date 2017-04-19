@@ -1,28 +1,30 @@
 package com.edusoho.kuozhi.v3.ui.friend;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.SideBar;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,16 +76,25 @@ public class GroupListActivity extends ActionBarBaseActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                    CommonUtil.longToast(mContext, "聊天功能已关闭,请联系管理员");
+                    return;
+                }
                 final DiscussionGroup discussionGroup = (DiscussionGroup) parent.getItemAtPosition(position);
-                app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, Integer.valueOf(discussionGroup.id));
-                        startIntent.putExtra(ClassroomDiscussActivity.CLASSROOM_IMAGE, discussionGroup.picture);
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, discussionGroup.title);
-                    }
-                });
+                Bundle bundle = new Bundle();
+                if (Destination.COURSE.equals(discussionGroup.getType())) {
+                    bundle.putInt(NewsCourseActivity.COURSE_ID, discussionGroup.id);
+                    bundle.putString(NewsCourseActivity.CONV_NO, discussionGroup.getConversationId());
+                    bundle.putInt(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);
+                    bundle.putString(NewsCourseActivity.TARGET_TYPE, discussionGroup.getType());
+                    CoreEngine.create(mContext).runNormalPluginWithBundle("NewsCourseActivity", mContext, bundle);
+                    return;
+                }
 
+                bundle.putInt(ClassroomDiscussActivity.FROM_ID, discussionGroup.id);
+                bundle.putString(ClassroomDiscussActivity.FROM_NAME, discussionGroup.title);
+                bundle.putString(ClassroomDiscussActivity.TARGET_TYPE, discussionGroup.getType());
+                CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomDiscussActivity", mContext, bundle);
             }
         });
         characterParser = CharacterParser.getInstance();
@@ -94,6 +105,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
         mEmptyNotice.setVisibility(View.GONE);
         if (mGroupList.size() != 0) {
             mAdapter.clearList();
+            mAdapter.notifyDataSetChanged();
         }
         if (!app.getNetIsConnect()) {
             mLoading.setVisibility(View.GONE);
@@ -109,14 +121,8 @@ public class GroupListActivity extends ActionBarBaseActivity {
     }
 
     private Promise loadGroup() {
-
-        RequestUrl requestUrl = app.bindNewUrl(Const.DISCUSSION_GROUP, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=10000/");
-        requestUrl.url = stringBuffer.toString();
-
         final Promise promise = new Promise();
-        mDiscussionGroupProvider.getClassrooms(requestUrl).success(new NormalCallback<DiscussionGroupResult>() {
+        mDiscussionGroupProvider.getGroupList().success(new NormalCallback<DiscussionGroupResult>() {
             @Override
             public void success(DiscussionGroupResult discussionGroupResult) {
                 if (discussionGroupResult.resources.length != 0) {
@@ -125,6 +131,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     setSortChar(groupsList);
                     Collections.sort(groupsList, groupComparator);
                     mAdapter.addFriendList(groupsList);
+                    new IMProvider(mContext).updateRoles(groupsList);
                 } else {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                 }
@@ -136,6 +143,8 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
     public void setSortChar(List<DiscussionGroup> groupList) {
         for (DiscussionGroup discussionGroup : groupList) {
+            discussionGroup.nickname = discussionGroup.title;
+            discussionGroup.mediumAvatar = discussionGroup.picture;
             String pinyin = characterParser.getSelling(discussionGroup.title);
             String sortString = pinyin.substring(0, 1).toUpperCase();
             if (sortString.matches("[A-Z]")) {

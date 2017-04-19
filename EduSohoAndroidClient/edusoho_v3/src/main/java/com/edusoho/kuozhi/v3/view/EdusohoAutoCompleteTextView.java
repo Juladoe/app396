@@ -30,7 +30,7 @@ public class EdusohoAutoCompleteTextView extends AutoCompleteTextView {
         }
     }
 
-    public static interface KeyDownCallback {
-        public void invoke(int length);
+    public interface KeyDownCallback {
+        void invoke(int length);
     }
 }

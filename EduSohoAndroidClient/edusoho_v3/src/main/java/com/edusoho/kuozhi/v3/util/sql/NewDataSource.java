@@ -82,7 +82,6 @@ public class NewDataSource {
         cv.put(allColumns[5], newModel.imgUrl);
         cv.put(allColumns[6], newModel.unread);
         cv.put(allColumns[7], newModel.type);
-        cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
         cv.put(allColumns[10], newModel.parentId);
         long insertId = mDataBase.insert(TABLE_NAME, null, cv);
@@ -101,7 +100,6 @@ public class NewDataSource {
             cv.put(allColumns[5], newModel.imgUrl);
             cv.put(allColumns[6], newModel.unread);
             cv.put(allColumns[7], newModel.type);
-            cv.put(allColumns[8], newModel.belongId);
             cv.put(allColumns[9], newModel.isTop);
             cv.put(allColumns[10], newModel.parentId);
             mDataBase.insert(TABLE_NAME, null, cv);
@@ -119,7 +117,6 @@ public class NewDataSource {
         cv.put(allColumns[5], newModel.imgUrl);
         cv.put(allColumns[6], newModel.unread);
         cv.put(allColumns[7], newModel.type);
-        cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
         cv.put(allColumns[10], newModel.parentId);
         long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ? AND TYPE = ?",
@@ -138,7 +135,6 @@ public class NewDataSource {
         cv.put(allColumns[5], newModel.imgUrl);
         cv.put(allColumns[6], newModel.unread);
         cv.put(allColumns[7], newModel.type);
-        cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
         cv.put(allColumns[10], newModel.parentId);
         long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ? AND TYPE = ?",
@@ -201,17 +197,12 @@ public class NewDataSource {
         newModel.imgUrl = cursor.getString(5);
         newModel.unread = cursor.getInt(6);
         newModel.type = cursor.getString(7);
-        newModel.belongId = cursor.getInt(8);
         newModel.isTop = cursor.getInt(9);
         newModel.parentId = cursor.getInt(10);
         return newModel;
     }
 
     public long delete(New model) {
-        openWrite();
-        long newId = mDataBase.delete(TABLE_NAME, "FROMID = ? AND BELONGID = ? AND TYPE = ?",
-                new String[]{model.fromId + "", model.belongId + "", model.type});
-        close();
-        return newId;
+        return 0;
     }
 }

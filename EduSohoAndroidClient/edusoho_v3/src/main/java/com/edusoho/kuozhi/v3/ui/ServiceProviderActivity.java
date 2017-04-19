@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui;
 
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.edusoho.kuozhi.v3.util.ServiceProviderUtil;
@@ -15,6 +14,7 @@ public class ServiceProviderActivity extends FragmentPageActivity {
     public static final String ARTICLE = "news";
     public static final String COURSE = "Course";
     public static final String SERVICE_ID = "id";
+    public static final String CONV_NO = "conv_no";
     public static final String SERVICE_TYPE = "type";
     public static String SERVICE_NAME;
 
@@ -37,11 +37,8 @@ public class ServiceProviderActivity extends FragmentPageActivity {
         if (TextUtils.isEmpty(SERVICE_NAME)) {
             return false;
         }
-        if (SERVICE_NAME.equals(getFragmentNameByType(type))) {
-            return true;
-        }
 
-        return false;
+        return SERVICE_NAME.equals(getFragmentNameByType(type));
     }
 
     @Override

@@ -21,12 +21,12 @@ public class Member implements Serializable {
     public String seq;
     public String remark;
     public int isVisible;
-    public Role role;
+    public Object role;
     public int locked;
     public int createdTime;
 
-    public enum Role
-    {
-        teacher, student, admin;
-    }
+//    public enum Role
+//    {
+//        teacher, student, admin
+//    }
 }

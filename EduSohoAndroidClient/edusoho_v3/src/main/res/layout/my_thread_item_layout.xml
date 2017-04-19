@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingBottom="8dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
@@ -13,7 +13,7 @@
         android:layout_height="50dp"
         android:padding="4dp"
         android:scaleType="fitXY"
-        android:src="@drawable/default_avatar" />
+        android:src="@drawable/default_course" />
 
     <TextView
         android:id="@+id/my_thread_item_type"
@@ -24,11 +24,10 @@
         android:layout_marginTop="4dp"
         android:layout_toRightOf="@id/my_thread_item_avatar"
         android:background="@color/blue_alpha"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
+        android:padding="2dp"
         android:text="问"
         android:textColor="@color/white"
-        android:textSize="@dimen/small_font_size" />
+        android:textSize="@dimen/x_small_font_size" />
 
     <TextView
         android:id="@+id/my_thread_item_title"
@@ -38,7 +37,6 @@
         android:layout_toRightOf="@id/my_thread_item_type"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="我的问题的标题"
         android:textColor="@color/base_black_87"
         android:textSize="@dimen/small_font_size" />
 
@@ -50,7 +48,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/my_thread_item_title"
         android:paddingBottom="2dp"
-        android:text="三天前"
         android:textSize="@dimen/x_small_font_size" />
 
     <TextView
@@ -64,8 +61,6 @@
         android:maxLines="1"
         android:paddingBottom="2dp"
         android:paddingLeft="6dp"
-        android:text="来自课程：『很高兴遇见你』"
         android:textSize="@dimen/x_small_font_size" />
-
 
 </RelativeLayout>

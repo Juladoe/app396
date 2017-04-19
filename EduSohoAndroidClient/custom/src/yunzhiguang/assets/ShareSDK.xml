@@ -6,13 +6,13 @@
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <Wechat Id="1" SortId="1" AppId="wx08608675cb570e5e"
-        AppSecret="f1ecbf6ed4e51ebcacfb6cdd373252e7" BypassApproval="false" Enable="true" />
+        AppSecret="a8e3120280c91a903b22ac7f3cebbfe5" BypassApproval="false" Enable="true" />
 
     <WechatMoments Id="2" SortId="2" AppId="wx08608675cb570e5e"
-        AppSecret="f1ecbf6ed4e51ebcacfb6cdd373252e7" BypassApproval="true" Enable="true" />
+        AppSecret="a8e3120280c91a903b22ac7f3cebbfe5" BypassApproval="true" Enable="true" />
 
     <WechatFavorite Id="3" SortId="3" AppId="wx08608675cb570e5e"
-        AppSecret="f1ecbf6ed4e51ebcacfb6cdd373252e7" Enable="true" />
+        AppSecret="a8e3120280c91a903b22ac7f3cebbfe5" Enable="true" />
 
     <!--demo站-->   <SinaWeibo Id="4" SortId="4" AppKey="532294611" AppSecret="45ec79c7d07d60f94eb755e0afc1ac70"
         RedirectUrl="http://www.elicht.cn" ShareByAppClient="true" Enable="true" />

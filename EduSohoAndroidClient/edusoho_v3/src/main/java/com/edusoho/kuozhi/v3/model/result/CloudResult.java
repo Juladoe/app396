@@ -8,6 +8,6 @@ public class CloudResult {
     public String result;
 
     public boolean getResult() {
-        return "success".equals(this.result) ? true : false;
+        return "success".equals(this.result);
     }
 }

@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,29 +11,26 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.Role;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
-import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.NotificationUtil;
-import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
-import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
-import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -47,15 +43,16 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  */
 public class BulletinActivity extends ActionBarBaseActivity {
 
+    public static final String CONV_NO = "conv_no";
     private ListView mListView;
     private PtrClassicFrameLayout mPtrFrame;
     private View mEmptyView;
     private TextView tvEmpty;
-    private BulletinDataSource mBulletinDataSource;
     private BulletinAdapter mBulletinAdapter;
-    private String mArticleAvatar;
     private static final int LIMIT = 15;
     private int mStart = 0;
+    private String mConvNo;
+    private boolean mCanLoadMore;
 
     private static long TIME_INTERVAL = 60 * 5;
     private Handler mHandler;
@@ -77,60 +74,64 @@ public class BulletinActivity extends ActionBarBaseActivity {
         tvEmpty.setText(getResources().getString(R.string.announcement_empty_text));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getNotificationProvider().cancelNotification(Destination.GLOBAL.hashCode());
+        IMClient.getClient().getConvManager().clearReadCount(Destination.GLOBAL);
+    }
+
     private void initData() {
-        setBackMode(BACK, "学院公告");
-        if (TextUtils.isEmpty(mArticleAvatar)) {
-            NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-            List<New> bulletins = newDataSource.getNews("WHERE TYPE = ? ORDER BY CREATEDTIME DESC", TypeBusinessEnum.BULLETIN.getName());
-            if (bulletins.size() > 0) {
-                mArticleAvatar = bulletins.get(0).imgUrl;
-            }
-            if (TextUtils.isEmpty(mArticleAvatar)) {
-                RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-                mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        SchoolApp[] schoolAppResult = mActivity.parseJsonValue(response, new TypeToken<SchoolApp[]>() {
-                        });
-                        if (schoolAppResult.length != 0) {
-                            mArticleAvatar = schoolAppResult[1].avatar;
-                        }
-                    }
-                }, null);
-            }
-        }
-        if (mBulletinDataSource == null) {
-            mBulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        }
+
+        setBackMode(BACK, "网校公告");
+        mCanLoadMore = true;
+        mConvNo = Destination.GLOBAL;
         List<Bulletin> bulletinList = getBulletins(mStart);
-        NotificationUtil.cancelById(bulletinList.size() == 0 ? 0 : bulletinList.get(bulletinList.size() - 1).id);
+        mStart += bulletinList.size();
         mBulletinAdapter = new BulletinAdapter(bulletinList);
         mListView.setAdapter(mBulletinAdapter);
-        mListView.post(mRunnable);
+        mListView.post(new ScrollRunnable(mStart));
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout ptrFrameLayout) {
-                mBulletinAdapter.addItems(getBulletins(mStart));
+                List<Bulletin> bulletinList = getBulletins(mStart);
+                mBulletinAdapter.addItems(bulletinList);
                 mPtrFrame.refreshComplete();
-                mListView.postDelayed(mRunnable, 100);
+                if (bulletinList.isEmpty()) {
+                    mCanLoadMore = false;
+                }
+                int total = mStart + bulletinList.size();
+                mListView.postDelayed(new ScrollRunnable(total > mStart ? total - mStart - 1 : 0), 100);
+                mStart = total;
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return mCanLoadMore && super.checkCanDoRefresh(frame, content, header);
             }
         });
         mHandler.postDelayed(mNotifyNewFragment2UpdateItemBadgeRunnable, 500);
         setListVisibility(mBulletinAdapter.getCount() == 0);
     }
 
-    private Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mListView.setSelection(mStart);
-        }
-    };
-
     private List<Bulletin> getBulletins(int start) {
-        List<Bulletin> bulletinList = mBulletinDataSource.getBulletins(start, LIMIT, String.format("SCHOOLDOMAIN = '%s' ", app.domain), "CREATEDTIME DESC");
-        mStart = start + bulletinList.size();
-        Collections.reverse(bulletinList);
+        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConvNo).getMessageList(start);
+        ArrayList<Bulletin> bulletinList = new ArrayList<>();
+        if (messageEntityList == null || messageEntityList.isEmpty()) {
+            return bulletinList;
+        }
+
+        Role role = IMClient.getClient().getRoleManager().getRole(mConvNo, 1);
+        for (MessageEntity messageEntity : messageEntityList) {
+            MessageBody messageBody = new MessageBody(messageEntity);
+            Bulletin bulletin = getUtilFactory().getJsonParser().fromJson(messageBody.getBody(), Bulletin.class);
+            bulletin.setCreateTime(messageBody.getCreatedTime());
+            if (role.getRid() != 0) {
+                bulletin.setAvatar(role.getAvatar());
+            }
+            bulletinList.add(bulletin);
+        }
         return bulletinList;
     }
 
@@ -139,8 +140,10 @@ public class BulletinActivity extends ActionBarBaseActivity {
         super.onNewIntent(intent);
         mBulletinAdapter.clear();
         mStart = 0;
-        mBulletinAdapter.addItems(getBulletins(mStart));
-        mListView.post(mRunnable);
+        List<Bulletin> bulletinList = getBulletins(mStart);
+        mBulletinAdapter.addItems(bulletinList);
+        mStart += bulletinList.size();
+        mListView.post(new ScrollRunnable(mStart));
         mHandler.postDelayed(mNotifyNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
@@ -158,9 +161,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
         MessageType messageType = message.type;
         switch (messageType.code) {
             case Const.ADD_BULLETIN_MSG:
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                Bulletin bulletin = new Bulletin(wrapperMessage);
-                mBulletinAdapter.addItem(bulletin);
+
                 break;
         }
         setListVisibility(mBulletinAdapter.getCount() == 0);
@@ -233,16 +234,16 @@ public class BulletinActivity extends ActionBarBaseActivity {
             Bulletin bulletin = mList.get(position);
             holder.tvCreatedTime.setVisibility(View.GONE);
             if (position > 0) {
-                if (bulletin.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
+                if (bulletin.getCreateTime() - mList.get(position - 1).getCreateTime() > TIME_INTERVAL) {
                     holder.tvCreatedTime.setVisibility(View.VISIBLE);
-                    holder.tvCreatedTime.setText(AppUtil.convertMills2Date(((long) bulletin.createdTime) * 1000));
+                    holder.tvCreatedTime.setText(AppUtil.convertMills2Date((bulletin.getCreateTime())));
                 }
             } else {
                 holder.tvCreatedTime.setVisibility(View.VISIBLE);
-                holder.tvCreatedTime.setText(AppUtil.convertMills2Date(((long) bulletin.createdTime) * 1000));
+                holder.tvCreatedTime.setText(AppUtil.convertMills2Date((bulletin.getCreateTime())));
             }
-            holder.tvContent.setText(bulletin.content);
-            ImageLoader.getInstance().displayImage(mArticleAvatar, holder.ivHeadImageUrl, mOptions);
+            holder.tvContent.setText(bulletin.title);
+            ImageLoader.getInstance().displayImage(bulletin.getAvatar(), holder.ivHeadImageUrl, mOptions);
             return convertView;
         }
     }
@@ -267,5 +268,27 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private void setListVisibility(boolean visibility) {
         mListView.setVisibility(visibility ? View.GONE : View.VISIBLE);
         mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);
+    }
+
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
+    }
+
+    private class ScrollRunnable implements Runnable {
+
+        private int position;
+
+        public ScrollRunnable(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void run() {
+            mListView.setSelection(position);
+        }
     }
 }

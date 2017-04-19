@@ -6,5 +6,5 @@ import android.content.Intent;
  * Created by JesseHuang on 15/4/23.
  */
 public interface PluginRunCallback {
-    public void setIntentDate(Intent startIntent);
+    void setIntentDate(Intent startIntent);
 }

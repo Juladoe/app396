@@ -122,7 +122,7 @@ public class ExitCoursePopupDialog extends Dialog {
         mTitleView.setText(title);
     }
 
-    public static interface PopupClickListener {
-        public void onClick(int button, int position, String selStr);
+    public interface PopupClickListener {
+        void onClick(int button, int position, String selStr);
     }
 }

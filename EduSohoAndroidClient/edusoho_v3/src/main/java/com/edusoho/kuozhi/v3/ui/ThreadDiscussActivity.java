@@ -24,11 +24,10 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
-import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseThreadPostResult;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.PostThreadResult;
@@ -51,11 +50,8 @@ import com.edusoho.kuozhi.v3.util.sql.CourseThreadPostDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.json.JSONObject;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -63,6 +59,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,7 +90,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
      */
     private String mActivityType;
     private String mRoleType;
-    private String mCourseTitle;
     private int mToUserId;
     private int mThreadId;
     private int mTargetId;
@@ -136,7 +132,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
         if ("classroom".equals(mTargetType)) {
             fillThreadInfoByClassRoom();
-            return;
         }
     }
 
@@ -326,20 +321,15 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void sendMsg(final String content) {
-//        Log.d(TAG, content);
-//        if (mAdapter.getCount() == 0) {
-//            handleSendThread(content, PushUtil.ChatMsgType.TEXT);
-//        } else if (mAdapter.getCount() > 0) {
-        final CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(content, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING);
+        CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(content, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING);
         postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
-        final ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
+        ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
         addItem2ListView(discussModel);
         handleSendPost(postModel);
-//        }
     }
 
     @Override
-    public void sendMsgAgain(final BaseMsgEntity model) {
+    public void sendMsgAgain(final Chat model) {
         final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
         mAdapter.updateItemState(model.id, PushUtil.MsgDeliveryType.UPLOADING);
         handleSendPost(postModel);
@@ -404,7 +394,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     }
 
     @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
+    public void uploadMediaAgain(final File file, final Chat model, final String type, String strType) {
         try {
             final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
             getUpYunUploadInfo(file, app.loginUser.id, new NormalCallback<UpYunUploadResult>() {
@@ -446,7 +436,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             return;
         }
         RequestUrl requestUrl = app.bindNewApiUrl(Const.CREATE_THREAD, true);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("threadType", "course".equals(mTargetType) ? "course" : "common");
         params.put("courseId", mTargetId + "");
 
@@ -676,7 +666,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     private void filterPostThreads(List<CourseThreadPostEntity> posts) {
         try {
             for (CourseThreadPostEntity post : posts) {
-                if (post.content.contains("amr")) {
+                if (post.content.contains("mp3")) {
                     post.type = PushUtil.ChatMsgType.AUDIO;
                     AudioCacheEntity cache = AudioCacheUtil.getInstance().getAudioCacheByPath(post.content);
                     if (cache != null && !TextUtils.isEmpty(cache.localPath)) {
@@ -744,32 +734,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 courseThreadPostEntity.createdTime);
     }
 
-    private V2CustomContent getV2CustomContent(CourseThreadPostEntity postModel, String msgType, String type) {
-        V2CustomContent v2CustomContent = new V2CustomContent();
-        v2CustomContent.setType(type);
-        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUser.id);
-        fromEntity.setImage(app.loginUser.mediumAvatar);
-        fromEntity.setNickname(app.loginUser.nickname);
-        fromEntity.setType(mRoleType);
-        v2CustomContent.setFrom(fromEntity);
-        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
-        toEntity.setId(mToUserId);
-        toEntity.setType(PushUtil.ChatUserType.USER);
-        v2CustomContent.setTo(toEntity);
-        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(msgType);
-        bodyEntity.setContent(postModel.content);
-        bodyEntity.setPostId(postModel.postId);
-        bodyEntity.setThreadId(mThreadId);
-        bodyEntity.setCourseId(mTargetId);
-        bodyEntity.setLessonId(mLessonId);
-        v2CustomContent.setBody(bodyEntity);
-        v2CustomContent.setV(Const.PUSH_VERSION);
-        //v2CustomContent.setCreatedTime(mSendTime);
-        return v2CustomContent;
-    }
-
     @Override
     public MessageType[] getMsgTypes() {
         return new MessageType[]{new MessageType(Const.ADD_THREAD_POST, getClass().getSimpleName())};
@@ -777,30 +741,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void invoke(WidgetMessage message) {
-        MessageType messageType = message.type;
-        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-        V2CustomContent v2CustomContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<V2CustomContent>() {
-        });
-        switch (messageType.code) {
-            case Const.ADD_THREAD_POST:
-                if (CurrentThreadId == v2CustomContent.getBody().getThreadId()) {
-                    CourseThreadPostEntity postModel = new CourseThreadPostEntity();
-                    postModel.postId = v2CustomContent.getBody().getPostId();
-                    postModel.threadId = v2CustomContent.getBody().getThreadId();
-                    postModel.courseId = mTargetId;
-                    postModel.lessonId = mLessonId;
-                    postModel.content = wrapperMessage.getContent();
-                    postModel.user.id = v2CustomContent.getFrom().getId();
-                    postModel.user.nickname = v2CustomContent.getFrom().getNickname();
-                    postModel.user.mediumAvatar = v2CustomContent.getFrom().getImage();
-                    postModel.createdTime = AppUtil.converMillisecond2TimeZone(v2CustomContent.getCreatedTime());
-                    postModel.delivery = 2;
-                    postModel.type = v2CustomContent.getBody().getType();
-                    postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
-                    mAdapter.addItem(convertThreadDiscuss(postModel));
-                }
-                break;
-        }
+
     }
 
     private void hideHeaderLayout() {

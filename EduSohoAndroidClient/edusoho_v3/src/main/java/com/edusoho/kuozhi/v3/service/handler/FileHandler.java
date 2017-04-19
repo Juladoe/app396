@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.v3.service.handler;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,11 +13,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
@@ -40,6 +43,7 @@ import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.util.EntityUtils;
+
 import cn.trinea.android.common.util.DigestUtils;
 
 /**
@@ -50,15 +54,17 @@ public class FileHandler implements HttpRequestHandler {
     private static final String TAG = "FileHandler";
     private static final String HOST_TAG = "localhost:8800";
 
+    private int mUserId;
     private String mTargetHost;
-    private ActionBarBaseActivity mActivity;
+    private Context mContext;
 
-    public FileHandler(String targetHost, ActionBarBaseActivity actionBarBaseActivity) {
+    public FileHandler(Context context, String targetHost, int userId) {
         Uri hostUri = Uri.parse(targetHost);
         if (hostUri != null) {
             this.mTargetHost = hostUri.getHost();
         }
-        this.mActivity = actionBarBaseActivity;
+        this.mUserId = userId;
+        this.mContext = context;
     }
 
     @Override
@@ -67,7 +73,7 @@ public class FileHandler implements HttpRequestHandler {
             throws HttpException, IOException {
 
         Header host = httpRequest.getFirstHeader("Host");
-        if (host == null || !HOST_TAG.equals(host.getValue())) {
+        if (host == null || !HOST_TAG.startsWith(host.getValue())) {
             return;
         }
         String url = httpRequest.getRequestLine().getUri();
@@ -79,13 +85,10 @@ public class FileHandler implements HttpRequestHandler {
 
         if (queryName.startsWith("playlist")) {
             int lessonId = CommonUtil.parseInt(queryName.substring("playlist/".length(), queryName.length() - ".m3u8".length()));
-            User loginUser = mActivity.app.loginUser;
-            if (loginUser == null) {
-                return;
-            }
             M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
-                    mActivity, loginUser.id, lessonId, this.mTargetHost, M3U8Util.ALL);
+                    mContext, mUserId, lessonId, this.mTargetHost, M3U8Util.ALL);
             if (m3U8DbModel != null) {
+                //m3U8DbModel.playList = filterUploadInfo(m3U8DbModel.playList);
                 StringEntity entity = new StringEntity(m3U8DbModel.playList, "utf-8");
                 entity.setContentType("application/vnd.apple.mpegurl");
                 entity.setContentEncoding("utf-8");
@@ -96,7 +99,7 @@ public class FileHandler implements HttpRequestHandler {
 
         //判断是不是key
         if (queryName.startsWith("ext_x_key")) {
-            SqliteUtil sqliteUtil = SqliteUtil.getUtil(mActivity);
+            SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
             Cache keyCache = sqliteUtil.query(
                     "select * from data_cache where key=? and type=?",
                     queryName,
@@ -109,7 +112,11 @@ public class FileHandler implements HttpRequestHandler {
         }
 
         //本地ts文件
-        File videoFile = getLocalFile(queryName.toString());
+        String[] tsUrl = queryName.split("[?]");
+        if (tsUrl.length > 0) {
+            queryName = tsUrl[0];
+        }
+        File videoFile = getLocalFile(queryName);
         if (videoFile.exists()) {
             Log.d(null, "cache->" + videoFile);
             FileEntity fileEntity = new WrapFileEntity(videoFile, mTargetHost);
@@ -176,15 +183,14 @@ public class FileHandler implements HttpRequestHandler {
 
         @Override
         public void writeTo(OutputStream outstream) throws IOException {
-            //Args.notNull(outstream, "Output stream");
             M3U8Util.DigestInputStream instream = new M3U8Util.DigestInputStream(
                     new FileInputStream(this.file)
-                    ,mHost
+                    , mHost
             );
             try {
                 byte[] tmp = new byte[4096];
                 int l;
-                while((l = instream.read(tmp)) != -1) {
+                while ((l = instream.read(tmp)) != -1) {
                     outstream.write(tmp, 0, l);
                 }
                 outstream.flush();
@@ -258,16 +264,30 @@ public class FileHandler implements HttpRequestHandler {
             return null;
         }
 
-        User loginUser = mActivity.app.loginUser;
-        if (loginUser == null) {
-            return null;
-        }
         StringBuffer dirBuilder = new StringBuffer(workSpace.getAbsolutePath());
         dirBuilder.append("/videos/")
-                .append(loginUser.id)
+                .append(mUserId)
                 .append("/")
                 .append(mTargetHost);
 
         return new File(dirBuilder.toString());
+    }
+
+    private String filterUploadInfo(String playList) {
+        Pattern pattern = Pattern.compile("\\?schoolId.*\\n");
+        Matcher matcher = pattern.matcher(playList);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, "\n");
+        }
+        return sb.toString() + "";
+    }
+
+    private String filterUploadUrl(String playUrl) {
+        String[] url = playUrl.split("[?]");
+        if (url.length > 0) {
+            return url[1];
+        }
+        return null;
     }
 }

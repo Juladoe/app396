@@ -14,11 +14,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,6 +81,10 @@ public class SchoolBannerAdapter extends PagerAdapter {
             public void onClick(View view) {
                 try {
                     final SchoolBanner banner = mSchoolBanners.get(position);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put("index", String.format("第%d张轮播图", position));
+                    map.put("type", banner.action);
+                    MobclickAgent.onEvent(mContext, "find_topPoster", map);
                     if ("webview".equals(banner.action)) {
                         final String url;
                         Pattern CLASSROOM_PAT = Pattern.compile("/classroom/(\\d+)", Pattern.DOTALL);
@@ -100,10 +107,13 @@ public class SchoolBannerAdapter extends PagerAdapter {
                     } else if ("course".equals(banner.action)) {
                         final String url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost,
                                 String.format(Const.MOBILE_WEB_COURSE, Integer.parseInt(banner.params)));
-                        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                        CoreEngine.create(mContext).runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.WEB_URL, url);
+                                String[] urls = url.split("/");
+                                final String courseId = urls[urls.length - 1];
+                                //
+                                startIntent.putExtra(Const.COURSE_ID, Integer.parseInt(courseId));
                             }
                         });
                     }

@@ -11,6 +11,7 @@
     android:padding="5dp">
 
     <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+        android:visibility="gone"
         android:id="@+id/nav_tab_news"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,6 +38,7 @@
         app:text_size="@dimen/nav_layout_btn_text_size" />
 
     <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+        android:visibility="gone"
         android:id="@+id/nav_tab_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

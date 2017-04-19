@@ -13,7 +13,7 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:textColor="@color/text1_normal_color"
+        android:textColor="@color/base_gray"
         android:layout_marginTop="8dp"
         android:text="服务器或者网络的问题无法加载视频，请查看手机网络或Wi-Fi设置，是否已接入互联网"
         android:layout_width="match_parent"

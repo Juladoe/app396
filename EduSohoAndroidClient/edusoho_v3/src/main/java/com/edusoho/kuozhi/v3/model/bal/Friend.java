@@ -1,11 +1,14 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+
 /**
  * Created by Melomelon on 2015/6/2.
  */
 public class Friend {
 
     public int id;
+    private String type = Destination.USER;
     public int avatarID;
     public String largeAvatar;
     public String mediumAvatar;
@@ -20,6 +23,14 @@ public class Friend {
     public boolean isBottom = false;
 
     private String sortLetters;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public int getId() {
         return id;

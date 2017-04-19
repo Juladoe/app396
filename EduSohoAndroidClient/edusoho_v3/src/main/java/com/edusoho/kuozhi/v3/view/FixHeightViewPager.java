@@ -88,6 +88,6 @@ public class FixHeightViewPager extends ViewPager {
     }
 
     public interface TouchCallback {
-        public boolean onTouchEvent(MotionEvent ev);
+        boolean onTouchEvent(MotionEvent ev);
     }
 }

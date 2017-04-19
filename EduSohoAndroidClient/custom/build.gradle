@@ -15,6 +15,11 @@ android {
         targetSdkVersion 21
         multiDexEnabled true
         manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi",startActivity:"com.edusoho.kuozhi.KuozhiActivity"]
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+        multiDexEnabled true
     }
 
     //签名
@@ -25,30 +30,23 @@ android {
             keyAlias "cn"
             keyPassword "10001000"
         }
-
-        yunzhiguang {
-            storeFile file("key/com.edusoho.yunzhiguang.jks")
-            storePassword "10001000"
-            keyAlias "cn"
-            keyPassword "10001000"
-        }
     }
 
     productFlavors {
-
         yunzhiguang {
-            signingConfig signingConfigs.yunzhiguang
+            signingConfig signingConfigs.debugConfig
             applicationId "com.edusoho.yunzhiguang"
-            manifestPlaceholders = [wxpkg: "com.edusoho.yunzhiguang",startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+            manifestPlaceholders = [wxpkg: "com.edusoho.yunzhiguang", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+            versionCode 45
+            versionName '3.9.2'
         }
     }
 
     sourceSets {
-
         yunzhiguang {
             java.srcDirs = ['src/yunzhiguang/java']
             res.srcDirs = ['src/yunzhiguang/res']
-            assets.srcDirs = ['src/yunzhiguang/assets'];
+            assets.srcDirs = ['src/yunzhiguang/assets']
         }
     }
 
@@ -59,8 +57,13 @@ android {
             signingConfig signingConfigs.debugConfig
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
+    compile project(':edusoho_v3')
     compile project(':homework')
 }
