@@ -12,10 +12,9 @@ public class HttpUtils {
     private static final String TOKEN_KEY = "X-Auth-Token";
     private static HttpUtils mInstance;
     private static String mBaseUrl;
-    private static Map<String, String> mHeaderMaps = new TreeMap<>();
+    private Map<String, String> mHeaderMaps = new TreeMap<>();
 
     public static HttpUtils getInstance() {
-        mHeaderMaps.clear();
         mBaseUrl = "";
         if (mInstance == null) {
             synchronized (HttpUtils.class) {
@@ -28,7 +27,6 @@ public class HttpUtils {
     }
 
     public static HttpUtils getInstance(String baseUrl) {
-        mHeaderMaps.clear();
         mBaseUrl = baseUrl;
         if (mInstance == null) {
             synchronized (HttpUtils.class) {

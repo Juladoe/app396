@@ -254,7 +254,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 mView.goToLoginActivity();
                 return;
             }
-            if (mCourseProjects != null && mVipInfos != null) {
+            if (mCourseProjects != null) {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
                     if (!BUY_ABLE.equals(courseProject.buyable)) {
@@ -276,7 +276,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     }
                     mView.goToConfirmOrderActivity(courseProject);
                 }
-                mView.showPlanDialog(mCourseProjects, mVipInfos, mCourseSet);
+                if (mVipInfos != null) {
+                    mView.showPlanDialog(mCourseProjects, mVipInfos, mCourseSet);
+                }
             }
         }
     }

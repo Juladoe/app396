@@ -91,7 +91,6 @@ public class ConfirmOrderActivity extends BaseFinishActivity
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
-
         ConfirmOrderContract.Presenter mPresenter = new ConfirmOrderPresenter(this, mCourseSetId, mCourseId);
         mPresenter.subscribe();
     }

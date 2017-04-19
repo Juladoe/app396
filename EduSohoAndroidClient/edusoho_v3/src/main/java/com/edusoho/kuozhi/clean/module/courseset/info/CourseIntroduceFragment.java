@@ -216,7 +216,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,
                 String.format("main#/studentlist/%s/%s",
-                        "courses", mCourseSetId)
+                        "courseset", mCourseSetId)
         );
         CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
                 , getContext(), new PluginRunCallback() {

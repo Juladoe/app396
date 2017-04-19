@@ -39,7 +39,6 @@ public class CourseSet implements Serializable {
     public String createdTime;
     public String updatedTime;
     public List<?> tags;
-    public List<?> goals;
     public String[] audiences;
     public List<CreatorBean> teachers;
 
