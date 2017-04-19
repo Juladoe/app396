@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -70,12 +71,13 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         }
                         //这么处理不是很好，会有一个跳转
                         //如果过期底部加入按钮变色
-                        if (isCourseDoNotStarted(courseProject.expiryStartDate)) {
-                            mView.setJoinButton(false);
-                            mView.showFragments(initCourseModules(false), courseProject);
-                        } else {
-                            initCourseMemberInfo(courseProject);
-                        }
+//                        if (isCourseDoNotStarted(courseProject.expiryStartDate)) {
+//                            mView.setJoinButton(false);
+//                            mView.showFragments(initCourseModules(false), courseProject);
+//                        } else {
+//                            initCourseMemberInfo(courseProject);
+//                        }
+                        initCourseMemberInfo(courseProject);
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -174,24 +176,44 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         @Override
                         public void onNext(Member member) {
                             if (member.user != null) {
-                                if (isCourseDoNotStarted(courseProject.expiryStartDate) || isDraft(courseProject)) {
-                                    mView.setJoinButton(false);
-                                    return;
+                                if (isCourseExpired(courseProject.expiryEndDate)) {
+                                    //课程本身已过期弹出框
+                                } else if (isCourseMemberExpired(member.deadline)) {
+                                    //退出弹出框
+                                } else if (isCourseDoNotStarted(courseProject.expiryStartDate)) {
+                                    //点击任务，弹出课程还没开始
                                 }
-                                //mView.setJoinButton(!isCourseStarted(courseProject.expiryStartDate));
-                                if (isExpired(member.deadline)) {
-                                    // TODO: 2017/4/19 弹出框提示已经过期，是否退出
-                                } else {
-                                    mView.showBottomLayout(false);
-                                    mView.showCacheButton(getCourseLearnMode(courseProject) == CourseProject.CourseLearnMode.FREE);
-                                    mView.showShareButton(false);
-                                    mView.showFragments(initCourseModules(true), courseProject);
-                                }
-                            } else {
-                                mView.showFragments(initCourseModules(false), courseProject);
                             }
+                            if (CourseProject.CourseStatus.valueOf(courseProject.status) == CourseProject.CourseStatus.DRAFT ||
+                                    CourseProject.CourseStatus.valueOf(courseProject.status) == CourseProject.CourseStatus.CLOSED) {
 
-                            //是否已经加入
+                            }
+                        }
+                    });
+        } else {
+            mView.showFragments(initCourseModules(false), courseProject);
+        }
+    }
+
+    //
+//                                if (isDraft(courseProject)) {
+//                                    mView.setJoinButton(false);
+//                                    return;
+//                                }
+//                                //mView.setJoinButton(!isCourseStarted(courseProject.expiryStartDate));
+//                                if (isExpired(member.deadline)) {
+//                                    // TODO: 2017/4/19 弹出框提示已经过期，是否退出
+//                                } else {
+//                                    mView.showBottomLayout(false);
+//                                    mView.showCacheButton(getCourseLearnMode(courseProject) == CourseProject.CourseLearnMode.FREE);
+//                                    mView.showShareButton(false);
+//                                    mView.showFragments(initCourseModules(true), courseProject);
+//                                }
+//                            } else {
+//                                mView.showFragments(initCourseModules(false), courseProject);
+//                            }
+
+    //是否已经加入
 //                            boolean isLearning = member.user != null && !isExpired(member.deadline);
 //                            mView.showBottomLayout(!isLearning);
 //                            mView.showCacheButton(isLearning);
@@ -202,27 +224,29 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 //                                mView.initLearnedLayout();
 //                                setCourseLearningProgress(courseProject.id);
 //                            }
-                        }
-                    });
-        } else {
-            mView.showFragments(initCourseModules(false), courseProject);
-        }
+
+    private boolean isCourseExpired(String expiryEndDate) {
+        return TimeUtils.getUTCtoDate(expiryEndDate).compareTo(new Date()) < 1;
     }
 
-    private CourseProject.CourseLearnMode getCourseLearnMode(CourseProject courseProject) {
-        return CourseProject.CourseLearnMode.valueOf(courseProject.learnMode);
+    private CourseProject.CourseLearnMode getCourseLearnMode(String learnMode) {
+        return CourseProject.CourseLearnMode.valueOf(learnMode);
     }
 
-    private boolean isDraft(CourseProject courseProject) {
-        return CourseProject.CourseStatus.valueOf(courseProject.status) == CourseProject.CourseStatus.DRAFT;
+    private boolean isDraft(String courseStatus) {
+        return CourseProject.CourseStatus.valueOf(courseStatus) == CourseProject.CourseStatus.DRAFT;
+    }
+
+    private boolean isClosed(String courseStatus) {
+        return CourseProject.CourseStatus.valueOf(courseStatus) == CourseProject.CourseStatus.CLOSED;
     }
 
     private boolean isCourseDoNotStarted(String expiryStartDate) {
-        return TimeUtils.getUTCtoDate(expiryStartDate).compareTo(new Date()) > 1;
+        return TimeUtils.getUTCtoDate(expiryStartDate).compareTo(new Date()) > 0;
     }
 
-    private boolean isExpired(String utcTime) {
-        return !CommonConstant.EXPIRED_MODE_FOREVER.equals(utcTime) && TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
+    private boolean isCourseMemberExpired(String deadline) {
+        return !CommonConstant.EXPIRED_MODE_FOREVER.equals(deadline) && TimeUtils.getUTCtoDate(deadline).compareTo(new Date()) < 0;
     }
 
     private void setCourseLearningProgress(int courseId) {
