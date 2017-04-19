@@ -113,6 +113,7 @@ public class QrSearchActivity extends CaptureActivity {
             String url302 = "";
             try {
                 HttpURLConnection urlConnection = getConnection(url);
+                urlConnection.addRequestProperty("User-Agent", "Android-kuozhi v3 http request 1.0");
                 urlConnection.connect();
                 if (urlConnection.getResponseCode() == 302) {
                     url302 = urlConnection.getHeaderField("Location");

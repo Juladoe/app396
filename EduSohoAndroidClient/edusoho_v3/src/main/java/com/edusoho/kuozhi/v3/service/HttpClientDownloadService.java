@@ -11,10 +11,8 @@ import android.util.Log;
 import com.edusoho.kuozhi.v3.util.ReportUtil;
 import com.umeng.analytics.MobclickAgent;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import cn.trinea.android.common.util.FileUtils;
 
