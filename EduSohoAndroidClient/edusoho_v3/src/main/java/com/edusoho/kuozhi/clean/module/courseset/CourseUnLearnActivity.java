@@ -383,13 +383,13 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     }
 
     @Override
-    public void goToImChatActivity(final CourseSet.CreatorBean creatorBean) {
+    public void goToImChatActivity(final CourseSet.Creator creator) {
         CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ImChatActivity.FROM_NAME, creatorBean.nickname);
-                startIntent.putExtra(ImChatActivity.FROM_ID, creatorBean.id);
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, creatorBean.smallAvatar);
+                startIntent.putExtra(ImChatActivity.FROM_NAME, creator.nickname);
+                startIntent.putExtra(ImChatActivity.FROM_ID, creator.id);
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, creator.smallAvatar);
             }
         });
     }
