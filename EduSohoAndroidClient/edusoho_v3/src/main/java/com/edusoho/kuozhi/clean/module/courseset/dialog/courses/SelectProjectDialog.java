@@ -250,10 +250,10 @@ public class SelectProjectDialog extends ESBottomDialog implements
 
     private void setOtherView() {
         if (END_DATE_MODE.equals(mCourseProject.expiryMode)) {
-            mValidity.setText(String.format(getContext().getString(R.string.validity), mCourseProject.expiryEndDate.substring(0, 10)));
+            mValidity.setText(String.format(getContext().getString(R.string.validity), mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10)));
         } else if (DATE_MODE.equals(mCourseProject.expiryMode)) {
             mValidity.setText(String.format(getContext().getString(R.string.validity_date),
-                    mCourseProject.expiryStartDate.substring(0, 10), mCourseProject.expiryEndDate.substring(0, 10)));
+                    mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10), mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10)));
         } else if (DAYS_MODE.equals(mCourseProject.expiryMode)) {
             mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseProject.expiryDays));
         } else {

@@ -32,7 +32,9 @@ public interface CourseProjectContract {
 
         void initJoinCourseLayout();
 
-        void initLearnedLayout();
+        void initUnLearnLayout();
+
+        void initLearnLayout();
 
         void setJoinButton(boolean isCourseStarted);
 
@@ -55,5 +57,6 @@ public interface CourseProjectContract {
 
         void showCourseProgressInfo();
 
+        void exitCourse();
     }
 }

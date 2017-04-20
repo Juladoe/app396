@@ -16,5 +16,5 @@ public class CourseLearningProgress implements Serializable {
     public int planStudyTaskCount;
     public int planProgressProgress;
 
-    public List<CourseTask> toLearnTasks;
+    public CourseTask nextTask;
 }
