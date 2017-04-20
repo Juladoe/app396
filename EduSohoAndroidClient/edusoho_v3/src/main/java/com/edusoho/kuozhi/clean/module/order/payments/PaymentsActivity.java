@@ -190,11 +190,11 @@ public class PaymentsActivity extends BaseFinishActivity implements android.view
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 String pw = mInputPw.getText().toString().trim();
                 if (mOrderInfo.hasPayPassword != 1) {
-                    CommonUtil.shortToast(PaymentsActivity.this, "请按照提示先去设置密码");
+                    CommonUtil.shortToast(PaymentsActivity.this, getString(R.string.unset_pw_hint));
                     return true;
                 }
                 if (pw.length() < 5) {
-                    CommonUtil.shortToast(PaymentsActivity.this, "密码长度有误");
+                    CommonUtil.shortToast(PaymentsActivity.this, getString(R.string.pw_long_wrong_hint));
                     return true;
                 }
                 showProcessDialog();
