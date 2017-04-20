@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment;
 import com.edusoho.kuozhi.clean.module.courseset.plan.CourseProjectsFragment;
@@ -288,15 +289,15 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             CourseUtil.notLogin();
             return;
         }
-        List<CourseSet.Creator> list = mCourseSet.teachers;
-        final CourseSet.Creator creator;
+        List<Teacher> list = mCourseSet.teachers;
+        final Teacher teacher;
         if (list.size() > 0) {
-            creator = list.get(0);
+            teacher = list.get(0);
         } else {
             mView.showToast(R.string.lesson_no_teacher);
             return;
         }
-        mView.goToImChatActivity(creator);
+        mView.goToImChatActivity(teacher);
     }
 
     @Override

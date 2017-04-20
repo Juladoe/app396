@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.clean.bean.CourseMemberRoleEnum;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
@@ -99,7 +100,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         mView.showAudiences(audiences);
     }
 
-    private void showTeacher(CourseProject.Teacher teacher) {
+    private void showTeacher(Teacher teacher) {
         mView.showTeacher(teacher);
     }
 

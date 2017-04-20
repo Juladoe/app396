@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.module.course.info;
 
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
@@ -27,7 +28,7 @@ public interface CourseProjectInfoContract {
 
         void showAudiences(String[] audiences);
 
-        void showTeacher(CourseProject.Teacher teacher);
+        void showTeacher(Teacher teacher);
 
         void showMemberNum(int count);
 
