@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.clean.bean;
 
-import com.google.gson.annotations.SerializedName;
+import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
+import com.edusoho.kuozhi.clean.bean.innerbean.Cover;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 
 import java.io.Serializable;
 
@@ -18,6 +20,7 @@ public class CourseProject implements Serializable {
     public String expiryDays;
     public String expiryStartDate;
     public String expiryEndDate;
+    public String status;
     public String summary;
     public int studentNum;
     public String[] audiences;
@@ -32,6 +35,8 @@ public class CourseProject implements Serializable {
     public int publishedTaskNum;
     public Service[] services;
     public Teacher[] teachers;
+    public SimpleCourseSet courseSet;
+    public LearningExpiryDate learningExpiryDate;
 
     public static class Service implements Serializable {
         public String shortName;
@@ -39,11 +44,31 @@ public class CourseProject implements Serializable {
         public String summary;
     }
 
-    public static class Teacher implements Serializable {
+    public static class SimpleCourseSet implements Serializable {
         public int id;
-        public String nickname;
+        public String type;
         public String title;
-        @SerializedName("mediumAvatar")
-        public String avatar;
+        public String subtitle;
+        public Cover cover;
+        public int studentNum;
+        public String discount;
+        public String maxCoursePrice;
+        public String minCoursePrice;
+    }
+
+    public static class LearningExpiryDate implements Serializable {
+        public String expiryMode;
+        public String expiryStartDate;
+        public String expiryEndDate;
+        public String expiryDays;
+        public boolean expired;
+    }
+
+    public static enum CourseLearnMode {
+        FREE, LOCK
+    }
+
+    public static enum CourseStatus {
+        CLOSED, PUBLISHED, DRAFT
     }
 }

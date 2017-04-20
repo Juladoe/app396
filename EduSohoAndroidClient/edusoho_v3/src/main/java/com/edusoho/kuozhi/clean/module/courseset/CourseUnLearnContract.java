@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.module.courseset;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
@@ -42,7 +43,7 @@ interface CourseUnLearnContract {
 
         void goToCourseProjectActivity(int courseProjectId);
 
-        void goToImChatActivity(CourseSet.CreatorBean creatorBean);
+        void goToImChatActivity(Teacher creator);
 
         void goToLoginActivity();
     }

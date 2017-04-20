@@ -1,5 +1,8 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Cover;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,22 +27,9 @@ public class CourseSet implements Serializable {
     public String locked;
     public float maxCoursePrice;
     public float minCoursePrice;
+
     public String createdTime;
     public String updatedTime;
     public String[] audiences;
-    public List<CreatorBean> teachers;
-
-    public static class CreatorBean implements Serializable {
-
-        public String id;
-        public String nickname;
-        public String title;
-        public String smallAvatar;
-    }
-
-    public static class Cover implements Serializable {
-        public String large;
-        public String middle;
-        public String small;
-    }
+    public List<Teacher> teachers;
 }

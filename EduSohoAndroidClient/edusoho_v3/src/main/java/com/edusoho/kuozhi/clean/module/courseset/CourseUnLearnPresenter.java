@@ -288,15 +288,15 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             CourseUtil.notLogin();
             return;
         }
-        List<CourseSet.CreatorBean> list = mCourseSet.teachers;
-        final CourseSet.CreatorBean creatorBean;
+        List<CourseSet.Creator> list = mCourseSet.teachers;
+        final CourseSet.Creator creator;
         if (list.size() > 0) {
-            creatorBean = list.get(0);
+            creator = list.get(0);
         } else {
             mView.showToast(R.string.lesson_no_teacher);
             return;
         }
-        mView.goToImChatActivity(creatorBean);
+        mView.goToImChatActivity(creator);
     }
 
     @Override

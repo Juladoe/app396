@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 
@@ -27,13 +28,13 @@ public class DialogProgress extends DialogFragment {
     private static final String PROGRESS_INFO = "progress_info";
     private static final String MEMBER_INFO = "member_info";
     private CourseLearningProgress mProgress;
-    private Member mMember;
+    private CourseMember mMember;
     private TextView mFinishProgress;
     private TextView mPlanProgress;
     private TextView mPlanDeadline;
     private View mCloseDialog;
 
-    public static DialogProgress newInstance(CourseLearningProgress progress, Member member) {
+    public static DialogProgress newInstance(CourseLearningProgress progress, CourseMember member) {
         Bundle args = new Bundle();
         args.putSerializable(PROGRESS_INFO, progress);
         args.putSerializable(MEMBER_INFO, member);
@@ -69,7 +70,7 @@ public class DialogProgress extends DialogFragment {
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             mProgress = (CourseLearningProgress) bundle.getSerializable(PROGRESS_INFO);
-            mMember = (Member) bundle.getSerializable(MEMBER_INFO);
+            mMember = (CourseMember) bundle.getSerializable(MEMBER_INFO);
         }
         mFinishProgress.setText(String.format(getString(R.string.course_finish_progress), mProgress.taskResultCount, mProgress.taskCount));
         mPlanProgress.setText(String.format(getString(R.string.course_plan_progress), mProgress.planStudyTaskCount, mProgress.taskCount));
