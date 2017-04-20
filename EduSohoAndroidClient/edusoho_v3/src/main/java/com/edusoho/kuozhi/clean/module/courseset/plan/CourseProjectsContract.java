@@ -11,9 +11,10 @@ import java.util.List;
  * Created by DF on 2017/4/1.
  */
 
-public interface CourseProjectsContract {
+interface CourseProjectsContract {
 
     interface View extends BaseView<Presenter> {
+
         void setLoadViewVis(boolean isVis);
 
         void showComPanies(List<CourseProject> list, List<VipInfo> vipInfos);

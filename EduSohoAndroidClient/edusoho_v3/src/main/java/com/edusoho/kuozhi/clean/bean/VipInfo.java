@@ -11,5 +11,4 @@ public class VipInfo implements Serializable {
     public int id;
     public String name;
     public String description;
-    public String maxRate;
 }

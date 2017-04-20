@@ -6,7 +6,6 @@ import com.edusoho.kuozhi.clean.api.OrderApi;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
-import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderContract;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import rx.Subscriber;

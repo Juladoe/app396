@@ -4,6 +4,7 @@ import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.api.CourseSetApi;
 import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.Member;
@@ -11,7 +12,6 @@ import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,7 +123,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 .joinFreeOrVipCourse(courseId, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new Subscriber<CourseMember>() {
                     @Override
                     public void onCompleted() {
 
@@ -135,8 +135,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(JsonObject jsonObject) {
-                        if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                    public void onNext(CourseMember courseMember) {
+                        if (courseMember != null) {
                             mView.initJoinCourseLayout();
                             setCourseLearningProgress(courseId);
                         }

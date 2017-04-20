@@ -13,16 +13,19 @@ import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 /**
  * Created by DF on 2017/4/12.
  */
 
-public class AlipayActivity extends AppCompatActivity implements AlipayContract.View{
+public class AlipayActivity extends AppCompatActivity {
 
     private static final String TARGET_ID = "targetId";
     private static final String URL_DATA = "urlData";
+    private static final String ALIPAY_CALLBACK = "alipayCallback?";
+    private static final String PAYMENT_CALLBACK = "/pay/center/success/show";
 
     private LoadDialog mProcessDialog;
     private WebView mAlipay;
@@ -54,7 +57,7 @@ public class AlipayActivity extends AppCompatActivity implements AlipayContract.
     private void initData() {
         WebSettings ws = mAlipay.getSettings();
         ws.setJavaScriptEnabled(true);
-        mAlipay.setWebViewClient(new WebViewClient(){
+        mAlipay.setWebViewClient(new WebViewClient() {
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 handler.proceed();
@@ -62,6 +65,15 @@ public class AlipayActivity extends AppCompatActivity implements AlipayContract.
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.contains(ALIPAY_CALLBACK)) {
+                    CommonUtil.shortToast(AlipayActivity.this, getString(R.string.join_success));
+                    sendBroad();
+                    return true;
+                }
+                if (url.contains(PAYMENT_CALLBACK)) {
+                    finish();
+                    return true;
+                }
                 view.loadUrl(url);
                 return true;
             }
@@ -86,22 +98,14 @@ public class AlipayActivity extends AppCompatActivity implements AlipayContract.
     }
 
     @Override
-    public void showLoadDialog(boolean isShow) {
-        if (isShow) {
-            showProcessDialog();
-        } else {
-            hideProcesDialog();
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mAlipay != null) {
+            mAlipay.destroy();
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mAlipay.destroy();
-        mAlipay = null;
-    }
-
-    private void sendBroad(){
+    private void sendBroad() {
         Intent intent = new Intent();
         intent.setAction("Finish");
         sendBroadcast(intent);

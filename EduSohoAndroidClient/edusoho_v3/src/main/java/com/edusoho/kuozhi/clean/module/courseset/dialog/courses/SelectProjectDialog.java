@@ -162,7 +162,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
             mRb.setGravity(Gravity.CENTER);
             RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mp.setMargins(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 5));
-            mRb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+            mRb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
             mRb.setTextColor(getContext().getResources().getColorStateList(R.color.teach_type_text_selector));
             mRb.setButtonDrawable(new ColorDrawable(Color.TRANSPARENT));
             mRb.setPadding(AppUtil.dp2px(getContext(), 7), AppUtil.dp2px(getContext(), 4)
@@ -251,10 +251,10 @@ public class SelectProjectDialog extends ESBottomDialog implements
     private void setOtherView() {
         if (END_DATE_MODE.equals(mCourseProject.expiryMode)) {
             mValidity.setText(String.format(getContext().getString(R.string.validity), mCourseProject.expiryEndDate.substring(0, 10)));
-        } else if(DATE_MODE.equals(mCourseProject.expiryMode)){
+        } else if (DATE_MODE.equals(mCourseProject.expiryMode)) {
             mValidity.setText(String.format(getContext().getString(R.string.validity_date),
                     mCourseProject.expiryStartDate.substring(0, 10), mCourseProject.expiryEndDate.substring(0, 10)));
-        } else if (DAYS_MODE.equals(mCourseProject.expiryMode)){
+        } else if (DAYS_MODE.equals(mCourseProject.expiryMode)) {
             mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseProject.expiryDays));
         } else {
             mValidity.setText(R.string.validity_forever);

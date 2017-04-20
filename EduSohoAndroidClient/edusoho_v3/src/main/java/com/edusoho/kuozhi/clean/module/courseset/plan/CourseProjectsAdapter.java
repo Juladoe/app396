@@ -27,7 +27,7 @@ import java.util.List;
  * Created by DF on 2017/3/24.
  */
 
-public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder>{
+public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder> {
 
     private static final String IS_FREE = "1";
 

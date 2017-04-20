@@ -16,10 +16,6 @@ public class OrderInfo implements Serializable {
     public int hasPayPassword;
     public String coinName;
     public float cashRate;
-    public String priceType;
-    public float coinPayAmount;
-    public float maxCoin;
-    public String duration;
     public String fullCoinPayable;
     public String title;
     public List<Coupon> availableCoupons;
@@ -34,7 +30,6 @@ public class OrderInfo implements Serializable {
         public String id;
         public String code;
         public String type;
-        public String status;
         public float rate;
         public String userId;
         public String deadline;

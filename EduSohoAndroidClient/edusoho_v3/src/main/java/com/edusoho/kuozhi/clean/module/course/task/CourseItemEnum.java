@@ -5,7 +5,7 @@ package com.edusoho.kuozhi.clean.module.course.task;
  */
 
 public enum CourseItemEnum {
-    CHAPTER("chapter", 0), UNIT("unit", 1), TASK("task", 2);
+    CHAPTER("chapter", 0), UNIT("unit", 1), TASK("task", 2), LESSON("lesson", 3);
 
     private String mName;
     private int mIndex;

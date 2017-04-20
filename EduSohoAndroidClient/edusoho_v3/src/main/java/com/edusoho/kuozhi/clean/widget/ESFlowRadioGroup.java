@@ -28,7 +28,7 @@ public class ESFlowRadioGroup extends RadioGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int sizeWidth = MeasureSpec.getSize(widthMeasureSpec);
         int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
         int sizeHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -75,7 +75,7 @@ public class ESFlowRadioGroup extends RadioGroup {
         mAllViews.add(lineViews);
         width += getPaddingLeft() + getPaddingRight();
         height += getPaddingTop() + getPaddingBottom();
-        setMeasuredDimension(modeWidth == MeasureSpec.AT_MOST ? width : sizeWidth, modeHeight == MeasureSpec.AT_MOST ? height : sizeHeight);
+        setMeasuredDimension(width, height);
     }
 
     @Override
