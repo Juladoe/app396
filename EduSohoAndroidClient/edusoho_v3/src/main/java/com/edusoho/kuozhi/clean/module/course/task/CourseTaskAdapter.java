@@ -34,7 +34,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else if (CourseItemEnum.UNIT.toString().equals(mTaskItems.get(position).type)) {
             return CourseItemEnum.UNIT.getIndex();
         } else {
-            return CourseItemEnum.LESSON.getIndex();
+            return CourseItemEnum.TASK.getIndex();
         }
     }
 

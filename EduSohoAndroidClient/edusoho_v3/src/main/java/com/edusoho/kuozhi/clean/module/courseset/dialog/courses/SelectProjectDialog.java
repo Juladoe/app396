@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
-import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -163,7 +162,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
             mRb.setGravity(Gravity.CENTER);
             RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mp.setMargins(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 5));
-            mRb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+            mRb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
             mRb.setTextColor(getContext().getResources().getColorStateList(R.color.teach_type_text_selector));
             mRb.setButtonDrawable(new ColorDrawable(Color.TRANSPARENT));
             mRb.setPadding(AppUtil.dp2px(getContext(), 7), AppUtil.dp2px(getContext(), 4)
@@ -184,13 +183,15 @@ public class SelectProjectDialog extends ESBottomDialog implements
     }
 
     private int getMostStudentNumPlan() {
-        int index = 0;
+        int num = 0;
+        int maxIndex = 0;
         for (int i = 0; i < mCourseProjects.size(); i++) {
-            if (i > 0 && mCourseProjects.get(i - 1).studentNum < mCourseProjects.get(i).studentNum) {
-                index = i;
+            if (mCourseProjects.get(i).studentNum > num) {
+                num = mCourseProjects.get(i).studentNum;
+                maxIndex = i;
             }
         }
-        return index;
+        return maxIndex;
     }
 
     private RadioGroup.OnCheckedChangeListener getOnCheckedChangeListener() {
@@ -248,14 +249,12 @@ public class SelectProjectDialog extends ESBottomDialog implements
     }
 
     private void setOtherView() {
-        long currentTime = System.currentTimeMillis();
-        if (END_DATE_MODE.equals(mCourseProject.expiryMode) || DATE_MODE.equals(mCourseProject.expiryMode)) {
-            if (TimeUtils.getMillisecond(mCourseProject.expiryEndDate) <= currentTime) {
-                mValidity.setText(R.string.validity_past);
-            } else {
-                mValidity.setText(String.format(getContext().getString(R.string.validity), mCourseProject.expiryEndDate.substring(0, 9)));
-            }
-        } else if (DAYS_MODE.equals(mCourseProject.expiryMode)){
+        if (END_DATE_MODE.equals(mCourseProject.expiryMode)) {
+            mValidity.setText(String.format(getContext().getString(R.string.validity), mCourseProject.expiryEndDate.substring(0, 10)));
+        } else if (DATE_MODE.equals(mCourseProject.expiryMode)) {
+            mValidity.setText(String.format(getContext().getString(R.string.validity_date),
+                    mCourseProject.expiryStartDate.substring(0, 10), mCourseProject.expiryEndDate.substring(0, 10)));
+        } else if (DAYS_MODE.equals(mCourseProject.expiryMode)) {
             mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseProject.expiryDays));
         } else {
             mValidity.setText(R.string.validity_forever);

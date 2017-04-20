@@ -462,10 +462,10 @@
     <string name="course_info">课程简介</string>
     <string name="free_mode">学习方式: 自由式学习</string>
     <string name="locked_mode">学习方式: 解锁式学习</string>
-    <string name="validity">有效期:&#160;%s</string>
+    <string name="validity">有效期:&#160;截至%s</string>
     <string name="validity_day">有效期: %1$s天</string>
-    <string name="validity_forever">有效期:&#160;永久</string>
-    <string name="validity_past">有效期:&#160;已过期</string>
+    <string name="validity_forever">有效期:&#160;永久有效</string>
+    <string name="validity_date">有效期:&#160;%1$s～%2$s</string>
     <string name="input_pay_password">输入支付密码</string>
     <string name="setting_password_hint">设置/重置密码: \n网页版—个人设置—安全设置—支付密码</string>
 
@@ -520,5 +520,7 @@
     <string name="selector_payments">选择支付方式</string>
     <string name="course_expired_or_closed">课程还未发布，不允许加入和购买</string>
     <string name="course_project_expire_hint">该教学计划已经超过购买截止日期，不允许购买</string>
+    <string name="unset_pw_hint">请按提示设置密码</string>
+    <string name="pw_long_wrong_hint">密码长度有误</string>
 
 </resources>

@@ -18,13 +18,13 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/1.
  */
 
-public class CourseIntroducePresenter implements CourseIntroduceContract.Presenter {
+class CourseIntroducePresenter implements CourseIntroduceContract.Presenter {
 
-    private static final int SHOW_MEMBER_COUNT=5;
+    private static final int SHOW_MEMBER_COUNT = 5;
     private int mCourseSetId;
     private CourseIntroduceContract.View mView;
 
-    public CourseIntroducePresenter(int mCourseSetId, CourseIntroduceContract.View mView) {
+    CourseIntroducePresenter(int mCourseSetId, CourseIntroduceContract.View mView) {
         this.mView = mView;
         this.mCourseSetId = mCourseSetId;
     }

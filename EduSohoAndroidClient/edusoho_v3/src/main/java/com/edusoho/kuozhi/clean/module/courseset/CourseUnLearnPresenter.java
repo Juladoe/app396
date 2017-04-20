@@ -40,7 +40,6 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     private static final String IS_FAVORITE = "isFavorite";
     private static final String BUY_ABLE = "1";
     private static final String IS_FREE = "1";
-    private static final String IS_JOIN_SUCCESS = "success";
     private static final String FREE = "free";
     private static final String VIP = "vip";
     private static final String SUCCESS = "success";
@@ -254,7 +253,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 mView.goToLoginActivity();
                 return;
             }
-            if (mCourseProjects != null && mVipInfos != null) {
+            if (mCourseProjects != null) {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
                     if (!BUY_ABLE.equals(courseProject.buyable)) {
@@ -276,7 +275,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     }
                     mView.goToConfirmOrderActivity(courseProject);
                 }
-                mView.showPlanDialog(mCourseProjects, mVipInfos, mCourseSet);
+                if (mVipInfos != null) {
+                    mView.showPlanDialog(mCourseProjects, mVipInfos, mCourseSet);
+                }
             }
         }
     }
@@ -394,7 +395,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 .joinFreeOrVipCourse(mCourseProjects.get(0).id, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new Subscriber<CourseMember>() {
                     @Override
                     public void onCompleted() {
 
@@ -406,8 +407,8 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(JsonObject jsonObject) {
-                        if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                    public void onNext(CourseMember courseMember) {
+                        if (courseMember != null) {
                             mView.goToCourseProjectActivity(mCourseProjects.get(0).id);
                             mView.showToast(R.string.join_success);
                             mView.newFinish();

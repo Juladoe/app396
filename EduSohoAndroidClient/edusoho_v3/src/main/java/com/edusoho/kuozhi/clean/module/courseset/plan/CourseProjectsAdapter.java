@@ -27,8 +27,7 @@ import java.util.List;
  * Created by DF on 2017/3/24.
  */
 
-public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder>
-        implements View.OnClickListener {
+public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder> {
 
     private static final String IS_FREE = "1";
 
@@ -64,7 +63,6 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
     @Override
     public void onBindViewHolder(CourseProjectViewHolder holder, int position) {
         CourseProject courseProject = mList.get(position);
-        holder.mRlItem.setOnClickListener(this);
         holder.mFlayout.removeAllViews();
         holder.mClassType.setText(courseProject.title);
         holder.mTask.setText(String.format(mContext.getString(R.string.course_task_num), courseProject.taskNum));
@@ -134,11 +132,6 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
     @Override
     public int getItemCount() {
         return mList.size();
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     private void addFlowItem(CourseProjectViewHolder holder, CourseProject.Service[] services) {

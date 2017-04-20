@@ -113,7 +113,7 @@ public class PaymentsActivity extends BaseFinishActivity implements android.view
             mAvailableLayout.setVisibility(View.VISIBLE);
             mVirtualCoin.setText(mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin_pay));
             mAvailableName.setText(String.format(getString(R.string.available_balance),
-                mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin)));
+                    mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin)));
             mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
         }
         mDiscount.setText(String.format(getString(R.string.yuan), mOrderPrice));
@@ -189,8 +189,12 @@ public class PaymentsActivity extends BaseFinishActivity implements android.view
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 String pw = mInputPw.getText().toString().trim();
+                if (mOrderInfo.hasPayPassword != 1) {
+                    CommonUtil.shortToast(PaymentsActivity.this, getString(R.string.unset_pw_hint));
+                    return true;
+                }
                 if (pw.length() < 5) {
-                    CommonUtil.shortToast(PaymentsActivity.this, "密码长度有误");
+                    CommonUtil.shortToast(PaymentsActivity.this, getString(R.string.pw_long_wrong_hint));
                     return true;
                 }
                 showProcessDialog();
@@ -232,7 +236,7 @@ public class PaymentsActivity extends BaseFinishActivity implements android.view
     }
 
     @Override
-    public void sendBroad(){
+    public void sendBroad() {
         Intent intent = new Intent();
         intent.setAction("Finish");
         sendBroadcast(intent);

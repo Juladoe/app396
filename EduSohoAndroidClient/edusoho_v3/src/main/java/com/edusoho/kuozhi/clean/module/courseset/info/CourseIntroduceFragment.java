@@ -35,25 +35,24 @@ import java.util.List;
 public class CourseIntroduceFragment extends BaseLazyFragment
         implements View.OnClickListener, CourseIntroduceContract.View {
 
+    private LinearLayout mStudentIconLayout;
+    private ReviewStarView mReviewStar;
+    private TextView mTitleStudentNum;
     private TextView mPriceOld;
     private TextView mPriceNow;
     private TextView mTitle;
-    private ReviewStarView mReviewStar;
-    private TextView mTitleStudentNum;
     private TextView mTitleDesc;
     private TextView mPeopleDesc;
-    private TextView mStudentNum;
     private View mStudentMore;
-    private LinearLayout mStudentIconLayout;
     private View mStudentNone;
     private View mLoadView;
     private View mPeopleLayout;
     private View mInfoLayout;
     private View mDiscount;
 
-    private int mCourseSetId;
     private CourseIntroduceContract.Presenter mPresenter;
     private CourseSet mCourseSet;
+    private int mCourseSetId;
     private int mStudent;
 
     public CourseIntroduceFragment() {
@@ -79,7 +78,6 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         mTitleDesc = (TextView) view.findViewById(R.id.tv_title_desc);
         mInfoLayout = view.findViewById(R.id.rl_info);
         mPeopleDesc = (TextView) view.findViewById(R.id.tv_people_desc);
-        mStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
         mStudentMore = view.findViewById(R.id.tv_student_more);
         mStudentIconLayout = (LinearLayout) view.findViewById(R.id.student_icon_llayout);
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
@@ -129,7 +127,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
             if (discount != 10) {
                 mDiscount.setVisibility(View.VISIBLE);
                 mPriceNow.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
-                mPriceOld.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice / discount * 10 ,
+                mPriceOld.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice / discount * 10,
                         mCourseSet.maxCoursePrice / discount * 10));
                 mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
@@ -174,7 +172,6 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         if (data.size() == 0) {
             mStudentNone.setVisibility(View.VISIBLE);
         } else {
-            mStudentNum.setText(String.format("(%s)", data.size()));
             mStudentNone.setVisibility(View.GONE);
         }
         for (int i = 0; i < 5; i++) {
@@ -216,7 +213,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,
                 String.format("main#/studentlist/%s/%s",
-                        "courses", mCourseSetId)
+                        "courseset", mCourseSetId)
         );
         CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
                 , getContext(), new PluginRunCallback() {

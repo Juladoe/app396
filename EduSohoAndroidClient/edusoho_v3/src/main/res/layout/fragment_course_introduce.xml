@@ -81,7 +81,7 @@
                     android:text="@string/discount"
                     android:visibility="gone"
                     android:layout_toRightOf="@id/tv_price_old"
-                    android:layout_marginLeft="21dp"
+                    android:layout_marginLeft="@dimen/common_20"
                     android:textColor="@color/disabled2_hint_color"
                     android:textSize="@dimen/font_xxs"
                     android:background="@color/secondary_color"
@@ -127,7 +127,7 @@
                     android:layout_height="0.5dp"
                     android:background="@color/disabled_hint_color"
                     android:layout_below="@id/tv_title_desc"
-                    android:layout_marginTop="@dimen/common_25" />
+                    android:layout_marginTop="@dimen/common_15" />
 
             </RelativeLayout>
 
@@ -176,17 +176,6 @@
                     android:text="@string/txt_course_student"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
-
-                <TextView
-                    android:id="@+id/tv_student_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/tv_student"
-                    android:layout_marginLeft="@dimen/common_marginl"
-                    android:layout_marginTop="1dp"
-                    android:layout_toRightOf="@id/tv_student"
-                    android:textColor="@color/primary_font_color"
-                    android:textSize="@dimen/font_s" />
 
                 <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                     android:id="@+id/tv_student_more"

@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 public class CourseProjectsFragment extends BaseLazyFragment
-                                    implements CourseProjectsContract.View{
+        implements CourseProjectsContract.View {
 
     private View mLoad;
     private RecyclerView mRv;

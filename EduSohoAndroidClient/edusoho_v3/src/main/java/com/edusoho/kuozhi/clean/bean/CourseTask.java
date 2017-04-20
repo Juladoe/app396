@@ -48,16 +48,5 @@ public class CourseTask implements Serializable {
         public String endTime;
         public String createdTime;
         public String updatedTime;
-        public Ext ext;
-
-        public static class Ext {
-
-            public String id;
-            public String finishType;
-            public String finishDetail;
-            public String createdTime;
-            public String createdUserId;
-            public String updatedTime;
-        }
     }
 }

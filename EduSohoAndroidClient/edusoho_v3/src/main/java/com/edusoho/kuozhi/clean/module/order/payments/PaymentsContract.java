@@ -9,7 +9,7 @@ import com.edusoho.kuozhi.clean.module.base.BaseView;
 
 interface PaymentsContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         void showLoadDialog(boolean isShow);
 
@@ -19,7 +19,7 @@ interface PaymentsContract {
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         void createOrderAndPay(final String payment, String password, float orderPrice);
 

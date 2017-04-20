@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.view;
+package com.edusoho.kuozhi.clean.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -13,13 +13,13 @@ import java.util.List;
  * Created by DF on 2017/3/25.
  */
 
-public class FlowRadioGroup extends RadioGroup {
+public class ESFlowRadioGroup extends RadioGroup {
 
-    public FlowRadioGroup(Context context) {
+    public ESFlowRadioGroup(Context context) {
         super(context);
     }
 
-    public FlowRadioGroup(Context context, AttributeSet attrs) {
+    public ESFlowRadioGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -28,6 +28,7 @@ public class FlowRadioGroup extends RadioGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int sizeWidth = MeasureSpec.getSize(widthMeasureSpec);
         int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
         int sizeHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -74,7 +75,7 @@ public class FlowRadioGroup extends RadioGroup {
         mAllViews.add(lineViews);
         width += getPaddingLeft() + getPaddingRight();
         height += getPaddingTop() + getPaddingBottom();
-        setMeasuredDimension(modeWidth == MeasureSpec.AT_MOST ? width : sizeWidth, modeHeight == MeasureSpec.AT_MOST ? height : sizeHeight);
+        setMeasuredDimension(width, height);
     }
 
     @Override
