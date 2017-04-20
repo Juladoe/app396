@@ -36,6 +36,9 @@ public interface UserApi {
     Observable<JsonObject> favoriteCourseSet(@Field("courseSetId") int courseSetId);
 
     @DELETE("me/favorite_course_sets/{courseSetId}")
-    Observable<JsonObject> cancelFavoriteCourseSet( @Path("courseSetId") int courseSetId);
+    Observable<JsonObject> cancelFavoriteCourseSet(@Path("courseSetId") int courseSetId);
+
+    @DELETE("me/courses/{courseId}/members")
+    Observable<JsonObject> exitCourse(@Path("courseId") int courseId);
 
 }

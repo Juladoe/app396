@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
-        mCourseProjectId = 56;
+        //mCourseProjectId = 33;
     }
 
     @Override
@@ -126,6 +127,33 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 });
     }
 
+    @Override
+    public void exitCourse() {
+        HttpUtils.
+                getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .exitCourse(mCourseProjectId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+
+                    }
+                });
+    }
+
     private void initLoginCourseMemberStatus(final CourseProject courseProject) {
         HttpUtils.getInstance()
                 .createApi(CourseApi.class)
@@ -146,7 +174,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseMember member) {
                         mMember = member;
-                        if (member.user != null) {
+                        boolean isLearning = member.user != null;
+                        if (isLearning) {
+                            mView.showFragments(initCourseModules(true), courseProject);
+                            mView.initLearnLayout();
+                            setCourseLearningProgress(courseProject.id);
                             if (courseProject.learningExpiryDate.expired) {
                                 mView.showExitDialog(CourseProjectActivity.DialogType.COURSE_EXPIRED);
                             } else if (isCourseMemberExpired(member.deadline)) {
@@ -154,7 +186,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             }
                             // TODO: 2017/4/20 还需要处理vip过期问题
                         } else {
-                            if (isCourseExpired(courseProject.expiryEndDate)) {
+                            if (courseProject.learningExpiryDate.expired) {
+                                mView.showFragments(initCourseModules(false), courseProject);
                                 mView.setJoinButton(false);
                             }
                         }
@@ -164,7 +197,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private void initLogoutCourseMemberStatus(final CourseProject courseProject) {
         mView.showFragments(initCourseModules(false), courseProject);
-        if (isCourseExpired(courseProject.expiryEndDate)) {
+        if (courseProject.learningExpiryDate.expired) {
             mView.setJoinButton(false);
         }
     }
@@ -210,10 +243,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void unsubscribe() {
 
-    }
-
-    private boolean isCourseExpired(String expiryEndDate) {
-        return TimeUtils.getUTCtoDate(expiryEndDate).compareTo(new Date()) < 1;
     }
 
     private boolean isCourseMemberExpired(String deadline) {
