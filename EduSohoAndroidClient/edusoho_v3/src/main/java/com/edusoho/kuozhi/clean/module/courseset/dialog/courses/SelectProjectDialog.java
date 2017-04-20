@@ -270,7 +270,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
             }
         }
         if (EdusohoApp.app.loginUser.vip != null
-                && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId
+                && EdusohoApp.app.loginUser.vip.seq >= mCourseProject.vipLevelId
                 && mCourseProject.vipLevelId != 0 || IS_FREE.equals(mCourseProject.isFree)) {
             mConfirm.setText(R.string.txt_vip_free);
         } else {

@@ -268,7 +268,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     }
                     if (IS_FREE.equals(courseProject.isFree) || EdusohoApp.app.loginUser.vip != null
                             && mCourseProjects.get(0).vipLevelId != 0
-                            && EdusohoApp.app.loginUser.vip.levelId >= mCourseProjects.get(0).vipLevelId) {
+                            && EdusohoApp.app.loginUser.vip.seq >= mCourseProjects.get(0).vipLevelId) {
                         mView.showProcessDialog(true);
                         joinFreeOrVipCourse(IS_FREE.equals(courseProject.isFree) ? FREE : VIP);
                         return;

@@ -26,7 +26,6 @@ public class CourseSet implements Serializable {
     public float minCoursePrice;
     public String createdTime;
     public String updatedTime;
-    public List<?> tags;
     public String[] audiences;
     public List<CreatorBean> teachers;
 

@@ -1,10 +1,5 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
-import android.text.TextUtils;
-
-import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.PushUtil;
-
 import java.io.Serializable;
 
 /**
@@ -15,7 +10,6 @@ public class User implements Serializable {
     public String email;
     public String password;
     public int id;
-    public String avatar;
     public UserRole[] roles;
     public String uri;
     public String title;
@@ -25,6 +19,8 @@ public class User implements Serializable {
     public String createdTime;
     public String about;
     public String role;
+    public Avatar avatar;
+
     /**
      * 关注
      */
@@ -38,15 +34,19 @@ public class User implements Serializable {
 
     public String thirdParty;
 
+    public class Avatar {
+        public String medium;
+    }
+
     public String getMediumAvatar() {
-        int schemIndex = mediumAvatar.lastIndexOf("http://");
+        int schemIndex = avatar.medium.lastIndexOf("http://");
         if (schemIndex != -1) {
-            return mediumAvatar.substring(schemIndex);
+            return avatar.medium.substring(schemIndex);
         }
-        if (mediumAvatar.startsWith("//")) {
-            return "http:" + mediumAvatar;
+        if (avatar.medium.startsWith("//")) {
+            return "http:" + avatar.medium;
         }
-        return mediumAvatar;
+        return avatar.medium;
     }
 
     public String userRole2String() {

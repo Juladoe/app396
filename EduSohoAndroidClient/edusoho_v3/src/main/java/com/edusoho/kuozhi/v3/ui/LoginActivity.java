@@ -234,13 +234,16 @@ public class LoginActivity extends BaseNoTitleActivity {
     }
 
     private void login() {
-        RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
+//        RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
+        RequestUrl requestUrl = mActivity.app.bindNewUrl(Const.LOGIN, false);
+        requestUrl.heads.put("Accept", "application/vnd.edusoho.v2+json");
         Map<String, String> params = requestUrl.getParams();
-        params.put("_username", etUsername.getText().toString().trim());
+        params.put("username", etUsername.getText().toString().trim());
         if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
+            // TODO: 2017/4/20  
             params.put("encrypt_password", XXTEA.encryptToBase64String(etPassword.getText().toString(), app.domain));
         } else {
-            params.put("_password", etPassword.getText().toString());
+            params.put("password", etPassword.getText().toString());
         }
 
         final LoadDialog loadDialog = LoadDialog.create(this);

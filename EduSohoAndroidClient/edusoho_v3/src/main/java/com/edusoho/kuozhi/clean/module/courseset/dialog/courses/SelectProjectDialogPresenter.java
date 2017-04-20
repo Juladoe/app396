@@ -49,7 +49,7 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
         }
         if (IS_FREE.equals(courseProject.isFree) || EdusohoApp.app.loginUser.vip != null
                 && courseProject.vipLevelId != 0
-                && EdusohoApp.app.loginUser.vip.levelId >= courseProject.vipLevelId) {
+                && EdusohoApp.app.loginUser.vip.seq >= courseProject.vipLevelId) {
             mView.showProcessDialog(true);
             joinFreeOrVipCourse(courseProject.id, IS_FREE.equals(courseProject.isFree) ? FREE : VIP);
             return;
