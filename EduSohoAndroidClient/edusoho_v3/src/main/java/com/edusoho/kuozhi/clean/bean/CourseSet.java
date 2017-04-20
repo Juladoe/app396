@@ -35,25 +35,19 @@ public class CourseSet implements Serializable {
     public String locked;
     public float maxCoursePrice;
     public float minCoursePrice;
-    public CreatorBean creator;
+    public Creator creator;
     public String createdTime;
     public String updatedTime;
     public List<?> tags;
     public List<?> goals;
     public String[] audiences;
-    public List<CreatorBean> teachers;
+    public List<Creator> teachers;
 
-    public static class CreatorBean implements Serializable {
+    public static class Creator implements Serializable {
 
         public String id;
         public String nickname;
         public String title;
         public String smallAvatar;
-    }
-
-    public static class Cover implements Serializable {
-        public String large;
-        public String middle;
-        public String small;
     }
 }

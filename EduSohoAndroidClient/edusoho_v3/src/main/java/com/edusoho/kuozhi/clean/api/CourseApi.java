@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseItem;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Member;
@@ -38,7 +39,7 @@ public interface CourseApi {
                                                         @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("courses/{courseId}/members/{userId}")
-    Observable<Member> getCourseMember(@Path("courseId") int courseId, @Path("userId") int userId);
+    Observable<CourseMember> getCourseMember(@Path("courseId") int courseId, @Path("userId") int userId);
 
     @GET("courses/{courseId}/reviews")
     Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") int courseId,

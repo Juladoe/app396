@@ -33,6 +33,7 @@ public class CourseProject implements Serializable {
     public int publishedTaskNum;
     public Service[] services;
     public Teacher[] teachers;
+    public SimpleCourseSet courseSet;
 
     public static class Service implements Serializable {
         public String shortName;
@@ -46,6 +47,19 @@ public class CourseProject implements Serializable {
         public String title;
         @SerializedName("mediumAvatar")
         public String avatar;
+    }
+
+    public static class SimpleCourseSet implements Serializable {
+
+        public int id;
+        public String type;
+        public String title;
+        public String subtitle;
+        public Cover cover;
+        public int studentNum;
+        public String discount;
+        public String maxCoursePrice;
+        public String minCoursePrice;
     }
 
     public static enum CourseLearnMode {

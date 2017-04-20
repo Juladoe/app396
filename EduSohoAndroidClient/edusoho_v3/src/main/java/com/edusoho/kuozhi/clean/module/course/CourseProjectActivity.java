@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,12 +14,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.module.course.progress.DialogProgress;
@@ -59,6 +64,8 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private ESIconView mShare;
     private ESIconView mCache;
     private ESIconView mProgressInfo;
+    private AlertDialog mCourseExpiredDialog;
+    private AlertDialog mCourseMemberExpiredDialog;
 
     public static void launch(Context context, int courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
@@ -125,6 +132,8 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
+        mCourseExpiredDialog = initCourseExpiredAlertDialog();
+        mCourseMemberExpiredDialog = initCourseMemberExpiredAlertDialog();
         mPresenter = new CourseProjectPresenter(mCourseProjectId, this);
         mPresenter.subscribe();
     }
@@ -207,13 +216,68 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void launchDialogProgress(CourseLearningProgress progress, Member member) {
+    public void launchDialogProgress(CourseLearningProgress progress, CourseMember member) {
         DialogProgress.newInstance(progress, member).show(getSupportFragmentManager(), "DialogProgress");
     }
 
     @Override
     public void launchConfirmOrderActivity(int courseSetId, int courseId) {
         ConfirmOrderActivity.launch(this, courseSetId, courseId);
+    }
+
+    @Override
+    public void showExitDialog(DialogType type) {
+        switch (type) {
+            case COURSE_EXPIRED:
+                mCourseExpiredDialog.show();
+                break;
+            case COURSE_MEMBER_EXPIRED:
+                mCourseMemberExpiredDialog.show();
+                break;
+        }
+    }
+
+    @Override
+    public void toast(String resId) {
+
+    }
+
+    private AlertDialog initCourseExpiredAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false)
+                .setMessage("您购买的课程已到期，无法学习任务、提问")
+                .setPositiveButton("退出课程", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("CourseExpired", "setPositiveButton: ");
+                    }
+                })
+                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("CourseExpired", "setNegativeButton: ");
+                    }
+                });
+        return builder.create();
+    }
+
+    private AlertDialog initCourseMemberExpiredAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("您购买的课程已到期，无法学习任务、提问")
+                .setCancelable(false)
+                .setPositiveButton("退出课程", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        return builder.create();
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
@@ -269,5 +333,9 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         public CharSequence getPageTitle(int position) {
             return mCourseProjectModules.get(position).getModuleTitle();
         }
+    }
+
+    public enum DialogType {
+        COURSE_EXPIRED, COURSE_MEMBER_EXPIRED
     }
 }

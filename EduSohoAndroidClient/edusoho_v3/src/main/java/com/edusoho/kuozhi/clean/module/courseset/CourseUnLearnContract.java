@@ -42,7 +42,7 @@ interface CourseUnLearnContract {
 
         void goToCourseProjectActivity(int courseProjectId);
 
-        void goToImChatActivity(CourseSet.CreatorBean creatorBean);
+        void goToImChatActivity(CourseSet.Creator creatorBean);
 
         void goToLoginActivity();
     }
