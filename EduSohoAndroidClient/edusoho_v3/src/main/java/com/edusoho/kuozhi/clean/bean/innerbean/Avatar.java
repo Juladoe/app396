@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.bean.innerbean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +10,7 @@ import java.io.Serializable;
 
 public class Avatar implements Serializable {
     public String small;
-    public String medium;
+    @SerializedName("medium")
+    public String middle;
     public String large;
 }

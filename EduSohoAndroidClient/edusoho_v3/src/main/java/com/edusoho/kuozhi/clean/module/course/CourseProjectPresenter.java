@@ -39,7 +39,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
-        //mCourseProjectId = 33;
+        mCourseProjectId = 33;
     }
 
     @Override
