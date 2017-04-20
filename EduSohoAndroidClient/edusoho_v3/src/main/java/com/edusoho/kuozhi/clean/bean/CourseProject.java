@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.clean.bean;
 
-import com.google.gson.annotations.SerializedName;
+import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
+import com.edusoho.kuozhi.clean.bean.innerbean.Cover;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 
 import java.io.Serializable;
 
@@ -34,6 +36,7 @@ public class CourseProject implements Serializable {
     public Service[] services;
     public Teacher[] teachers;
     public SimpleCourseSet courseSet;
+    public LearningExpiryDate learningExpiryDate;
 
     public static class Service implements Serializable {
         public String shortName;
@@ -41,16 +44,7 @@ public class CourseProject implements Serializable {
         public String summary;
     }
 
-    public static class Teacher implements Serializable {
-        public int id;
-        public String nickname;
-        public String title;
-        @SerializedName("mediumAvatar")
-        public String avatar;
-    }
-
     public static class SimpleCourseSet implements Serializable {
-
         public int id;
         public String type;
         public String title;
@@ -60,6 +54,14 @@ public class CourseProject implements Serializable {
         public String discount;
         public String maxCoursePrice;
         public String minCoursePrice;
+    }
+
+    public static class LearningExpiryDate implements Serializable {
+        public String expiryMode;
+        public String expiryStartDate;
+        public String expiryEndDate;
+        public String expiryDays;
+        public boolean expired;
     }
 
     public static enum CourseLearnMode {

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.bean;
+package com.edusoho.kuozhi.clean.bean.innerbean;
 
 import java.io.Serializable;
 

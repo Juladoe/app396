@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
@@ -16,7 +17,6 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 
@@ -30,7 +30,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private static final float FREE_PRICE = 0f;
     private CourseProjectContract.View mView;
     private int mCourseProjectId;
-    private CourseProject.Teacher mTeacher;
+    private Teacher mTeacher;
     private CourseLearningProgress mProgress;
     private CourseMember mMember;
     private CourseProject mCourseProject;
@@ -38,7 +38,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
-        mCourseProjectId = 33;
+        mCourseProjectId = 56;
     }
 
     @Override
@@ -54,9 +54,19 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 .getCourseProject(mCourseProjectId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<CourseProject>() {
+                .subscribe(new Subscriber<CourseProject>() {
                     @Override
-                    public void call(CourseProject courseProject) {
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseProject courseProject) {
                         mCourseProject = courseProject;
                         mView.showCover(mCourseProject.courseSet.cover.middle);
                         if (courseProject.teachers.length > 0) {
@@ -137,10 +147,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseMember member) {
                         mMember = member;
                         if (member.user != null) {
-                            if (isCourseExpired(courseProject.expiryEndDate)) {
-                                //课程本身已过期，弹出退出框
+                            if (courseProject.learningExpiryDate.expired) {
+                                mView.showExitDialog(CourseProjectActivity.DialogType.COURSE_EXPIRED);
                             } else if (isCourseMemberExpired(member.deadline)) {
-                                //有效期过期，弹出退出框
+                                mView.showExitDialog(CourseProjectActivity.DialogType.COURSE_MEMBER_EXPIRED);
                             }
                             // TODO: 2017/4/20 还需要处理vip过期问题
                         } else {
@@ -153,6 +163,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private void initLogoutCourseMemberStatus(final CourseProject courseProject) {
+        mView.showFragments(initCourseModules(false), courseProject);
         if (isCourseExpired(courseProject.expiryEndDate)) {
             mView.setJoinButton(false);
         }
@@ -203,10 +214,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private boolean isCourseExpired(String expiryEndDate) {
         return TimeUtils.getUTCtoDate(expiryEndDate).compareTo(new Date()) < 1;
-    }
-
-    private boolean isCourseDoNotStarted(String expiryStartDate) {
-        return TimeUtils.getUTCtoDate(expiryStartDate).compareTo(new Date()) > 0;
     }
 
     private boolean isCourseMemberExpired(String deadline) {

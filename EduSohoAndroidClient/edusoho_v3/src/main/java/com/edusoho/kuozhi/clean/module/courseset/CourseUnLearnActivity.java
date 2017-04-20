@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.dialog.courses.SelectProjectDialog;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
@@ -383,13 +384,13 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     }
 
     @Override
-    public void goToImChatActivity(final CourseSet.Creator creator) {
+    public void goToImChatActivity(final Teacher teacher) {
         CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ImChatActivity.FROM_NAME, creator.nickname);
-                startIntent.putExtra(ImChatActivity.FROM_ID, creator.id);
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, creator.smallAvatar);
+                startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
+                startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar.medium);
             }
         });
     }

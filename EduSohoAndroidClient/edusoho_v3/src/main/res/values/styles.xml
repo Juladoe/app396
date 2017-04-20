@@ -357,4 +357,8 @@
         <item name="colorControlActivated">@color/secondary2_color</item>
         <item name="colorControlNormal">@color/disabled_hint_color</item>
     </style>
+
+    <style name="DialogTheme" parent="AppThemeNoActionBar">
+        <item name="android:textColorPrimary">@color/primary_color</item>
+    </style>
 </resources>

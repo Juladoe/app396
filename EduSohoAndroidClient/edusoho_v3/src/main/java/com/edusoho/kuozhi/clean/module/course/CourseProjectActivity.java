@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.Member;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.course.progress.DialogProgress;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
@@ -157,13 +158,13 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void launchImChatWithTeacher(final CourseProject.Teacher teacher) {
+    public void launchImChatWithTeacher(final Teacher teacher) {
         CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", getApplicationContext(), new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
                 startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar.medium);
             }
         });
     }
@@ -203,7 +204,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
             mLearnTextView.setBackgroundResource(R.color.primary_color);
             mLearnTextView.setTextColor(getResources().getColor(R.color.white));
         } else {
-            mLearnTextView.setText(R.string.course_expired_or_closed);
+            mLearnTextView.setText(R.string.course_unpublished);
             mLearnTextView.setBackgroundResource(R.color.white);
             mLearnTextView.setTextColor(getResources().getColor(R.color.secondary_font_color));
         }
@@ -243,9 +244,8 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     private AlertDialog initCourseExpiredAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false)
-                .setMessage("您购买的课程已到期，无法学习任务、提问")
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
+        builder.setMessage("您购买的课程已到期，无法学习任务、提问")
                 .setPositiveButton("退出课程", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

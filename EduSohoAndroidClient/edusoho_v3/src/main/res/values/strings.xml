@@ -518,7 +518,7 @@
     <string name="course_plan_progress">计划完成任务：%1$d/%2$d</string>
     <string name="course_progress_deadline">课程有效期至：%1$s</string>
     <string name="selector_payments">选择支付方式</string>
-    <string name="course_expired_or_closed">课程还未发布，不允许加入和购买</string>
+    <string name="course_unpublished">超过学习截止日期，不允许加入和购买</string>
     <string name="course_project_expire_hint">该教学计划已经超过购买截止日期，不允许购买</string>
     <string name="unset_pw_hint">请按提示设置密码</string>
     <string name="pw_long_wrong_hint">密码长度有误</string>

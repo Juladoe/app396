@@ -3,7 +3,7 @@ package com.edusoho.kuozhi.clean.module.course;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.Member;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
@@ -24,7 +24,7 @@ public interface CourseProjectContract {
 
         void showFragments(List<CourseProjectEnum> courseProjectModules, CourseProject courseProject);
 
-        void launchImChatWithTeacher(CourseProject.Teacher teacher);
+        void launchImChatWithTeacher(Teacher teacher);
 
         void showCacheButton(boolean visible);
 
