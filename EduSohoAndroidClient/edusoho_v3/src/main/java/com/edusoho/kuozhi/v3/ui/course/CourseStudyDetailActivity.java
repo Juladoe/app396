@@ -168,6 +168,14 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     protected void add() {
         if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
+                if(((EdusohoApp) getApplication()).loginUser.vip == null){
+                    CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
+                            .getString(R.string.add_error_close));
+                    return;
+                }
+            }
+            if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
+                    && mCourseDetail.getCourse().vipLevelId == 0){
                 CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
                         .getString(R.string.add_error_close));
                 return;
@@ -192,6 +200,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                 });
                 return;
             }
+
             CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")

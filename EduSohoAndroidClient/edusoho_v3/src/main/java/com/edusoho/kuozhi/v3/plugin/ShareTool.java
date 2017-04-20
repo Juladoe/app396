@@ -19,7 +19,6 @@ import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -202,13 +201,13 @@ public class ShareTool {
             return listDatas;
         }
 
-        //校友修改位置
-        ListData data = new ListData(
-                mContext.getResources().getDrawable(R.drawable.share_user),
-                "shareToUser",
-                mContext
-        );
-        listDatas.add(data);
+//        //校友修改位置(隐藏向校友分享)
+//        ListData data = new ListData(
+//                mContext.getResources().getDrawable(R.drawable.share_user),
+//                "shareToUser",
+//                mContext
+//        );
+//        listDatas.add(data);
         return listDatas;
     }
 

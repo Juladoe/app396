@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -206,6 +205,14 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
     protected void add() {
         if (mClassroomId != 0) {
             if (!"1".equals(mClassroomDetail.getClassRoom().buyable)) {
+                if(((EdusohoApp) getApplication()).loginUser.vip == null) {
+                    CommonUtil.shortToast(ClassroomActivity.this, getResources()
+                            .getString(R.string.add_error_close));
+                    return;
+                }
+            }
+            if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
+                    && mClassroomDetail.getClassRoom().vipLevelId == 0){
                 CommonUtil.shortToast(ClassroomActivity.this, getResources()
                         .getString(R.string.add_error_close));
                 return;
@@ -230,6 +237,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                 });
                 return;
             }
+
             ClassroomUtil.addClassroom(new ClassroomUtil.ClassroomParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")

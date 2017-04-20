@@ -31,13 +31,11 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
@@ -639,8 +637,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         } else {
             if (curFragment == 0) {
                 if (isMember) {
-                    mBottomLayout.setVisibility(View.VISIBLE);
-                    mTvInclass.setVisibility(View.VISIBLE);
+                    mBottomLayout.setVisibility(View.GONE);
+                    mTvInclass.setVisibility(View.GONE);
                 } else {
                     mBottomLayout.setVisibility(View.VISIBLE);
                     mTvInclass.setVisibility(View.GONE);

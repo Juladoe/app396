@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
@@ -305,6 +306,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     protected void add() {
         if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
+                if(((EdusohoApp) getApplication()).loginUser.vip == null) {
+                    CommonUtil.shortToast(CourseActivity.this, getResources()
+                            .getString(R.string.add_error_close));
+                    return;
+                }
+            }
+            if(app.loginUser != null && app.loginUser.vip != null
+                    && mCourseDetail.getCourse().vipLevelId == 0){
                 CommonUtil.shortToast(CourseActivity.this, getResources()
                         .getString(R.string.add_error_close));
                 return;
@@ -329,6 +338,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 });
                 return;
             }
+
             CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")
