@@ -209,6 +209,13 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
         if ("FileDataSourceException".equals(type)
                 || "VideoFileNotFound".equals(type)) {
             pause();
+            //delete file
+            if ("VideoFileNotFound".equals(type) && !TextUtils.isEmpty(mesasge)) {
+                File delFile = new File(mesasge);
+                if (delFile.exists()) {
+                    delFile.delete();
+                }
+            }
             mErrorDialog = new AlertDialog.Builder(getActivity())
                     .setTitle("播放错误")
                     .setMessage("视频文件损坏,正在重新下载,请进入我的缓存里查看下载进度")

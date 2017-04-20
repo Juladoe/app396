@@ -45,11 +45,11 @@ public class HttpClientDownloadService {
         return file.length() > 0;
     }
 
-    public void download(File file, String resourceUrl) {
+    public void download(File targetFile, File file, String resourceUrl) {
         Log.i(TAG, "start download resourceUrl:" + resourceUrl);
-        if (checkTargetFileIsWrited(file)) {
+        if (checkTargetFileIsWrited(targetFile)) {
             sendDownloadCompleteBroadcastReceiver(resourceUrl, DownloadManager.STATUS_SUCCESSFUL);
-            Log.i(TAG, String.format("download file:%s is exists", file));
+            Log.i(TAG, String.format("download file:%s is exists", targetFile));
             return;
         }
 
@@ -99,7 +99,7 @@ public class HttpClientDownloadService {
     }
 
     public InputStream proxyRequest(String proxyHost, String requestUrl, int timeout) throws Exception {
-        URL url = new URL(PROXY_HOST + requestUrl);
+        URL url = new URL(proxyHost + requestUrl);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         initRequestHeader(urlConnection, timeout);
         urlConnection.setDoInput(true);

@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.util.helper;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;

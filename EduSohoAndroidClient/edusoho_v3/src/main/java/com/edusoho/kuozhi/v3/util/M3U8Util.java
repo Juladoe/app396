@@ -336,9 +336,11 @@ public class M3U8Util {
             }
             M3U8File m3U8File = getM3U8FileFromModel(localM3U8DbModel);
             addM3U8SourceToQueue(m3U8File);
-            for (int i = 0; i < 5; i++) {
-                prepareDownload();
+            if (mDownloadQueue.isEmpty()) {
+                completeTask(localM3U8DbModel);
+                return;
             }
+            prepareDownload();
             LessonItem lessonItem = mSqliteUtil.queryForObj(
                     new TypeToken<LessonItem>() {
                     },
@@ -775,6 +777,7 @@ public class M3U8Util {
         try {
             String playListStr = createLocalM3U8File(m3U8DbModel);
             Log.d(TAG, "finish");
+            cv.put("download_num", m3U8DbModel.totalNum);
             cv.put("play_list", playListStr);
             updateM3U8ModelState(mContext, cv, mTargetHost, mUserId, mLessonId);
             mDownloadQueue.clear();
@@ -805,7 +808,6 @@ public class M3U8Util {
 
     private void saveDownloadItem(DownloadModel downloadModel) throws FileNotFoundException {
         File targetFile = findDownloadFileByName(DigestUtils.md5(downloadModel.url));
-        Log.d(TAG, "targetFile:" + targetFile);
         if ("key".equals(downloadModel.type)) {
             StringBuilder stringBuilder = FileUtils.readFile(targetFile.getAbsolutePath(), "utf-8");
             if (stringBuilder != null) {
@@ -1209,6 +1211,10 @@ public class M3U8Util {
             throw new FileNotFoundException();
         }
 
+        if (file.exists() && (targetFile == null || !targetFile.exists())) {
+            Log.d(TAG, String.format("file %s is exists", file.getAbsolutePath()));
+            return;
+        }
         boolean isSave = FileUtils.writeFile(
                 file,
                 new DigestInputStream(new FileInputStream(targetFile), mTargetHost)
@@ -1244,7 +1250,8 @@ public class M3U8Util {
             }
             String key = DigestUtils.md5(url);
             insertM3U8SourceDownloadId(0, url, type, mLessonId);
-            new HttpClientDownloadService(mContext).download(findDownloadFileByName(key), url);
+            File targetFile = createLocalM3U8SourceFile(key);
+            new HttpClientDownloadService(mContext).download(targetFile, findDownloadFileByName(key), url);
         }
     }
 }
