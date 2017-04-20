@@ -59,7 +59,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     private PagerSlidingTabStrip mTabLayout;
     private ImageView mIvBackGraound;
     private TextView mTvCollectTxt;
-    private ViewGroup mAddLayout;
     private ViewGroup mConsult;
     private ViewGroup mCollect;
     private TextView mBackView;
@@ -69,18 +68,18 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     private CollapsingToolbarLayout mToolBarLayout;
     private TextView mShareView;
     private LoadDialog mProcessDialog;
+    private ViewPager mViewPager;
+    private ViewGroup mDiscountLayout;
+    private TextView mDiscountName;
+    private TextView mDiscountTime;
+    private SelectProjectDialog mSelectDialog;
 
     private int mCourseSetId;
     private long mEndTime;
     private boolean mIsFavorite = false;
-    private ViewPager mViewPager;
-    private CourseUnLearnContract.Presenter mPresenter;
-    private CourseSet mCourseSet;
-    private ViewGroup mDiscountLayout;
-    private TextView mDiscountName;
-    private TextView mDiscountTime;
     private Timer mTimer;
-    private SelectProjectDialog mSelectDialog;
+    private CourseSet mCourseSet;
+    private CourseUnLearnContract.Presenter mPresenter;
 
     public static void launch(Context context, int courseSetId) {
         Intent intent = new Intent(context, CourseUnLearnActivity.class);
@@ -122,7 +121,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity
         mLoadView = findViewById(R.id.ll_frame_load);
         mBackView = (TextView) findViewById(R.id.iv_back);
         mIvBackGraound = (ImageView) findViewById(R.id.iv_background);
-        mAddLayout = (ViewGroup) findViewById(R.id.bottom_add_layout);
         mConsult = (ViewGroup) findViewById(R.id.consult_layout);
         mCollect = (ViewGroup) findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);

@@ -54,7 +54,7 @@ class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
                 });
     }
 
-    private void firstLoad(CourseReview courseReview){
+    private void firstLoad(CourseReview courseReview) {
         if (courseReview != null) {
             int length = courseReview.data.size();
             if (length < 10) {

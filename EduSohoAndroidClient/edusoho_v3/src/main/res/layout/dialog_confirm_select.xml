@@ -4,14 +4,15 @@
     android:background="@drawable/dialog_white_background"
     android:layout_width="match_parent"
     android:layout_height="400dp">
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/tv_cancel"
@@ -89,7 +90,7 @@
                 android:layout_marginLeft="@dimen/common_15"
                 android:layout_marginRight="@dimen/common_15"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"/>
+                android:layout_height="wrap_content"/>
 
             <View
                 android:background="@color/disabled_hint_color"

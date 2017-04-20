@@ -177,17 +177,6 @@
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
 
-                <TextView
-                    android:id="@+id/tv_student_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/tv_student"
-                    android:layout_marginLeft="@dimen/common_marginl"
-                    android:layout_marginTop="1dp"
-                    android:layout_toRightOf="@id/tv_student"
-                    android:textColor="@color/primary_font_color"
-                    android:textSize="@dimen/font_s" />
-
                 <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                     android:id="@+id/tv_student_more"
                     android:layout_width="@dimen/common_20"

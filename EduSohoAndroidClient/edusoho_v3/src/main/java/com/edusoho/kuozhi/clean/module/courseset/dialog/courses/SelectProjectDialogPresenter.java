@@ -2,11 +2,11 @@ package com.edusoho.kuozhi.clean.module.courseset.dialog.courses;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.google.gson.JsonObject;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -43,7 +43,7 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
         }
         long currentTime = System.currentTimeMillis();
         if (END_DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.expiryEndDate) <= currentTime
-              || DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.expiryEndDate) <= currentTime) {
+                || DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.expiryEndDate) <= currentTime) {
             mView.showToastOrFinish(R.string.course_date_limit, false);
             return;
         }
@@ -51,7 +51,7 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
                 && courseProject.vipLevelId != 0
                 && EdusohoApp.app.loginUser.vip.levelId >= courseProject.vipLevelId) {
             mView.showProcessDialog(true);
-            joinFreeOrVipCourse(courseProject.id , IS_FREE.equals(courseProject.isFree) ? FREE : VIP);
+            joinFreeOrVipCourse(courseProject.id, IS_FREE.equals(courseProject.isFree) ? FREE : VIP);
             return;
         }
         mView.goToConfirmOrderActivity();
@@ -64,7 +64,7 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
                 .joinFreeOrVipCourse(courseId, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JsonObject>() {
+                .subscribe(new Observer<CourseMember>() {
                     @Override
                     public void onCompleted() {
 
@@ -77,10 +77,12 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
                     }
 
                     @Override
-                    public void onNext(JsonObject jsonObject) {
-                        mView.showProcessDialog(false);
-                        mView.showToastOrFinish(R.string.join_success, true);
-                        mView.goToCourseProjectActivity();
+                    public void onNext(CourseMember coureMember) {
+                        if (coureMember != null) {
+                            mView.showProcessDialog(false);
+                            mView.showToastOrFinish(R.string.join_success, true);
+                            mView.goToCourseProjectActivity();
+                        }
                     }
                 });
     }

@@ -40,7 +40,6 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     private static final String IS_FAVORITE = "isFavorite";
     private static final String BUY_ABLE = "1";
     private static final String IS_FREE = "1";
-    private static final String IS_JOIN_SUCCESS = "success";
     private static final String FREE = "free";
     private static final String VIP = "vip";
     private static final String SUCCESS = "success";
@@ -90,7 +89,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
                         @Override
                         public void onNext(DataPageResult<CourseMember> courseSetMembers) {
-                            if (courseSetMembers.paging.total > 0 ) {
+                            if (courseSetMembers.paging.total > 0) {
                                 getMeLastRecord(courseSetMembers);
                             } else {
                                 getCourseSet();
@@ -98,7 +97,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                             }
                         }
                     });
-        }else {
+        } else {
             getCourseSet();
         }
     }
@@ -219,12 +218,12 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     @Override
                     public void onNext(Discount discount) {
                         if (discount != null && STATUS_RUNNING.equals(discount.status)) {
-                                long time = TimeUtils.getMillisecond(discount.endTime) / 1000
-                                                            - System.currentTimeMillis() / 1000;
-                                if (time > 0) {
-                                    mView.showDiscountInfo(discount.name, time);
+                            long time = TimeUtils.getMillisecond(discount.endTime) / 1000
+                                    - System.currentTimeMillis() / 1000;
+                            if (time > 0) {
+                                mView.showDiscountInfo(discount.name, time);
 
-                                }
+                            }
                         }
                     }
                 });
@@ -381,7 +380,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             return courseId;
         }
         for (int i = 0; i < courseMembers.size(); i++) {
-            if (i != 0 && TimeUtils.getMillisecond(courseMembers.get(i-1).lastLearnTime)
+            if (i != 0 && TimeUtils.getMillisecond(courseMembers.get(i - 1).lastLearnTime)
                     < TimeUtils.getMillisecond(courseMembers.get(i).lastLearnTime)) {
                 courseId = courseMembers.get(i).courseId;
             }
@@ -396,7 +395,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 .joinFreeOrVipCourse(mCourseProjects.get(0).id, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new Subscriber<CourseMember>() {
                     @Override
                     public void onCompleted() {
 
@@ -408,8 +407,8 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(JsonObject jsonObject) {
-                        if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                    public void onNext(CourseMember courseMember) {
+                        if (courseMember != null) {
                             mView.goToCourseProjectActivity(mCourseProjects.get(0).id);
                             mView.showToast(R.string.join_success);
                             mView.newFinish();

@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 public class CouponsDialog extends ESBottomDialog
-        implements ESBottomDialog.BottomDialogContentView{
+        implements ESBottomDialog.BottomDialogContentView {
 
     private ListView mCoupons;
     private CouponsAdapter mAdapter;
@@ -66,7 +66,7 @@ public class CouponsDialog extends ESBottomDialog
         };
     }
 
-    public void setData(List<OrderInfo.Coupon> list){
+    public void setData(List<OrderInfo.Coupon> list) {
         mList = list;
     }
 
@@ -90,7 +90,7 @@ public class CouponsDialog extends ESBottomDialog
         return true;
     }
 
-    public interface ModifyView{
+    public interface ModifyView {
 
         void setPriceView(int position);
 

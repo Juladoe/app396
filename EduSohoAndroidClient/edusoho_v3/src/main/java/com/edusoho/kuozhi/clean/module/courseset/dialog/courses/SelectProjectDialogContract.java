@@ -10,7 +10,7 @@ import com.edusoho.kuozhi.clean.module.base.BaseView;
 
 class SelectProjectDialogContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         void showToastOrFinish(int content, boolean isFinish);
 

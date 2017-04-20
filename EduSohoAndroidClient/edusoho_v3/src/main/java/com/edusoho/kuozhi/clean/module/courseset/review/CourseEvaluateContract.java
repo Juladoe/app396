@@ -13,6 +13,7 @@ import java.util.List;
 interface CourseEvaluateContract {
 
     interface View extends BaseView<Presenter> {
+
         void setLoadViewVis(boolean isVis);
 
         void setEmptyViewVis(boolean isVis);
