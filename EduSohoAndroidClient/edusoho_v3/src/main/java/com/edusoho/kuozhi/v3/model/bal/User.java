@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
+
 import java.io.Serializable;
 
 /**
@@ -15,11 +17,10 @@ public class User implements Serializable {
     public String title;
     public String type;
     public String point;
-    public String mediumAvatar;
     public String createdTime;
     public String about;
     public String role;
-    public Avatar avatar;
+    public Avatar userAvatar;
 
     /**
      * 关注
@@ -34,19 +35,15 @@ public class User implements Serializable {
 
     public String thirdParty;
 
-    public class Avatar {
-        public String medium;
-    }
-
     public String getMediumAvatar() {
-        int schemIndex = avatar.medium.lastIndexOf("http://");
+        int schemIndex = userAvatar.medium.lastIndexOf("http://");
         if (schemIndex != -1) {
-            return avatar.medium.substring(schemIndex);
+            return userAvatar.medium.substring(schemIndex);
         }
-        if (avatar.medium.startsWith("//")) {
-            return "http:" + avatar.medium;
+        if (userAvatar.medium.startsWith("//")) {
+            return "http:" + userAvatar.medium;
         }
-        return avatar.medium;
+        return userAvatar.medium;
     }
 
     public String userRole2String() {

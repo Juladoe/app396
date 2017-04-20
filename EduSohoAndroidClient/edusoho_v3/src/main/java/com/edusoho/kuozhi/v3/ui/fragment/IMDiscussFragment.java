@@ -478,7 +478,7 @@ public class IMDiscussFragment extends BaseFragment implements
         Chat chat = new Chat.Builder()
                 .addToId(mToId)
                 .addFromId(mCourseId)
-                .addAvatar(currentUser.mediumAvatar)
+                .addAvatar(currentUser.userAvatar.medium)
                 .addContent(messageBody.getBody())
                 .addNickname(currentUser.nickname)
                 .addType(messageBody.getType())
@@ -655,7 +655,7 @@ public class IMDiscussFragment extends BaseFragment implements
         chat.direct = Chat.Direct.SEND;
         chat.delivery = delivery;
         User currentUser = getAppSettingProvider().getCurrentUser();
-        chat.headImgUrl = currentUser.mediumAvatar;
+        chat.headImgUrl = currentUser.userAvatar.medium;
         mAdapter.addItem(chat);
         mStart = mStart + 1;
     }

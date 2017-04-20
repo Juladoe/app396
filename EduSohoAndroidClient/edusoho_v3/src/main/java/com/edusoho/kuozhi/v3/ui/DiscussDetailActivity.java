@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -214,7 +213,7 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                         public void success(User user) {
                             Role role = new Role();
                             role.setRid(user.id);
-                            role.setAvatar(user.mediumAvatar);
+                            role.setAvatar(user.userAvatar.medium);
                             role.setType(Destination.USER);
                             role.setNickname(user.nickname);
                             callback.onCreateRole(role);

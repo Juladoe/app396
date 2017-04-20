@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
@@ -193,10 +194,10 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showTeacher(CourseProject.Teacher teacher) {
+    public void showTeacher(Teacher teacher) {
         mTeacherName.setText(teacher.nickname);
         mTeacherTitle.setText(teacher.title);
-        ImageLoader.getInstance().displayImage(teacher.avatar, mTeacherAvatar, EdusohoApp.app.mAvatarOptions);
+        ImageLoader.getInstance().displayImage(teacher.avatar.medium, mTeacherAvatar, EdusohoApp.app.mAvatarOptions);
     }
 
     @Override

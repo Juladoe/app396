@@ -280,7 +280,7 @@ public class Const {
 
     public static final String CHECKTOKEN = "User/loginWithToken";
     public static final String COMPLETE = "/api/sms_codes";
-    public static final String LOGIN = "tokens";
+    public static final String LOGIN = "/api/tokens";
     public static final String SMS_SEND = "User/smsSend";
     public static final String SEND_SMS = "/api/sms_codes";
     public static final String ADDCOMMENT = "Course/commitCourse";

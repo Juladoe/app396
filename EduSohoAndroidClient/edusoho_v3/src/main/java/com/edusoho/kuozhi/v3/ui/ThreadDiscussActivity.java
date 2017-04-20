@@ -27,7 +27,6 @@ import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseThreadPostResult;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.PostThreadResult;
@@ -51,12 +50,13 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import org.json.JSONObject;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -639,7 +639,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         model.user = new CourseThreadPostEntity.UserEntity();
         model.user.id = app.loginUser.id;
         model.user.nickname = app.loginUser.nickname;
-        model.user.mediumAvatar = app.loginUser.mediumAvatar;
+        model.user.mediumAvatar = app.loginUser.userAvatar.medium;
         model.content = content;
         model.type = contentType;
         model.delivery = deliveryState;
@@ -655,7 +655,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         model.user = new CourseThreadEntity.UserEntity();
         model.user.id = app.loginUser.id;
         model.user.nickname = app.loginUser.nickname;
-        model.user.mediumAvatar = app.loginUser.mediumAvatar;
+        model.user.mediumAvatar = app.loginUser.userAvatar.medium;
         model.type = PushUtil.ChatMsgType.TEXT;
         model.title = content;
         model.content = content;
