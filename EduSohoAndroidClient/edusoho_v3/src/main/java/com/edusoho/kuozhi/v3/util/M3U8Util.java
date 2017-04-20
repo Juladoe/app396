@@ -776,7 +776,6 @@ public class M3U8Util {
         cv.put("finish", FINISH);
         try {
             String playListStr = createLocalM3U8File(m3U8DbModel);
-            Log.d(TAG, "finish");
             cv.put("download_num", m3U8DbModel.totalNum);
             cv.put("play_list", playListStr);
             updateM3U8ModelState(mContext, cv, mTargetHost, mUserId, mLessonId);
@@ -983,7 +982,6 @@ public class M3U8Util {
         }
 
         DownloadItem downloadItem = mDownloadQueue.poll();
-        Log.d(TAG, "DownloadItem:" + downloadItem.url);
         if (downloadItem == null) {
             return;
         }
