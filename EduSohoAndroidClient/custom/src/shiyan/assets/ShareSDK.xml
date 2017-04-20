@@ -5,17 +5,17 @@
     <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
-    <Wechat Id="1" SortId="1" AppId="wx2cf6b4bfd6e5ac26"
-        AppSecret="d4624c36b6795d1d99dcf0547af5443d" BypassApproval="false" Enable="true" />
+    <Wechat Id="1" SortId="1" AppId="wxfa832d892c5cf7b4"
+        AppSecret="a3625b9846f25c95e8f9405fe988f168" BypassApproval="false" Enable="true" />
 
-    <WechatMoments Id="2" SortId="2" AppId="wx2cf6b4bfd6e5ac26"
-        AppSecret="d4624c36b6795d1d99dcf0547af5443d" BypassApproval="true" Enable="true" />
+    <WechatMoments Id="2" SortId="2" AppId="wxfa832d892c5cf7b4"
+        AppSecret="a3625b9846f25c95e8f9405fe988f168" BypassApproval="true" Enable="true" />
 
-    <WechatFavorite Id="3" SortId="3" AppId="wx2cf6b4bfd6e5ac26"
-        AppSecret="d4624c36b6795d1d99dcf0547af5443d" Enable="true" />
+    <WechatFavorite Id="3" SortId="3" AppId="wxfa832d892c5cf7b4"
+        AppSecret="a3625b9846f25c95e8f9405fe988f168" Enable="true" />
 
-    <!--demo站-->   <SinaWeibo Id="4" SortId="4" AppKey="642124384" AppSecret="a9028caca78e15e5fe4f55bb412069ee"
-        RedirectUrl="http://www.kaoshi60.cn" ShareByAppClient="true" Enable="true" />
+    <!--demo站-->   <SinaWeibo Id="4" SortId="4" AppKey="2974744605" AppSecret="7643f94d02d753aaa43904ce49850cd3"
+        RedirectUrl="http:///www.17mengshare.com" ShareByAppClient="true" Enable="true" />
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
 
