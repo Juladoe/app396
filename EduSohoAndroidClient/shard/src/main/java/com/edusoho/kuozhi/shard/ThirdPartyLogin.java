@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.shard;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +52,9 @@ public class ThirdPartyLogin {
     public void login(PlatformActionListener pl, String name) {
         Platform mPlatform = ShareSDK.getPlatform(mContext, name);
         mPlats.put(name, mPlatform);
+        if(mPlatform.isAuthValid()){
+            mPlatform.removeAccount(true);
+        }
         mPlatform.setPlatformActionListener(pl);
         mPlatform.SSOSetting(false);
         mPlatform.showUser(null);

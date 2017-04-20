@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -84,6 +83,12 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
             tvUserType.setText(app.loginUser.userRole2String());
             ImageLoader.getInstance().displayImage(app.loginUser.getMediumAvatar(), ivAvatar, app.mAvatarOptions);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initUserInfo();
     }
 
     private void initViewPager() {
