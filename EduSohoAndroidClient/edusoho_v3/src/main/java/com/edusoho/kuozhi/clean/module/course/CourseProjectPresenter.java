@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.clean.module.course;
 
-import android.app.AlertDialog;
-
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.api.CourseSetApi;
 import com.edusoho.kuozhi.clean.api.UserApi;
@@ -13,7 +11,6 @@ import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;

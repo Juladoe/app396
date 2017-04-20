@@ -90,7 +90,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
                         @Override
                         public void onNext(DataPageResult<CourseMember> courseSetMembers) {
-                            if (courseSetMembers.paging.total > 0 ) {
+                            if (courseSetMembers.paging.total > 0) {
                                 getMeLastRecord(courseSetMembers);
                             } else {
                                 getCourseSet();
@@ -98,7 +98,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                             }
                         }
                     });
-        }else {
+        } else {
             getCourseSet();
         }
     }
@@ -219,12 +219,12 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     @Override
                     public void onNext(Discount discount) {
                         if (discount != null && STATUS_RUNNING.equals(discount.status)) {
-                                long time = TimeUtils.getMillisecond(discount.endTime) / 1000
-                                                            - System.currentTimeMillis() / 1000;
-                                if (time > 0) {
-                                    mView.showDiscountInfo(discount.name, time);
+                            long time = TimeUtils.getMillisecond(discount.endTime) / 1000
+                                    - System.currentTimeMillis() / 1000;
+                            if (time > 0) {
+                                mView.showDiscountInfo(discount.name, time);
 
-                                }
+                            }
                         }
                     }
                 });
@@ -379,7 +379,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             return courseId;
         }
         for (int i = 0; i < courseMembers.size(); i++) {
-            if (i != 0 && TimeUtils.getMillisecond(courseMembers.get(i-1).lastLearnTime)
+            if (i != 0 && TimeUtils.getMillisecond(courseMembers.get(i - 1).lastLearnTime)
                     < TimeUtils.getMillisecond(courseMembers.get(i).lastLearnTime)) {
                 courseId = courseMembers.get(i).courseId;
             }
