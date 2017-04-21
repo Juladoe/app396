@@ -25,10 +25,13 @@ interface CourseEvaluateContract {
         void addData(List<CourseReview.DataBean> list);
 
         void changeMoreStatus(int status);
+
     }
 
     interface Presenter extends BasePresenter {
+
         void loadMore();
+
     }
 
 }

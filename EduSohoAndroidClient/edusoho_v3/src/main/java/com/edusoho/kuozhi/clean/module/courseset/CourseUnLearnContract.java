@@ -48,6 +48,8 @@ interface CourseUnLearnContract {
 
     interface Presenter extends BasePresenter {
 
+        void isJoinCourseSet();
+
         void joinStudy();
 
         void consultTeacher();

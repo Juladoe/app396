@@ -53,7 +53,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         }
         showMemberNum(mCourseProject.studentNum);
         showMembers(mCourseProject.id, CourseMemberRoleEnum.STUDENT.toString());
-        showRelativeCourseProjects(mCourseProject.courseSetId, mCourseProject.id);
+        showRelativeCourseProjects(mCourseProject.courseSet.id, mCourseProject.id);
     }
 
     private void showPrice() {
@@ -107,7 +107,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     private void showIntroduce() {
         HttpUtils.getInstance()
                 .createApi(CourseSetApi.class)
-                .getCourseSet(mCourseProject.courseSetId)
+                .getCourseSet(mCourseProject.courseSet.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseSet>() {

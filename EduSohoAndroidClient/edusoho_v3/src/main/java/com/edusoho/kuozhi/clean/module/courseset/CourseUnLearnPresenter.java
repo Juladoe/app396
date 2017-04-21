@@ -69,6 +69,36 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         isJoin();
     }
 
+    @Override
+    public void isJoinCourseSet() {
+        if (EdusohoApp.app.loginUser != null) {
+            HttpUtils.getInstance()
+                    .createApi(CourseSetApi.class)
+                    .getCourseSetMember(mCourseSetId, EdusohoApp.app.loginUser.id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            mView.showProcessDialog(false);
+                        }
+
+                        @Override
+                        public void onNext(DataPageResult<CourseMember> courseSetMembers) {
+                            mView.showProcessDialog(false);
+                            if (courseSetMembers.paging.total > 0) {
+                                getMeLastRecord(courseSetMembers);
+                            }
+                        }
+                    });
+        }
+    }
+
     private void isJoin() {
         if (EdusohoApp.app.loginUser != null) {
             HttpUtils.getInstance()

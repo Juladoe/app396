@@ -87,6 +87,13 @@ public class SelectProjectDialog extends ESBottomDialog implements
             }
         });
     }
+    @Override
+    public void showToastOrFinish(int content, boolean isFinish) {
+        showToast(content);
+        if (isFinish) {
+            getActivity().finish();
+        }
+    }
 
     private void initView(View view) {
         RadioGroup mRg = (RadioGroup) view.findViewById(R.id.rg_type);
@@ -249,14 +256,6 @@ public class SelectProjectDialog extends ESBottomDialog implements
     }
 
     @Override
-    public void showToastOrFinish(int content, boolean isFinish) {
-        CommonUtil.shortToast(getContext(), getString(content));
-        if (isFinish) {
-            getActivity().finish();
-        }
-    }
-
-    @Override
     public void showVipView(int vipLevelId) {
         mVip.setVisibility(View.GONE);
         for (int i = 0; i < mVipInfos.size(); i++) {
@@ -291,6 +290,6 @@ public class SelectProjectDialog extends ESBottomDialog implements
 
     @Override
     public void showToast(int resId) {
-
+        CommonUtil.shortToast(getContext(), getString(resId));
     }
 }

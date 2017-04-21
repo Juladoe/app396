@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
 
+import retrofit2.http.HEAD;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

@@ -25,6 +25,8 @@ import com.edusoho.kuozhi.clean.module.order.payments.PaymentsContract.Presenter
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
+import retrofit2.http.HEAD;
+
 /**
  * Created by DF on 2017/4/7.
  */
@@ -142,7 +144,7 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
     private void clickVirtual() {
         mAlipay.setSelected(false);
         mVirtualCoin.setSelected(true);
-        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice * mOrderInfo.cashRate > mOrderInfo.account.cash) {
             mBalance.setText(R.string.insufficient_balance);
         }
         if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
@@ -155,7 +157,7 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
             showProcessDialog();
             mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null, -1);
         } else {
-            if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
+            if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice * mOrderInfo.cashRate > mOrderInfo.account.cash) {
                 showToast(R.string.insufficient_balance);
                 return;
             }
