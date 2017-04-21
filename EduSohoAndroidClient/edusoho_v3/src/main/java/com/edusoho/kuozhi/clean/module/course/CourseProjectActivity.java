@@ -192,8 +192,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mTabLayout.setVisibility(View.GONE);
         mAdapter.destroyItem(CourseProjectEnum.RATE);
         mAdapter.destroyItem(CourseProjectEnum.INFO);
-//        mAdapter.removeFragment(CourseProjectEnum.RATE.getPosition());
-//        mAdapter.removeFragment(CourseProjectEnum.INFO.getPosition());
         showCacheButton(true);
         showShareButton(false);
         showBottomLayout(false);
@@ -206,6 +204,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     public void exitCourseLayout() {
         mProgressLayout.setVisibility(View.GONE);
         mTabLayout.setVisibility(View.VISIBLE);
+        mAdapter.clear();
+        mAdapter.addFragment(CourseProjectEnum.INFO);
+        mAdapter.addFragment(CourseProjectEnum.TASKS);
+        mAdapter.addFragment(CourseProjectEnum.RATE);
         mAdapter.notifyDataSetChanged();
         showCacheButton(false);
         showShareButton(true);
@@ -318,14 +320,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
         private List<CourseProjectEnum> mCourseProjectModules;
         private CourseProject mCourseProject;
-        private List<Fragment> mFragments;
-        private long baseId = 0;
         private FragmentManager mFragmentManager;
 
         public CourseProjectViewPagerAdapter(FragmentManager fm, List<CourseProjectEnum> courseProjects, CourseProject courseProject) {
             super(fm);
             mFragmentManager = fm;
-            mFragments = new ArrayList<>();
             mCourseProjectModules = courseProjects;
             mCourseProject = courseProject;
         }
@@ -336,14 +335,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             Bundle bundle = new Bundle();
             bundle.putSerializable(((CourseProjectFragmentListener) fragment).getBundleKey(), mCourseProject);
             fragment.setArguments(bundle);
-            mFragments.add(fragment);
             return fragment;
-        }
-
-        public void removeFragment(int position) {
-            mCourseProjectModules.remove(position);
-            notifyChangeInPosition(position);
-            notifyDataSetChanged();
         }
 
         public void addFragment(CourseProjectEnum courseEnum) {
@@ -353,16 +345,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         @Override
         public long getItemId(int position) {
             Log.d("pager", "getItemId: " + position);
-            return baseId + position;
+            return position;
         }
-
-        public void notifyChangeInPosition(int position) {
-            baseId += getCount() + position;
-        }
-
-//        public void notifyChangeInitStatus() {
-//            baseId = 0;
-//        }
 
         @Override
         public int getItemPosition(Object object) {
@@ -374,6 +358,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             return mCourseProjectModules.size();
         }
 
+
         @Override
         public CharSequence getPageTitle(int position) {
             return mCourseProjectModules.get(position).getModuleTitle();
@@ -381,16 +366,19 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
         public void clear() {
             mCourseProjectModules.clear();
-            notifyDataSetChanged();
+            mFragmentManager.getFragments().clear();
         }
 
         private void destroyItem(CourseProjectEnum courseEnum) {
             try {
-                this.destroyItem(null, courseEnum.getPosition(), mFragments.get(courseEnum.getPosition()));
-                mCourseProjectModules.remove(courseEnum.getPosition());
-                mFragmentManager.getFragments().remove(courseEnum.getPosition());
-                mFragments.remove(courseEnum.getPosition());
-                notifyDataSetChanged();
+                for (int position = 0; position < mCourseProjectModules.size(); position++) {
+                    if (mCourseProjectModules.get(position).getModuleName().equals(courseEnum.getModuleName())) {
+                        this.destroyItem(null, position, mFragmentManager.getFragments().get(position));
+                        mCourseProjectModules.remove(position);
+                        mFragmentManager.getFragments().remove(position);
+                        notifyDataSetChanged();
+                    }
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

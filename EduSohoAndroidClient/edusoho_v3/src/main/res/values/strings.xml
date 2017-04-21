@@ -527,5 +527,6 @@
     <string name="close">关闭</string>
     <string name="exit_course_success">退出成功</string>
     <string name="exit_course_failure">退出失败</string>
+    <string name="join_course_success">加入成功</string>
 
 </resources>

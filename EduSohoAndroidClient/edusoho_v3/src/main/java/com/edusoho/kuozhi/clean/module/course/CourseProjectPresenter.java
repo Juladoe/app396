@@ -224,6 +224,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseMember courseMember) {
                         if (courseMember != null) {
+                            mView.showToast(R.string.join_course_success);
                             mView.initJoinCourseLayout();
                             setCourseLearningProgress(courseId);
                         }
