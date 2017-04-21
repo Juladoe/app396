@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -197,11 +198,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         showBottomLayout(false);
     }
 
+    /**
+     * 退出课程
+     */
     @Override
     public void exitCourseLayout() {
+        mProgressLayout.setVisibility(View.GONE);
         mTabLayout.setVisibility(View.VISIBLE);
-        mAdapter.addFragment(CourseProjectEnum.INFO.getPosition(), CourseProjectEnum.INFO);
-        mAdapter.addFragment(CourseProjectEnum.RATE.getPosition(), CourseProjectEnum.RATE);
+        mAdapter.notifyDataSetChanged();
         showCacheButton(false);
         showShareButton(true);
         showBottomLayout(true);
@@ -279,7 +283,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d("CourseExpired", "setPositiveButton: ");
+                        mPresenter.exitCourse();
                     }
                 })
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -297,7 +301,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        mPresenter.exitCourse();
                     }
                 })
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
