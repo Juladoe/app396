@@ -19,7 +19,7 @@ import java.util.List;
  * Created by DF on 2017/3/21.
  */
 
-public class CourseEvaluateFragment extends BaseLazyFragment implements CourseEvaluateContract.View {
+public class CourseEvaluateFragment extends BaseLazyFragment<CourseEvaluateContract.Presenter> implements CourseEvaluateContract.View {
 
     private RecyclerView mContent;
     private TextView mEmpty;

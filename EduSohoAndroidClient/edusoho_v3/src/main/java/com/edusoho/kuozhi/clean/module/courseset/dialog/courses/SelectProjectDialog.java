@@ -34,7 +34,7 @@ import java.util.List;
  * Created by DF on 2017/4/12.
  */
 
-public class SelectProjectDialog extends ESBottomDialog implements
+public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContract.Presenter> implements
         ESBottomDialog.BottomDialogContentView, SelectProjectDialogContract.View {
 
     private final String IS_FREE = "1";

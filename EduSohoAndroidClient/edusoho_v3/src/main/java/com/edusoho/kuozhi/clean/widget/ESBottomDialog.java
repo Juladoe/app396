@@ -13,15 +13,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.base.BasePresenter;
+import com.edusoho.kuozhi.clean.module.base.BaseView;
 
 
 /**
  * Created by JesseHuang on 2017/4/11.
  */
 
-public class ESBottomDialog extends DialogFragment {
+public class ESBottomDialog<T extends BasePresenter> extends DialogFragment implements BaseView<T> {
 
     private BottomDialogContentView mContentView;
 
@@ -61,6 +64,11 @@ public class ESBottomDialog extends DialogFragment {
 
     public void setContent(BottomDialogContentView view) {
         mContentView = view;
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getActivity(), resId, Toast.LENGTH_LONG).show();
     }
 
     public interface BottomDialogContentView {

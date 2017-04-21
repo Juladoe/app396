@@ -197,6 +197,16 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         showBottomLayout(false);
     }
 
+    @Override
+    public void exitCourseLayout() {
+        mTabLayout.setVisibility(View.VISIBLE);
+        mAdapter.addFragment(CourseProjectEnum.INFO.getPosition(), CourseProjectEnum.INFO);
+        mAdapter.addFragment(CourseProjectEnum.RATE.getPosition(), CourseProjectEnum.RATE);
+        showCacheButton(false);
+        showShareButton(true);
+        showBottomLayout(true);
+    }
+
     /**
      * 进入页面显示：已加入
      */
@@ -325,6 +335,12 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
         public void removeFragment(int position) {
             mCourseProjectModules.remove(position);
+            notifyChangeInPosition(position);
+            notifyDataSetChanged();
+        }
+
+        public void addFragment(int position, CourseProjectEnum projectEnum) {
+            mCourseProjectModules.add(position, projectEnum);
             notifyChangeInPosition(position);
             notifyDataSetChanged();
         }

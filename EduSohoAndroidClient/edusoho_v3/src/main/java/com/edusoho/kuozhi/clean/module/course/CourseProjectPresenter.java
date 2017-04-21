@@ -40,7 +40,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
-        //mCourseProjectId = 21;
+        mCourseProjectId = 21;
     }
 
     @Override
@@ -115,8 +115,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(JsonObject jsonObject) {
-                        if (jsonObject.get("success").getAsBoolean()) {
+                        if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
                             mView.showToast(R.string.exit_course_success);
+                            mView.exitCourseLayout();
                         } else {
                             mView.showToast(R.string.exit_course_failure);
                         }
