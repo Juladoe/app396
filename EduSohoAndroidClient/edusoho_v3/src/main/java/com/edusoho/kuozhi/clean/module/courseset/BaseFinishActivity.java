@@ -6,13 +6,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
+import com.edusoho.kuozhi.clean.module.base.BaseActivity;
+import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 
 /**
  * Created by DF on 2017/4/12.
  */
 
-public class BaseFinishActivity extends AppCompatActivity {
+public class BaseFinishActivity<T extends BasePresenter> extends BaseActivity<T> {
 
     protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override

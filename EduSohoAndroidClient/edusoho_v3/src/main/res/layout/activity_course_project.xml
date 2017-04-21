@@ -133,6 +133,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
+            android:background="@color/disabled2_hint_color"
             android:orientation="vertical"
             app:fontColor="@color/nav_btn_sel"
             app:iconSizeScale="2.0"

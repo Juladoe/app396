@@ -30,7 +30,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
  * Created by DF on 2017/4/7.
  */
 
-public class PaymentsActivity extends BaseFinishActivity implements android.view.View.OnClickListener, PaymentsContract.View {
+public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presenter> implements View.OnClickListener, PaymentsContract.View {
 
     private static final String ORDER_INFO = "order_info";
     private static final String ORDER_PRICE = "order_price";

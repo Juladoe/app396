@@ -27,7 +27,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Created by DF on 2017/3/25.
  */
 
-public class ConfirmOrderActivity extends BaseFinishActivity
+public class ConfirmOrderActivity extends BaseFinishActivity<ConfirmOrderContract.Presenter>
         implements View.OnClickListener, ConfirmOrderContract.View, CouponsDialog.ModifyView {
 
     private static final String COURSE_SET_ID = "course_set_id";

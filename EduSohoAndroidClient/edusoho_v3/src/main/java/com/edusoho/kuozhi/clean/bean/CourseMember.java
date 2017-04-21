@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -30,7 +31,6 @@ public class CourseMember implements Serializable {
         public String id;
         public String nickname;
         public String title;
-        @SerializedName("mediumAvatar")
-        public String avatar;
+        public Avatar avatar;
     }
 }

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.model.bal;
 
 import android.text.TextUtils;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 

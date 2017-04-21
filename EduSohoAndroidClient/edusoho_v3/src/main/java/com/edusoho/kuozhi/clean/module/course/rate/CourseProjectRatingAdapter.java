@@ -45,7 +45,7 @@ public class CourseProjectRatingAdapter extends RecyclerView.Adapter<CourseProje
     @Override
     public void onBindViewHolder(CourseProjectRatingAdapter.ViewHolder holder, int position) {
         Review review = mReviews.get(position);
-        ImageLoader.getInstance().displayImage(review.user.avatar, holder.userAvatar, EdusohoApp.app.mAvatarOptions);
+        ImageLoader.getInstance().displayImage(review.user.getMediumAvatar(), holder.userAvatar, EdusohoApp.app.mAvatarOptions);
         holder.username.setText(review.user.nickname);
         holder.courseRating.setRating(review.rating);
         String postTime = TimeUtils.getPostDays(StringUtils.isEmpty(review.updatedTime) ? review.createdTime : review.updatedTime);

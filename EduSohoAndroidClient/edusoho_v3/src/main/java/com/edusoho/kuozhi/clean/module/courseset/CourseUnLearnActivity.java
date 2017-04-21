@@ -51,7 +51,7 @@ import extensions.PagerSlidingTabStrip;
  * Created by DF on 2017/3/21.
  */
 
-public class CourseUnLearnActivity extends BaseFinishActivity
+public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContract.Presenter>
         implements CourseUnLearnContract.View, View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
 
     public static final String COURSE_SET_ID = "course_set_id";
@@ -390,7 +390,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
                 startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar.medium);
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar.middle);
             }
         });
     }

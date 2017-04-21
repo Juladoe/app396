@@ -18,14 +18,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
+import com.edusoho.kuozhi.clean.module.base.BaseActivity;
 import com.edusoho.kuozhi.clean.module.course.progress.DialogProgress;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
@@ -45,7 +44,7 @@ import java.util.List;
  * Created by JesseHuang on 2017/3/22.
  */
 
-public class CourseProjectActivity extends AppCompatActivity implements CourseProjectContract.View {
+public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Presenter> implements CourseProjectContract.View {
 
     private static final String COURSE_PROJECT_ID = "CourseProjectId";
 
@@ -185,6 +184,9 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         mShare.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
+    /**
+     * 点击加入界面显示
+     */
     @Override
     public void initJoinCourseLayout() {
         mTabLayout.setVisibility(View.GONE);
@@ -195,6 +197,9 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         showBottomLayout(false);
     }
 
+    /**
+     * 进入页面显示：已加入
+     */
     @Override
     public void initLearnLayout() {
         mTabLayout.setVisibility(View.GONE);
@@ -203,6 +208,9 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         showBottomLayout(false);
     }
 
+    /**
+     * 进入页面显示：未加入
+     */
     @Override
     public void initUnLearnLayout() {
         mTabLayout.setVisibility(View.VISIBLE);
@@ -211,16 +219,19 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         showBottomLayout(false);
     }
 
+    /**
+     * 未加入底部Layout处理
+     *
+     * @param state true.未加入，false.课程已过期
+     */
     @Override
     public void setJoinButton(boolean state) {
         if (state) {
             mLearnTextView.setText(R.string.learn_course_project);
             mLearnTextView.setBackgroundResource(R.color.primary_color);
-            mLearnTextView.setTextColor(getResources().getColor(R.color.white));
         } else {
-            mLearnTextView.setText(R.string.course_unpublished);
-            mLearnTextView.setBackgroundResource(R.color.white);
-            mLearnTextView.setTextColor(getResources().getColor(R.color.secondary_font_color));
+            mLearnTextView.setText(R.string.course_closed);
+            mLearnTextView.setBackgroundResource(R.color.secondary2_font_color);
         }
     }
 
@@ -250,11 +261,6 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
                 mCourseMemberExpiredDialog.show();
                 break;
         }
-    }
-
-    @Override
-    public void toast(String resId) {
-
     }
 
     private AlertDialog initCourseExpiredAlertDialog() {
