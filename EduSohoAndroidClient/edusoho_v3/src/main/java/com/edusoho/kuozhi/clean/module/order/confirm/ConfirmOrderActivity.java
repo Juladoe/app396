@@ -18,7 +18,6 @@ import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.order.dialog.coupons.CouponsDialog;
 import com.edusoho.kuozhi.clean.module.order.payments.PaymentsActivity;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -145,7 +144,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity<ConfirmOrderContrac
 
     @Override
     public void showToastAndFinish(int content) {
-        CommonUtil.shortToast(this, getString(content));
+        showToast(content);
         finish();
     }
 

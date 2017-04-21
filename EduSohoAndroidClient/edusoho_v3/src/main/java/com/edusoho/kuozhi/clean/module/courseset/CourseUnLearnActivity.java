@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
+import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -110,6 +111,14 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     protected void onPause() {
         super.onPause();
         mAppBarLayout.removeOnOffsetChangedListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
     }
 
     private void isJoin() {
@@ -374,7 +383,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     @Override
     public void goToConfirmOrderActivity(CourseProject courseProject) {
         if (mCourseSet != null && courseProject != null) {
-            ConfirmOrderActivity.launch(this, courseProject.courseSetId, courseProject.id);
+            ConfirmOrderActivity.launch(this, courseProject.courseSet.id, courseProject.id);
         }
     }
 
@@ -407,10 +416,11 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mTimer != null) {
-            mTimer.cancel();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == LoginActivity.OK) {
+            showProcessDialog();
+            mPresenter.isJoinCourseSet();
         }
     }
 

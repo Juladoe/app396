@@ -91,7 +91,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
 
     @Override
     public void showToastOrFinish(int content, boolean isFinish) {
-        CommonUtil.shortToast(getContext(), getString(content));
+        showToast(content);
         if (isFinish) {
             getActivity().finish();
         }
@@ -99,7 +99,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
 
     @Override
     public void goToConfirmOrderActivity() {
-        ConfirmOrderActivity.launch(getContext(), mCourseProject.courseSetId, mCourseProject.id);
+        ConfirmOrderActivity.launch(getContext(), mCourseProject.courseSet.id, mCourseProject.id);
     }
 
     @Override
@@ -249,13 +249,13 @@ public class SelectProjectDialog extends ESBottomDialog implements
     }
 
     private void setOtherView() {
-        if (END_DATE_MODE.equals(mCourseProject.expiryMode)) {
+        if (END_DATE_MODE.equals(mCourseProject.learningExpiryDate.expiryMode)) {
             mValidity.setText(String.format(getContext().getString(R.string.validity), mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10)));
-        } else if (DATE_MODE.equals(mCourseProject.expiryMode)) {
+        } else if (DATE_MODE.equals(mCourseProject.learningExpiryDate.expiryMode)) {
             mValidity.setText(String.format(getContext().getString(R.string.validity_date),
                     mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10), mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10)));
-        } else if (DAYS_MODE.equals(mCourseProject.expiryMode)) {
-            mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseProject.expiryDays));
+        } else if (DAYS_MODE.equals(mCourseProject.learningExpiryDate.expiryMode)) {
+            mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseProject.learningExpiryDate.expiryDays));
         } else {
             mValidity.setText(R.string.validity_forever);
         }
@@ -281,5 +281,10 @@ public class SelectProjectDialog extends ESBottomDialog implements
     @Override
     public boolean showConfirm() {
         return true;
+    }
+
+    @Override
+    public void showToast(int resId) {
+        CommonUtil.shortToast(getContext(), getString(resId));
     }
 }

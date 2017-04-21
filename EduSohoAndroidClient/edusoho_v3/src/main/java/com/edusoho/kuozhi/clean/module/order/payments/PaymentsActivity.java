@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.order.alipay.AlipayActivity;
 import com.edusoho.kuozhi.clean.module.order.payments.PaymentsContract.Presenter;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
@@ -143,11 +142,11 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
     private void clickVirtual() {
         mAlipay.setSelected(false);
         mVirtualCoin.setSelected(true);
-        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice * mOrderInfo.cashRate > mOrderInfo.account.cash) {
             mBalance.setText(R.string.insufficient_balance);
         }
         if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
-            mDiscount.setText(String.format("%.2f %s", mOrderInfo.totalPrice, mOrderInfo.coinName));
+            mDiscount.setText(String.format("%.2f %s", mOrderPrice * mOrderInfo.cashRate, mOrderInfo.coinName));
         }
     }
 
@@ -156,8 +155,8 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
             showProcessDialog();
             mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null, -1);
         } else {
-            if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
-                CommonUtil.shortToast(this, getString(R.string.insufficient_balance));
+            if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice * mOrderInfo.cashRate > mOrderInfo.account.cash) {
+                showToast(R.string.insufficient_balance);
                 return;
             }
             showDialog();
@@ -190,15 +189,15 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 String pw = mInputPw.getText().toString().trim();
                 if (mOrderInfo.hasPayPassword != 1) {
-                    CommonUtil.shortToast(PaymentsActivity.this, getString(R.string.unset_pw_hint));
+                    showToast(R.string.unset_pw_hint);
                     return true;
                 }
                 if (pw.length() < 5) {
-                    CommonUtil.shortToast(PaymentsActivity.this, getString(R.string.pw_long_wrong_hint));
+                    showToast(R.string.pw_long_wrong_hint);
                     return true;
                 }
                 showProcessDialog();
-                mPresenter.createOrderAndPay(PaymentsPresenter.COIN, mInputPw.getText().toString().trim(), mOrderPrice);
+                mPresenter.createOrderAndPay(PaymentsPresenter.COIN, mInputPw.getText().toString().trim(), mOrderPrice * mOrderInfo.cashRate);
                 mDialog.dismiss();
                 return true;
             }

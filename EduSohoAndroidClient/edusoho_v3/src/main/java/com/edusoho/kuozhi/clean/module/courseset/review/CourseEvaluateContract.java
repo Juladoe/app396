@@ -26,7 +26,6 @@ interface CourseEvaluateContract {
 
         void changeMoreStatus(int status);
 
-        void showToast();
     }
 
     interface Presenter extends BasePresenter {
