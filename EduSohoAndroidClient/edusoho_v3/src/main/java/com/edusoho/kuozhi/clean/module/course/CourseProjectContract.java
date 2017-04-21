@@ -45,6 +45,8 @@ public interface CourseProjectContract {
         void launchConfirmOrderActivity(int courseSetId, int courseId);
 
         void showExitDialog(CourseProjectActivity.DialogType type);
+
+        void exitCourseLayout();
     }
 
     interface Presenter extends BasePresenter {
