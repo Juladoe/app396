@@ -10,10 +10,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -80,6 +78,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         setContentView(R.layout.activity_course_project);
         if (getIntent() != null) {
             mCourseProjectId = getIntent().getIntExtra(COURSE_PROJECT_ID, 0);
+            mCourseProjectId = 23;
         }
         init();
     }
@@ -191,8 +190,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     @Override
     public void initJoinCourseLayout() {
         mTabLayout.setVisibility(View.GONE);
-        mAdapter.removeFragment(CourseProjectEnum.RATE.getPosition());
-        mAdapter.removeFragment(CourseProjectEnum.INFO.getPosition());
+        mAdapter.destroyItem(CourseProjectEnum.RATE);
+        mAdapter.destroyItem(CourseProjectEnum.INFO);
+//        mAdapter.removeFragment(CourseProjectEnum.RATE.getPosition());
+//        mAdapter.removeFragment(CourseProjectEnum.INFO.getPosition());
         showCacheButton(true);
         showShareButton(false);
         showBottomLayout(false);
@@ -319,9 +320,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         private CourseProject mCourseProject;
         private List<Fragment> mFragments;
         private long baseId = 0;
+        private FragmentManager mFragmentManager;
 
         public CourseProjectViewPagerAdapter(FragmentManager fm, List<CourseProjectEnum> courseProjects, CourseProject courseProject) {
             super(fm);
+            mFragmentManager = fm;
             mFragments = new ArrayList<>();
             mCourseProjectModules = courseProjects;
             mCourseProject = courseProject;
@@ -343,20 +346,23 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             notifyDataSetChanged();
         }
 
-        public void addFragment(int position, CourseProjectEnum projectEnum) {
-            mCourseProjectModules.add(position, projectEnum);
-            notifyChangeInPosition(position);
-            notifyDataSetChanged();
+        public void addFragment(CourseProjectEnum courseEnum) {
+            mCourseProjectModules.add(courseEnum.getPosition(), courseEnum);
         }
 
         @Override
         public long getItemId(int position) {
+            Log.d("pager", "getItemId: " + position);
             return baseId + position;
         }
 
-        public void notifyChangeInPosition(int n) {
-            baseId += getCount() + n;
+        public void notifyChangeInPosition(int position) {
+            baseId += getCount() + position;
         }
+
+//        public void notifyChangeInitStatus() {
+//            baseId = 0;
+//        }
 
         @Override
         public int getItemPosition(Object object) {
@@ -371,6 +377,23 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         @Override
         public CharSequence getPageTitle(int position) {
             return mCourseProjectModules.get(position).getModuleTitle();
+        }
+
+        public void clear() {
+            mCourseProjectModules.clear();
+            notifyDataSetChanged();
+        }
+
+        private void destroyItem(CourseProjectEnum courseEnum) {
+            try {
+                this.destroyItem(null, courseEnum.getPosition(), mFragments.get(courseEnum.getPosition()));
+                mCourseProjectModules.remove(courseEnum.getPosition());
+                mFragmentManager.getFragments().remove(courseEnum.getPosition());
+                mFragments.remove(courseEnum.getPosition());
+                notifyDataSetChanged();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

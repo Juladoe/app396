@@ -40,7 +40,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
-        //mCourseProjectId = 21;
     }
 
     @Override
@@ -90,7 +89,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
             joinFreeOrVipCourse(courseId, "vip");
         } else {
-            mView.launchConfirmOrderActivity(mCourseProjectId, courseId);
+            mView.launchConfirmOrderActivity(mCourseProject.courseSetId, courseId);
         }
     }
 
@@ -162,12 +161,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             }
                             // TODO: 2017/4/20 还需要处理vip过期问题
                         } else {
+                            mView.showFragments(initCourseModules(false), courseProject);
                             if (courseProject.learningExpiryDate.expired) {
-                                mView.showFragments(initCourseModules(false), courseProject);
                                 mView.setJoinButton(false);
                             }
                         }
-                        mView.showFragments(initCourseModules(false), courseProject);
                     }
                 });
     }
