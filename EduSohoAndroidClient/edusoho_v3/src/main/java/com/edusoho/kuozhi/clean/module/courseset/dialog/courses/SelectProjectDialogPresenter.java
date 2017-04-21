@@ -10,7 +10,6 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
 
-import retrofit2.http.HEAD;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -39,10 +38,11 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
     }
 
     @Override
-    public void subscribe() {}
+    public void subscribe() {
+    }
 
     @Override
-    public void setData(int position){
+    public void setData(int position) {
         mCourseProject = mList.get(position);
         mView.showWayAndServiceView(mCourseProject);
         mView.showPriceView(mCourseProject);
@@ -50,19 +50,11 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
             mView.showValidityView(R.string.validity, mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10));
         } else if (DATE_MODE.equals(mCourseProject.learningExpiryDate.expiryMode)) {
             mView.showValidityView(R.string.validity_date, mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10)
-                                            , mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10));
+                    , mCourseProject.learningExpiryDate.expiryEndDate.substring(0, 10));
         } else if (DAYS_MODE.equals(mCourseProject.learningExpiryDate.expiryMode)) {
             mView.showValidityView(R.string.validity_day, mCourseProject.learningExpiryDate.expiryDays);
         } else {
             mView.showValiditView(R.string.validity_forever);
-        }
-
-        if (EdusohoApp.app.loginUser.vip != null
-                && EdusohoApp.app.loginUser.vip.seq >= mCourseProject.vipLevelId
-                && mCourseProject.vipLevelId != 0 || IS_FREE.equals(mCourseProject.isFree)) {
-            mView.showConfirmView(R.string.txt_vip_free);
-        } else {
-            mView.showConfirmView(R.string.confirm);
         }
         mView.showTaskView(mCourseProject.taskNum);
         mView.showVipView(mCourseProject.vipLevelId);

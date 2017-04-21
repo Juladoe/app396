@@ -47,7 +47,6 @@ public class SelectProjectDialog extends ESBottomDialog implements
     private TextView mValidity;
     private TextView mTask;
     private TextView mVip;
-    private TextView mConfirm;
     private LoadDialog mProcessDialog;
 
     private List<CourseProject> mCourseProjects;
@@ -79,7 +78,6 @@ public class SelectProjectDialog extends ESBottomDialog implements
 
     @Override
     public void setButtonState(TextView btn) {
-        mConfirm = btn;
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +85,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
             }
         });
     }
+
     @Override
     public void showToastOrFinish(int content, boolean isFinish) {
         showToast(content);
@@ -266,11 +265,6 @@ public class SelectProjectDialog extends ESBottomDialog implements
                 break;
             }
         }
-    }
-
-    @Override
-    public void showConfirmView(int content) {
-        mConfirm.setText(content);
     }
 
     @Override

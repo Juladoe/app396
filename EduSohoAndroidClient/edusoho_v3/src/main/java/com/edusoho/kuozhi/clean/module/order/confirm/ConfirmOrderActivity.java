@@ -112,6 +112,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity<ConfirmOrderContrac
         mPayPrice = mTotalPrice;
         if (orderInfo.availableCoupons != null && orderInfo.availableCoupons.size() != 0) {
             mCoupon = orderInfo.availableCoupons.get(0);
+            mCoupon.isSelector = true;
             showCouponPrice();
         } else {
             mTotal.setText(String.format(getString(R.string.order_price_total), mTotalPrice));

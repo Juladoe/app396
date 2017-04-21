@@ -26,8 +26,6 @@ class SelectProjectDialogContract {
 
         void showValidityView(int format, String textOne, String textTwo);
 
-        void showConfirmView(int content);
-
         void showToastOrFinish(int content, boolean isFinish);
 
         void showProcessDialog(boolean isShow);
