@@ -2,20 +2,17 @@ package com.edusoho.kuozhi.clean.module.course.task;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.TaskItem;
+import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
-import com.edusoho.kuozhi.clean.widget.ESIconView;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ import java.util.List;
  * Created by JesseHuang on 2017/3/26.
  */
 
-public class CourseTasksFragment extends Fragment implements
+public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presenter> implements
         CourseTasksContract.View, CourseProjectFragmentListener {
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";

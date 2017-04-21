@@ -32,7 +32,7 @@ import java.util.List;
  * Created by DF on 2017/3/21.
  */
 
-public class CourseIntroduceFragment extends BaseLazyFragment
+public class CourseIntroduceFragment extends BaseLazyFragment<CourseIntroduceContract.Presenter>
         implements View.OnClickListener, CourseIntroduceContract.View {
 
     private LinearLayout mStudentIconLayout;
@@ -187,7 +187,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image, EdusohoApp.app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(data.get(i).user.avatar.middle, image, EdusohoApp.app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);

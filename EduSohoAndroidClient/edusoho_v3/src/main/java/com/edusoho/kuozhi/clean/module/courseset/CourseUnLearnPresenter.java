@@ -262,8 +262,8 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         return;
                     }
                     long currentTime = System.currentTimeMillis();
-                    if (END_DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.learningExpiryDate.expiryEndDate) <= currentTime
-                            || DATE_MODE.equals(courseProject.expiryMode) && TimeUtils.getMillisecond(courseProject.learningExpiryDate.expiryEndDate) <= currentTime) {
+                    if (END_DATE_MODE.equals(courseProject.learningExpiryDate.expiryMode) && TimeUtils.getMillisecond(courseProject.learningExpiryDate.expiryEndDate) <= currentTime
+                            || DATE_MODE.equals(courseProject.learningExpiryDate.expiryMode) && TimeUtils.getMillisecond(courseProject.learningExpiryDate.expiryEndDate) <= currentTime) {
                         mView.showToast(R.string.course_date_limit);
                         return;
                     }

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.module.courseset.review;
 
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseSetApi;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
@@ -75,7 +76,7 @@ class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
         if (!mIsHave) {
             if (mIsFirst) {
                 mIsFirst = false;
-                mView.showToast();
+                mView.showToast(R.string.discuss_load_data_finish);
             }
             mView.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
             return;

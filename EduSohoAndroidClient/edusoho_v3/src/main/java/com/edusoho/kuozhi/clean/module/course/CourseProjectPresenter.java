@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
@@ -39,7 +40,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
-        mCourseProjectId = 33;
+        //mCourseProjectId = 21;
     }
 
     @Override
@@ -82,12 +83,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 });
     }
 
-
-    @Override
-    public void showCourseProgressInfo() {
-        mView.launchDialogProgress(mProgress, mMember);
-    }
-
     @Override
     public void joinCourseProject(final int courseId) {
         if (mCourseProject.originPrice == FREE_PRICE) {
@@ -99,38 +94,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         }
     }
 
-    private void joinFreeOrVipCourse(final int courseId, String joinWay) {
-        HttpUtils.getInstance()
-                .addTokenHeader(EdusohoApp.app.token)
-                .createApi(CourseApi.class)
-                .joinFreeOrVipCourse(courseId, joinWay)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseMember>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(CourseMember courseMember) {
-                        if (courseMember != null) {
-                            mView.initJoinCourseLayout();
-                            setCourseLearningProgress(courseId);
-                        }
-                    }
-                });
-    }
-
     @Override
     public void exitCourse() {
-        HttpUtils.
-                getInstance()
+        HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(UserApi.class)
                 .exitCourse(mCourseProjectId)
@@ -149,9 +115,18 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(JsonObject jsonObject) {
-
+                        if (jsonObject.get("success").getAsBoolean()) {
+                            mView.showToast(R.string.exit_course_success);
+                        } else {
+                            mView.showToast(R.string.exit_course_failure);
+                        }
                     }
                 });
+    }
+
+    @Override
+    public void showCourseProgressInfo() {
+        mView.launchDialogProgress(mProgress, mMember);
     }
 
     private void initLoginCourseMemberStatus(final CourseProject courseProject) {
@@ -191,6 +166,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                                 mView.setJoinButton(false);
                             }
                         }
+                        mView.showFragments(initCourseModules(false), courseProject);
                     }
                 });
     }
@@ -224,6 +200,34 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseLearningProgress courseLearningProgress) {
                         mProgress = courseLearningProgress;
                         mView.setProgressBar(courseLearningProgress.progress);
+                    }
+                });
+    }
+
+    private void joinFreeOrVipCourse(final int courseId, String joinWay) {
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseApi.class)
+                .joinFreeOrVipCourse(courseId, joinWay)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseMember>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseMember courseMember) {
+                        if (courseMember != null) {
+                            mView.initJoinCourseLayout();
+                            setCourseLearningProgress(courseId);
+                        }
                     }
                 });
     }

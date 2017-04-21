@@ -18,7 +18,7 @@ import java.util.List;
  * Created by DF on 2017/3/21.
  */
 
-public class CourseProjectsFragment extends BaseLazyFragment
+public class CourseProjectsFragment extends BaseLazyFragment<CourseProjectsContract.Presenter>
         implements CourseProjectsContract.View {
 
     private View mLoad;

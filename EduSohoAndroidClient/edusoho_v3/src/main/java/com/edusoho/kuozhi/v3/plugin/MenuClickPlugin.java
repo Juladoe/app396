@@ -337,7 +337,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
             Role role = new Role();
             role.setRid(user.id);
             role.setNickname(user.nickname);
-            role.setAvatar(user.userAvatar.medium);
+            role.setAvatar(user.getMediumAvatar());
             IMClient.getClient().getRoleManager().updateRole(role);
         }
 

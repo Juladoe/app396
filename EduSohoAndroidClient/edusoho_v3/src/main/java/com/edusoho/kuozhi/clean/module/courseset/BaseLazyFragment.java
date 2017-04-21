@@ -2,16 +2,18 @@ package com.edusoho.kuozhi.clean.module.courseset;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.edusoho.kuozhi.clean.module.base.BaseFragment;
+import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 
 /**
  * Created by DF on 2017/3/21.
  */
 
-public abstract class BaseLazyFragment extends Fragment {
+public abstract class BaseLazyFragment<T extends BasePresenter> extends BaseFragment<T> {
 
     protected View mContentView;
     private boolean mIsViewCreated;

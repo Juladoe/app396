@@ -639,7 +639,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         model.user = new CourseThreadPostEntity.UserEntity();
         model.user.id = app.loginUser.id;
         model.user.nickname = app.loginUser.nickname;
-        model.user.mediumAvatar = app.loginUser.userAvatar.medium;
+        model.user.mediumAvatar = app.loginUser.getMediumAvatar();
         model.content = content;
         model.type = contentType;
         model.delivery = deliveryState;
@@ -655,7 +655,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         model.user = new CourseThreadEntity.UserEntity();
         model.user.id = app.loginUser.id;
         model.user.nickname = app.loginUser.nickname;
-        model.user.mediumAvatar = app.loginUser.userAvatar.medium;
+        model.user.mediumAvatar = app.loginUser.getMediumAvatar();
         model.type = PushUtil.ChatMsgType.TEXT;
         model.title = content;
         model.content = content;

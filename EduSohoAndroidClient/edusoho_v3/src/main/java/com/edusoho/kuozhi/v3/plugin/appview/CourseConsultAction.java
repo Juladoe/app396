@@ -41,7 +41,7 @@ public class CourseConsultAction {
                 if (user != null) {
                     bundle.putString(ImChatActivity.FROM_NAME, user.nickname);
                     bundle.putInt(ImChatActivity.FROM_ID, user.id);
-                    bundle.putString(ImChatActivity.HEAD_IMAGE_URL, user.userAvatar.medium);
+                    bundle.putString(ImChatActivity.HEAD_IMAGE_URL, user.getMediumAvatar());
                     CoreEngine.create(mActivity.getBaseContext()).runNormalPluginWithBundle("ImChatActivity", mActivity, bundle);
                 }
             }

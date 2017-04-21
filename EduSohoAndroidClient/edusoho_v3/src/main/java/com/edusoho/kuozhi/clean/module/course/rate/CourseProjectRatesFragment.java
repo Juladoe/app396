@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.Review;
+import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.widget.ESDividerItemDecoration;
 import com.edusoho.kuozhi.clean.widget.ESRecyclerView.ESPullAndLoadRecyclerView;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by JesseHuang on 2017/3/26.
  */
 
-public class CourseProjectRatesFragment extends Fragment implements
+public class CourseProjectRatesFragment extends BaseFragment<CourseProjectRatesContract.Presenter> implements
         CourseProjectRatesContract.View, CourseProjectFragmentListener {
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";

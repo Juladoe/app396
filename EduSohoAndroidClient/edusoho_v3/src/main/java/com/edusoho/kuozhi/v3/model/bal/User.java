@@ -20,7 +20,8 @@ public class User implements Serializable {
     public String createdTime;
     public String about;
     public String role;
-    public Avatar userAvatar;
+    public String mediumAvatar;
+    public Avatar avatar;
 
     /**
      * 关注
@@ -36,14 +37,16 @@ public class User implements Serializable {
     public String thirdParty;
 
     public String getMediumAvatar() {
-        int schemIndex = userAvatar.medium.lastIndexOf("http://");
+        int schemIndex = (avatar == null ? mediumAvatar.lastIndexOf("http://") : avatar.middle.lastIndexOf("http://"));
         if (schemIndex != -1) {
-            return userAvatar.medium.substring(schemIndex);
+            return avatar == null ? mediumAvatar.substring(schemIndex) : avatar.middle.substring(schemIndex);
         }
-        if (userAvatar.medium.startsWith("//")) {
-            return "http:" + userAvatar.medium;
+        if (avatar != null && avatar.middle.startsWith("//")) {
+            return "http:" + avatar.middle;
+        } else if(mediumAvatar.startsWith("//")){
+            return "http:" + mediumAvatar;
         }
-        return userAvatar.medium;
+        return avatar == null ? mediumAvatar : avatar.middle;
     }
 
     public String userRole2String() {

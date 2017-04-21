@@ -35,8 +35,6 @@ interface CourseUnLearnContract {
 
         void showLoadView(boolean isShow);
 
-        void showToast(int content);
-
         void showPlanDialog(List<CourseProject> list, List<VipInfo> vipInfo, CourseSet courseSet);
 
         void goToConfirmOrderActivity(CourseProject courseStudyPlan);

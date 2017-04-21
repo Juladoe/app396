@@ -104,7 +104,7 @@ public class IMProvider extends ModelProvider {
                         Role role = new Role();
                         role.setType(Destination.USER);
                         role.setRid(user.id);
-                        role.setAvatar(user.userAvatar.medium);
+                        role.setAvatar(user.getMediumAvatar());
                         role.setNickname(user.nickname);
                         ConvEntity convEntity = createConvNo(convNo, role);
                         providerListener.onResponse(convEntity);
@@ -253,7 +253,7 @@ public class IMProvider extends ModelProvider {
                     @Override
                     public void success(User user) {
                         Role role = new Role();
-                        role.setAvatar(user.userAvatar.medium);
+                        role.setAvatar(user.getMediumAvatar());
                         role.setNickname(user.nickname);
                         role.setRid(user.id);
                         role.setType(Destination.USER);
@@ -265,7 +265,7 @@ public class IMProvider extends ModelProvider {
     public void updateRoleByUser(User user) {
         IMRoleManager roleManager = IMClient.getClient().getRoleManager();
         Role role = roleManager.getRole(Destination.USER, user.id);
-        role.setAvatar(user.userAvatar.medium);
+        role.setAvatar(user.getMediumAvatar());
         role.setNickname(user.nickname);
         role.setType(Destination.USER);
 

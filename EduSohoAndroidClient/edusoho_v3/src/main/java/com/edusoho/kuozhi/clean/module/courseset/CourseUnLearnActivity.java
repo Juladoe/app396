@@ -33,7 +33,6 @@ import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -51,7 +50,7 @@ import extensions.PagerSlidingTabStrip;
  * Created by DF on 2017/3/21.
  */
 
-public class CourseUnLearnActivity extends BaseFinishActivity
+public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContract.Presenter>
         implements CourseUnLearnContract.View, View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
 
     public static final String COURSE_SET_ID = "course_set_id";
@@ -246,12 +245,12 @@ public class CourseUnLearnActivity extends BaseFinishActivity
             mTvCollect.setText(getResources().getString(R.string.new_font_collected));
             mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
             mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
-            CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.favorite_success));
+            showToast(R.string.favorite_success);
         } else {
             mTvCollect.setText(getResources().getString(R.string.new_font_collect));
             mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
             mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
-            CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.cancel_favorite));
+            showToast(R.string.cancel_favorite);
         }
     }
 
@@ -342,11 +341,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     }
 
     @Override
-    public void showToast(int content) {
-        CommonUtil.shortToast(this, getString(content));
-    }
-
-    @Override
     public void showPlanDialog(List<CourseProject> list, List<VipInfo> vipInfo, CourseSet courseSet) {
         if (mSelectDialog == null) {
             mSelectDialog = new SelectProjectDialog();
@@ -390,7 +384,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
                 startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar.medium);
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar.middle);
             }
         });
     }

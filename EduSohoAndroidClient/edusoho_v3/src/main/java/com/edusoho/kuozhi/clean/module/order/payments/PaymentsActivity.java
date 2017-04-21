@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.order.alipay.AlipayActivity;
 import com.edusoho.kuozhi.clean.module.order.payments.PaymentsContract.Presenter;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
@@ -30,7 +29,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
  * Created by DF on 2017/4/7.
  */
 
-public class PaymentsActivity extends BaseFinishActivity implements android.view.View.OnClickListener, PaymentsContract.View {
+public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presenter> implements View.OnClickListener, PaymentsContract.View {
 
     private static final String ORDER_INFO = "order_info";
     private static final String ORDER_PRICE = "order_price";
@@ -147,7 +146,7 @@ public class PaymentsActivity extends BaseFinishActivity implements android.view
             mBalance.setText(R.string.insufficient_balance);
         }
         if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
-            mDiscount.setText(String.format("%.2f %s", mOrderInfo.totalPrice, mOrderInfo.coinName));
+            mDiscount.setText(String.format("%.2f %s", mOrderPrice * mOrderInfo.cashRate, mOrderInfo.coinName));
         }
     }
 
@@ -157,7 +156,7 @@ public class PaymentsActivity extends BaseFinishActivity implements android.view
             mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null, -1);
         } else {
             if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
-                CommonUtil.shortToast(this, getString(R.string.insufficient_balance));
+                showToast(R.string.insufficient_balance);
                 return;
             }
             showDialog();
@@ -190,15 +189,16 @@ public class PaymentsActivity extends BaseFinishActivity implements android.view
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 String pw = mInputPw.getText().toString().trim();
                 if (mOrderInfo.hasPayPassword != 1) {
-                    CommonUtil.shortToast(PaymentsActivity.this, getString(R.string.unset_pw_hint));
+                    showToast(R.string.unset_pw_hint);
                     return true;
                 }
                 if (pw.length() < 5) {
-                    CommonUtil.shortToast(PaymentsActivity.this, getString(R.string.pw_long_wrong_hint));
+                    showToast(R.string.pw_long_wrong_hint);
                     return true;
                 }
                 showProcessDialog();
-                mPresenter.createOrderAndPay(PaymentsPresenter.COIN, mInputPw.getText().toString().trim(), mOrderPrice);
+                mPresenter.createOrderAndPay(PaymentsPresenter.COIN, mInputPw.getText().toString().trim(),
+                                        mOrderPrice > 0 ? mOrderPrice * mOrderInfo.cashRate : 0);
                 mDialog.dismiss();
                 return true;
             }

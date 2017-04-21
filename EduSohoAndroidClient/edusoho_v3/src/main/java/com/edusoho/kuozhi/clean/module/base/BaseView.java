@@ -6,4 +6,5 @@ package com.edusoho.kuozhi.clean.module.base;
 
 public interface BaseView<T> {
 
+    void showToast(int resId);
 }

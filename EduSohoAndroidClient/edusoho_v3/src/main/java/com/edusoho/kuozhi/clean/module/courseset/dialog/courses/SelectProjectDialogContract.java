@@ -12,19 +12,37 @@ class SelectProjectDialogContract {
 
     interface View extends BaseView<Presenter> {
 
+        void showWayAndServiceView(CourseProject courseProject);
+
+        void showTaskView(int num);
+
+        void showVipView(int vipLevelId);
+
+        void showPriceView(CourseProject courseProject);
+
+        void showValiditView(int content);
+
+        void showValidityView(int format, String content);
+
+        void showValidityView(int format, String textOne, String textTwo);
+
+        void showConfirmView(int content);
+
         void showToastOrFinish(int content, boolean isFinish);
 
         void showProcessDialog(boolean isShow);
 
-        void goToConfirmOrderActivity();
+        void goToConfirmOrderActivity(CourseProject courseProject);
 
-        void goToCourseProjectActivity();
+        void goToCourseProjectActivity(int courseProjectId);
 
     }
 
     interface Presenter extends BasePresenter {
 
-        void confirm(CourseProject courseProject);
+        void confirm();
+
+        void setData(int positon);
 
     }
 

@@ -404,7 +404,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                             return;
                         }
                         role.setRid(user.id);
-                        role.setAvatar(user.userAvatar.medium);
+                        role.setAvatar(user.getMediumAvatar());
                         role.setType(Destination.USER);
                         role.setNickname(user.nickname);
                         callback.onCreateRole(role);

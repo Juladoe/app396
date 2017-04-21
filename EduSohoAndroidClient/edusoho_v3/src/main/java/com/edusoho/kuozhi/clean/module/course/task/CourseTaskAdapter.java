@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.TaskItem;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectEnum;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else if (holder instanceof CourseTaskUnitViewHolder) {
             CourseTaskUnitViewHolder unitHolder = (CourseTaskUnitViewHolder) holder;
             unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, taskItem.title));
-        } else if (holder instanceof CourseTaskViewHolder) {
+        } else {
             CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
             taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskSequence(), taskItem.title));
             taskHolder.taskDuration.setText(taskItem.length);
