@@ -6,6 +6,7 @@ import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
@@ -77,6 +78,36 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             initLoginCourseMemberStatus(courseProject);
                         } else {
                             initLogoutCourseMemberStatus(courseProject);
+                        }
+                    }
+                });
+        initTrialFirstTask(mCourseProjectId);
+    }
+
+    private void initTrialFirstTask(final int courseId) {
+        HttpUtils.getInstance()
+                .createApi(CourseApi.class)
+                .getTrialFirstTask(courseId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseTask>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseTask trialTask) {
+                        if (trialTask != null && trialTask.id != 0) {
+                            mView.setTrialTaskVisible(true);
+                            mView.initTrailTask(trialTask);
+                        } else {
+                            mView.setTrialTaskVisible(false);
                         }
                     }
                 });
@@ -199,6 +230,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseLearningProgress courseLearningProgress) {
                         mProgress = courseLearningProgress;
                         mView.setProgressBar(courseLearningProgress.progress);
+                        mView.setTrialTaskVisible(true);
+                        mView.initNextTask(courseLearningProgress.nextTask);
                     }
                 });
     }
