@@ -120,7 +120,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
             joinFreeOrVipCourse(courseId, "vip");
         } else {
-            mView.launchConfirmOrderActivity(mCourseProject.courseSetId, courseId);
+            mView.launchConfirmOrderActivity(mCourseProject.courseSet.id, courseId);
         }
     }
 

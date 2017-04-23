@@ -440,7 +440,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                             mView.showToast(R.string.join_success);
                             mView.newFinish();
                         } else {
-                            mView.showToast(R.string.join_fail);
+                            mView.goToConfirmOrderActivity(mCourseProjects.get(0));
                         }
                     }
                 });
