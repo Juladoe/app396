@@ -16,14 +16,13 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
-import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 
 /**
  * Created by JesseHuang on 2017/4/14.
  */
 
-public class DialogProgress extends DialogFragment {
+public class LearnCourseProgressDialog extends DialogFragment {
 
     private static final String PROGRESS_INFO = "progress_info";
     private static final String MEMBER_INFO = "member_info";
@@ -34,11 +33,11 @@ public class DialogProgress extends DialogFragment {
     private TextView mPlanDeadline;
     private View mCloseDialog;
 
-    public static DialogProgress newInstance(CourseLearningProgress progress, CourseMember member) {
+    public static LearnCourseProgressDialog newInstance(CourseLearningProgress progress, CourseMember member) {
         Bundle args = new Bundle();
         args.putSerializable(PROGRESS_INFO, progress);
         args.putSerializable(MEMBER_INFO, member);
-        DialogProgress fragment = new DialogProgress();
+        LearnCourseProgressDialog fragment = new LearnCourseProgressDialog();
         fragment.setArguments(args);
         return fragment;
     }

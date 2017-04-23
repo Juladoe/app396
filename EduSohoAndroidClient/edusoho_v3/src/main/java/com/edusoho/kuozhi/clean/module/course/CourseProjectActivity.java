@@ -25,7 +25,7 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
-import com.edusoho.kuozhi.clean.module.course.progress.DialogProgress;
+import com.edusoho.kuozhi.clean.module.course.progress.LearnCourseProgressDialog;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
@@ -276,7 +276,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void launchDialogProgress(CourseLearningProgress progress, CourseMember member) {
-        DialogProgress.newInstance(progress, member).show(getSupportFragmentManager(), "DialogProgress");
+        LearnCourseProgressDialog.newInstance(progress, member).show(getSupportFragmentManager(), "DialogProgress");
     }
 
     @Override
