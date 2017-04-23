@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.info;
+package com.edusoho.kuozhi.clean.module.course.dialog;
 
 import android.content.Context;
 import android.os.Bundle;

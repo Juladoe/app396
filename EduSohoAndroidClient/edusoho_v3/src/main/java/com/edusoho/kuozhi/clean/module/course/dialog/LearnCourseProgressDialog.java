@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.progress;
+package com.edusoho.kuozhi.clean.module.course.dialog;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
