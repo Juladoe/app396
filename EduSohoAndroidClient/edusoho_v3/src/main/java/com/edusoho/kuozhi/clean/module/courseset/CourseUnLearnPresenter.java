@@ -39,14 +39,8 @@ import rx.schedulers.Schedulers;
 class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     private static final String IS_FAVORITE = "isFavorite";
-    private static final String BUY_ABLE = "1";
-    private static final String IS_FREE = "1";
-    private static final String FREE = "free";
-    private static final String VIP = "vip";
     private static final String SUCCESS = "success";
     private static final String STATUS_RUNNING = "running";
-    private static final String END_DATE_MODE = "end_date";
-    private static final String DATE_MODE = "date";
 
     private CourseUnLearnContract.View mView;
     private int mCourseSetId;
@@ -287,24 +281,23 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             if (mCourseProjects != null) {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
-                    if (!BUY_ABLE.equals(courseProject.buyable)) {
-                        mView.showToast(R.string.course_limit_join);
-                        return;
+                    switch (courseProject.access){
+                        case "1":
+                            mView.showToast(R.string.course_unpublish);
+                            break;
+                        case "2":
+                            mView.showToast(R.string.course_limit_join);
+                            break;
+                        case "3":
+                            mView.showToast(R.string.course_date_limit);
+                            break;
+                        case "4":
+                            mView.showToast(R.string.course_project_expire_hint);
+                            break;
+                        default:
+                            joinFreeOrVipCourse();
                     }
-                    long currentTime = System.currentTimeMillis();
-                    if (END_DATE_MODE.equals(courseProject.learningExpiryDate.expiryMode) && TimeUtils.getMillisecond(courseProject.learningExpiryDate.expiryEndDate) <= currentTime
-                            || DATE_MODE.equals(courseProject.learningExpiryDate.expiryMode) && TimeUtils.getMillisecond(courseProject.learningExpiryDate.expiryEndDate) <= currentTime) {
-                        mView.showToast(R.string.course_date_limit);
-                        return;
-                    }
-                    if (IS_FREE.equals(courseProject.isFree) || EdusohoApp.app.loginUser.vip != null
-                            && mCourseProjects.get(0).vipLevelId != 0
-                            && EdusohoApp.app.loginUser.vip.seq >= mCourseProjects.get(0).vipLevelId) {
-                        mView.showProcessDialog(true);
-                        joinFreeOrVipCourse(IS_FREE.equals(courseProject.isFree) ? FREE : VIP);
-                        return;
-                    }
-                    mView.goToConfirmOrderActivity(courseProject);
+                    return;
                 }
                 if (mVipInfos != null) {
                     mView.showPlanDialog(mCourseProjects, mVipInfos, mCourseSet);
@@ -419,11 +412,12 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         return courseId;
     }
 
-    private void joinFreeOrVipCourse(String joinWay) {
+    private void joinFreeOrVipCourse() {
+        mView.showProcessDialog(true);
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
-                .joinFreeOrVipCourse(mCourseProjects.get(0).id, joinWay)
+                .joinFreeOrVipCourse(mCourseProjects.get(0).id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseMember>() {
@@ -435,16 +429,17 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         mView.showProcessDialog(false);
+                        mView.showToast(R.string.join_fail);
                     }
 
                     @Override
                     public void onNext(CourseMember courseMember) {
-                        if (courseMember != null) {
+                        mView.showProcessDialog(false);
+                        if (courseMember != null && courseMember.user != null) {
                             mView.goToCourseProjectActivity(mCourseProjects.get(0).id);
                             mView.showToast(R.string.join_success);
                             mView.newFinish();
                         } else {
-                            mView.showProcessDialog(false);
                             mView.showToast(R.string.join_fail);
                         }
                     }

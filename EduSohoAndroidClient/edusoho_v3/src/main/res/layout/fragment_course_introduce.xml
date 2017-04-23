@@ -179,10 +179,11 @@
 
                 <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                     android:id="@+id/tv_student_more"
-                    android:layout_width="@dimen/common_20"
-                    android:layout_height="@dimen/common_44"
+                    android:layout_width="@dimen/common_40"
+                    android:layout_height="@dimen/common_40"
+                    android:paddingLeft="@dimen/common_20"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="@dimen/common_18"
+                    android:layout_marginTop="@dimen/common_20"
                     android:text="@string/new_font_more"
                     android:textColor="@color/primary_font_color"
                     android:textSize="13dp" />

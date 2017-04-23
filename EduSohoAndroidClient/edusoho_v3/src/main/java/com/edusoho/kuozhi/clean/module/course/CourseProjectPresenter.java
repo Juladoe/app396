@@ -115,8 +115,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(JsonObject jsonObject) {
-                        if (jsonObject.get("success").getAsBoolean()) {
+                        if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
                             mView.showToast(R.string.exit_course_success);
+                            mView.exitCourseLayout();
                         } else {
                             mView.showToast(R.string.exit_course_failure);
                         }
@@ -208,7 +209,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
-                .joinFreeOrVipCourse(courseId, joinWay)
+                .joinFreeOrVipCourse(courseId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseMember>() {

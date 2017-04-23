@@ -40,7 +40,6 @@
 
                 <LinearLayout
                     android:id="@+id/ll_limit_activities"
-                    android:orientation="horizontal"
                     android:background="@color/secondary_color"
                     android:paddingLeft="@dimen/common_10"
                     android:visibility="gone"
@@ -51,6 +50,8 @@
                     <TextView
                         android:id="@+id/discount_activity_name"
                         style="@style/common_tv_fonts"
+                        android:maxLength="17"
+                        android:ellipsize="end"
                         android:drawableLeft="@drawable/discount_time"
                         android:drawablePadding="@dimen/common_7"
                         android:layout_marginLeft="@dimen/common_marginl"

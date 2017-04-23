@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -198,6 +199,19 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     /**
+     * 退出课程
+     */
+    @Override
+    public void exitCourseLayout() {
+        mProgressLayout.setVisibility(View.GONE);
+        mTabLayout.setVisibility(View.VISIBLE);
+        mAdapter.notifyDataSetChanged();
+        showCacheButton(false);
+        showShareButton(true);
+        showBottomLayout(true);
+    }
+
+    /**
      * 进入页面显示：已加入
      */
     @Override
@@ -269,7 +283,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d("CourseExpired", "setPositiveButton: ");
+                        mPresenter.exitCourse();
                     }
                 })
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -287,7 +301,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        mPresenter.exitCourse();
                     }
                 })
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -325,6 +339,12 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
         public void removeFragment(int position) {
             mCourseProjectModules.remove(position);
+            notifyChangeInPosition(position);
+            notifyDataSetChanged();
+        }
+
+        public void addFragment(int position, CourseProjectEnum projectEnum) {
+            mCourseProjectModules.add(position, projectEnum);
             notifyChangeInPosition(position);
             notifyDataSetChanged();
         }

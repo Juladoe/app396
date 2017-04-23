@@ -5,7 +5,6 @@ import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
-import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
@@ -62,31 +61,30 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
 
     @Override
     public void confirm() {
-        if (!BUY_ABLE.equals(mCourseProject.buyable)) {
-            mView.showToastOrFinish(R.string.course_limit_join, false);
-            return;
+        switch (mCourseProject.access){
+            case "1":
+                mView.showToast(R.string.course_unpublish);
+                break;
+            case "2":
+                mView.showToast(R.string.course_limit_join);
+                break;
+            case "3":
+                mView.showToast(R.string.course_date_limit);
+                break;
+            case "4":
+                mView.showToast(R.string.course_project_expire_hint);
+                break;
+            default:
+                joinFreeOrVipCourse(mCourseProject.id);
         }
-        long currentTime = System.currentTimeMillis();
-        if (END_DATE_MODE.equals(mCourseProject.learningExpiryDate.expiryMode) && TimeUtils.getMillisecond(mCourseProject.learningExpiryDate.expiryEndDate) <= currentTime
-                || DATE_MODE.equals(mCourseProject.learningExpiryDate.expiryMode) && TimeUtils.getMillisecond(mCourseProject.learningExpiryDate.expiryEndDate) <= currentTime) {
-            mView.showToastOrFinish(R.string.course_date_limit, false);
-            return;
-        }
-        if (IS_FREE.equals(mCourseProject.isFree) || EdusohoApp.app.loginUser.vip != null
-                && mCourseProject.vipLevelId != 0
-                && EdusohoApp.app.loginUser.vip.seq >= mCourseProject.vipLevelId) {
-            mView.showProcessDialog(true);
-            joinFreeOrVipCourse(mCourseProject.id, IS_FREE.equals(mCourseProject.isFree) ? FREE : VIP);
-            return;
-        }
-        mView.goToConfirmOrderActivity(mCourseProject);
     }
 
-    private void joinFreeOrVipCourse(final int courseProjectId, String joinWay) {
+    private void joinFreeOrVipCourse(final int courseProjectId) {
+        mView.showProcessDialog(true);
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
-                .joinFreeOrVipCourse(courseProjectId, joinWay)
+                .joinFreeOrVipCourse(courseProjectId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CourseMember>() {
@@ -102,11 +100,13 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
                     }
 
                     @Override
-                    public void onNext(CourseMember coureMember) {
-                        if (coureMember != null) {
-                            mView.showProcessDialog(false);
+                    public void onNext(CourseMember courseMember) {
+                        mView.showProcessDialog(false);
+                        if (courseMember != null && courseMember.user != null) {
                             mView.showToastOrFinish(R.string.join_success, true);
                             mView.goToCourseProjectActivity(courseProjectId);
+                        } else {
+                            mView.goToConfirmOrderActivity(mCourseProject);
                         }
                     }
                 });

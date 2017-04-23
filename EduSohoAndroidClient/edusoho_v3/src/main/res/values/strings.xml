@@ -489,6 +489,7 @@
     <string name="favorite_success">收藏成功</string>
     <string name="join_success">加入成功</string>
     <string name="join_fail">加入失败</string>
+    <string name="course_unpublish">课程未发布</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
     <string name="course_date_limit">课程已过有效截止日期，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
