@@ -7,9 +7,10 @@ import java.io.Serializable;
  */
 public class Vip implements Serializable{
     public int id;
+    public int seq;
     public int userId;
     public int levelId;
-    public long deadline;
+    public String deadline;
     public String boughtType;
     public String boughtTime;
     public int boughtDuration;

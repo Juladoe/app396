@@ -87,7 +87,7 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
                             return;
                         }
                         role.setRid(user.id);
-                        role.setAvatar(user.mediumAvatar);
+                        role.setAvatar(user.getMediumAvatar());
                         role.setType(Destination.USER);
                         role.setNickname(user.nickname);
                         callback.onCreateRole(role);

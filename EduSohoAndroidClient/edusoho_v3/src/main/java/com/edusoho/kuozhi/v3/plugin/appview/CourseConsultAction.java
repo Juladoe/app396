@@ -14,7 +14,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -42,7 +41,7 @@ public class CourseConsultAction {
                 if (user != null) {
                     bundle.putString(ImChatActivity.FROM_NAME, user.nickname);
                     bundle.putInt(ImChatActivity.FROM_ID, user.id);
-                    bundle.putString(ImChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
+                    bundle.putString(ImChatActivity.HEAD_IMAGE_URL, user.getMediumAvatar());
                     CoreEngine.create(mActivity.getBaseContext()).runNormalPluginWithBundle("ImChatActivity", mActivity, bundle);
                 }
             }

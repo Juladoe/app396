@@ -30,7 +30,6 @@ public class CourseSet implements Serializable {
 
     public String createdTime;
     public String updatedTime;
-    public List<?> tags;
     public String[] audiences;
     public List<Teacher> teachers;
 }

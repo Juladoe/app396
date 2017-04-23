@@ -201,7 +201,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         holder.tvSendTime.setVisibility(View.GONE);
         setTimer(pos, holder.tvSendTime);
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.getMediumAvatar(), holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
@@ -264,14 +264,14 @@ public class ThreadDiscussAdapter extends ChatAdapter {
             ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(imageLocalPath), holder.ivMsgImage, EdusohoApp.app.mOptions);
             holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         }
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.getMediumAvatar(), holder.ivAvatar, mOptions);
     }
 
     @Override
     protected void handlerSendAudio(final ViewHolder holder, int pos) {
         final ThreadDiscussEntity model = mList.get(pos);
         setTimer(pos, holder.tvSendTime);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.getMediumAvatar(), holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);

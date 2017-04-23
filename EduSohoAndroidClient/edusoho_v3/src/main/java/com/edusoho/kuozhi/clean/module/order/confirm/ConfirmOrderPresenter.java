@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.clean.module.order.confirm;
 
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseSetApi;
 import com.edusoho.kuozhi.clean.api.OrderApi;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -45,7 +44,6 @@ class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         mView.showProcessDialog(false);
-                        mView.showToastAndFinish(R.string.course_project_expire_hint);
                     }
 
                     @Override

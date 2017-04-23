@@ -11,7 +11,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 
 import java.util.List;
 
@@ -109,11 +108,6 @@ public class CourseEvaluateFragment extends BaseLazyFragment<CourseEvaluateContr
             return;
         }
         mCeAdapter.changeMoreStatus(status);
-    }
-
-    @Override
-    public void showToast() {
-        CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
     }
 
     @Override

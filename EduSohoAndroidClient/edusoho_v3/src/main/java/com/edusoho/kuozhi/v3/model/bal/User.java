@@ -1,10 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
-import android.text.TextUtils;
-
 import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 
 import java.io.Serializable;
 
@@ -16,16 +12,17 @@ public class User implements Serializable {
     public String email;
     public String password;
     public int id;
-    public String avatar;
     public UserRole[] roles;
     public String uri;
     public String title;
     public String type;
     public String point;
-    public String mediumAvatar;
     public String createdTime;
     public String about;
     public String role;
+    public String mediumAvatar;
+    public Avatar avatar;
+
     /**
      * 关注
      */
@@ -40,14 +37,16 @@ public class User implements Serializable {
     public String thirdParty;
 
     public String getMediumAvatar() {
-        int schemIndex = mediumAvatar.lastIndexOf("http://");
+        int schemIndex = (avatar == null ? mediumAvatar.lastIndexOf("http://") : avatar.middle.lastIndexOf("http://"));
         if (schemIndex != -1) {
-            return mediumAvatar.substring(schemIndex);
+            return avatar == null ? mediumAvatar.substring(schemIndex) : avatar.middle.substring(schemIndex);
         }
-        if (mediumAvatar.startsWith("//")) {
+        if (avatar != null && avatar.middle.startsWith("//")) {
+            return "http:" + avatar.middle;
+        } else if(mediumAvatar.startsWith("//")){
             return "http:" + mediumAvatar;
         }
-        return mediumAvatar;
+        return avatar == null ? mediumAvatar : avatar.middle;
     }
 
     public String userRole2String() {

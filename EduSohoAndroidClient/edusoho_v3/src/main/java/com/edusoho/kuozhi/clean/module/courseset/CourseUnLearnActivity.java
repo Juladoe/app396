@@ -31,9 +31,9 @@ import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
+import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -110,6 +110,14 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     protected void onPause() {
         super.onPause();
         mAppBarLayout.removeOnOffsetChangedListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
     }
 
     private void isJoin() {
@@ -246,12 +254,12 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
             mTvCollect.setText(getResources().getString(R.string.new_font_collected));
             mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
             mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
-            CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.favorite_success));
+            showToast(R.string.favorite_success);
         } else {
             mTvCollect.setText(getResources().getString(R.string.new_font_collect));
             mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
             mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
-            CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.cancel_favorite));
+            showToast(R.string.cancel_favorite);
         }
     }
 
@@ -342,11 +350,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     }
 
     @Override
-    public void showToast(int content) {
-        CommonUtil.shortToast(this, getString(content));
-    }
-
-    @Override
     public void showPlanDialog(List<CourseProject> list, List<VipInfo> vipInfo, CourseSet courseSet) {
         if (mSelectDialog == null) {
             mSelectDialog = new SelectProjectDialog();
@@ -374,7 +377,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     @Override
     public void goToConfirmOrderActivity(CourseProject courseProject) {
         if (mCourseSet != null && courseProject != null) {
-            ConfirmOrderActivity.launch(this, courseProject.courseSetId, courseProject.id);
+            ConfirmOrderActivity.launch(this, courseProject.courseSet.id, courseProject.id);
         }
     }
 
@@ -407,10 +410,11 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mTimer != null) {
-            mTimer.cancel();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == LoginActivity.OK) {
+            showProcessDialog();
+            mPresenter.isJoinCourseSet();
         }
     }
 

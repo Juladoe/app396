@@ -10,8 +10,6 @@ import com.edusoho.kuozhi.clean.bean.Review;
 
 import java.util.List;
 
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -44,8 +42,7 @@ public interface CourseApi {
     Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") int courseId,
                                                                @Query("offset") int offset, @Query("limit") int limit);
 
-    @FormUrlEncoded
     @POST("courses/{id}/members")
-    Observable<CourseMember> joinFreeOrVipCourse(@Path("id") int courseId, @Field("joinWay") String joinWay);
+    Observable<CourseMember> joinFreeOrVipCourse(@Path("id") int courseId);
 
 }

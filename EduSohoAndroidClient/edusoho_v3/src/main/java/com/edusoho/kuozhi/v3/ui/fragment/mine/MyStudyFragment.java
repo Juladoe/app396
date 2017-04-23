@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +25,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -137,21 +137,25 @@ public class MyStudyFragment extends BaseFragment implements MineFragment.Refres
         tvClassroom.setTextColor(getResources().getColor(R.color.primary_font_color));
         switch (type) {
             case LATEST_COURSE:
+                MobclickAgent.onEvent(mActivity, "i_study_recent");
                 loadLatestCourse();
                 tvLatestCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_latest));
                 break;
             case NORMAL_COURSE:
+                MobclickAgent.onEvent(mActivity, "i_study_cores");
                 loadNormalCourse();
                 tvNormalCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_course));
                 break;
             case LIVE_COURSE:
+                MobclickAgent.onEvent(mActivity, "i_study_live");
                 loadLiveCourse();
                 tvLiveCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_live));
                 break;
             case CLASSROOM:
+                MobclickAgent.onEvent(mActivity, "i_study_classroom");
                 loadClassroom();
                 tvClassroom.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_classroom));

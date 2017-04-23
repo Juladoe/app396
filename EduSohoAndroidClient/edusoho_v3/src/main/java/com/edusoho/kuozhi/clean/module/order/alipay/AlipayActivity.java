@@ -5,22 +5,21 @@ import android.content.Intent;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.base.BaseActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 /**
  * Created by DF on 2017/4/12.
  */
 
-public class AlipayActivity extends AppCompatActivity {
+public class AlipayActivity extends BaseActivity {
 
     private static final String TARGET_ID = "targetId";
     private static final String URL_DATA = "urlData";
@@ -66,7 +65,7 @@ public class AlipayActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.contains(ALIPAY_CALLBACK)) {
-                    CommonUtil.shortToast(AlipayActivity.this, getString(R.string.join_success));
+                    showToast(R.string.join_success);
                     sendBroad();
                     return true;
                 }

@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.clean.bean;
 
-import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
 import com.edusoho.kuozhi.clean.bean.innerbean.Cover;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 
@@ -14,10 +13,7 @@ import java.io.Serializable;
 public class CourseProject implements Serializable {
 
     public int id;
-    public int courseSetId;
     public String title;
-    public String expiryMode;
-    public String expiryDays;
     public String status;
     public String summary;
     public int studentNum;
@@ -31,6 +27,7 @@ public class CourseProject implements Serializable {
     public String buyable;
     public int vipLevelId;
     public int publishedTaskNum;
+    public String access;
     public Service[] services;
     public Teacher[] teachers;
     public SimpleCourseSet courseSet;

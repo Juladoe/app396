@@ -120,7 +120,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
             joinFreeOrVipCourse(courseId, "vip");
         } else {
-            mView.launchConfirmOrderActivity(mCourseProject.courseSetId, courseId);
+            mView.launchConfirmOrderActivity(mCourseProject.courseSet.id, courseId);
         }
     }
 
@@ -240,7 +240,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
-                .joinFreeOrVipCourse(courseId, joinWay)
+                .joinFreeOrVipCourse(courseId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseMember>() {
