@@ -23,10 +23,10 @@ import rx.Observable;
 public interface UserApi {
 
     @GET("me/join_in_courses")
-    Observable<List<CourseMember>> getMyJoinCourses(@Header("X-Auth-Token") String token, @Query("courseSetId") int courseSetId);
+    Observable<List<CourseMember>> getMyJoinCourses(@Query("courseSetId") int courseSetId);
 
     @GET("me/course_learning_progress/{courseId}")
-    Observable<CourseLearningProgress> getMyCourseLearningProgress(@Header("X-Auth-Token") String token, @Path("courseId") int courseId);
+    Observable<CourseLearningProgress> getMyCourseLearningProgress(@Path("courseId") int courseId);
 
     @GET("me/favorite_course_sets/{courseSetId}")
     Observable<JsonObject> getFavorite(@Path("courseSetId") int courseSetId);
