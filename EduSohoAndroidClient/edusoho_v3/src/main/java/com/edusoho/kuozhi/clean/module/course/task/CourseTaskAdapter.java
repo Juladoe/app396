@@ -9,8 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.TaskItem;
-import com.edusoho.kuozhi.clean.module.course.CourseProjectEnum;
+import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 
 import java.util.List;
@@ -20,10 +19,10 @@ import java.util.List;
  */
 
 public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<TaskItem> mTaskItems;
+    private List<CourseItem> mTaskItems;
     private Context mContext;
 
-    public CourseTaskAdapter(Context context, List<TaskItem> taskItems) {
+    public CourseTaskAdapter(Context context, List<CourseItem> taskItems) {
         this.mTaskItems = taskItems;
         this.mContext = context;
     }
@@ -55,7 +54,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        TaskItem taskItem = mTaskItems.get(position);
+        CourseItem taskItem = mTaskItems.get(position);
         if (holder instanceof CourseTaskChapterViewHolder) {
             CourseTaskChapterViewHolder chapterHolder = (CourseTaskChapterViewHolder) holder;
             chapterHolder.chapterTitle.setText(String.format(mContext.getString(R.string.course_project_chapter), taskItem.number, taskItem.title));
@@ -64,11 +63,10 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, taskItem.title));
         } else {
             CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
-            taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskSequence(), taskItem.title));
-            taskHolder.taskDuration.setText(taskItem.length);
-            taskHolder.taskIsFree.setVisibility(taskItem.isFree == 1 ? View.VISIBLE : View.GONE);
-            Log.d("onBindViewHolder", "onBindViewHolder: " + taskItem.type);
-            taskHolder.taskType.setText(getTaskIconResId(taskItem.type));
+            taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskItemSequence(), taskItem.title));
+            taskHolder.taskDuration.setText(taskItem.task.length);
+            taskHolder.taskIsFree.setVisibility(taskItem.task.isFree == 1 ? View.VISIBLE : View.GONE);
+            taskHolder.taskType.setText(getTaskIconResId(taskItem.task.type));
         }
     }
 

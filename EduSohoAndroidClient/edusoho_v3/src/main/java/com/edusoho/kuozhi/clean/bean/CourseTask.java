@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class CourseTask implements Serializable {
     public int id;
     public String courseId;
-    public String seq;
+    public int seq;
     public String categoryId;
     public String activityId;
     public String title;
