@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.TaskItem;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 
@@ -53,7 +53,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     }
 
     @Override
-    public void showCourseTasks(List<TaskItem> taskItems) {
+    public void showCourseTasks(List<CourseItem> taskItems) {
         CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         taskRecyclerView.setAdapter(adapter);

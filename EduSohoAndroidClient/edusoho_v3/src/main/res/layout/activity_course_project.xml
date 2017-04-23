@@ -7,13 +7,60 @@
     android:orientation="vertical"
     tools:context=".clean.module.course.CourseProjectActivity">
 
+
     <ImageView
         android:id="@+id/iv_course_cover"
         android:layout_width="match_parent"
-        android:layout_height="202dp"
-        android:layout_alignParentTop="true"
+        android:layout_height="222dp"
         android:scaleType="fitXY"
         android:src="@drawable/default_course" />
+
+    <RelativeLayout
+        android:id="@+id/rl_trial_layout"
+        android:layout_width="match_parent"
+        android:layout_height="222dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/base_black_35"
+        android:paddingTop="81dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_latest_learned_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"
+            android:text="@string/latest_task_title"
+            android:textColor="@color/disabled2_hint_color"
+            android:textSize="@dimen/font_s" />
+
+        <TextView
+            android:id="@+id/tv_latest_task_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_latest_learned_title"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/disabled2_hint_color"
+            android:textSize="@dimen/font_l" />
+
+        <TextView
+            android:id="@+id/tv_latest_learned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_latest_task_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_latest_learned"
+            android:drawableLeft="@drawable/icon_play"
+            android:drawablePadding="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/disabled2_hint_color"
+            android:textSize="@dimen/font_l" />
+    </RelativeLayout>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -57,7 +104,8 @@
                 android:gravity="center"
                 android:text="@string/new_font_cache"
                 android:textColor="@color/disabled2_hint_color"
-                android:textSize="@dimen/font_xl" />
+                android:textSize="@dimen/font_xl"
+                android:visibility="gone" />
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>

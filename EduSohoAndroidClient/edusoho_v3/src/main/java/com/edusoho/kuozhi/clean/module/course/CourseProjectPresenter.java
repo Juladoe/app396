@@ -6,6 +6,7 @@ import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
@@ -40,7 +41,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
-        //mCourseProjectId = 21;
     }
 
     @Override
@@ -81,6 +81,36 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         }
                     }
                 });
+        initTrialFirstTask(mCourseProjectId);
+    }
+
+    private void initTrialFirstTask(final int courseId) {
+        HttpUtils.getInstance()
+                .createApi(CourseApi.class)
+                .getTrialFirstTask(courseId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseTask>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseTask trialTask) {
+                        if (trialTask != null && trialTask.id != 0) {
+                            mView.setTrialTaskVisible(true);
+                            mView.initTrailTask(trialTask);
+                        } else {
+                            mView.setTrialTaskVisible(false);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -90,7 +120,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
             joinFreeOrVipCourse(courseId, "vip");
         } else {
-            mView.launchConfirmOrderActivity(mCourseProjectId, courseId);
+            mView.launchConfirmOrderActivity(mCourseProject.courseSetId, courseId);
         }
     }
 
@@ -162,12 +192,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             }
                             // TODO: 2017/4/20 还需要处理vip过期问题
                         } else {
+                            mView.showFragments(initCourseModules(false), courseProject);
                             if (courseProject.learningExpiryDate.expired) {
-                                mView.showFragments(initCourseModules(false), courseProject);
                                 mView.setJoinButton(false);
                             }
                         }
-                        mView.showFragments(initCourseModules(false), courseProject);
                     }
                 });
     }
@@ -201,6 +230,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseLearningProgress courseLearningProgress) {
                         mProgress = courseLearningProgress;
                         mView.setProgressBar(courseLearningProgress.progress);
+                        mView.setTrialTaskVisible(true);
+                        mView.initNextTask(courseLearningProgress.nextTask);
                     }
                 });
     }
@@ -226,6 +257,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseMember courseMember) {
                         if (courseMember != null) {
+                            mView.showToast(R.string.join_course_success);
                             mView.initJoinCourseLayout();
                             setCourseLearningProgress(courseId);
                         }

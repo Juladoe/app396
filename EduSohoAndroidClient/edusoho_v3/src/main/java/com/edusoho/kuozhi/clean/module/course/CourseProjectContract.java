@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.module.course;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -32,7 +33,11 @@ public interface CourseProjectContract {
 
         void initJoinCourseLayout();
 
-        void initUnLearnLayout();
+        void initTrailTask(CourseTask trialTask);
+
+        void initNextTask(CourseTask nextTask);
+
+        void setTrialTaskVisible(boolean visible);
 
         void initLearnLayout();
 
