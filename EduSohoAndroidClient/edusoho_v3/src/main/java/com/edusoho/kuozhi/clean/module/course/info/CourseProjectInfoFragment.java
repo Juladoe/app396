@@ -42,6 +42,7 @@ import cn.trinea.android.common.util.StringUtils;
 public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoContract.Presenter> implements CourseProjectInfoContract.View, CourseProjectFragmentListener {
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
+    private static final String COURSE_IS_JOIN = "CourseLearn";
     private CourseProjectInfoContract.Presenter mPresenter;
 
     private FlowLayout mPromise;

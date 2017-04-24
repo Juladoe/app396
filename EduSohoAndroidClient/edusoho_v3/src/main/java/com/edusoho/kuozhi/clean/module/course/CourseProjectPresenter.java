@@ -37,6 +37,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private CourseLearningProgress mProgress;
     private CourseMember mMember;
     private CourseProject mCourseProject;
+    private boolean mIsJoin = false;
 
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
@@ -116,9 +117,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void joinCourseProject(final int courseId) {
         if (mCourseProject.originPrice == FREE_PRICE) {
-            joinFreeOrVipCourse(courseId, "free");
+            joinFreeOrVipCourse(courseId);
         } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
-            joinFreeOrVipCourse(courseId, "vip");
+            joinFreeOrVipCourse(courseId);
         } else {
             mView.launchConfirmOrderActivity(mCourseProject.courseSet.id, courseId);
         }
@@ -146,6 +147,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                            mIsJoin = false;
                             mView.showToast(R.string.exit_course_success);
                             mView.exitCourseLayout();
                         } else {
@@ -180,8 +182,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseMember member) {
                         mMember = member;
-                        boolean isLearning = member.user != null;
-                        if (isLearning) {
+                        mIsJoin = member.user != null;
+                        if (mIsJoin) {
                             mView.showFragments(initCourseModules(true), courseProject);
                             mView.initLearnLayout();
                             setCourseLearningProgress(courseProject.id);
@@ -236,7 +238,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 });
     }
 
-    private void joinFreeOrVipCourse(final int courseId, String joinWay) {
+    private void joinFreeOrVipCourse(final int courseId) {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
@@ -257,6 +259,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseMember courseMember) {
                         if (courseMember != null) {
+                            mIsJoin = true;
                             mView.showToast(R.string.join_course_success);
                             mView.initJoinCourseLayout();
                             setCourseLearningProgress(courseId);
@@ -275,6 +278,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
             list.add(CourseProjectEnum.RATE);
         }
         return list;
+    }
+
+    @Override
+    public boolean isJoin() {
+        return mIsJoin;
     }
 
     @Override
