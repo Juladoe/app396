@@ -1,5 +1,9 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -205,18 +209,17 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
     protected void add() {
         if (mClassroomId != 0) {
             if (!"1".equals(mClassroomDetail.getClassRoom().buyable)) {
-                if(((EdusohoApp) getApplication()).loginUser.vip == null) {
-                    CommonUtil.shortToast(ClassroomActivity.this, getResources()
-                            .getString(R.string.add_error_close));
+                if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip == null) {
+                    showDialog();
+                    return;
+                } else if(((EdusohoApp) getApplication()).loginUser == null){
+                    showProcessDialog();
+                }  else {
+                    showDialog();
                     return;
                 }
             }
-            if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
-                    && mClassroomDetail.getClassRoom().vipLevelId == 0){
-                CommonUtil.shortToast(ClassroomActivity.this, getResources()
-                        .getString(R.string.add_error_close));
-                return;
-            }
+
             showProcessDialog();
             if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
                     && ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mClassroomDetail.getClassRoom().vipLevelId
@@ -225,6 +228,10 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                     @Override
                     public void onAddClassroomSuccee(String response) {
                         hideProcesDialog();
+                        if(response.contains("不能以会员身份加入班级")){
+                            CommonUtil.shortToast(ClassroomActivity.this, "您的会员已过期");
+                            return;
+                        }
                         CommonUtil.shortToast(ClassroomActivity.this, getResources()
                                 .getString(R.string.success_add_classroom));
                         initData();
@@ -261,6 +268,23 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                     });
             mIsJump = true;
         }
+    }
+
+    private void showDialog(){
+        Dialog dialog = new AlertDialog.Builder(this)
+                .setTitle("提醒")
+                .setMessage(getResources().getString(R.string.add_error_close))
+                .setPositiveButton("复制微信号", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        cm.setText("eLicht-Academy");
+                        CommonUtil.shortToast(ClassroomActivity.this, "已复制");
+                    }
+                })
+                .create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     @Override

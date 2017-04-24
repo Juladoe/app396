@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.course;
 
+import android.app.Dialog;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -168,17 +170,23 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     protected void add() {
         if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
-                if(((EdusohoApp) getApplication()).loginUser.vip == null){
-                    CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
-                            .getString(R.string.add_error_close));
+                if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip == null) {
+                   Dialog dialog = new AlertDialog.Builder(this)
+                            .setTitle("提醒")
+                            .setMessage(getResources().getString(R.string.add_error_close))
+                            .setPositiveButton("复制微信号", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                                    cm.setText("eLicht-Academy");
+                                    CommonUtil.shortToast(CourseStudyDetailActivity.this, "已复制");
+                                }
+                            })
+                            .create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
                     return;
                 }
-            }
-            if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
-                    && mCourseDetail.getCourse().vipLevelId == 0){
-                CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
-                        .getString(R.string.add_error_close));
-                return;
             }
             showProcessDialog();
             if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
@@ -188,6 +196,10 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     @Override
                     public void onAddCourseSuccess(String response) {
                         hideProcesDialog();
+                        if(response.contains("不能以会员身份加入课程")){
+                            CommonUtil.shortToast(CourseStudyDetailActivity.this, "您的会员已过期");
+                            return;
+                        }
                         CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
                                 .getString(R.string.success_add_course));
                         initData();
@@ -212,8 +224,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                         @Override
                         public void onAddCourseSuccess(String response) {
                             hideProcesDialog();
-                            CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
-                                    .getString(R.string.success_add_course));
+                            if(response.equals(true)) {
+                                CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
+                                        .getString(R.string.success_add_course));
+                            } else {
+                                CommonUtil.shortToast(CourseStudyDetailActivity.this, "您的会员已过期");
+                                return;
+                            }
                             initData();
                         }
 
@@ -224,6 +241,23 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     });
             mIsJump = true;
         }
+    }
+
+    private void showDialog(){
+        Dialog dialog = new AlertDialog.Builder(this)
+                .setTitle("提醒")
+                .setMessage(getResources().getString(R.string.add_error_close))
+                .setPositiveButton("复制微信号", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        cm.setText("eLicht-Academy");
+                        CommonUtil.shortToast(CourseStudyDetailActivity.this, "已复制");
+                    }
+                })
+                .create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     @Override

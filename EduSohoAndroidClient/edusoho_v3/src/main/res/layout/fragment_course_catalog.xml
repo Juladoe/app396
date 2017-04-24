@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
+    <RelativeLayout
+        android:id="@+id/rl_vip_appear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <RelativeLayout
             android:id="@+id/rl_space"
             android:layout_width="match_parent"
@@ -41,33 +46,45 @@
                 android:textSize="@dimen/font_m" />
         </RelativeLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/lv_catalog"
-            android:layout_below="@+id/rl_space"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none" />
+            android:layout_below="@+id/rl_space"
+            android:scrollbars="none"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.edusoho.kuozhi.v3.view.InnerLoadView
             android:id="@+id/ll_frame_load"
-            android:background="@color/textIcons"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/textIcons" />
 
         <TextView
             android:id="@+id/ll_course_catalog_empty"
-            android:layout_marginBottom="55dp"
-            android:layout_marginTop="60dp"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/no_add_course"
-            android:drawableTop="@drawable/no_review"
+            android:layout_marginBottom="55dp"
+            android:layout_marginTop="60dp"
             android:drawablePadding="12dp"
+            android:drawableTop="@drawable/no_review"
+            android:gravity="center"
+            android:text="@string/no_add_course"
             android:textColor="@color/secondary2_font_color"
             android:textSize="@dimen/font_s" />
+    </RelativeLayout>
 
+
+    <TextView
+        android:id="@+id/tv_vip_hint"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:drawablePadding="12dp"
+        android:drawableTop="@drawable/no_review"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:textColor="@color/secondary2_font_color"
+        android:textSize="@dimen/font_s" />
 </RelativeLayout>

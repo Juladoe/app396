@@ -167,6 +167,35 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
+    public static void getAllCourseMember(int courseId,
+                                       final ResponseCallbackListener<List<CourseMember>> callbackListener) {
+        String url = String.format(Const.COURSE_GETALLMEMBER, courseId, courseId);
+        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    ApiResponse<CourseMember> apiResponse =
+                            ModelDecor.getInstance().decor(response,
+                                    new TypeToken<ApiResponse<CourseMember>>() {
+                                    });
+                    if (apiResponse != null) {
+                        callbackListener.onSuccess(apiResponse.resources);
+                    } else  {
+                        callbackListener.onFailure("Error", response);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
     public static void getClassroomMember(int classroomId,
                                           final ResponseCallbackListener<List<ClassroomMember>> callbackListener) {
         String url = String.format(Const.CLASSROOM_GETMEMBER, classroomId);

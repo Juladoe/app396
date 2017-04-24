@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.Dialog;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -306,18 +308,25 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     protected void add() {
         if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
-                if(((EdusohoApp) getApplication()).loginUser.vip == null) {
-                    CommonUtil.shortToast(CourseActivity.this, getResources()
-                            .getString(R.string.add_error_close));
+                if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip == null) {
+                    Dialog dialog = new AlertDialog.Builder(this)
+                            .setTitle("提醒")
+                            .setMessage(getResources().getString(R.string.add_error_close))
+                            .setPositiveButton("复制微信号", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                                    cm.setText("eLicht-Academy");
+                                    CommonUtil.shortToast(CourseActivity.this, "已复制");
+                                }
+                            })
+                            .create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
                     return;
                 }
             }
-            if(app.loginUser != null && app.loginUser.vip != null
-                    && mCourseDetail.getCourse().vipLevelId == 0){
-                CommonUtil.shortToast(CourseActivity.this, getResources()
-                        .getString(R.string.add_error_close));
-                return;
-            }
+
             showProcessDialog();
             if (app.loginUser != null && app.loginUser.vip != null
                     && app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
@@ -326,6 +335,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     @Override
                     public void onAddCourseSuccess(String response) {
                         hideProcesDialog();
+                        if(response.contains("不能以会员身份加入课程")){
+                            CommonUtil.shortToast(CourseActivity.this, "您的会员已过期");
+                            return;
+                        }
                         CommonUtil.shortToast(CourseActivity.this, getResources()
                                 .getString(R.string.success_add_course));
                         initData();

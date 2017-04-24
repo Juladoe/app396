@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -30,7 +31,10 @@ import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -62,6 +66,8 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     public int mCourseId;
     public CourseCatalogueAdapter mAdapter;
     private RelativeLayout mRlSpace;
+    private RelativeLayout rlVipAppear;
+    private TextView tvVipHint;
     private RecyclerView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
     private TextView tvSpace;
@@ -71,6 +77,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     private List<CourseCatalogue.LessonsBean> lessonsBeanList;
     private CourseCatalogue.LessonsBean lessonsBean;
     private CourseStateCallback mCourseStateCallback;
+    private CourseMember mCourseMember;
 
     public CourseCatalogFragment() {
     }
@@ -85,6 +92,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_course_catalog, null);
         initView(contentView);
+        isMember();
         ViewGroup parent = (ViewGroup) contentView.getParent();
         if (parent != null) {
             parent.removeView(contentView);
@@ -93,6 +101,8 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     }
 
     private void initView(View view) {
+        rlVipAppear = (RelativeLayout) view.findViewById(R.id.rl_vip_appear);
+        tvVipHint = (TextView)view.findViewById(R.id.tv_vip_hint);
         mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
         mLvCatalog = (RecyclerView) view.findViewById(R.id.lv_catalog);
         mLoadView = view.findViewById(R.id.ll_frame_load);
@@ -489,5 +499,50 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
 
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    private void isMember(){
+        CourseDetailModel.getAllCourseMember(mCourseId,
+                new ResponseCallbackListener<List<CourseMember>>() {
+                    @Override
+                    public void onSuccess(List<CourseMember> data) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            return;
+                        }
+                        if(EdusohoApp.app.loginUser != null){
+                            mCourseMember = null;
+                            for(int i=0; i< data.size(); i++){
+                                if(data.get(i).user.id == EdusohoApp.app.loginUser.id){
+                                    mCourseMember = data.get(i);
+                                    break;
+                                }
+                            }
+                            if(mCourseMember != null){
+                                long deadline = EdusohoApp.app.loginUser.vip == null ? 0 : EdusohoApp.app.loginUser.vip.VipDeadLine;
+                                if(Long.parseLong(mCourseMember.deadline) < 0){
+                                    tvVipHint.setText("课程购买已过期，不能学习此课程");
+                                } else if(EdusohoApp.app.loginUser.vip == null && mCourseMember.levelId >0){
+                                    tvVipHint.setText("您已经不是会员，不能学习此课程");
+                                } else if(mCourseMember.levelId >0 && EdusohoApp.app.loginUser.vip.levelId < mCourseMember.levelId){
+                                    tvVipHint.setText("会员等级不够，不能学习此课程");
+                                } else if(deadline > 0 && deadline < System.currentTimeMillis()/1000){
+                                    tvVipHint.setText("您的会员已过期，不能学习此课程");
+                                } else {
+                                    rlVipAppear.setVisibility(View.VISIBLE);
+                                    tvVipHint.setVisibility(View.GONE);
+                                }
+                            } else {
+                                tvVipHint.setVisibility(View.GONE);
+                            }
+                        } else {
+                            rlVipAppear.setVisibility(View.VISIBLE);
+                            tvVipHint.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(String code, String message) {
+                    }
+                });
     }
 }
