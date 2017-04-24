@@ -537,7 +537,7 @@
     <string name="course_menu_info">简介</string>
     <string name="course_menu_question">问答</string>
     <string name="course_menu_share">分享</string>
-    <string name="course_menu_discuss">分享</string>
+    <string name="course_menu_discuss">讨论</string>
     <string name="course_menu_rate">评价</string>
 
 </resources>
