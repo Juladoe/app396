@@ -16,8 +16,6 @@ public class User implements Serializable {
     public String uri;
     public String title;
     public String type;
-    public String point;
-    public String createdTime;
     public String about;
     public String role;
     public String mediumAvatar;
@@ -43,7 +41,7 @@ public class User implements Serializable {
         }
         if (avatar != null && avatar.middle.startsWith("//")) {
             return "http:" + avatar.middle;
-        } else if(mediumAvatar.startsWith("//")){
+        } else if (mediumAvatar.startsWith("//")) {
             return "http:" + mediumAvatar;
         }
         return avatar == null ? mediumAvatar : avatar.middle;

@@ -217,6 +217,8 @@
     <string name="font_scan_code">&#xe608;</string>
     <string name="font_search">&#xe603;</string>
     <string name="font_back">&#xe618;</string>
+    <string name="font_question">&#xe6c4;</string>
+    <string name="font_info">&#xe6c3;</string>
 
     <string name="font_chat_add_media">&#xe611;</string>
     <string name="font_chat_keyboard">&#xe60d;</string>
@@ -532,5 +534,10 @@
     <string name="latest_task_title">上次学到</string>
     <string name="start_learn_trial_task">开始试学</string>
     <string name="start_learn_next_task">继续学习</string>
+    <string name="course_menu_info">简介</string>
+    <string name="course_menu_question">问答</string>
+    <string name="course_menu_share">分享</string>
+    <string name="course_menu_discuss">讨论</string>
+    <string name="course_menu_rate">评价</string>
 
 </resources>

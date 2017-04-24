@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"
@@ -11,4 +11,23 @@
         android:background="@color/disabled2_hint_color"
         android:padding="10dp" />
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/primary_color"
+        android:src="@drawable/course_menu_show_button"
+        app:backgroundTint="@color/primary_color"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:layout_anchor="@id/rv_content"
+        app:layout_anchorGravity="bottom|right"
+        app:rippleColor="@color/primary" />
+
+    <include
+        layout="@layout/dialog_course_bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</android.support.design.widget.CoordinatorLayout>
