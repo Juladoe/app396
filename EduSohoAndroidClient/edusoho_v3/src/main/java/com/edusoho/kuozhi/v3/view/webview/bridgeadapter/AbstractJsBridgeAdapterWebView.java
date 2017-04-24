@@ -11,13 +11,12 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.JsBridgeAdapter;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
 
 /**
  * Created by howzhi on 15/7/15.
  */
-public abstract class AbstractJsBridgeAdapterWebView<T extends Activity> extends WebView{
+public abstract class AbstractJsBridgeAdapterWebView<T extends Activity> extends WebView {
 
     protected boolean mIsBackIng;
     protected int mOverScrollY;
@@ -35,7 +34,7 @@ public abstract class AbstractJsBridgeAdapterWebView<T extends Activity> extends
         init(context);
     }
 
-    public void handleDestroy(){
+    public void handleDestroy() {
         JsBridgeAdapter.getInstance().unResgit(this);
     }
 
@@ -120,7 +119,11 @@ public abstract class AbstractJsBridgeAdapterWebView<T extends Activity> extends
     }
 
     public void invokeCallback(String callbackId, String type, String args) {
-        execJsScript(String.format("javascript:jsBridgeAdapter.invokeCallback('%s','%s', %s)", callbackId, type, args));
+        execJsScript(String.format("javascript:jsBridgeAdapter.invokeCallback('%s','%s', %s)", callbackId, type, formatString(args)));
+    }
+
+    private String formatString(String input) {
+        return input.replaceAll("\\\\r", "").replaceAll("\\\\n", "");
     }
 
     public T getActitiy() {

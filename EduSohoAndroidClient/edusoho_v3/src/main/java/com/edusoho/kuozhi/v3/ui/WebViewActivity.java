@@ -5,16 +5,19 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
 
@@ -25,19 +28,21 @@ public class WebViewActivity extends ActionBarBaseActivity {
 
     private final static String TAG = "WebViewActivity";
     public final static int CLOSE = 0x01;
-    public final static int BACK = 0x02;
+    public final static String SEND_EVENT = "send_event";
+    public static final int BACK = 0x02;
 
     private String url = "";
     private ESWebView mWebView;
-
+    private Toolbar mToolbar;
+    private TextView mTitleView;
     private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        hideActionBar();
-        setBackMode(super.BACK, "标题");
         setContentView(R.layout.webview_activity);
+        mToolbar = (Toolbar) findViewById(R.id.tb_webview_toolbar);
+        mTitleView = (TextView) findViewById(R.id.tv_toolbar_title);
         initCordovaWebView();
     }
 
@@ -53,7 +58,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
         }
 
         if (!url.startsWith(app.host)) {
-            showActionBar();
+            setSupportActionBar(mToolbar);
+            mToolbar.setVisibility(View.VISIBLE);
         }
         mWebView = (ESWebView) findViewById(R.id.webView);
         mWebView.initPlugin(mActivity);
@@ -61,15 +67,35 @@ public class WebViewActivity extends ActionBarBaseActivity {
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        mTitleView.setText(title);
+    }
+
+    @Override
     public void invoke(WidgetMessage message) {
         processMessage(message);
         MessageType messageType = message.type;
 
+        if (SEND_EVENT.equals(messageType.type)) {
+            Bundle bundle = message.data;
+            String eventName = bundle.getString("event");
+            mWebView.getWebView().execJsScript(String.format("jsBridgeAdapter.sendEvent('%s')", eventName));
+        }
+        if (ESWebView.MAIN_UPDATE.equals(messageType.type)) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mWebView.reload();
+                }
+            });
+            return;
+        }
         if (Const.THIRD_PARTY_LOGIN_SUCCESS.equals(messageType.type) || Const.LOGIN_SUCCESS.equals(messageType.type)) {
             if (getRunStatus() == MSG_PAUSE) {
                 saveMessage(message);
                 return;
             }
+
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -109,8 +135,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
-        destoryVideoResource();
-        destoryWebView();
+        MessageEngine.getInstance().sendMsg(Const.WEB_BACK_REFRESH, null);
+        mWebView = null;
     }
 
     @Override
@@ -121,6 +147,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
                 new MessageType(Const.TOKEN_LOSE),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
+                new MessageType(SEND_EVENT),
+                new MessageType(ESWebView.MAIN_UPDATE)
         };
         return messageTypes;
     }
@@ -129,12 +157,18 @@ public class WebViewActivity extends ActionBarBaseActivity {
     public void finish() {
         Log.d(TAG, "finish");
         super.finish();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                destoryVideoResource();
+                destoryWebView();
+            }
+        });
     }
 
     private void destoryWebView() {
         if (mWebView != null) {
             mWebView.destroy();
-            mWebView = null;
         }
     }
 

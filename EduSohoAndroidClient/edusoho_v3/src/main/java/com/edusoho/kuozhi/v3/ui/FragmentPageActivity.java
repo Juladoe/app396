@@ -20,7 +20,6 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(null, "FragmentPageActivity start");
         setContentView(R.layout.fragment_page_layout);
         initView();
     }
@@ -41,7 +40,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Fragment fragment = app.mEngine.runPluginWithFragmentByBundle(
                     fragmentName, mActivity, bundle);
-            fragmentTransaction.replace(android.R.id.content, fragment);
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
         } catch (Exception ex) {
             Log.d("FragmentPageActivity", ex.toString());
@@ -51,7 +50,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(FRAGMENT, "onActivityResult");
+        Log.d("FragmentPageActivity", "onActivityResult");
         if (getSupportFragmentManager().getFragments().size() > 0) {
             getSupportFragmentManager().getFragments().get(0).onActivityResult(requestCode, resultCode, data);
         }

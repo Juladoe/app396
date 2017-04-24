@@ -20,20 +20,23 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
-import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
 import com.edusoho.kuozhi.v3.entity.lesson.DownLessonItem;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -69,7 +72,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson_downloading);
-        setBackMode(BACK, "下载列表");
+        setBackMode(BACK, getResources().getString(R.string.lesson_cache));
         mContext = this;
         initView();
     }
@@ -146,10 +149,13 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             }
         }
 
-        mListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public void onGroupExpand(int groupPosition) {
-                Log.d(TAG, groupPosition + "");
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                LessonItem lessonItem = mAdapter.getChild(groupPosition, childPosition);
+                lessonItem.isSelected = !lessonItem.isSelected;
+                mAdapter.notifyDataSetChanged();
+                return false;
             }
         });
 
@@ -230,14 +236,38 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             if (getDeviceFreeSize() < (1024 * 1024 * 50)) {
-                CommonUtil.longToast(mContext, "手机可用空间不足,不能下载!");
+                CommonUtil.longToast(mContext, "手机可用空间不足,不能缓存!");
                 return;
             }
 
-            for (LessonItem item : mLessonList) {
-                if (item.isSelected) {
-                    downloadLesson(item);
-                    item.isSelected = false;
+            if (!AppUtil.isWiFiConnect(mActivity) && mActivity.app.config.offlineType == 0) {
+                PopupDialog popupDialog = PopupDialog.createMuilt(mActivity,
+                        mActivity.getString(R.string.notification),
+                        mActivity.getString(R.string.player_4g_info), new PopupDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                if (button == PopupDialog.OK) {
+                                    mActivity.app.config.offlineType = 1;
+                                    mActivity.app.saveConfig();
+                                    for (LessonItem item : mLessonList) {
+                                        if (item.isSelected) {
+                                            downloadLesson(item);
+                                            item.isSelected = false;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                popupDialog.setOkText(mActivity.getString(R.string.yes));
+                popupDialog.setCancelText(mActivity.getString(R.string.no));
+                popupDialog.setCanceledOnTouchOutside(false);
+                popupDialog.show();
+            } else {
+                for (LessonItem item : mLessonList) {
+                    if (item.isSelected) {
+                        downloadLesson(item);
+                        item.isSelected = false;
+                    }
                 }
             }
         }
@@ -299,7 +329,11 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 //非章、非节，删除
                 if (!lessonItem.itemType.toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())) {
                     lessonItemIterator.remove();
+                    continue;
                 }
+            }
+            if (lessonItem.uploadFile != null && "local".equals(lessonItem.uploadFile.storage)) {
+                lessonItemIterator.remove();
             }
         }
     }
@@ -357,7 +391,9 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
      * @param listItem
      */
     private void downloadLesson(final LessonItem listItem) {
-
+        if (!"lesson".equals(listItem.itemType)) {
+            return;
+        }
         RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
         requestUrl.setParams(new String[]{
                 "courseId", String.valueOf(listItem.courseId),
@@ -378,7 +414,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 if (listItem.uploadFile == null) {
                     Pattern urlPattern = Pattern.compile("courses/[\\d]+/lessons/[\\d]+/media", Pattern.DOTALL);
                     if (urlPattern.matcher(lessonItem.mediaUri).find()) {
-                        CommonUtil.longToast(mContext, "暂不支持本地视频下载!");
+                        CommonUtil.longToast(mContext, "暂不支持本地视频缓存!");
                         return;
                     }
                 }
@@ -467,7 +503,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         }
 
         @Override
-        public Object getChild(int groupPosition, int childPosition) {
+        public LessonItem getChild(int groupPosition, int childPosition) {
             return mChildItems.get(groupPosition).get(childPosition);
         }
 
@@ -541,33 +577,23 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 //是否选中
                 if (item.isSelected) {
                     childPanel.ivDownloadSelected.setText(getResources().getString(R.string.font_download_select));
+                    childPanel.ivDownloadSelected.setTextColor(getResources().getColor(R.color.primary_color));
                 } else {
                     childPanel.ivDownloadSelected.setText(getResources().getString(R.string.font_download_unselect));
+                    childPanel.ivDownloadSelected.setTextColor(getResources().getColor(R.color.secondary2_font_color));
                 }
             } else {
                 childPanel.viewLessonUnitTitle.setVisibility(View.VISIBLE);
                 childPanel.tvUnitTitle.setText(item.title);
                 childPanel.viewLessonInfo.setVisibility(View.GONE);
             }
-            childPanel.ivDownloadSelected.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (childPanel.ivDownloadSelected.getText().equals(getString(R.string.font_download_select))) {
-                        childPanel.ivDownloadSelected.setText(getString(R.string.font_download_unselect));
-                        item.isSelected = false;
-                    } else {
-                        childPanel.ivDownloadSelected.setText(getString(R.string.font_download_select));
-                        item.isSelected = true;
-                    }
-                }
-            });
 
             return convertView;
         }
 
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return false;
+            return true;
         }
     }
 
@@ -584,9 +610,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     public static class ChildPanel {
         TextView tvUnitTitle;
         TextView tvLessonTitle;
-        //EduSohoIconView ivDownload;
         TextView tvDownloadFinish;
-        EduSohoIconView ivDownloadSelected;
+        EduSohoNewIconView ivDownloadSelected;
         View viewLessonInfo;
         View viewLessonUnitTitle;
 
@@ -594,8 +619,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             tvUnitTitle = (TextView) view.findViewById(R.id.tv_lesson_chapter);
             tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_name);
             tvDownloadFinish = (TextView) view.findViewById(R.id.iv_download_finish);
-            //ivDownload = (EduSohoIconView) view.findViewById(R.id.iv_download);
-            ivDownloadSelected = (EduSohoIconView) view.findViewById(R.id.iv_download_selected);
+            ivDownloadSelected = (EduSohoNewIconView) view.findViewById(R.id.iv_download_selected);
             viewLessonInfo = view.findViewById(R.id.rl_lesson_info);
             viewLessonUnitTitle = view.findViewById(R.id.rl_unit_title);
         }

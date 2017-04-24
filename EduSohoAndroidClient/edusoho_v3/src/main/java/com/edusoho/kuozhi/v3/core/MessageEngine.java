@@ -2,11 +2,15 @@ package com.edusoho.kuozhi.v3.core;
 
 import android.os.Bundle;
 import android.util.Log;
+
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -14,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MessageEngine {
 
-    private ConcurrentHashMap<String, MessageCallback> sourceMap;
+    private Map<String, MessageCallback> sourceMap;
     private ConcurrentHashMap<String, ArrayList<String>> pubMsgMap;
 
     private static Object synchronizedObj = new Object();
@@ -22,8 +26,8 @@ public class MessageEngine {
     private static MessageEngine messageEngine;
 
     private MessageEngine() {
-        pubMsgMap = new ConcurrentHashMap<String, ArrayList<String>>();
-        sourceMap = new ConcurrentHashMap<String, MessageCallback>();
+        pubMsgMap = new ConcurrentHashMap<>();
+        sourceMap = new ConcurrentHashMap<>();
     }
 
     public void destory() {
@@ -32,7 +36,7 @@ public class MessageEngine {
         sourceMap.clear();
     }
 
-    public ConcurrentHashMap<String, MessageCallback> getSourceMap() {
+    public Map<String, MessageCallback> getSourceMap() {
         return sourceMap;
     }
 
@@ -109,7 +113,6 @@ public class MessageEngine {
         while (iterator.hasNext()) {
             String name = iterator.next();
             MessageCallback messageCallback = sourceMap.get(name);
-            Log.d(null, "callback->" + messageCallback);
             if (messageCallback == null) {
                 iterator.remove();
                 continue;
@@ -171,17 +174,17 @@ public class MessageEngine {
         }
     }
 
-    public static interface MessageCallback {
-        public static final int REGIST_CLASS = 0;
-        public static final int REGIST_OBJECT = 1;
+    public interface MessageCallback {
+        int REGIST_CLASS = 0;
+        int REGIST_OBJECT = 1;
 
-        public static final int MSG_PAUSE = 0010;
-        public static final int MSG_RESUME = 0011;
+        int MSG_PAUSE = 0010;
+        int MSG_RESUME = 0011;
 
-        public void invoke(WidgetMessage message);
+        void invoke(WidgetMessage message);
 
-        public MessageType[] getMsgTypes();
+        MessageType[] getMsgTypes();
 
-        public int getMode();
+        int getMode();
     }
 }

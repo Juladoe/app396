@@ -105,7 +105,7 @@ public class PopupDialog extends Dialog {
         return dlg;
     }
 
-    public static interface PopupClickListener {
-        public void onClick(int button);
+    public interface PopupClickListener {
+        void onClick(int button);
     }
 }

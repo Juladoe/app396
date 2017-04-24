@@ -1,8 +1,9 @@
 package com.edusoho.kuozhi.v3.model.bal.article;
 
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.model.bal.push.ServiceProviderModel;
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class ArticleModel extends ServiceProviderModel {
 
     public List<Article> articleList;
 
-    public static ArticleModel create(int toId, List<Article> articleList) {
+    public static ArticleModel create(int spId, List<Article> articleList) {
 
         ArticleModel articleModel = new ArticleModel();
 
@@ -24,15 +25,11 @@ public class ArticleModel extends ServiceProviderModel {
         }
 
         articleModel.id = -1;
-        articleModel.spId = 2;
-        articleModel.type = "news";
-        articleModel.toId = toId;
-        Gson gson = new Gson();
-        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setId(-1);
-        bodyEntity.setContent(gson.toJson(articleList));
-        bodyEntity.setType("news.create");
-        articleModel.body = gson.toJson(bodyEntity);
+        articleModel.spId = spId;
+        articleModel.type = PushUtil.ArticleType.TYPE;
+        articleModel.toId = 0;
+
+        articleModel.body = new Gson().toJson(articleList);
         articleModel.createdTime = (int) (System.currentTimeMillis() / 1000);
         articleModel.articleList = articleList;
         return articleModel;
@@ -41,43 +38,35 @@ public class ArticleModel extends ServiceProviderModel {
     private ArticleModel(){
     }
 
-    public ArticleModel(ServiceProviderModel spModel)
+    public ArticleModel(MessageEntity messageEntity)
     {
-        this.id = spModel.id;
-        this.spId = spModel.spId;
-        this.title = spModel.title;
-        this.content = spModel.content;
-        this.toId = spModel.toId;
-        this.body = spModel.body;
-        this.createdTime = spModel.createdTime;
-        ArrayList<Article> arrayList = parseChatBody(spModel.body);
+        MessageBody messageBody = new MessageBody(messageEntity);
+        this.id = messageEntity.getId();
+        this.spId = messageBody.getSource().getId();
+        this.title = "";
+        this.content = messageBody.getBody();
+        this.toId = 0;
+        this.createdTime = messageBody.getCreatedTime();
+        ArrayList<Article> arrayList = parseChatBody(messageBody.getBody());
         this.articleList = arrayList;
     }
 
     private ArrayList<Article> parseChatBody(String body) {
         Gson gson = new Gson();
-        V2CustomContent.BodyEntity bodyEntity = gson.fromJson(body, V2CustomContent.BodyEntity.class);
         ArrayList<Article> arrayList;
         try {
-            arrayList = gson.fromJson(
-                    bodyEntity.getContent(), new TypeToken<ArrayList<Article>>(){}.getType());
+            arrayList = gson.fromJson(body, new TypeToken<ArrayList<Article>>(){}.getType());
         } catch (Exception e) {
+            ArticleMessageBody articleMessageBody = gson.fromJson(body, ArticleMessageBody.class);
             arrayList = new ArrayList<>();
             Article article = new Article();
-            article.body = bodyEntity.getContent();
-            article.title = bodyEntity.getTitle();
-            article.picture = bodyEntity.getImage();
-            article.id = bodyEntity.getId();
+            article.body = articleMessageBody.getContent();
+            article.title = articleMessageBody.getTitle();
+            article.thumb = articleMessageBody.getImage();
+            article.id = articleMessageBody.getId();
             arrayList.add(article);
         }
 
         return arrayList;
-    }
-
-    public ArticleModel(WrapperXGPushTextMessage message)
-    {
-        super(message);
-        ArrayList<Article> arrayList = parseChatBody(this.body);
-        this.articleList = arrayList;
     }
 }

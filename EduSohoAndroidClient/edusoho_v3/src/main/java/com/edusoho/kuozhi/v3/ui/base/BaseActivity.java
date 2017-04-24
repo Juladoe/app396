@@ -10,15 +10,18 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -40,7 +43,6 @@ public class BaseActivity extends ActionBarActivity {
     public EdusohoApp app;
     public ActionBar mActionBar;
     protected FragmentManager mFragmentManager;
-    protected EdusohoMainService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,6 @@ public class BaseActivity extends ActionBarActivity {
         app.setDisplay(this);
 
         gson = app.gson;
-        mService = app.getService();
         app.mActivity = mActivity;
         app.mContext = mContext;
     }
@@ -93,10 +94,6 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         super.startActivityForResult(intent, requestCode, options);
-    }
-
-    public EdusohoMainService getService() {
-        return mService;
     }
 
     public void hideActionBar() {
@@ -191,7 +188,7 @@ public class BaseActivity extends ActionBarActivity {
             public void onErrorResponse(VolleyError error) {
                 if (errorListener != null) {
                     errorListener.onErrorResponse(error);
-                } else {
+                } else if (error instanceof NoConnectionError) {
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             }
@@ -220,23 +217,6 @@ public class BaseActivity extends ActionBarActivity {
         });
     }
 
-    public void ajaxGetWithCache(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
-        app.getUrlWithCache(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                responseListener.onResponse(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (errorListener != null) {
-                    errorListener.onErrorResponse(error);
-                } else {
-                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
-                }
-            }
-        });
-    }
 
     public void runService(String serviceName) {
         app.mEngine.runService(serviceName, mActivity, null);
@@ -248,6 +228,7 @@ public class BaseActivity extends ActionBarActivity {
             value = mActivity.gson.fromJson(
                     json, typeToken.getType());
         } catch (Exception e) {
+            e.printStackTrace();
             return value;
         }
 
@@ -263,5 +244,13 @@ public class BaseActivity extends ActionBarActivity {
         } else {
             return parseJsonValue(response, typeToken);
         }
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
     }
 }

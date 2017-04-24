@@ -47,6 +47,7 @@ public class FindCardItemAdapter extends BaseAdapter {
     private Context mContext;
     private List<DiscoveryCardProperty> mList;
     private DisplayImageOptions mOptions;
+    private DisplayImageOptions mClassRoomOptions;
     private LessonModel mLessonModel;
     private SimpleDateFormat mLiveFormat = new SimpleDateFormat("MM-dd HH:mm");
 
@@ -62,8 +63,14 @@ public class FindCardItemAdapter extends BaseAdapter {
     public FindCardItemAdapter(Context context, List<DiscoveryCardProperty> list) {
         this.mContext = context;
         this.mList = list;
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
-                showImageOnFail(R.drawable.default_course).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
+                .showImageForEmptyUri(R.drawable.default_course).
+                        showImageOnFail(R.drawable.default_course)
+                .build();
+        mClassRoomOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
+                .showImageForEmptyUri(R.drawable.default_classroom).
+                        showImageOnFail(R.drawable.default_classroom)
+                .build();
         mLessonModel = new LessonModel();
         paddingLeftRight = AppUtil.dp2px(mContext, 8);
         paddingTopBottom = AppUtil.dp2px(mContext, 10);
@@ -169,13 +176,20 @@ public class FindCardItemAdapter extends BaseAdapter {
         DiscoveryCardProperty discoveryCardEntity = mList.get(position);
 
         if (discoveryCardEntity.isEmpty()) {
-            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
-                    parent.getWidth() / 2, getItemHeight(parent));
+            ViewGroup.LayoutParams lp = convertView.getLayoutParams();
+            if (lp == null) {
+                lp = new AbsListView.LayoutParams(
+                        parent.getWidth() / 2, getItemHeight(parent));
+            } else {
+                lp.width = parent.getWidth() / 2;
+                lp.height = getItemHeight(parent);
+            }
             convertView.setLayoutParams(lp);
             return convertView;
         }
 
-        ImageLoader.getInstance().displayImage(discoveryCardEntity.getPicture(), viewHolder.coverView, mOptions);
+        DisplayImageOptions options = getItemViewType(position) == CLASSROOM ? mClassRoomOptions : mOptions;
+        ImageLoader.getInstance().displayImage(discoveryCardEntity.getPicture(), viewHolder.coverView, options);
         viewHolder.titleView.setText(discoveryCardEntity.getTitle());
 
         if (position % 2 == 0) {
@@ -224,8 +238,11 @@ public class FindCardItemAdapter extends BaseAdapter {
         if (mCourseLessonsCache.get(courseId) != null) {
             callback.success(mCourseLessonsCache.get(courseId));
         } else {
-            String[] conditions = new String[]{"status", "published"};
-            mLessonModel.getLessonByCourseId(courseId, conditions, new ResponseCallbackListener<List<Lesson>>() {
+            String[] conditions = new String[]{
+                    "status", "published",
+                    "courseId", String.valueOf(courseId)
+            };
+            mLessonModel.getLessonByCourseId(conditions, new ResponseCallbackListener<List<Lesson>>() {
                 @Override
                 public void onSuccess(List<Lesson> data) {
                     callback.success(data);
@@ -279,29 +296,41 @@ public class FindCardItemAdapter extends BaseAdapter {
     }
 
     private void setDiscoveryCardClickListener(View view, String type, int id) {
-        final String url;
-        switch (type) {
-            case "normal":
-            case "live":
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.MOBILE_WEB_COURSE, id));
-                break;
-            case "classroom":
-            default:
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, id));
+        if(type.equals("classroom")){
+            view.setTag(R.id.card_cover, id);
+            view.setOnClickListener(mViewOnClickListener);
+        }else{
+            view.setTag(R.id.card_cover, id);
+            view.setOnClickListener(mViewOnClickListener2);
         }
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
-            }
-        });
     }
+
+    View.OnClickListener mViewOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final int id = (int) v.getTag(R.id.card_cover);
+            EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(Const.CLASSROOM_ID, id);
+                }
+            });
+        }
+    };
+
+
+    View.OnClickListener mViewOnClickListener2 = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final int id = (int) v.getTag(R.id.card_cover);
+            EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(Const.COURSE_ID, id);
+                }
+            });
+        }
+    };
 
     class ViewHolder {
         public ImageView coverView;

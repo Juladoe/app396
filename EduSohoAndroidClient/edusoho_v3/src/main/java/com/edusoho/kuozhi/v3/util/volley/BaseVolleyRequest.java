@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.v3.util.volley;
 
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -10,9 +12,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by howzhi on 15/7/9.
@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     private static final String TAG = "BaseVolleyRequest";
+    private static final int DEFUALT_TIME_OUT = 10 * 1000;
 
     protected static final int CACHE_MAX_AGE = 604800;
 
@@ -33,23 +34,21 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     public static final String PARSE_RESPONSE = "parseResponse";
 
     protected Response.Listener<T> mListener;
+    protected Response.ErrorListener mErrorListener;
     protected RequestUrl mRequestUrl;
     protected int mIsCache = CACHE_NONE;
     protected int mCacheUseMode = AUTO_USE_CACHE;
     private RequestLocalManager mRequestLocalManager;
 
-    public BaseVolleyRequest(
-            int method,
-            RequestUrl requestUrl,
-            Response.Listener<T> listener,
-            Response.ErrorListener errorListener
-    ) {
+    public BaseVolleyRequest(int method, RequestUrl requestUrl, Response.Listener<T> listener,
+                             Response.ErrorListener errorListener) {
         super(method, requestUrl.url, errorListener);
-
         this.mRequestUrl = requestUrl;
         mListener = listener;
+        mErrorListener = errorListener;
         initRequest(method);
         mRequestLocalManager = RequestLocalManager.getManager();
+        this.setRetryPolicy(new DefaultRetryPolicy(DEFUALT_TIME_OUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
     protected void initRequest(int method) {
@@ -98,7 +97,9 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         String cookie = response.headers.get("Set-Cookie");
-        mRequestLocalManager.setCookie(cookie);
+        if (cookie != null) {
+            mRequestLocalManager.setCookie(cookie);
+        }
         Cache.Entry cache = handleResponseCache(response);
 
         setTag(PARSE_RESPONSE);
@@ -129,37 +130,24 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     protected static class RequestLocalManager {
 
-        public List<String> cookie;
-        private static RequestLocalManager instace;
-
-        private RequestLocalManager() {
-            cookie = new CopyOnWriteArrayList<>();
-        }
+        public String cookie = "";
+        private static RequestLocalManager instance;
 
         public static RequestLocalManager getManager() {
             synchronized (RequestLocalManager.class) {
-                if (instace == null) {
-                    instace = new RequestLocalManager();
+                if (instance == null) {
+                    instance = new RequestLocalManager();
                 }
             }
-
-            return instace;
-        }
-
-        public List<String> getCookieList() {
-            return cookie;
+            return instance;
         }
 
         public String getCookie() {
-            StringBuilder builder = new StringBuilder();
-            for (String key : cookie) {
-                builder.append(key).append(";");
-            }
-            return builder.toString();
+            return cookie;
         }
 
         public void setCookie(String value) {
-            cookie.add(value);
+            cookie = value;
         }
     }
 }

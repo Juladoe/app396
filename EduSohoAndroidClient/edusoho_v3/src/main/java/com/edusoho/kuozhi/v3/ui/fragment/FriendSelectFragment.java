@@ -8,39 +8,53 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.handler.ChatSendHandler;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
+import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.SideBar;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by howzhi on 15/9/30.
  */
-public class FriendSelectFragment extends BaseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class FriendSelectFragment extends AbstractChatSendFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final String BODY = "body";
+
     private TextView mCurrentFriendTagView;
     private SideBar mSidebar;
-    protected View mGroupSelectBtn;
+    private FriendProvider mFriendProvider;
     private ListView mFriendListView;
 
-    protected RedirectBody mRedirectBody;
-    private FriendProvider mFriendProvider;
+    protected String mConvNo;
+    protected View mGroupSelectBtn;
     protected FriendFragmentAdapter mFriendAdapter;
 
     @Override
@@ -96,21 +110,85 @@ public class FriendSelectFragment extends BaseFragment implements AdapterView.On
         Fragment fragment = app.mEngine.runPluginWithFragmentByBundle(
                 "GroupSelectFragment", mActivity, getArguments());
         fragmentTransaction.addToBackStack("GroupSelectFragment");
-        fragmentTransaction.replace(android.R.id.content, fragment);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Friend friend = (Friend) parent.getItemAtPosition(position);
-        ChatSendHandler chatSendHandler = new ChatSendHandler(mActivity, mRedirectBody);
-        chatSendHandler.setFinishCallback(new NormalCallback() {
+        Friend friend = (Friend) mFriendAdapter.getItem(position);
+        RedirectBody redirectBody = getShowRedirectBody(friend.getNickname(), friend.getMediumAvatar());
+        ChatSendHandler chatSendHandler = new ChatSendHandler(mActivity, redirectBody, position);
+        chatSendHandler.handleClick(mSendMessageHandlerCallback);
+    }
+
+    private NormalCallback<Integer> mSendMessageHandlerCallback = new NormalCallback<Integer>() {
+        @Override
+        public void success(Integer index) {
+            Friend friend = (Friend) mFriendAdapter.getItem(index);
+            ConvEntity convEntity = IMClient.getClient().getConvManager()
+                    .getConvByTypeAndId(Destination.USER, friend.id);
+            if (convEntity == null) {
+                createChatConvNo(friend.id);
+                return;
+            }
+            sendMsg(friend.id, convEntity.getConvNo(), Destination.USER, friend.getNickname());
+        }
+    };
+
+    protected void sendMsg(int fromId, String convNo, String type, String title) {
+        MessageBody messageBody = saveMessageToLoacl(fromId, convNo, type, title);
+        sendMessageToServer(convNo, messageBody);
+    }
+
+    @Override
+    protected void checkJoinedIM(String targetType, int targetId, final NormalCallback<String> callback) {
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        if (currentUser == null || currentUser.id == 0) {
+            callback.success("用户未登录!");
+            return;
+        }
+        new UserProvider(mContext).createConvNo(new int[]{currentUser.id, targetId})
+                .success(new NormalCallback<LinkedHashMap>() {
+                    @Override
+                    public void success(LinkedHashMap linkedHashMap) {
+                        if (linkedHashMap == null || !linkedHashMap.containsKey("no")) {
+                            callback.success("加入会话失败");
+                            return;
+                        }
+                        callback.success(null);
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
-            public void success(Object obj) {
-                mActivity.setResult(ChatSendHandler.RESULT_SELECT_FRIEND_OK);
+            public void success(VolleyError obj) {
+                callback.success("加入会话失败");
             }
         });
-        chatSendHandler.handleClick(friend.id, friend.nickname, friend.mediumAvatar);
+    }
+
+    protected void createChatConvNo(final int fromId) {
+        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+        loadDialog.show();
+
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        new UserProvider(mContext).createConvNo(new int[]{currentUser.id, fromId})
+                .success(new NormalCallback<LinkedHashMap>() {
+                    @Override
+                    public void success(LinkedHashMap linkedHashMap) {
+                        if (linkedHashMap == null || (mConvNo = linkedHashMap.get("no").toString()) == null) {
+                            ToastUtils.show(mActivity.getBaseContext(), "创建聊天失败!");
+                            return;
+                        }
+
+                        new IMProvider(mContext).createConvInfoByUser(mConvNo, fromId)
+                                .success(new NormalCallback<ConvEntity>() {
+                                    @Override
+                                    public void success(ConvEntity convEntity) {
+                                        loadDialog.dismiss();
+                                        //sendMsg(fromId, mConvNo, Destination.USER);
+                                    }
+                                });
+                    }});
     }
 
     protected void initFriendListData() {
@@ -153,5 +231,15 @@ public class FriendSelectFragment extends BaseFragment implements AdapterView.On
         FragmentPageActivity activity = (FragmentPageActivity) getActivity();
         activity.setBackMode(FragmentPageActivity.BACK, getTitle());
         super.onResume();
+    }
+
+    @Override
+    protected void sendSuccessCallback() {
+        mActivity.setResult(ChatSendHandler.RESULT_SELECT_FRIEND_OK);
+        mActivity.finish();
+    }
+
+    @Override
+    protected void sendFailCallback() {
     }
 }

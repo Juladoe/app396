@@ -16,4 +16,5 @@ public class Article {
     public String userId;
     public String createdTime;
     public String updatedTime;
+    public String thumb;
 }

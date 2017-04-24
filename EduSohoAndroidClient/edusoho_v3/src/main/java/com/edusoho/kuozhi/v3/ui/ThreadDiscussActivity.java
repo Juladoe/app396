@@ -1,28 +1,37 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.adapter.ThreadDiscussAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
-import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseThreadPostResult;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.PostThreadResult;
+import com.edusoho.kuozhi.v3.model.provider.ThreadProvider;
 import com.edusoho.kuozhi.v3.model.sys.AudioCacheEntity;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -33,19 +42,24 @@ import com.edusoho.kuozhi.v3.util.AudioCacheUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
+import com.edusoho.kuozhi.v3.util.RequestUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseThreadDataSource;
 import com.edusoho.kuozhi.v3.util.sql.CourseThreadPostDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
+import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.reflect.TypeToken;
-
+import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONObject;
-
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +78,8 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     public static final String THREAD_ERROR_HINT = "问题不存在";
     public static final String ACTIVITY_TYPE = "activity_type";
     public static final String THREAD_ID = "thread_id";
-    public static final String COURSE_ID = "course_id";
+    public static final String TARGET_ID = "target_id";
+    public static final String TARGET_TYPE = "target_type";
     public static final String LESSON_ID = "lesson_id";
     public static final String IMAGE_FORMAT = "<img alt=\"\" src=\"%s\" />";
     public static final String AUDIO_FORMAT = "%s";
@@ -75,11 +90,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
      */
     private String mActivityType;
     private String mRoleType;
-    private String mCourseTitle;
     private int mToUserId;
     private int mThreadId;
-    private int mCourseId;
+    private int mTargetId;
     private int mLessonId;
+    private String mTargetType;
 
     private CourseThreadEntity mThreadModel;
     private List<CourseThreadPostEntity> mPosts;
@@ -87,10 +102,140 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     private CourseThreadPostDataSource mCourseThreadPostDataSource;
     private ThreadDiscussAdapter mAdapter;
     private LoadDialog mLoadDialog;
+    private View mHeaderView;
+    private LinearLayout mContentLayout;
+
+    protected ThreadProvider mThreadProvider;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void setContentView(@LayoutRes int layoutResID) {
+        mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.activity_thread_dicuss_head_layout, null);
+        View rootView = LayoutInflater.from(mContext).inflate(layoutResID, null);
+        mContentLayout = new LinearLayout(mContext);
+        mContentLayout.setOrientation(LinearLayout.VERTICAL);
+
+        mContentLayout.addView(mHeaderView);
+        mContentLayout.addView(rootView);
+
+        setContentView(mContentLayout);
+    }
+
+    protected void setThreadInfo() {
+        if (TextUtils.isEmpty(mTargetType)) {
+            return;
+        }
+
+        if ("course".equals(mTargetType)) {
+            fillThreadInfoByCourse();
+            return;
+        }
+
+        if ("classroom".equals(mTargetType)) {
+            fillThreadInfoByClassRoom();
+        }
+    }
+
+    protected void fillThreadInfoByClassRoom() {
+        mThreadProvider.getClassRoomThreadInfo(mThreadId).success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap threadInfo) {
+                if (threadInfo == null) {
+                    return;
+                }
+                fillThreaLabelData(threadInfo);
+                LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("target");
+                TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
+                fromCourseView.setText(String.format("来自班级:《%s》", course.get("title")));
+                fromCourseView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String url = String.format(
+                                Const.MOBILE_APP_URL,
+                                EdusohoApp.app.schoolHost,
+                                String.format(Const.MOBILE_WEB_COURSE, mTargetId)
+                        );
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    private void fillThreaLabelData(LinkedHashMap threadInfo) {
+        String type = threadInfo.get("type").toString();
+        TextView labelView = (TextView) findViewById(R.id.tdh_label);
+        if ("question".equals(type)) {
+            labelView.setText("问答");
+            labelView.setTextColor(getResources().getColor(R.color.thread_type_question));
+            labelView.setBackgroundResource(R.drawable.thread_type_question_label);
+        } else {
+            labelView.setText("话题");
+            labelView.setTextColor(getResources().getColor(R.color.thread_type_discuss));
+            labelView.setBackgroundResource(R.drawable.thread_type_discuss_label);
+        }
+        TextView titleView = (TextView) findViewById(R.id.tdh_title);
+        titleView.setText(threadInfo.get("title").toString());
+        TextView timeView = (TextView) findViewById(R.id.tdh_time);
+        timeView.setText(getFromInfoTime(threadInfo.get("createdTime").toString()));
+
+        TextView contentView = (TextView) findViewById(R.id.tdh_content);
+        contentView.setText(AppUtil.coverCourseAbout(threadInfo.get("content").toString()));
+
+        LinkedHashMap<String, String> user = (LinkedHashMap<String, String>) threadInfo.get("user");
+        TextView nicknameView = (TextView) findViewById(R.id.tdh_nickname);
+        nicknameView.setText(user.get("nickname"));
+        ImageView userAvatar = (ImageView) findViewById(R.id.tdh_avatar);
+        ImageLoader.getInstance().displayImage(user.get("avatar"), userAvatar);
+    }
+
+    protected void fillThreadInfoByCourse() {
+        mThreadProvider.getCourseThreadInfo(mThreadId, mTargetId).success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap threadInfo) {
+                if (threadInfo == null) {
+                    return;
+                }
+
+                fillThreaLabelData(threadInfo);
+                LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("course");
+                TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
+                fromCourseView.setText(String.format("来自课程:《%s》", course.get("title")));
+                fromCourseView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String url = String.format(
+                                Const.MOBILE_APP_URL,
+                                EdusohoApp.app.schoolHost,
+                                String.format(Const.MOBILE_WEB_COURSE, mTargetId)
+                        );
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    private String getFromInfoTime(String time) {
+        try {
+            Date timeDate = null;
+            time = time.replace("T", " ");
+            timeDate = new SimpleDateFormat("yyyy-MM-dd").parse(time);
+            SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy/MM/dd");
+            return timeFormat.format(timeDate);
+        } catch (Exception e) {
+        }
+
+        return "";
     }
 
     @Override
@@ -106,22 +251,21 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                //int count = getList(mStart).size();
                 return canDoRefresh;
             }
         });
         btnVoice.setOnClickListener(mAskClickListener);
         ivAddMedia.setOnClickListener(mAskClickListener);
-        //mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
     @Override
     public void initData() {
         Intent intent = getIntent();
         mActivityType = intent.getStringExtra(ACTIVITY_TYPE);
-        mCourseId = intent.getIntExtra(COURSE_ID, 0);
-        mLessonId = intent.getIntExtra(LESSON_ID, 0);
+        mTargetId = intent.getIntExtra(TARGET_ID, 0);
+        mTargetType = intent.getStringExtra(TARGET_TYPE);
         mThreadId = intent.getIntExtra(THREAD_ID, 0);
+        mLessonId = intent.getIntExtra(LESSON_ID, 0);
         CurrentThreadId = mThreadId;
         if (TextUtils.isEmpty(mRoleType)) {
             String[] roles = new String[app.loginUser.roles.length];
@@ -134,6 +278,9 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 mRoleType = PushUtil.ChatUserType.FRIEND;
             }
         }
+
+        mThreadProvider = new ThreadProvider(mContext);
+        setThreadInfo();
         mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         if (PushUtil.ThreadMsgType.THREAD_POST.equals(mActivityType)) {
@@ -163,7 +310,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             mAudioDownloadReceiver.setAdapter(mAdapter);
         }
         NotificationUtil.cancelById(mThreadId);
-
     }
 
     protected Runnable mListViewSelectRunnable = new Runnable() {
@@ -175,20 +321,15 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void sendMsg(final String content) {
-        Log.d(TAG, content);
-        if (mAdapter.getCount() == 0) {
-            handleSendThread(content, PushUtil.ChatMsgType.TEXT);
-        } else if (mAdapter.getCount() > 0) {
-            final CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(content, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING);
-            postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
-            final ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
-            addItem2ListView(discussModel);
-            handleSendPost(postModel);
-        }
+        CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(content, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING);
+        postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
+        ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
+        addItem2ListView(discussModel);
+        handleSendPost(postModel);
     }
 
     @Override
-    public void sendMsgAgain(final BaseMsgEntity model) {
+    public void sendMsgAgain(final Chat model) {
         final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
         mAdapter.updateItemState(model.id, PushUtil.MsgDeliveryType.UPLOADING);
         handleSendPost(postModel);
@@ -253,7 +394,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     }
 
     @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
+    public void uploadMediaAgain(final File file, final Chat model, final String type, String strType) {
         try {
             final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
             getUpYunUploadInfo(file, app.loginUser.id, new NormalCallback<UpYunUploadResult>() {
@@ -295,11 +436,12 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             return;
         }
         RequestUrl requestUrl = app.bindNewApiUrl(Const.CREATE_THREAD, true);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("threadType", "course");
-        params.put("courseId", mCourseId + "");
+        Map<String, String> params = requestUrl.getParams();
+        params.put("threadType", "course".equals(mTargetType) ? "course" : "common");
+        params.put("courseId", mTargetId + "");
+
         if (mLessonId != 0) {
-            params.put("lessonId", mLessonId + "");
+            params.put("lessonid", String.valueOf(mLessonId));
         }
         params.put("type", "question");
         params.put("title", content);
@@ -335,28 +477,28 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
      * @param postModel 回复对象
      */
     private void handleSendPost(final CourseThreadPostEntity postModel) {
-        RequestUrl requestUrl = app.bindNewApiUrl(Const.POST_THREAD, true);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("courseId", mCourseId + "");
-        params.put("threadId", mThreadId + "");
-        params.put("content", formatContent(postModel, postModel.type));
-        params.put("threadType", "course");
-        ajaxPost(requestUrl, new Response.Listener<String>() {
+        String threadType = "course".equals(mTargetType) ? "course" : "common";
+        String content = formatContent(postModel, postModel.type);
+        mThreadProvider.createThreadPost(mTargetType, mTargetId, threadType, mThreadId, content)
+                .success(new NormalCallback<PostThreadResult>() {
+                    @Override
+                    public void success(PostThreadResult threadResult) {
+                        postModel.postId = threadResult.id;
+                        postModel.isElite = threadResult.isElite;
+                        postModel.createdTime = threadResult.createdTime;
+                        postModel.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                        mCourseThreadPostDataSource.update(postModel);
+                        mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.SUCCESS);
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
-            public void onResponse(String response) {
-                PostThreadResult postThreadResult = parseJsonValue(response, new TypeToken<PostThreadResult>() {
-                });
-                postModel.postId = postThreadResult.id;
-                postModel.isElite = postThreadResult.isElite;
-                postModel.createdTime = postThreadResult.createdTime;
-                postModel.delivery = PushUtil.MsgDeliveryType.SUCCESS;
-                mCourseThreadPostDataSource.update(postModel);
-                mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.SUCCESS);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                handleNetError(getString(R.string.network_does_not_work));
+            public void success(VolleyError error) {
+                String errorMessage = RequestUtil.handleRequestHttpError(new String(error.networkResponse.data));
+                if (TextUtils.isEmpty(errorMessage)) {
+                    handleNetError(getString(R.string.network_does_not_work));
+                } else {
+                    handleNetError(errorMessage);
+                }
                 postModel.delivery = PushUtil.MsgDeliveryType.FAILED;
                 mCourseThreadPostDataSource.update(postModel);
                 mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.FAILED);
@@ -364,17 +506,41 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         });
     }
 
+    private void initThreadList(final int threadId, final NormalCallback<Boolean> normalCallback) {
+        mThreadProvider.getThreadPost(mTargetType, threadId).success(new NormalCallback<CourseThreadPostResult>() {
+            @Override
+            public void success(CourseThreadPostResult threadPostResult) {
+                if (threadPostResult != null && threadPostResult.resources != null) {
+                    mPosts = threadPostResult.resources;
+                    Collections.reverse(mPosts);
+                    filterPostThreads(mPosts);
+                    mCourseThreadPostDataSource.deleteByThreadId(threadId);
+                    mCourseThreadPostDataSource.create(mPosts);
+                    normalCallback.success(true);
+                    mLoadDialog.dismiss();
+                }
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                mLoadDialog.dismiss();
+                handleNetError("问题详情获取失败");
+                finish();
+            }
+        });
+    }
+
     private void getLists(final int threadId, final NormalCallback<Boolean> normalCallback) {
         if (app.getNetIsConnect()) {
             mLoadDialog.show();
-            RequestUrl requestUrl = app.bindUrl(Const.GET_THREAD, true);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("threadId", threadId + "");
-            ajaxPost(requestUrl, new Response.Listener<String>() {
+            final Promise promise = new Promise();
+            promise.then(new PromiseCallback<CourseThreadEntity>() {
                 @Override
-                public void onResponse(String response) {
-                    mThreadModel = mActivity.parseJsonValue(response, new TypeToken<CourseThreadEntity>() {
-                    });
+                public Promise invoke(CourseThreadEntity threadEntity) {
+                    if (threadEntity == null) {
+                        return null;
+                    }
+                    mThreadModel = threadEntity;
                     mThreadModel.content = Html.fromHtml(mThreadModel.content).toString();
                     if (mThreadModel.content.length() > 2) {
                         String lastStr = mThreadModel.content.substring(mThreadModel.content.length() - 2, mThreadModel.content.length());
@@ -386,41 +552,17 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     if (mCourseThreadDataSource.get(threadId) == null) {
                         mCourseThreadDataSource.create(mThreadModel);
                     }
-                    RequestUrl requestUrl = app.bindUrl(Const.GET_THREAD_POST, true);
-                    HashMap<String, String> params = requestUrl.getParams();
-                    params.put("threadId", threadId + "");
-                    ajaxPost(requestUrl, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            CourseThreadPostResult result = mActivity.parseJsonValue(response, new TypeToken<CourseThreadPostResult>() {
-                            });
-                            if (result != null && result.data != null) {
-                                mPosts = result.data;
-                                Collections.reverse(mPosts);
-                                filterPostThreads(mPosts);
-                                mCourseThreadPostDataSource.deleteByThreadId(threadId);
-                                mCourseThreadPostDataSource.create(mPosts);
-                                normalCallback.success(true);
-                                mLoadDialog.dismiss();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            mLoadDialog.dismiss();
-                            handleNetError("问题详情获取失败");
-                            finish();
-                        }
-                    });
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    mLoadDialog.dismiss();
-                    handleNetError("问题详情获取失败");
-                    finish();
+                    initThreadList(threadId, normalCallback);
+                    return null;
                 }
             });
+            mThreadProvider.getThread(threadId, "course".equals(mTargetType) ? "course" : "common")
+                    .success(new NormalCallback<CourseThreadEntity>() {
+                        @Override
+                        public void success(CourseThreadEntity threadEntity) {
+                            promise.resolve(threadEntity);
+                        }
+                    });
         } else {
             mThreadModel = mCourseThreadDataSource.get(mThreadId);
             mPosts = mCourseThreadPostDataSource.getPosts(mThreadId);
@@ -491,7 +633,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     private CourseThreadPostEntity createCoursePostThreadByCurrentUser(String content, String contentType, int deliveryState) {
         CourseThreadPostEntity model = new CourseThreadPostEntity();
-        model.courseId = mCourseId;
+        model.courseId = mTargetId;
         model.lessonId = mLessonId;
         model.threadId = mThreadId;
         model.user = new CourseThreadPostEntity.UserEntity();
@@ -508,7 +650,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     private CourseThreadEntity createCourseThreadByCurrentUser(String content) {
         CourseThreadEntity model = new CourseThreadEntity();
         model.id = mThreadId;
-        model.courseId = mCourseId;
+        model.courseId = mTargetId;
         model.lessonId = mLessonId;
         model.user = new CourseThreadEntity.UserEntity();
         model.user.id = app.loginUser.id;
@@ -524,7 +666,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     private void filterPostThreads(List<CourseThreadPostEntity> posts) {
         try {
             for (CourseThreadPostEntity post : posts) {
-                if (post.content.contains("amr")) {
+                if (post.content.contains("mp3")) {
                     post.type = PushUtil.ChatMsgType.AUDIO;
                     AudioCacheEntity cache = AudioCacheUtil.getInstance().getAudioCacheByPath(post.content);
                     if (cache != null && !TextUtils.isEmpty(cache.localPath)) {
@@ -592,32 +734,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 courseThreadPostEntity.createdTime);
     }
 
-    private V2CustomContent getV2CustomContent(CourseThreadPostEntity postModel, String msgType, String type) {
-        V2CustomContent v2CustomContent = new V2CustomContent();
-        v2CustomContent.setType(type);
-        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUser.id);
-        fromEntity.setImage(app.loginUser.mediumAvatar);
-        fromEntity.setNickname(app.loginUser.nickname);
-        fromEntity.setType(mRoleType);
-        v2CustomContent.setFrom(fromEntity);
-        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
-        toEntity.setId(mToUserId);
-        toEntity.setType(PushUtil.ChatUserType.USER);
-        v2CustomContent.setTo(toEntity);
-        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(msgType);
-        bodyEntity.setContent(postModel.content);
-        bodyEntity.setPostId(postModel.postId);
-        bodyEntity.setThreadId(mThreadId);
-        bodyEntity.setCourseId(mCourseId);
-        bodyEntity.setLessonId(mLessonId);
-        v2CustomContent.setBody(bodyEntity);
-        v2CustomContent.setV(Const.PUSH_VERSION);
-        //v2CustomContent.setCreatedTime(mSendTime);
-        return v2CustomContent;
-    }
-
     @Override
     public MessageType[] getMsgTypes() {
         return new MessageType[]{new MessageType(Const.ADD_THREAD_POST, getClass().getSimpleName())};
@@ -625,31 +741,42 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void invoke(WidgetMessage message) {
-        MessageType messageType = message.type;
-        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-        V2CustomContent v2CustomContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<V2CustomContent>() {
-        });
-        switch (messageType.code) {
-            case Const.ADD_THREAD_POST:
-                if (CurrentThreadId == v2CustomContent.getBody().getThreadId()) {
-                    CourseThreadPostEntity postModel = new CourseThreadPostEntity();
-                    postModel.postId = v2CustomContent.getBody().getPostId();
-                    postModel.threadId = v2CustomContent.getBody().getThreadId();
-                    postModel.courseId = mCourseId;
-                    postModel.lessonId = mLessonId;
-                    postModel.content = wrapperMessage.getContent();
-                    postModel.user.id = v2CustomContent.getFrom().getId();
-                    postModel.user.nickname = v2CustomContent.getFrom().getNickname();
-                    postModel.user.mediumAvatar = v2CustomContent.getFrom().getImage();
-                    postModel.createdTime = AppUtil.converMillisecond2TimeZone(v2CustomContent.getCreatedTime());
-                    postModel.delivery = 2;
-                    postModel.type = v2CustomContent.getBody().getType();
-                    postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
-                    mAdapter.addItem(convertThreadDiscuss(postModel));
-                }
-                break;
-        }
+
     }
 
-    // endregion
+    private void hideHeaderLayout() {
+        int headerViewHeight = mHeaderView.getHeight();
+        PropertyValuesHolder heightPVH = PropertyValuesHolder.ofInt("height", headerViewHeight, 0);
+        ObjectAnimator.ofPropertyValuesHolder(new EduSohoAnimWrap(mHeaderView), heightPVH)
+                .setDuration(360).start();
+    }
+
+    private void showHeaderLayout() {
+        mHeaderView.measure(0, 0);
+        int headerViewHeight = mHeaderView.getMeasuredHeight();
+        PropertyValuesHolder heightPVH = PropertyValuesHolder.ofInt("height", 0, headerViewHeight);
+        PropertyValuesHolder translationYPVH = PropertyValuesHolder.ofFloat("translationY", -headerViewHeight, 0);
+        ObjectAnimator.ofPropertyValuesHolder(new EduSohoAnimWrap(mHeaderView), heightPVH, translationYPVH)
+                .setDuration(360).start();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
+    }
+
+    protected View.OnLayoutChangeListener getOnLayoutChangeListener() {
+        return new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                int keyHeight = getWindowManager().getDefaultDisplay().getHeight() / 3;
+                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
+                    hideHeaderLayout();
+                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
+                    showHeaderLayout();
+                }
+            }
+        };
+    }
 }

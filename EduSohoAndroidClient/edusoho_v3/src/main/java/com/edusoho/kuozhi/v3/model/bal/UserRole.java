@@ -1,32 +1,38 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
+import com.edusoho.kuozhi.v3.util.json.GsonEnum;
+
 /**
  * Created by howzhi on 14-8-19.
  */
 
-public enum UserRole {
-    ROLE_USER, ROLE_SUPER_ADMIN, ROLE_TEACHER, ROLE_ADMIN;
+public enum UserRole implements GsonEnum<UserRole> {
+    ROLE_USER("学员"), ROLE_SUPER_ADMIN("超管"), ROLE_TEACHER("教师"), ROLE_ADMIN("管理员"), NO_SUPPORT("");
 
-    public static String coverRoleToStr(UserRole[] userRoles) {
-        StringBuilder stringBuilder = new StringBuilder();
+    String roleName;
 
-        for (UserRole role : userRoles) {
-            switch (role) {
-                case ROLE_USER:
-                    stringBuilder.append("普通用户");
-                    break;
-                case ROLE_ADMIN:
-                    stringBuilder.append("管理员");
-                    break;
-                case ROLE_TEACHER:
-                    stringBuilder.append("教师");
-                    break;
-                case ROLE_SUPER_ADMIN:
-                    stringBuilder.append("超级管理员");
-                    break;
-            }
-            stringBuilder.append(" ");
+    UserRole(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    @Override
+    public UserRole deserialize(String jsonEnum) {
+        switch (jsonEnum) {
+            case "ROLE_ADMIN":
+            case "ROLE_SUPER_ADMIN":
+            case "ROLE_TEACHER":
+            case "ROLE_USER":
+                return valueOf(jsonEnum);
         }
-        return stringBuilder.toString();
+        return NO_SUPPORT;
+    }
+
+    @Override
+    public String serialize() {
+        return name();
     }
 }

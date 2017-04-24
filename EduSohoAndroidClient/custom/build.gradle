@@ -1,53 +1,46 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '22.0.1'
 
     defaultConfig {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi", startActivity:"com.edusoho.kuozhi.KuozhiActivity"]
+        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+        multiDexEnabled true
     }
 
     //签名
-    signingConfigs {
-        debugConfig {
-            storeFile file("key/edusoho.howzhi.jks")
-            storePassword "10001000"
-            keyAlias "ch"
-            keyPassword "10001000"
-        }
-
-        howzhi {
-            storeFile file("key/edusoho.howzhi.jks")
-            storePassword "10001000"
-            keyAlias "ch"
-            keyPassword "10001000"
-        }
-
-
-    }
+//    signingConfigs {
+//        debugConfig {
+//            storeFile file("key/com.edusoho.howzhi.jks")
+//            storePassword "10001000"
+//            keyAlias "cn"
+//            keyPassword "10001000"
+//        }
+//    }
 
     productFlavors {
-
         howzhi {
-            signingConfig signingConfigs.howzhi
-            applicationId "com.howzhi"
-            manifestPlaceholders = [wxpkg: "com.howzhi.wxapi", startActivity:"com.edusoho.kuozhi.KuozhiActivity"]
-
+//            signingConfig signingConfigs.debugConfig
+            applicationId "com.edusoho.howzhi"
+            manifestPlaceholders = [wxpkg: "com.edusoho.howzhi", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+            versionCode 48
+            versionName '3.9.5'
         }
     }
 
     sourceSets {
-
-
         howzhi {
             java.srcDirs = ['src/howzhi/java']
             res.srcDirs = ['src/howzhi/res']
             assets.srcDirs = ['src/howzhi/assets']
-
         }
     }
 
@@ -55,15 +48,16 @@ android {
         debug {
             zipAlignEnabled true
             minifyEnabled false
-            signingConfig signingConfigs.debugConfig
+//            signingConfig signingConfigs.debugConfig
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
 dependencies {
     compile project(':edusoho_v3')
-}
-
-task newcustom (type: Copy) {
-    println "qweqweqwe"
+    compile project(':homework')
 }

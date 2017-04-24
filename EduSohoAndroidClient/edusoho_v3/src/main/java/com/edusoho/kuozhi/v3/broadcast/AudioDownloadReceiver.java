@@ -4,7 +4,6 @@ import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
 import com.edusoho.kuozhi.v3.listener.ChatDownloadListener;
 
 /**

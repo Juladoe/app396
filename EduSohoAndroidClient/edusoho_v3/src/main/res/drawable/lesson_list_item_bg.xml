@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item android:state_pressed="true">
         <layer-list>
 
@@ -15,9 +14,9 @@
                     <solid android:color="@color/shallow_found_bg" />
                 </shape>
             </item>
-            <item android:left="1dp" android:bottom="1dp">
+            <item android:bottom="1dp" android:left="1dp">
                 <shape>
-                    <solid android:color="@color/base_black_12" />
+                    <solid android:color="@color/white" />
                 </shape>
             </item>
 
@@ -36,7 +35,7 @@
                     <solid android:color="@color/shallow_found_bg" />
                 </shape>
             </item>
-            <item android:left="1dp" android:bottom="1dp">
+            <item android:bottom="1dp" android:left="1dp">
                 <shape>
                     <solid android:color="@color/white" />
                 </shape>

@@ -1,9 +1,9 @@
 package com.edusoho.kuozhi.v3.model.sys;
 
 import android.os.Build;
-
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -13,14 +13,14 @@ public class RequestUrl {
 
     public String url;
     public HashMap<String, String> heads;
-    public HashMap<String, String> params;
+    public Map<String, String> params;
     public HashMap<String, Object> muiltParams;
 
     public IdentityHashMap<String, String> muiltKeysMap;
 
     public RequestUrl() {
         heads = new HashMap<>();
-        params = new HashMap<>();
+        params = new LinkedHashMap<>();
         muiltParams = new HashMap<>();
         initHeads();
     }
@@ -68,7 +68,7 @@ public class RequestUrl {
         }
     }
 
-    public void setParams(HashMap<String, String> p) {
+    public void setParams(Map<String, String> p) {
         params = p;
     }
 
@@ -85,16 +85,16 @@ public class RequestUrl {
         heads = headers;
     }
 
-    public HashMap<String, String> getParams() {
+    public Map<String, String> getParams() {
         return params;
     }
 
-    public HashMap<String, Object> getAllParams() {
+    public Map<String, Object> getAllParams() {
         muiltParams.putAll(params);
         return muiltParams;
     }
 
-    public HashMap<String, String> getHeads() {
+    public Map<String, String> getHeads() {
         return heads;
     }
 

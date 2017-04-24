@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -18,23 +17,20 @@ public class RedirectBody implements Serializable {
     public String content;
     public String url;
     public String source;
+    public String threadId;
 
     public static RedirectBody createByJsonObj(JSONObject body) {
 
         RedirectBody redirectBody = new RedirectBody();
-        try {
-            redirectBody.type = body.getString("type");
-            redirectBody.fromType = body.getString("fromType");
-            redirectBody.title = body.getString("title");
-            redirectBody.image = body.getString("image");
-            redirectBody.content = body.getString("content");
-            redirectBody.url = body.getString("url");
-            redirectBody.source = body.getString("source");
-            redirectBody.id = body.getInt("id");
-        } catch (JSONException e) {
-
-        }
-
+        redirectBody.type = body.optString("type");
+        redirectBody.fromType = body.optString("fromType");
+        redirectBody.title = body.optString("title");
+        redirectBody.image = body.optString("image");
+        redirectBody.content = body.optString("content");
+        redirectBody.url = body.optString("url");
+        redirectBody.source = body.optString("source");
+        redirectBody.id = body.optInt("id");
+        redirectBody.threadId = body.optString("threadId");
         return redirectBody;
     }
 
@@ -50,6 +46,20 @@ public class RedirectBody implements Serializable {
         redirectBody.url = url;
         redirectBody.source = "self";
         redirectBody.id = 0;
+
+        return redirectBody;
+    }
+
+    public static RedirectBody createByPostContent(String title, String content, String fromType, String type, int id, String threadId) {
+        RedirectBody redirectBody = new RedirectBody();
+
+        redirectBody.type = type;
+        redirectBody.fromType = fromType;
+        redirectBody.title = title;
+        redirectBody.content = content;
+        redirectBody.source = "self";
+        redirectBody.id = id;
+        redirectBody.threadId = threadId;
 
         return redirectBody;
     }

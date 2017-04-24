@@ -32,8 +32,11 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by howzhi on 14-9-19.
@@ -106,7 +109,7 @@ public class TestpaperCardFragment extends DialogFragment {
                 PaperResult paperResult = mTestpaperActivity.getTestpaperResult();
                 RequestUrl requestUrl = mTestpaperActivity.app.bindUrl(
                         Const.FINISH_TESTPAPER, true);
-                IdentityHashMap<String, String> params = requestUrl.initKeysMap();
+                Map<String, String> params = requestUrl.getParams();
                 params.put("usedTime", mTestpaperActivity.getUsedTime() + "");
                 params.put("id", paperResult.id + "");
 
@@ -124,9 +127,10 @@ public class TestpaperCardFragment extends DialogFragment {
                             continue;
                         }
 
+                        int position = 0;
                         for (Object object : answer.data) {
                             params.put(
-                                    String.format("data[%d][]", questionTypeSeq.questionId),
+                                    String.format("data[%d][%d]", questionTypeSeq.questionId, position++),
                                     object.toString());
                         }
                     }
@@ -200,10 +204,7 @@ public class TestpaperCardFragment extends DialogFragment {
             getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
                 @Override
                 public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
-                    if (i == keyEvent.KEYCODE_BACK) {
-                        return true;
-                    }
-                    return false;
+                    return i == keyEvent.KEYCODE_BACK;
                 }
             });
             showSubmitDialog();

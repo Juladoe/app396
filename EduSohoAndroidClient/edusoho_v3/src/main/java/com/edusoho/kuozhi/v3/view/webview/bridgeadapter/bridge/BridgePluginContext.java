@@ -35,6 +35,6 @@ public class BridgePluginContext<T extends Activity> extends ContextWrapper {
     }
 
     public interface Callback {
-        public void onActivityResult(int requestCode, int resultCode, Intent data);
+        void onActivityResult(int requestCode, int resultCode, Intent data);
     }
 }

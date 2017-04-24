@@ -84,6 +84,14 @@ public class FillQuestionWidget extends BaseQuestionWidget {
         }
     };
 
+    @Override
+    protected void restoreResult(ArrayList resultData) {
+        int count = fillLayout.getChildCount();
+        for (int i = 0; i < count; i++) {
+            EditText edtView = (EditText) fillLayout.getChildAt(i);
+            edtView.setText(resultData.get(i).toString());
+        }
+    }
 
     @Override
     protected Spanned getQuestionStem() {
@@ -98,7 +106,6 @@ public class FillQuestionWidget extends BaseQuestionWidget {
 
     @Override
     protected void invalidateData() {
-        super.invalidateData();
         fillLayout = (LinearLayout) this.findViewById(R.id.question_fill_layout);
 
         Question mQuestion = mQuestionSeq.question;
@@ -133,6 +140,7 @@ public class FillQuestionWidget extends BaseQuestionWidget {
             });
             mAnalysisVS.inflate();
         }
+        super.invalidateData();
     }
 
     @Override
@@ -147,7 +155,7 @@ public class FillQuestionWidget extends BaseQuestionWidget {
         if ("noAnswer".equals(testResult.status)) {
             myAnswer = "未答题";
         } else {
-            myAnswer = listToStr(testResult.answer);
+            myAnswer = listToStr(coverResultAnswer(testResult.answer));
         }
 
         myAnswerText.setText("你的答案:\n" + myAnswer);

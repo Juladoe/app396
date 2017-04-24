@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.edusoho.kuozhi.homework" >
+    package="com.edusoho.kuozhi.homework">
 
-    <application
-        android:allowBackup="true">
+    <application android:allowBackup="false">
         <activity
+            android:name=".HomeworkSummaryActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait"
             android:icon="@drawable/icon_homework_sel"
             android:label="@string/homework_label"
-            android:name=".HomeworkSummaryActivity" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.LESSON_PLUGIN" />
             </intent-filter>
@@ -23,15 +22,14 @@
         <activity
             android:name=".HomeWorkParseActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
-            android:label="@string/exercise_label"
-            android:icon="@drawable/icon_exercise_sel"
             android:name=".ExerciseSummaryActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" >
+            android:icon="@drawable/icon_exercise_sel"
+            android:label="@string/exercise_label"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.LESSON_PLUGIN" />
             </intent-filter>
@@ -46,7 +44,8 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".HomeworkAnswerCardActivity"
+        <activity
+            android:name=".HomeworkAnswerCardActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
     </application>

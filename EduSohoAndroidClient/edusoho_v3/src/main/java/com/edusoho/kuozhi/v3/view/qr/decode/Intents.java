@@ -187,7 +187,7 @@ public final class Intents {
     public static final String TYPE = "ENCODE_TYPE";
 
     /**
-     * The barcode format to be displayed. If this isn't specified or is blank,
+     * The barcode format to be displayed. If this isn'type specified or is blank,
      * it defaults to QR Code. Use {@link android.content.Intent#putExtra(String, String)}, where
      * format is one of {@link com.google.zxing.BarcodeFormat}.
      */

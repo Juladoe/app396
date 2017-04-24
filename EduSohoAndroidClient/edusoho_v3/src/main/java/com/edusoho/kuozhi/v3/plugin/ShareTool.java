@@ -4,11 +4,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ListData;
+import com.edusoho.kuozhi.shard.ShardDialog;
 import com.edusoho.kuozhi.shard.ShareHandler;
 import com.edusoho.kuozhi.shard.ShareUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -47,13 +50,28 @@ public class ShareTool {
     private String mTitle = "";
     private String mAbout = "";
     private String mPic = "";
+    private int mDialogType = 1;
+    private ShardDialog.DismissEvent mDismissEvent;
 
     public ShareTool(Context ctx, String url, String title, String about, String pic) {
         mContext = ctx;
         mUrl = url;
         mTitle = title;
-        mAbout = about;
+        mAbout = fromHtml(about);
         mPic = pic;
+    }
+
+    public ShareTool(Context ctx, String url, String title, String about, String pic, int type) {
+        mContext = ctx;
+        mUrl = url;
+        mTitle = title;
+        mAbout = fromHtml(about);
+        mPic = pic;
+        mDialogType = type;
+    }
+
+    private String fromHtml(String htmlCode) {
+        return Html.fromHtml(htmlCode).toString();
     }
 
     public void shardCourse() {
@@ -65,13 +83,14 @@ public class ShareTool {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                CommonUtil.longToast(mContext, "课程图片获取失败");
+                startShare(AppUtil.getUriById(mContext, R.drawable.default_classroom));
             }
         });
     }
 
     private void startShare(String imageUri) {
         ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
+        shareUtil.setDismissEvent(mDismissEvent);
         File file = ImageLoader.getInstance().getDiskCache().get(imageUri);
         List<ListData> listDatas = shareUtil.getDataList();
         listDatas.addAll(0, getCustomListData());
@@ -79,11 +98,43 @@ public class ShareTool {
                 R.mipmap.ic_launcher,
                 mTitle,
                 mUrl,
-                AppUtil.coverCourseAbout(mAbout),
+                coverShareContent(mAbout, mUrl),
                 file,
                 EdusohoApp.app.host
+                , mDialogType
         );
         shareUtil.show(getShareHandler());
+    }
+
+    private void startShare(Uri imageUri) {
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
+        shareUtil.setDismissEvent(mDismissEvent);
+        List<ListData> listDatas = shareUtil.getDataList();
+        listDatas.addAll(0, getCustomListData());
+        shareUtil.initShareParams(
+                R.mipmap.ic_launcher,
+                mTitle,
+                mUrl,
+                coverShareContent(mAbout, mUrl),
+                imageUri,
+                EdusohoApp.app.host
+                , mDialogType
+        );
+        shareUtil.show(getShareHandler());
+    }
+
+    private String coverShareContent(String content, String url) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        String formatString = Html.fromHtml(content).toString();
+        int contentSize = 140 - url.length() - 3;
+        if (formatString.length() > contentSize) {
+            formatString = formatString.substring(0, contentSize);
+        }
+        stringBuilder.append(formatString);
+        stringBuilder.append(" \r\n").append(url);
+
+        return stringBuilder.toString();
     }
 
     private ShareHandler getShareHandler() {
@@ -140,7 +191,7 @@ public class ShareTool {
         startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
         startIntent.putExtra(ChatSelectFragment.BODY, redirectBody);
         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ChatSelectFragment");
-        startIntent.setComponent(new ComponentName(mContext.getPackageName(), "FragmentPageActivity"));
+        startIntent.setComponent(new ComponentName(mContext, FragmentPageActivity.class));
         mContext.startActivity(startIntent);
     }
 
@@ -149,6 +200,8 @@ public class ShareTool {
         if (EdusohoApp.app.loginUser == null) {
             return listDatas;
         }
+
+        //校友修改位置
         ListData data = new ListData(
                 mContext.getResources().getDrawable(R.drawable.share_user),
                 "shareToUser",

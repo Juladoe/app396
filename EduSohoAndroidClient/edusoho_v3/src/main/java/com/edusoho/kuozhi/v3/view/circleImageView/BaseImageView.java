@@ -93,12 +93,9 @@ public abstract class BaseImageView extends ImageView {
                     }
                 }
 
-                // Bitmap already loaded.
                 if (bitmap != null) {
                     mPaint.setXfermode(null);
-//                    mPaint.setShader(null);
                     canvas.drawBitmap(bitmap, 0.0f, 0.0f, mPaint);
-                    return;
                 }
             } catch (Exception e) {
                 System.gc();

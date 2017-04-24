@@ -1,16 +1,19 @@
 package com.edusoho.kuozhi.shard;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.widget.AdapterView;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
+
 import static com.mob.tools.utils.R.getBitmapRes;
 
 
@@ -32,6 +35,7 @@ public class ShareUtil {
     private ShareSDKUtil mShareSDKUtil;
     private List<ListData> mCustomList;
     private ArrayList<ListData> mList;
+    private ShardDialog.DismissEvent mDismissEvent;
 
     private ShareUtil(Context context) {
         //添加应用信息
@@ -57,7 +61,7 @@ public class ShareUtil {
     }
 
     public ShareUtil initShareParams(
-            int icon, String shareTextTitle, String shareTitleUrl, String shareText, File imageFile, String ShareSite
+            int icon, String shareTextTitle, String shareTitleUrl, String shareText, File imageFile, String ShareSite, int type
     ) {
         mOneKeyShare = new OnekeyShare();
         mNotification_icon = icon;
@@ -68,12 +72,35 @@ public class ShareUtil {
             mLocalImagePath = imageFile.getAbsolutePath();
             mOneKeyShare.setImagePath(mLocalImagePath);
         } else {
-        }
 
+        }
         mShareSite = ShareSite;
         initOneKeyShare();
-        initDialog();
+        initDialog(type);
         return this;
+    }
+
+    public ShareUtil initShareParams(
+            int icon, String shareTextTitle, String shareTitleUrl, String shareText, Uri imageFile, String ShareSite, int type
+    ) {
+        mOneKeyShare = new OnekeyShare();
+        mNotification_icon = icon;
+        mShareTextTitle = shareTextTitle;
+        mShareTitleUrl = shareTitleUrl;
+        mShareText = shareText;
+        if (imageFile != null) {
+            mOneKeyShare.setImagePath(imageFile.toString());
+        } else {
+
+        }
+        mShareSite = ShareSite;
+        initOneKeyShare();
+        initDialog(type);
+        return this;
+    }
+
+    public void setDismissEvent(ShardDialog.DismissEvent dismissEvent) {
+        mDismissEvent = dismissEvent;
     }
 
     private boolean filterPlat(String name) {
@@ -87,17 +114,16 @@ public class ShareUtil {
         return false;
     }
 
-    private void initPlatformList()
-    {
+    private void initPlatformList() {
         Platform[] platforms = mShareSDKUtil.getPlatformList();
-        mList = new ArrayList<ListData>();
+        mList = new ArrayList<>();
 
         for (Platform platform : platforms) {
             String name = platform.getName();
             if (filterPlat(name)) {
                 continue;
             }
-            String resName = "logo_" + name;
+            String resName = ("logo_" + name).toLowerCase();
             int resId = getBitmapRes(mContext, resName);
             ListData data = new ListData(mContext.getResources().getDrawable(resId), name, mContext);
             mList.add(data);
@@ -111,8 +137,9 @@ public class ShareUtil {
         });
     }
 
-    public void initDialog() {
-        mAlertDialog = new ShardDialog(mContext);
+    public void initDialog(int type) {
+        mAlertDialog = new ShardDialog(mContext, type);
+        mAlertDialog.setDismissEvent(mDismissEvent);
         mAlertDialog.setShardDatas(mList);
         mAlertDialog.setShardItemClick(new AdapterView.OnItemClickListener() {
             @Override
@@ -141,22 +168,9 @@ public class ShareUtil {
         //关闭sso授权
         mOneKeyShare.disableSSOWhenAuthorize();
         mOneKeyShare.setDialogMode();
-        // 分享时Notification的图标和文字
-        //mOneKeyShare.setNotification(mNotification_icon, mNotification_text);
-        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
         mOneKeyShare.setTitle(mShareTextTitle);
-        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
         mOneKeyShare.setTitleUrl(mShareTitleUrl);
-        // text是分享文本，所有平台都需要这个字段
         mOneKeyShare.setText(mShareText);
-//        imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-//        mOneKeyShare.setImagePath(mLocalImagePath);
-//        imageUrl是图片的网络路径，新浪微博、人人网、QQ空间、
-//        微信的两个平台、Linked-In支持此字段
-//        mOneKeyShare.setImageUrl(mLocalImagePath);
-        // url仅在微信（包括好友和朋友圈）中使用
-        //oks.setUrl("http://sharesdk.cn");
-        // site是分享此内容的网站名称，仅在QQ空间使用
         mOneKeyShare.setSite(mShareSite);
     }
 

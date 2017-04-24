@@ -44,7 +44,6 @@
             android:textSize="@dimen/small_font_size" />
     </com.edusoho.kuozhi.v3.view.EduSohoCompoundButton>
 
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civ_badge_view"
         android:layout_width="8dp"
@@ -52,6 +51,5 @@
         android:layout_toRightOf="@+id/ecb_switch"
         android:src="@color/badge_red"
         android:visibility="invisible" />
-
 
 </RelativeLayout>

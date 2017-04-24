@@ -36,11 +36,14 @@ public class LessonItem<T> implements Serializable {
     public int learnedNum;
     public int viewedNum;
     public int userId;
+    public String remainTime;
     public String createdTime;
     public String itemType;
     public String startTime;
     public String endTime;
     public String replayStatus;
+    public String mediaStorage;
+    public String mediaConvertStatus;
 
     public M3U8DbModel m3u8Model;
     public boolean isSelected;
@@ -48,7 +51,7 @@ public class LessonItem<T> implements Serializable {
 
     public UploadFile uploadFile;
 
-    public static enum ItemType {
+    public enum ItemType {
         LESSON, CHAPTER, UNIT, EMPTY;
 
         public static ItemType cover(String name) {
@@ -62,7 +65,7 @@ public class LessonItem<T> implements Serializable {
         }
     }
 
-    public static enum MediaSourceType {
+    public enum MediaSourceType {
         YOUKU, SELF, TUDOU, EMPTY, QQVIDEO, FALLBACK, NETEASEOPENCOURSE;
 
         public static MediaSourceType cover(String name) {

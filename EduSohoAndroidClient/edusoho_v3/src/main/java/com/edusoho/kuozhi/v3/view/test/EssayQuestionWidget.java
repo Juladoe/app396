@@ -16,7 +16,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.EditText;
@@ -78,6 +77,12 @@ public class EssayQuestionWidget extends BaseQuestionWidget
     }
 
     @Override
+    protected void restoreResult(ArrayList resultData) {
+        String contentBodyText = resultData.get(0).toString();
+        contentEdt.setText(Html.fromHtml(contentBodyText, new NetImageGetter(contentEdt, contentBodyText), null));
+    }
+
+    @Override
     public void invoke(WidgetMessage message) {
         int type = message.type.code;
         switch (type) {
@@ -130,8 +135,6 @@ public class EssayQuestionWidget extends BaseQuestionWidget
 
     @Override
     protected void invalidateData() {
-        super.invalidateData();
-
         mToolsLayout = this.findViewById(R.id.essay_tools_layout);
         contentEdt = (EditText) this.findViewById(R.id.essay_content);
         mPhotoBtn = (ImageView) this.findViewById(R.id.essay_photo);
@@ -182,6 +185,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
             });
             mAnalysisVS.inflate();
         }
+        super.invalidateData();
     }
 
     @Override
@@ -195,7 +199,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         if ("noAnswer".equals(testResult.status)) {
             myAnswer = "未答题";
         } else {
-            myAnswer = listToStr(testResult.answer);
+            myAnswer = listToStr(coverResultAnswer(testResult.answer));
         }
 
         String html = "你的答案:<p></p>" + myAnswer;

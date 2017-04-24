@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,7 +14,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.qr.view.ViewfinderResultPointCallback;
 
 import java.util.ArrayList;
 
@@ -62,9 +59,9 @@ public class AddNormalFriendActivity extends ActionBarBaseActivity{
         mList = (ListView) findViewById(R.id.add_normal_friend_list);
         mAdapter = new AddNormalFriendAdapter(R.layout.add_friend_item);
 
-        mStudentList = new ArrayList<Friend>();
-        mTeacherList = new ArrayList<Friend>();
-        mFriendsList = new ArrayList<Friend>();
+        mStudentList = new ArrayList();
+        mTeacherList = new ArrayList();
+        mFriendsList = new ArrayList();
 
         mList.setAdapter(mAdapter);
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

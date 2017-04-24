@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter.article;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,15 +72,18 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
 
         TextView textView = (TextView) convertView;
         ArticleModel articleModel = mArcicleChatList.get(groupPosition);
-        int createdTime = articleModel.createdTime;
+        long createdTime = articleModel.createdTime;
         String time = "";
+        if (articleModel.createdTime > Integer.MAX_VALUE) {
+            articleModel.createdTime = articleModel.createdTime / 1000;
+        }
         if (groupPosition > 0) {
             ArticleModel prevArticleModel = getGroup(groupPosition - 1);
             if (createdTime - prevArticleModel.createdTime > 60 * 5) {
-                time = AppUtil.convertMills2Date(((long) articleModel.createdTime) * 1000);
+                time = AppUtil.convertMills2Date(articleModel.createdTime * 1000);
             }
         } else {
-            time = AppUtil.convertMills2Date(((long) articleModel.createdTime) * 1000);
+            time = AppUtil.convertMills2Date(articleModel.createdTime * 1000);
         }
         textView.setText(time);
         return convertView;
@@ -128,7 +130,7 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         Article article = getChild(groupPosition, childPosition);
 
         viewHolder.mTitleView.setText(article.title);
-        ImageLoader.getInstance().displayImage(article.picture, viewHolder.mImgView, mOptions);
+        ImageLoader.getInstance().displayImage(article.thumb, viewHolder.mImgView, mOptions);
         return convertView;
     }
 

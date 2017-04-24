@@ -77,7 +77,6 @@ public class AlipayFragment extends BaseFragment {
                 if (url.startsWith(mHost) && !isEqualsURl(mPayurl, url)) {
                     app.sendMsgToTarget(PayCourseActivity.PAY_EXIT, null, PayCourseActivity.class);
                     mActivity.finish();
-                    return;
                 }
             }
         });

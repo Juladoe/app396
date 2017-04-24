@@ -24,10 +24,16 @@ import java.util.ArrayList;
 
 public class SqliteUtil extends SQLiteOpenHelper {
 
-    private static final int dbVersion = 10;
-    private static final int oldVersion = 9;
+    private static final int dbVersion = 11;
+    private static final int oldVersion = 10;
     private static SqliteUtil instance;
-    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql", "db_int_audio_cache.sql"};
+    private static String[] INIT_SQLS = {
+            "db_init_m3u8.sql",
+            "db_init_lesson_resource.sql",
+            "db_init_chat.sql",
+            "db_int_audio_cache.sql",
+            "db_init_donwload_item.sql"
+    };
     private Context mContext;
 
     private SqliteUtil(Context context, String name, CursorFactory factory) {
@@ -67,7 +73,6 @@ public class SqliteUtil extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(null, "create cache db->");
         ArrayList<String> sqlList = getInitSql("db_init.sql");
         for (String sql : sqlList) {
             db.execSQL(sql);
@@ -122,7 +127,6 @@ public class SqliteUtil extends SQLiteOpenHelper {
     }
 
     private void initDbSql(String name, SQLiteDatabase db) {
-        Log.d(null, "initDbSql->" + name);
         ArrayList<String> sqlList = getInitSql(name);
         for (String sql : sqlList) {
             db.execSQL(sql);
@@ -214,7 +218,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
     public int update(String table, ContentValues cv, String where, String[] args) {
         SQLiteDatabase db = getWritableDatabase();
         int result = db.update(table, cv, where, args);
-        Log.d("m3u8_sql", "update " + table + " ->" + where);
+        Log.d("m3u8_sql", "update " + table + " ->" + result);
         return result;
     }
 
@@ -234,8 +238,16 @@ public class SqliteUtil extends SQLiteOpenHelper {
         cv.put("type", type);
         cv.put("key", key);
         cv.put("value", value);
-        long result = insert("data_cache", cv);
-        Log.d(null, "insert to cache->" + result);
+
+        Cache cache = query("select * from data_cache where key=? and type=?", new String[]{key, type});
+        if (cache == null) {
+            long result = insert("data_cache", cv);
+            Log.d("saveLocalCache", "insert to cache:" + result);
+            return;
+        }
+
+        int updateResult = update("data_cache", cv, "key=?", new String[]{key});
+        Log.d("saveLocalCache", "updateResult to cache:" + updateResult);
     }
 
     public <T> T queryForObj(

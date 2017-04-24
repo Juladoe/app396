@@ -2,8 +2,6 @@ package com.edusoho.kuozhi.v3.model.bal;
 
 import android.graphics.Bitmap;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 /**
  * Created by Melomelon on 2015/6/5.
  */

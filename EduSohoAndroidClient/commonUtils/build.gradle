@@ -4,10 +4,6 @@ android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
 
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 22
-    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -15,8 +11,7 @@ android {
             res.srcDirs = ['res']
         }
     }
-}
-
-dependencies {
-    compile files('libs/dexmaker-1.1.jar')
+    lintOptions {
+        abortOnError false
+    }
 }

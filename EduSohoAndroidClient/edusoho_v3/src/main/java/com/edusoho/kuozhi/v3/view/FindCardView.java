@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
@@ -70,23 +71,36 @@ public class FindCardView extends LinearLayout {
         setData(discoveryColumn.data);
     }
 
-    public void setMoreClickListener(String type) {
+    public void setMoreClickListener(String orderType, String type, int categoryId) {
         final String url;
         switch (type) {
             case "course":
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_COURSES);
+                url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_COURSES, categoryId, orderType)
+                );
                 break;
             case "live":
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_LIVE_COURSES);
+                url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_LIVE_COURSES, categoryId, orderType)
+                );
                 break;
             case "classroom":
             default:
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_CLASSROOMS);
+                url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_CLASSROOMS, categoryId, orderType)
+                );
         }
 
         tvMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "find_moreButton");
                 EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {

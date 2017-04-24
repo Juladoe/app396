@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text="接收中..."
                 android:textColor="@color/action_bar_title"
-                android:textSize="@dimen/large_font_size" />
+                android:textSize="@dimen/medium_font_size" />
         </LinearLayout>
 
         <TextView
@@ -44,17 +44,36 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/action_bar_title"
-            android:textSize="@dimen/large_font_size"
+            android:textSize="@dimen/medium_font_size"
             android:visibility="visible" />
 
     </android.support.v7.widget.Toolbar>
+
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+        android:id="@+id/tv_sitting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="23dp"
+        android:layout_marginTop="13.5dp"
+        android:text="设置"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/font_xl"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/tb_action_bar"
+        android:background="@color/disabled_hint_color" />
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/nav_bottom_layout"
-        android:layout_below="@+id/tb_action_bar"
+        android:layout_below="@+id/v_line"
         android:background="@color/system_normal_bg" />
 
     <include layout="@layout/nav_setting" />

@@ -1,15 +1,15 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotificationResult;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.SearchFriendResult;
 import com.edusoho.kuozhi.v3.model.result.FollowResult;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.List;
 
 /**
@@ -21,12 +21,15 @@ public class FriendProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener getSchoolApps(RequestUrl requestUrl) {
-        ProviderListener<List<SchoolApp>> responseListener = new ProviderListener<List<SchoolApp>>() {
-        };
-        addRequest(requestUrl, new TypeToken<List<SchoolApp>>() {
-        }, responseListener, responseListener);
-        return responseListener;
+    public ProviderListener<List<SchoolApp>> getSchoolApps() {
+        RequestUrl requestUrl = new RequestUrl(getHost() + Const.SCHOOL_APPS);
+        requestUrl.getHeads().put("Auth-Token", getToken());
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<List<SchoolApp>>(){});
+
+        requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.AUTO_USE_CACHE);
+        return requestOption.build();
     }
 
     public ProviderListener getFriend(RequestUrl requestUrl) {
@@ -35,6 +38,17 @@ public class FriendProvider extends ModelProvider {
         addRequest(requestUrl, new TypeToken<FriendResult>() {
         }, responseListener, responseListener);
         return responseListener;
+    }
+
+    public ProviderListener<FriendResult> getFriendList() {
+        RequestUrl requestUrl = new RequestUrl(getHost() + Const.MY_FRIEND + "?start=0&limit=10000/");
+        requestUrl.getHeads().put("Auth-Token", getToken());
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<FriendResult>(){});
+
+        requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.AUTO_USE_CACHE);
+        return requestOption.build();
     }
 
     public ProviderListener loadNotifications(RequestUrl requestUrl) {

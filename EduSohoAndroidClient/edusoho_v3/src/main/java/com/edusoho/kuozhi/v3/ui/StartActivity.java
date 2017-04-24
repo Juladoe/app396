@@ -1,34 +1,38 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.reflect.TypeToken;
-import java.io.File;
-import java.io.FileOutputStream;
+
 import java.util.HashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 
 public class StartActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
@@ -36,72 +40,89 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     public static final String INIT_APP = "init_app";
 
     protected Intent mCurrentIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCurrentIntent = getIntent();
-        if (mCurrentIntent != null && !mCurrentIntent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
+        if (mCurrentIntent != null && mCurrentIntent.hasExtra(NotificationProvider.ACTION_TAG)) {
             startApp();
             return;
         }
-        setContentView(R.layout.activity_start);
+        initView();
         app.registMsgSource(this);
-        startSplash();
-        registDevice();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startSplash();
+            }
+        }, 200);
 
-        ESCordovaWebViewFactory.init(mActivity);
     }
 
-    private void initAssets() {
+    @Override
+    protected int getStatusBarColor() {
+        return Color.TRANSPARENT;
+    }
 
-        String zipName = String.format("assets-%s.zip", app.getApkVersion());
-        File target = new File(getFilesDir(), zipName);
-        if (target.exists()) {
-            return;
-        }
+    protected void initView() {
+        setContentView(R.layout.activity_start);
+        findViewById(R.id.li_start_load).setBackgroundResource(R.drawable.load_bg);
+    }
 
-        AssetManager assetManager = getAssets();
-        FileOutputStream outputStream = null;
-        ZipOutputStream zipOutputStream = null;
-        try {
-            String[] filter = new String[] {
-                    ".apk", ".ttf", ".zip"
-            };
+    protected void startAnim() {
+        final View nameView = findViewById(R.id.tv_start_name);
+        final View titleView = findViewById(R.id.tv_start_title);
+        View iconView = findViewById(R.id.tv_start_icon);
 
-            outputStream = openFileOutput(zipName, MODE_APPEND);
-            zipOutputStream = new ZipOutputStream(outputStream);
-            String[] list = assetManager.list("");
-            for (String name : list) {
-                if (assetManager.list(name).length != 0) {
-                    continue;
-                }
+        iconView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.activity_start_icon_anim));
+        nameView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.alpha_top_to_bottom));
 
-                if (CommonUtil.inArray(CommonUtil.getFileExt(name), filter)) {
-                    continue;
-                }
-
-                M3U8Util.DigestInputStream inputStream = new M3U8Util.DigestInputStream(
-                        assetManager.open(name), getPackageName(), false);
-                ZipEntry zipEntry = new ZipEntry("assets/" + name);
-                zipOutputStream.putNextEntry(zipEntry);
-
-                byte[] buffer = new byte[1024];
-                int len = 0;
-                while ((len = inputStream.read(buffer)) != -1) {
-                    zipOutputStream.write(buffer, 0, len);
-                }
-                inputStream.close();
+        Animation titleAnimation = AnimationUtils.loadAnimation(mContext, R.anim.alpha_bottom_to_top);
+        titleView.setAnimation(titleAnimation);
+        titleAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
             }
 
-        } catch (Exception e) {
-            deleteFile(zipName);
-            Log.e(TAG, "addAssetPath error");
-        } finally {
-            try {
-                zipOutputStream.close();
-            } catch (Exception e) {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                startIconRotateAnim();
             }
-        }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        titleAnimation.start();
+    }
+
+    private void startIconRotateAnim() {
+        View iconBgView = findViewById(R.id.tv_start_icon_bg);
+        iconBgView.setBackgroundResource(R.drawable.start_app_splash);
+
+        Animation rotateAnimation = AnimationUtils.loadAnimation(mContext, R.anim.alpha_rotate);
+        iconBgView.setAnimation(rotateAnimation);
+        rotateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startSplash();
+                    }
+                }, 200);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        rotateAnimation.start();
     }
 
     public void startSplash() {
@@ -114,8 +135,20 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         app.sendMessage(INIT_APP, null);
     }
 
+    protected void startLoading(String loadText) {
+        View loadLayoutView = findViewById(R.id.li_start_load);
+        TextView loadTextTv = (TextView) findViewById(R.id.loading_txt);
+        loadTextTv.setText(loadText);
+        loadLayoutView.setVisibility(View.VISIBLE);
+    }
+
+    protected void hideLoading() {
+        View loadLayoutView = findViewById(R.id.li_start_load);
+        loadLayoutView.setVisibility(View.GONE);
+    }
+
     protected void initApp() {
-        if (!app.getNetIsConnect()) {
+        if (!AppUtil.isNetConnect(mContext)) {
             CommonUtil.longToast(this, "没有网络服务！请检查网络设置。");
             startApp();
             return;
@@ -145,15 +178,52 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     protected void onDestroy() {
         app.unRegistMsgSource(this);
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
+    }
+
+    protected void checkSchoolAndUserToken(SystemInfo systemInfo) {
+        startLoading("登录用户");
+        ajaxGet(String.format("%s/%s?version=2&token=%s", systemInfo.mobileApiUrl, Const.CHECKTOKEN, app.token), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                UserResult userResult = parseJsonValue(response.toString(), new TypeToken<UserResult>() {
+                });
+
+                if (userResult == null || userResult.site == null) {
+                    showSchoolErrorDlg();
+                    return;
+                }
+                School site = userResult.site;
+                if (!checkMobileVersion(site.apiVersionRange)) {
+                    return;
+                }
+
+                getAppSettingProvider().setCurrentSchool(site);
+                app.setCurrentSchool(site);
+                if (userResult.user != null) {
+                    app.saveToken(userResult);
+                } else {
+                    app.removeToken();
+                }
+                startApp();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                hideLoading();
+            }
+        });
     }
 
     /**
      * 检查网校版本
      */
     private void checkSchoolVersion(SystemInfo systemInfo) {
+        startLoading("检查App版本");
         ajaxGet(systemInfo.mobileApiUrl + Const.VERIFYSCHOOL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                hideLoading();
                 SchoolResult schoolResult = parseJsonValue(response.toString(), new TypeToken<SchoolResult>() {
                 });
 
@@ -166,13 +236,14 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                     return;
                 }
 
+                getAppSettingProvider().setCurrentSchool(site);
                 app.setCurrentSchool(site);
                 startApp();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                hideLoading();
             }
         });
     }
@@ -240,22 +311,30 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
      * 检查网校Api版本
      */
     protected void checkSchoolApiVersion() {
+        startLoading("检查网校信息");
         ajaxGet(app.host + Const.VERIFYVERSION, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                SystemInfo info = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
+                hideLoading();
+                SystemInfo systemInfo = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
                 });
-                if (info == null
-                        || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
-
+                if (systemInfo == null || systemInfo.mobileApiUrl == null || "".equals(systemInfo.mobileApiUrl)) {
                     showSchoolErrorDlg();
                     return;
                 }
-                checkSchoolVersion(info);
+
+                app.schoolVersion = systemInfo.version;
+
+                if (TextUtils.isEmpty(app.token)) {
+                    checkSchoolVersion(systemInfo);
+                    return;
+                }
+                checkSchoolAndUserToken(systemInfo);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                hideLoading();
                 showSchoolErrorDlg();
             }
         });
@@ -324,7 +403,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                                 }.getType()
                         );
 
-                        if (true) {
+                        if (result) {
                             app.config.isPublicRegistDevice = true;
                             app.saveConfig();
                         }

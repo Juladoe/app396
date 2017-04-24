@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/chat_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/nav_bottom_layout"
+        android:layout_below="@+id/tb_action_bar"
+        android:background="@color/system_normal_bg" />
+
+    <TextView
+        android:id="@+id/tv_goto_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="21dp"
+        android:alpha="0.4"
+        android:background="@drawable/btn_goto_bg"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"
+        android:text="@string/go_to_classroom"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_s" />
+</RelativeLayout>

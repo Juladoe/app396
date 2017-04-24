@@ -26,14 +26,14 @@ public class FindListAdapter extends BaseAdapter {
         mList = new ArrayList<>();
     }
 
+    public void addDataList(List<DiscoveryColumn> findCardEntity) {
+        mList.addAll(findCardEntity);
+
+        notifyDataSetChanged();
+    }
+
     public void addData(DiscoveryColumn findCardEntity) {
         mList.add(findCardEntity);
-        Collections.sort(mList, new Comparator<DiscoveryColumn>() {
-            @Override
-            public int compare(DiscoveryColumn lhs, DiscoveryColumn rhs) {
-                return lhs.seq.compareTo(rhs.seq);
-            }
-        });
         notifyDataSetChanged();
     }
 
@@ -66,7 +66,7 @@ public class FindListAdapter extends BaseAdapter {
         DiscoveryColumn discoveryColumn = mList.get(position);
         FindCardView findCardView = (FindCardView) convertView;
         findCardView.setDiscoveryCardEntity(discoveryColumn);
-        findCardView.setMoreClickListener(discoveryColumn.type);
+        findCardView.setMoreClickListener(discoveryColumn.orderType == null ? "recommend" : discoveryColumn.orderType, discoveryColumn.type, discoveryColumn.categoryId);
         return convertView;
     }
 }

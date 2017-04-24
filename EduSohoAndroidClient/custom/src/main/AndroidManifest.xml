@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.edusoho"
-    android:versionCode="30"
-    android:versionName="3.4.1">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.edusoho">
 
-    <application
+    <application tools:replace="android:allowBackup"
         android:name="com.edusoho.kuozhi.v3.EdusohoApp"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
@@ -12,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/EdusohoAppTheme">
         <activity
-            android:name=".kuozhi.KuozhiActivity"
+            android:name="${startActivity}"
             android:label="@string/app_name"
             android:theme="@style/kuozhiV2StartTheme">
             <intent-filter>
@@ -40,16 +39,10 @@
 
         <!-- custom weixin login -->
         <activity
-            android:name="com.howzhi.wxapi.WXEntryActivity"
+            android:name="${wxpkg}.wxapi.WXEntryActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true" />
-
-        <activity
-            android:name="com.howzhi.ui.HowzhiLoginActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-
 
     </application>
 

@@ -17,28 +17,36 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.IDownloadFragmenntListener;
 import com.edusoho.kuozhi.v3.ui.fragment.DownloadingFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,6 +54,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import cn.trinea.android.common.util.FileUtils;
 import extensions.PagerSlidingTabStrip;
@@ -56,11 +65,12 @@ import extensions.PagerSlidingTabStrip;
  */
 public class DownloadManagerActivity extends ActionBarBaseActivity {
     public static final String[] DOWNLOAD_FRAGMENTS = {"DownloadedFragment", "DownloadingFragment"};
-    public static final String[] DOWNLOAD_TITLES = {"已下载", "下载中"};
+    public static final String[] DOWNLOAD_TITLES = {"已缓存", "缓存中"};
 
     private PagerSlidingTabStrip mPagerTab;
     private ViewPager mViewPagers;
     private TextView mDeviceSpaceInfo;
+    private View mLoadView;
     private ProgressBar pbDownloadDeviceInfo;
 
     private final Handler mHandler = new Handler();
@@ -69,12 +79,21 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     private int currentColor = R.color.action_bar_bg;
     protected SqliteUtil mSqliteUtil;
     protected String host;
+    private int mCourseId;
+    private CourseMember mCourseMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download_manager);
+
+        mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         initView();
+    }
+
+    @Override
+    protected int getStatusBarColor() {
+        return getResources().getColor(R.color.action_bar_dark_bg);
     }
 
     @Override
@@ -82,7 +101,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         super.onResume();
         if (mDownLoadStatusReceiver == null) {
             mDownLoadStatusReceiver = new DownloadStatusReceiver(mStatusCallback);
-            Log.d(null, "register DownLoadStatusReceiver");
+            Log.d(TAG, "register DownLoadStatusReceiver");
             registerReceiver(
                     mDownLoadStatusReceiver, new IntentFilter(DownloadStatusReceiver.ACTION));
         }
@@ -93,45 +112,103 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         super.onDestroy();
         if (mDownLoadStatusReceiver != null) {
             unregisterReceiver(mDownLoadStatusReceiver);
-            Log.d(null, "unregister DownLoadStatusReceiver");
+            Log.d(TAG, "unregister DownLoadStatusReceiver");
         }
+    }
+
+    private void setLoadViewState(boolean isShow) {
+        mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
     private DownloadStatusReceiver.StatusCallback mStatusCallback = new DownloadStatusReceiver.StatusCallback() {
         @Override
         public void invoke(Intent intent) {
-            int lessonId = intent.getIntExtra(Const.LESSON_ID, 0);
+            int lessonId = intent.getIntExtra(Const.LESSON_ID, mCourseId);
             Bundle bundle = new Bundle();
             bundle.putInt(Const.LESSON_ID, lessonId);
             app.sendMessage(DownloadingFragment.UPDATE, bundle);
         }
     };
 
+    public boolean isExpired() {
+        return mCourseMember != null && AppUtil.parseInt(mCourseMember.deadline) < 0;
+    }
+
+    private void validCourseMemberState() {
+        if (!AppUtil.isNetConnect(getBaseContext())) {
+            mCourseMember = null;
+            setLoadViewState(false);
+            initViewPager();
+            return;
+        }
+        new CourseProvider(getBaseContext()).getMember(mCourseId)
+        .success(new NormalCallback<CourseMember>() {
+            @Override
+            public void success(CourseMember member) {
+                mCourseMember = member;
+                setLoadViewState(false);
+                initViewPager();
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                mCourseMember = null;
+                setLoadViewState(false);
+                initViewPager();
+            }
+        });
+    }
+
     private void initView() {
-        setBackMode(BACK, "已下载课时");
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         mPagerTab = (PagerSlidingTabStrip) findViewById(R.id.tab_download);
+        mLoadView = findViewById(R.id.ll_download_load);
         pbDownloadDeviceInfo = (ProgressBar) findViewById(R.id.pb_download_device_info);
         mViewPagers = (ViewPager) findViewById(R.id.viewpager_download);
         mDeviceSpaceInfo = (TextView) findViewById(R.id.download_device_info);
-        MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), DOWNLOAD_TITLES, DOWNLOAD_FRAGMENTS);
-        mViewPagers.setAdapter(myPagerAdapter);
-        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
-                .getDisplayMetrics());
-        mViewPagers.setPageMargin(pageMargin);
-        mPagerTab.setViewPager(mViewPagers);
 
         mSqliteUtil = SqliteUtil.getUtil(mContext);
-
-        changeColor(currentColor);
-        setPageItem(DOWNLOAD_FRAGMENTS[0]);
-        mViewPagers.setOffscreenPageLimit(DOWNLOAD_FRAGMENTS.length);
-        loadDeviceSpaceInfo();
-
         //网校域名
         Uri hostUri = Uri.parse(app.host);
         if (hostUri != null) {
             this.host = hostUri.getHost();
         }
+        validCourseMemberState();
+    }
+
+    private void initViewPager() {
+        MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), DOWNLOAD_TITLES, DOWNLOAD_FRAGMENTS);
+        mViewPagers.setAdapter(myPagerAdapter);
+        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
+                .getDisplayMetrics());
+        mViewPagers.setPageMargin(pageMargin);
+        mViewPagers.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    MobclickAgent.onEvent(mContext, "i_cache_caching");
+                }
+                List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+                for (int i = 0; i < fragmentList.size(); i++) {
+                    Fragment fragment = fragmentList.get(i);
+                    if (fragment instanceof IDownloadFragmenntListener) {
+                        ((IDownloadFragmenntListener)fragment).onSelected(position == i);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+        mPagerTab.setViewPager(mViewPagers);
+        changeColor(currentColor);
+        setPageItem(DOWNLOAD_FRAGMENTS[0]);
+        mViewPagers.setOffscreenPageLimit(DOWNLOAD_FRAGMENTS.length);
     }
 
     private void loadDeviceSpaceInfo() {
@@ -211,7 +288,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             Fragment fragment = app.mEngine.runPluginWithFragment(mLists[i], mActivity, new PluginFragmentCallback() {
                 @Override
                 public void setArguments(Bundle bundle) {
-
+                    bundle.putAll(getIntent().getExtras());
                 }
             });
             return fragment;
@@ -231,7 +308,6 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     private Drawable.Callback drawableCallback = new Drawable.Callback() {
         @Override
         public void invalidateDrawable(Drawable who) {
-            //getActionBar().setBackgroundDrawable(who);
         }
 
         @Override
@@ -290,20 +366,14 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             Collections.sort(lessonItems, new Comparator<LessonItem>() {
                 @Override
                 public int compare(LessonItem lhs, LessonItem rhs) {
-                    if (lhs.courseId > rhs.courseId) {
-                        return 1;
-                    } else if (lhs.courseId == rhs.courseId) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
+                    return lhs.number - rhs.number;
                 }
             });
 
-            model.m3U8DbModles = M3U8Util.getM3U8ModelList(
+            model.m3U8DbModels = M3U8Util.getM3U8ModelList(
                     mContext, ids, app.loginUser.id, this.host, isFinish);
             for (LessonItem lessonItem : lessonItems) {
-                if (model.m3U8DbModles.indexOfKey(lessonItem.id) < 0) {
+                if (model.m3U8DbModels.indexOfKey(lessonItem.id) < 0) {
                     continue;
                 }
                 if (!model.mLocalLessons.containsKey(lessonItem.courseId)) {
@@ -313,13 +383,13 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                     }
                 }
 
-                ArrayList<LessonItem> lessons = model.mLocalLessons.get(lessonItem.courseId);
+                List<LessonItem> lessons = model.mLocalLessons.get(lessonItem.courseId);
                 if (lessons != null) {
                     lessons.add(lessonItem);
                 }
             }
 
-            filterLessons(isFinish, lessonItems, model.m3U8DbModles);
+            filterLessons(isFinish, lessonItems, model.m3U8DbModels);
         } else {
             model.mLocalCourses.clear();
             model.mLocalLessons.clear();
@@ -385,80 +455,10 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         return ids;
     }
 
-    public void clearLocalCache(ArrayList<Integer> ids) {
-        SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
-
-        String m3u8LessonIds = coverM3U8Ids(ids);
-        String cacheLessonIds = coverLessonIds(ids);
-        sqliteUtil.execSQL(String.format(
-                        "delete from data_cache where type='%s' and key in %s",
-                        Const.CACHE_LESSON_TYPE,
-                        cacheLessonIds.toString()
-                )
-        );
-        sqliteUtil.execSQL(String.format(
-                        "delete from data_m3u8 where host='%s' and lessonId in %s",
-                        app.domain,
-                        m3u8LessonIds.toString())
-        );
-
-        M3U8DownService service = M3U8DownService.getService();
-        if (service != null) {
-            service.cancelAllDownloadTask();
-            for (int id : ids) {
-                service.cancelDownloadTask(id);
-            }
-        }
-
-        clearVideoCache(ids);
-    }
-
-    /**
-     * 删除本地视频
-     *
-     * @param ids
-     */
-    private void clearVideoCache(ArrayList<Integer> ids) {
-        File workSpace = EdusohoApp.getWorkSpace();
-        if (workSpace == null) {
-            return;
-        }
-        File videosDir = new File(workSpace, "videos/" + app.loginUser.id + "/" + app.domain);
-        for (int id : ids) {
-            FileUtils.deleteFile(new File(videosDir, String.valueOf(id)).getAbsolutePath());
-        }
-    }
-
-    private String coverM3U8Ids(ArrayList<Integer> ids) {
-        StringBuffer idsStr = new StringBuffer("(");
-        for (int id : ids) {
-            idsStr.append(id).append(",");
-        }
-        if (idsStr.length() > 1) {
-            idsStr.deleteCharAt(idsStr.length() - 1);
-        }
-        idsStr.append(")");
-
-        return idsStr.toString();
-    }
-
-    private String coverLessonIds(ArrayList<Integer> ids) {
-        StringBuffer idsStr = new StringBuffer("(");
-        for (int id : ids) {
-            idsStr.append("'lesson-").append(id).append("',");
-        }
-        if (idsStr.length() > 1) {
-            idsStr.deleteCharAt(idsStr.length() - 1);
-        }
-        idsStr.append(")");
-
-        return idsStr.toString();
-    }
-
     public class LocalCourseModel {
         public ArrayList<Course> mLocalCourses;
-        public SparseArray<M3U8DbModel> m3U8DbModles;
-        public HashMap<Integer, ArrayList<LessonItem>> mLocalLessons;
+        public SparseArray<M3U8DbModel> m3U8DbModels;
+        public HashMap<Integer, List<LessonItem>> mLocalLessons;
 
         public LocalCourseModel() {
             mLocalCourses = new ArrayList<>();

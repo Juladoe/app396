@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.v3.cache.request.model;
 
-import android.util.Log;
-
 import java.io.InputStream;
 import java.util.Map;
 

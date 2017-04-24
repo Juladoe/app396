@@ -4,16 +4,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.MyCreatedThreadFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.MyPostedThreadFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoViewPager;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import extensions.PagerSlidingTabStrip;
 
 /**
@@ -57,8 +58,21 @@ public class MyThreadActivity extends ActionBarBaseActivity {
 
         mAdapter = new MyThreadPageAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    MobclickAgent.onEvent(mContext, "i_myQuestionAndAnswer_replied");
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
         mTab.setViewPager(mViewPager);
-
     }
 
     public class MyThreadPageAdapter extends FragmentPagerAdapter{

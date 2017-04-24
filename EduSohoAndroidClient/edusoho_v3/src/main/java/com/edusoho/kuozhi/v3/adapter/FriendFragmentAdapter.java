@@ -1,21 +1,22 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.AvatarLoadingListener;
-import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -115,12 +116,6 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                     itemHolder.dividerLine.setVisibility(View.GONE);
                 }
 
-                if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.getRoles())) {
-                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
-                } else {
-                    itemHolder.teacherTag.setVisibility(View.GONE);
-                }
-
                 position--;
                 int section = getSectionForPosition(position);
                 if (position == getPositionForSection(section)) {
@@ -131,23 +126,42 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                 }
 
                 itemHolder.friendName.setText(friend.getNickname());
-                String itemType;
-                if (friend instanceof DiscussionGroup) {
-                    itemType = PushUtil.ChatUserType.CLASSROOM;
+                if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.getRoles())) {
+                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
+                    itemHolder.teacherTag.setText(R.string.label_teacher);
+                    itemHolder.teacherTag.setBackgroundResource(R.drawable.role_teacher_bg);
+                } else if (Destination.CLASSROOM.equals(friend.getType())) {
+                    itemHolder.teacherTag.setText(R.string.label_classroom);
+                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
+                    itemHolder.teacherTag.setBackgroundResource(R.drawable.role_classroom_bg);
+                } else if (Destination.COURSE.equals(friend.getType())) {
+                    itemHolder.teacherTag.setText(R.string.label_course);
+                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
+                    itemHolder.teacherTag.setBackgroundResource(R.drawable.role_course_bg);
                 } else {
-                    itemType = PushUtil.ChatUserType.FRIEND;
+                    itemHolder.teacherTag.setVisibility(View.GONE);
                 }
-                ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions, new AvatarLoadingListener(itemType));
+
+                ImageLoader.getInstance().displayImage(
+                        friend.getMediumAvatar(),
+                        itemHolder.friendAvatar,
+                        mApp.mOptions,
+                        new AvatarLoadingListener(friend.getType())
+                );
+                int titleMaxWidth = getTitleMaxWidth();
+                itemHolder.friendName.setMaxWidth(titleMaxWidth);
                 break;
         }
         return v;
     }
 
-    public void addSchoolList(List<T> list) {
-        list.get(0).isTop = true;
-        list.get(list.size() - 1).isBottom = true;
-        mList.addAll(list);
-        notifyDataSetChanged();
+    private int getTitleMaxWidth() {
+        WindowManager wm = (WindowManager) (mContext.getSystemService(Context.WINDOW_SERVICE));
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+
+        int space = mContext.getResources().getDimensionPixelSize(R.dimen.head_icon_medium);
+        return dm.widthPixels - space - AppUtil.dp2px(mContext, 64 + 32);
     }
 
     public void addFriendList(List<T> list) {
@@ -159,7 +173,6 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
 
     public void clearList() {
         mList.clear();
-        notifyDataSetChanged();
     }
 
     public void setHeadView(View headView) {
