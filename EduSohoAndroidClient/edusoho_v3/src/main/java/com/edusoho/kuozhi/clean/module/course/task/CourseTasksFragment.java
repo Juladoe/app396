@@ -2,11 +2,14 @@ package com.edusoho.kuozhi.clean.module.course.task;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
@@ -26,6 +29,9 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private CourseTasksContract.Presenter mPresenter;
     private RecyclerView taskRecyclerView;
+    private FloatingActionButton mMenuButton;
+    private TextView mMenuClose;
+    private View mCourseMenuLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +50,42 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         taskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
+        mMenuButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
+        mMenuClose = (TextView) view.findViewById(R.id.tv_close_menu);
+        mCourseMenuLayout = view.findViewById(R.id.bottom_menu_layout);
+        final BottomSheetBehavior behavior = BottomSheetBehavior.from(mCourseMenuLayout);
+        behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
         mPresenter.subscribe();
+
+        mMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomMenu(behavior);
+            }
+        });
+
+        mMenuClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomMenu(behavior);
+            }
+        });
+    }
+
+    private void showBottomMenu(BottomSheetBehavior behavior) {
+        if (behavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            mMenuButton.setVisibility(View.GONE);
+        } else if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            mMenuButton.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mMenuButton.setVisibility(View.VISIBLE);
+                }
+            }, 250);
+        }
     }
 
     @Override

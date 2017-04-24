@@ -46,6 +46,7 @@ public class CourseMenuButton extends LinearLayout {
         int height = AppUtil.dp2px(context, 66);
         LayoutParams imageLayoutParams = new LayoutParams(width, height);
         ESIconView esIconView = new ESIconView(context);
+        imageLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         esIconView.setText(image);
         esIconView.setTextColor(imageColor);
         esIconView.setTextSize(TypedValue.COMPLEX_UNIT_PX, imageSize);

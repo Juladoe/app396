@@ -8,7 +8,8 @@
         android:id="@+id/bottom_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
+        android:alpha="0.9"
+        android:background="@color/primary_font_color"
         app:behavior_hideable="true"
         app:behavior_peekHeight="500dp"
         app:elevation="4dp"
@@ -18,7 +19,8 @@
             android:id="@+id/menu_layout_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -30,7 +32,7 @@
                 android:layout_weight="1"
                 app:button_image="@string/font_info"
                 app:button_text="@string/course_menu_info"
-                app:button_text_color="@android:color/black"
+                app:button_text_color="@color/disabled2_hint_color"
                 app:button_text_size="@dimen/font_l"
                 app:image_background="@drawable/course_info_menu_icon_bg"
                 app:image_color="@android:color/white"
@@ -44,9 +46,9 @@
                 android:layout_weight="1"
                 app:button_image="@string/font_question"
                 app:button_text="@string/course_menu_question"
-                app:button_text_color="@android:color/black"
+                app:button_text_color="@color/disabled2_hint_color"
                 app:button_text_size="15sp"
-                app:image_background="@drawable/course_info_menu_icon_bg"
+                app:image_background="@drawable/course_question_menu_icon_bg"
                 app:image_color="@android:color/white"
                 app:image_size="22sp" />
 
@@ -58,9 +60,9 @@
                 android:layout_weight="1"
                 app:button_image="@string/new_font_share"
                 app:button_text="@string/course_menu_share"
-                app:button_text_color="@android:color/black"
+                app:button_text_color="@color/disabled2_hint_color"
                 app:button_text_size="15sp"
-                app:image_background="@drawable/course_info_menu_icon_bg"
+                app:image_background="@drawable/course_share_menu_icon_bg"
                 app:image_color="@android:color/white"
                 app:image_size="22sp" />
 
@@ -70,6 +72,8 @@
             android:id="@+id/menu_layout_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/menu_layout_1"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -81,9 +85,9 @@
                 android:layout_weight="1"
                 app:button_image="@string/new_font_grade"
                 app:button_text="@string/course_menu_discuss"
-                app:button_text_color="@android:color/black"
+                app:button_text_color="@color/disabled2_hint_color"
                 app:button_text_size="@dimen/font_l"
-                app:image_background="@drawable/course_info_menu_icon_bg"
+                app:image_background="@drawable/course_discuss_menu_icon_bg"
                 app:image_color="@android:color/white"
                 app:image_size="22sp" />
 
@@ -95,9 +99,9 @@
                 android:layout_weight="1"
                 app:button_image="@string/discuss_publish"
                 app:button_text="@string/course_menu_rate"
-                app:button_text_color="@android:color/black"
+                app:button_text_color="@color/disabled2_hint_color"
                 app:button_text_size="15sp"
-                app:image_background="@drawable/course_info_menu_icon_bg"
+                app:image_background="@drawable/course_rate_menu_icon_bg"
                 app:image_color="@android:color/white"
                 app:image_size="22sp" />
 
@@ -110,7 +114,7 @@
                 android:visibility="invisible"
                 app:button_image="@string/new_font_share"
                 app:button_text="@string/course_menu_share"
-                app:button_text_color="@android:color/black"
+                app:button_text_color="@color/disabled2_hint_color"
                 app:button_text_size="15sp"
                 app:image_background="@drawable/course_info_menu_icon_bg"
                 app:image_color="@android:color/white"
@@ -124,8 +128,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/menu_layout_2"
-            android:layout_marginTop="30dp"
+            android:layout_margin="30dp"
+            android:padding="10dp"
             android:text="@string/discuss_close"
+            android:textColor="@color/disabled2_hint_color"
             android:textSize="@dimen/font_l" />
     </RelativeLayout>
 
