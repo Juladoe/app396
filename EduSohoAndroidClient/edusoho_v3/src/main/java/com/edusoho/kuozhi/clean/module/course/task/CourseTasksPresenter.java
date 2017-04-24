@@ -20,14 +20,17 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
 
     private CourseTasksContract.View mView;
     private CourseProject mCourseProject;
+    private boolean mIsJoin;
 
-    public CourseTasksPresenter(CourseTasksContract.View view, CourseProject courseProject) {
+    public CourseTasksPresenter(CourseTasksContract.View view, CourseProject courseProject, boolean isJoin) {
         mView = view;
         mCourseProject = courseProject;
+        mIsJoin = isJoin;
     }
 
     @Override
     public void subscribe() {
+        mView.showCourseMenuButton(mIsJoin);
         HttpUtils.getInstance().createApi(CourseApi.class)
                 .getCourseItems(mCourseProject.id)
                 .subscribeOn(Schedulers.io())

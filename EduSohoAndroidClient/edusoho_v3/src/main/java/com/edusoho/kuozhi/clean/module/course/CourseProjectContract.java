@@ -63,5 +63,7 @@ public interface CourseProjectContract {
         void showCourseProgressInfo();
 
         void exitCourse();
+
+        boolean isJoin();
     }
 }

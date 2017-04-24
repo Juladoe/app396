@@ -14,6 +14,8 @@ public interface CourseTasksContract {
 
     interface View extends BaseView<Presenter> {
         void showCourseTasks(List<CourseItem> taskItems);
+
+        void showCourseMenuButton(boolean show);
     }
 
     interface Presenter extends BasePresenter {

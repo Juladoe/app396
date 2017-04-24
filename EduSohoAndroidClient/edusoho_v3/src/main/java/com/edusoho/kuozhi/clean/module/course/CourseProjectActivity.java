@@ -332,6 +332,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         return builder.create();
     }
 
+    public boolean isJoin() {
+        return mPresenter.isJoin();
+    }
+
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 
         private List<CourseProjectEnum> mCourseProjectModules;

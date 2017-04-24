@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 
 import java.util.List;
@@ -27,18 +28,19 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         CourseTasksContract.View, CourseProjectFragmentListener {
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
+    private static final String COURSE_IS_JOIN = "CourseLearn";
     private CourseTasksContract.Presenter mPresenter;
     private RecyclerView taskRecyclerView;
     private FloatingActionButton mMenuButton;
     private TextView mMenuClose;
     private View mCourseMenuLayout;
+    private CourseProject mCourseProject;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
-        mPresenter = new CourseTasksPresenter(this, courseProject);
+        mCourseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
     }
 
     @Nullable
@@ -56,8 +58,6 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(mCourseMenuLayout);
         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        mPresenter.subscribe();
-
         mMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +71,21 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                 showBottomMenu(behavior);
             }
         });
+
+        mPresenter = new CourseTasksPresenter(this, mCourseProject, isJoin());
+        mPresenter.subscribe();
+    }
+
+    private boolean isJoin() {
+        if (getActivity() != null && getActivity() instanceof CourseProjectActivity) {
+            return ((CourseProjectActivity) getActivity()).isJoin();
+        }
+        return false;
+    }
+
+    @Override
+    public void showCourseMenuButton(boolean show) {
+        mMenuButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void showBottomMenu(BottomSheetBehavior behavior) {
