@@ -28,7 +28,6 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         CourseTasksContract.View, CourseProjectFragmentListener {
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
-    private static final String COURSE_IS_JOIN = "CourseLearn";
     private CourseTasksContract.Presenter mPresenter;
     private RecyclerView taskRecyclerView;
     private FloatingActionButton mMenuButton;

@@ -27,7 +27,6 @@ public class CourseProjectRatesFragment extends BaseFragment<CourseProjectRatesC
         CourseProjectRatesContract.View, CourseProjectFragmentListener {
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
-    private static final String COURSE_IS_JOIN = "CourseLearn";
     private CourseProjectRatesContract.Presenter mPresenter;
     private ESPullAndLoadRecyclerView mRateRecyclerView;
     private RecyclerView mRecyclerView;
