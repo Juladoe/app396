@@ -11,6 +11,16 @@
         <attr name="EduSohoImageText_text_color_pressed" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="CourseMenuButton">
+        <attr name="button_image" format="string" />
+        <attr name="image_background" format="integer" />
+        <attr name="image_color" format="integer" />
+        <attr name="image_size" format="dimension" />
+        <attr name="button_text" format="string" />
+        <attr name="button_text_size" format="dimension" />
+        <attr name="button_text_color" format="integer" />
+    </declare-styleable>
+
     <declare-styleable name="EduSohoTextBtn">
         <attr name="text" format="string" />
         <attr name="image" format="string" />
