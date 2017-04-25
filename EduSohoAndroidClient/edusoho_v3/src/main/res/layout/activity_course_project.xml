@@ -7,7 +7,6 @@
     android:orientation="vertical"
     tools:context=".clean.module.course.CourseProjectActivity">
 
-
     <ImageView
         android:id="@+id/iv_course_cover"
         android:layout_width="match_parent"
