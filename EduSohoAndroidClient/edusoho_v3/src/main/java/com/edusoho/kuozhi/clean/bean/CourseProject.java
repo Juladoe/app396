@@ -27,11 +27,15 @@ public class CourseProject implements Serializable {
     public String buyable;
     public int vipLevelId;
     public int publishedTaskNum;
-    public String access;
+    public Access access;
     public Service[] services;
     public Teacher[] teachers;
     public SimpleCourseSet courseSet;
     public LearningExpiryDate learningExpiryDate;
+
+    public static class Access{
+        public String code;
+    }
 
     public static class Service implements Serializable {
         public String shortName;

@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
+import com.edusoho.kuozhi.clean.module.course.task.menu.discuss.DiscussActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.FlowLayout;
@@ -157,7 +158,8 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag();
-                CourseProjectActivity.launch(mContext, mList.get(position).id);
+//                CourseProjectActivity.launch(mContext, mList.get(position).id);
+                DiscussActivity.launch(mContext, mList.get(position).id);
             }
         };
     }

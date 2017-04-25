@@ -5,7 +5,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseSetApi;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
-import com.edusoho.kuozhi.v3.adapter.discuss.CourseDiscussAdapter;
+import com.edusoho.kuozhi.clean.module.course.task.menu.discuss.DiscussAdapter;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -78,7 +78,7 @@ class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
                 mIsFirst = false;
                 mView.showToast(R.string.discuss_load_data_finish);
             }
-            mView.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+            mView.changeMoreStatus(DiscussAdapter.NO_LOAD_MORE);
             return;
         }
         HttpUtils.getInstance()

@@ -49,6 +49,8 @@ public class RatesActivity extends BaseActivity {
         mBack = findViewById(R.id.es_back);
         mPublish = findViewById(R.id.es_publish);
         mContent = findViewById(R.id.fl_content);
+
+
     }
 
     private void initFragment(Bundle bundle) {

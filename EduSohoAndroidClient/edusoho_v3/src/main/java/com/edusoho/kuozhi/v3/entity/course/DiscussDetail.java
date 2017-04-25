@@ -8,16 +8,17 @@ import java.util.List;
 /**
  * Created by DF on 2017/1/4.
  */
-public class DiscussDetail implements Serializable {
+public class
+DiscussDetail implements Serializable {
 
-    private String total;
+    private int total;
     private List<ResourcesBean> resources;
 
-    public String getTotal() {
+    public int getTotal() {
         return total;
     }
 
-    public void setTotal(String total) {
+    public void setTotal(int total) {
         this.total = total;
     }
 

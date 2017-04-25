@@ -539,5 +539,6 @@
     <string name="course_menu_share">分享</string>
     <string name="course_menu_discuss">讨论</string>
     <string name="course_menu_rate">评价</string>
+    <string name="discuss_no_exist">计划问答不存在</string>
 
 </resources>

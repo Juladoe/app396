@@ -281,17 +281,17 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             if (mCourseProjects != null) {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
-                    switch (courseProject.access){
-                        case "1":
+                    switch (courseProject.access.code){
+                        case "unpublished":
                             mView.showToast(R.string.course_unpublish);
                             break;
-                        case "2":
+                        case "closed":
                             mView.showToast(R.string.course_limit_join);
                             break;
-                        case "3":
+                        case "expired":
                             mView.showToast(R.string.course_date_limit);
                             break;
-                        case "4":
+                        case "buy_expired":
                             mView.showToast(R.string.course_project_expire_hint);
                             break;
                         default:
