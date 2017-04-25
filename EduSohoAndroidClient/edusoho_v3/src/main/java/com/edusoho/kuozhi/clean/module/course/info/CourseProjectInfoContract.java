@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course.info;
 
-import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -16,7 +16,9 @@ public interface CourseProjectInfoContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showCourseProjectInfo(CourseProject course);
+        void initCourseProjectInfo(CourseProject course);
+
+        void showCourseProjectInfo(boolean show);
 
         void showVipAdvertising(String vipName);
 
@@ -42,5 +44,4 @@ public interface CourseProjectInfoContract {
     interface Presenter extends BasePresenter {
 
     }
-
 }

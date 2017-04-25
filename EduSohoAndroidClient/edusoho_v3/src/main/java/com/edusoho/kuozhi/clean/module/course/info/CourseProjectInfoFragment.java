@@ -42,17 +42,20 @@ import cn.trinea.android.common.util.StringUtils;
 public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoContract.Presenter>
         implements CourseProjectInfoContract.View, CourseProjectFragmentListener {
 
-    private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
-    private CourseProjectInfoContract.Presenter mPresenter;
+    public static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
+    protected CourseProjectInfoContract.Presenter mPresenter;
 
     private FlowLayout mPromise;
     private TextView mTitle;
     private TextView mStudentNum;
     private RatingBar mCourseRate;
+    private View mPriceLayout;
+    private View mRateLayout;
     private TextView mSalePrice;
     private TextView mOriginalPrice;
     private TextView mSaleWord;
     private View mVipLine;
+    private View mCourseInfoLine;
     private View mVipLayout;
     private TextView mVipText;
     private View mServicesLayout;
@@ -89,10 +92,13 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
         mTitle = (TextView) view.findViewById(R.id.tv_course_project_title);
         mStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
         mCourseRate = (RatingBar) view.findViewById(R.id.rb_course_rate);
+        mPriceLayout = view.findViewById(R.id.price_layout);
+        mRateLayout = view.findViewById(R.id.rate_layout);
         mSalePrice = (TextView) view.findViewById(R.id.tv_sale_price);
         mOriginalPrice = (TextView) view.findViewById(R.id.tv_original_price);
         mSaleWord = (TextView) view.findViewById(R.id.tv_sale_word);
         mVipLine = view.findViewById(R.id.v_vip_line);
+        mCourseInfoLine = view.findViewById(R.id.course_info_line);
         mVipLayout = view.findViewById(R.id.rl_vip_layout);
         mVipText = (TextView) view.findViewById(R.id.tv_vip_text);
         mServicesLayout = view.findViewById(R.id.ll_services_layout);
@@ -117,10 +123,19 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
     }
 
     @Override
-    public void showCourseProjectInfo(CourseProject course) {
+    public void initCourseProjectInfo(CourseProject course) {
         mTitle.setText(course.title);
         mStudentNum.setText(String.format(getString(R.string.course_student_count), course.studentNum));
         mCourseRate.setRating(Float.valueOf(course.rating));
+    }
+
+    @Override
+    public void showCourseProjectInfo(boolean show) {
+        mTitle.setVisibility(show ? View.VISIBLE : View.GONE);
+        mPriceLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+        mRateLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+        mCourseInfoLine.setVisibility(show ? View.VISIBLE : View.GONE);
+        mVipLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override

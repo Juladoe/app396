@@ -17,6 +17,10 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
+import com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoFragment;
+import com.edusoho.kuozhi.clean.module.course.task.menu.info.CourseMenuInfoFragment;
+import com.edusoho.kuozhi.clean.widget.CourseMenuButton;
+import com.edusoho.kuozhi.clean.widget.FragmentPageActivity;
 
 import java.util.List;
 
@@ -33,6 +37,8 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     private FloatingActionButton mMenuButton;
     private TextView mMenuClose;
     private View mCourseMenuLayout;
+    private CourseMenuButton mCourseInfo;
+
     private CourseProject mCourseProject;
 
     @Override
@@ -52,6 +58,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         taskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
         mMenuButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
+        mCourseInfo = (CourseMenuButton) view.findViewById(R.id.btn_course_menu_info);
         mMenuClose = (TextView) view.findViewById(R.id.tv_close_menu);
         mCourseMenuLayout = view.findViewById(R.id.bottom_menu_layout);
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(mCourseMenuLayout);
@@ -68,6 +75,17 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
             @Override
             public void onClick(View v) {
                 showBottomMenu(behavior);
+            }
+        });
+
+        mCourseInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROJECT_MODEL, mCourseProject);
+//                bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROGRESS, mCourseProject);
+//                bundle.putSerializable(CourseMenuInfoFragment.MEMBER_INFO, mCourseProject);
+                FragmentPageActivity.launchFragmentPageActivity(getActivity(), CourseMenuInfoFragment.class.getName(), bundle);
             }
         });
 

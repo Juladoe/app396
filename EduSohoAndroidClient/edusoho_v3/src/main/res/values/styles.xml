@@ -358,6 +358,16 @@
         <item name="colorControlNormal">@color/disabled_hint_color</item>
     </style>
 
+    <style name="MyCourseProgress" parent="Theme.AppCompat">
+        <item name="colorControlActivated">@color/secondary2_color</item>
+        <item name="colorControlNormal">@color/menu_course_progress_bg_color</item>
+    </style>
+
+    <style name="CourseProgress" parent="Theme.AppCompat">
+        <item name="colorControlActivated">@color/disabled2_hint_color</item>
+        <item name="colorControlNormal">@color/menu_course_progress_bg_color</item>
+    </style>
+
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/primary_color</item>
         <item name="android:textColor">@color/primary_color</item>

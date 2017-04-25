@@ -9,150 +9,123 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="15dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_course_project_title"
+        <FrameLayout
+            android:id="@+id/course_progress_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/primary_font_color"
-            android:textSize="@dimen/font_xxl" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <TextView
-                android:id="@+id/tv_student_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="@dimen/font_s_" />
-
-            <android.support.v7.widget.AppCompatRatingBar
-                android:id="@+id/rb_course_rate"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:isIndicator="true"
-                android:rating="4.0"
-                android:scrollbarSize="5dp"
-                android:theme="@style/RatingBar" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <TextView
-                android:id="@+id/tv_sale_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/secondary_color"
-                android:textSize="@dimen/font_xl" />
-
-            <TextView
-                android:id="@+id/tv_original_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/tv_sale_price"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="@dimen/font_l" />
-
-            <TextView
-                android:id="@+id/tv_sale_word"
-                android:layout_width="22dp"
-                android:layout_height="16dp"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@+id/tv_original_price"
-                android:background="@color/secondary_color"
-                android:gravity="center"
-                android:text="@string/sale_word"
-                android:textColor="@color/disabled2_hint_color"
-                android:textSize="@dimen/font_xxs"
-                android:visibility="gone" />
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="20dp"
-            android:background="@color/grey_dddddd" />
-
-        <RelativeLayout
-            android:id="@+id/rl_vip_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/iv_vip_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:src="@drawable/icon_vip" />
-
-            <TextView
-                android:id="@+id/tv_vip_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/iv_vip_icon"
-                android:text="@string/join_vip"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="@dimen/font_s" />
-
-            <com.edusoho.kuozhi.clean.widget.ESIconView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:text="@string/font_right_arrow"
-                android:textColor="@color/primary_font_color"
-                android:textSize="@dimen/font_xl" />
-
-        </RelativeLayout>
-
-        <View
-            android:id="@+id/v_vip_line"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="25dp"
-            android:background="@color/grey_dddddd"
-            android:visibility="gone" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:id="@+id/ll_services_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/tv_course_project_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/font_xxl" />
 
             <RelativeLayout
+                android:id="@+id/rate_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
 
                 <TextView
+                    android:id="@+id/tv_student_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_s_" />
+
+                <android.support.v7.widget.AppCompatRatingBar
+                    android:id="@+id/rb_course_rate"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:isIndicator="true"
+                    android:rating="4.0"
+                    android:scrollbarSize="5dp"
+                    android:theme="@style/RatingBar" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/price_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/tv_sale_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="@string/course_project_promise_service"
-                    android:textColor="@color/primary_font_color"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/secondary_color"
+                    android:textSize="@dimen/font_xl" />
+
+                <TextView
+                    android:id="@+id/tv_original_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tv_sale_price"
+                    android:textColor="@color/secondary_font_color"
                     android:textSize="@dimen/font_l" />
+
+                <TextView
+                    android:id="@+id/tv_sale_word"
+                    android:layout_width="22dp"
+                    android:layout_height="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/tv_original_price"
+                    android:background="@color/secondary_color"
+                    android:gravity="center"
+                    android:text="@string/sale_word"
+                    android:textColor="@color/disabled2_hint_color"
+                    android:textSize="@dimen/font_xxs"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/course_info_line"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="20dp"
+                android:background="@color/grey_dddddd" />
+
+            <RelativeLayout
+                android:id="@+id/rl_vip_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iv_vip_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/icon_vip" />
+
+                <TextView
+                    android:id="@+id/tv_vip_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/iv_vip_icon"
+                    android:text="@string/join_vip"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_s" />
 
                 <com.edusoho.kuozhi.clean.widget.ESIconView
                     android:layout_width="wrap_content"
@@ -165,196 +138,237 @@
 
             </RelativeLayout>
 
-            <com.wefika.flowlayout.FlowLayout
-                android:id="@+id/fl_promise_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/white"
-                app:layoutDirection="ltr" />
-
             <View
+                android:id="@+id/v_vip_line"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="25dp"
-                android:background="@color/grey_dddddd" />
-        </LinearLayout>
+                android:background="@color/grey_dddddd"
+                android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/ll_course_project_introduce"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="@string/course_info"
-                android:textColor="@color/primary_font_color"
-                android:textSize="@dimen/font_l" />
-
-            <TextView
-                android:id="@+id/tv_course_project_info"
+            <LinearLayout
+                android:id="@+id/ll_services_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp" />
+                android:layout_marginTop="25dp"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <View
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/course_project_promise_service"
+                        android:textColor="@color/primary_font_color"
+                        android:textSize="@dimen/font_l" />
+
+                    <com.edusoho.kuozhi.clean.widget.ESIconView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_right_arrow"
+                        android:textColor="@color/primary_font_color"
+                        android:textSize="@dimen/font_xl" />
+
+                </RelativeLayout>
+
+                <com.wefika.flowlayout.FlowLayout
+                    android:id="@+id/fl_promise_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@android:color/white"
+                    app:layoutDirection="ltr" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="25dp"
+                    android:background="@color/grey_dddddd" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_course_project_introduce"
                 android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginTop="25dp"
-                android:background="@color/grey_dddddd" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_audiences_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="适宜人群"
-                android:textColor="@color/primary_font_color"
-                android:textSize="@dimen/font_l" />
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <TextView
-                android:id="@+id/tv_audiences"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="网校用户"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="@dimen/font_s" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="@string/course_info"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
 
-            <View
+                <TextView
+                    android:id="@+id/tv_course_project_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="25dp"
+                    android:background="@color/grey_dddddd" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_audiences_layout"
                 android:layout_width="match_parent"
-                android:layout_height="1px"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="适宜人群"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <TextView
+                    android:id="@+id/tv_audiences"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="网校用户"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_s" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="25dp"
+                    android:background="@color/grey_dddddd" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:background="@color/grey_dddddd" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="讲师"
-                android:textColor="@color/primary_font_color"
-                android:textSize="@dimen/font_l" />
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:baselineAligned="@+id/civ_teacher_avatar"
                 android:orientation="vertical">
 
-                <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
-                    android:id="@+id/civ_teacher_avatar"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="讲师"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@+id/civ_teacher_avatar"
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:baselineAligned="@+id/civ_teacher_avatar"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_teacher_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/primary_font_color"
-                        android:textSize="@dimen/font_s" />
+                    <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
+                        android:id="@+id/civ_teacher_avatar"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp" />
 
-                    <TextView
-                        android:id="@+id/tv_teacher_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/primary_font_color"
-                        android:textSize="@dimen/font_xs" />
-                </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@+id/civ_teacher_avatar"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_teacher_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/primary_font_color"
+                            android:textSize="@dimen/font_s" />
+
+                        <TextView
+                            android:id="@+id/tv_teacher_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/primary_font_color"
+                            android:textSize="@dimen/font_xs" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="25dp"
+                    android:background="@color/grey_dddddd" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_course_member_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_course_member_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <com.edusoho.kuozhi.clean.widget.ESIconView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/font_right_arrow"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_xl" />
             </RelativeLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_course_members"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                android:visibility="gone" />
+
             <View
+                android:id="@+id/v_course_members_line"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="25dp"
-                android:background="@color/grey_dddddd" />
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_course_member_num"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:visibility="gone">
+                android:background="@color/grey_dddddd"
+                android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tv_course_member_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
+                android:layout_marginTop="25dp"
+                android:text="@string/relative_course_project"
                 android:textColor="@color/primary_font_color"
                 android:textSize="@dimen/font_l" />
 
-            <com.edusoho.kuozhi.clean.widget.ESIconView
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_relative_courses"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:text="@string/font_right_arrow"
-                android:textColor="@color/primary_font_color"
-                android:textSize="@dimen/font_xl" />
-        </RelativeLayout>
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp" />
 
-        <LinearLayout
-            android:id="@+id/ll_course_members"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal"
-            android:visibility="gone" />
-
-        <View
-            android:id="@+id/v_course_members_line"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="25dp"
-            android:background="@color/grey_dddddd"
-            android:visibility="gone" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="@string/relative_course_project"
-            android:textColor="@color/primary_font_color"
-            android:textSize="@dimen/font_l" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_relative_courses"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp" />
-
+        </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
