@@ -634,9 +634,9 @@ public class NewsFragment extends BaseFragment {
                 continue;
             }
 
-//            if (TextUtils.isEmpty(course.convNo) || "0".equals(course.convNo)) {
-//                continue;
-//            }
+            if (TextUtils.isEmpty(course.convNo) || "0".equals(course.convNo)) {
+                continue;
+            }
             long resultId = IMClient.getClient().getConvManager().createConv(createConvFromCourse(course));
             if (resultId > 0) {
                 newConvEntityList.put(course.id, convEntity);
@@ -658,13 +658,13 @@ public class NewsFragment extends BaseFragment {
         convEntity.setUid(app.loginUser.id);
         convEntity.setTargetId(course.id);
         convEntity.setTargetName(course.title);
-//        convEntity.setConvNo(course.convNo);
-        if(course.convNo.equals("")){
-            convEntity.setConvNo(course.id + "");
-        } else {
-            convEntity.setConvNo(course.convNo);
-
-        }
+        convEntity.setConvNo(course.convNo);
+//        if(course.convNo.equals("")){
+//            convEntity.setConvNo(course.id + "");
+//        } else {
+//            convEntity.setConvNo(course.convNo);
+//
+//        }
         convEntity.setAvatar(course.middlePicture);
         convEntity.setType(Destination.COURSE);
         convEntity.setCreatedTime(System.currentTimeMillis());
