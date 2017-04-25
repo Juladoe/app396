@@ -117,6 +117,8 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROJECT_MODEL, mCourseProject);
+                bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROGRESS, mCourseLearningProgress);
+                bundle.putSerializable(CourseMenuInfoFragment.MEMBER_INFO, mCourseMember);
                 FragmentPageActivity.launchFragmentPageActivity(getActivity(), CourseMenuInfoFragment.class.getName(), bundle);
             }
         });
@@ -166,9 +168,8 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     @Subscribe
     public void onReceiveJoinMessage(List<MessageEvent> list) {
-        CourseLearningProgress courseLearningProgress = (CourseLearningProgress) list.get(0).getMessageBody();
-        mCourseLearningProgress = courseLearningProgress;
+        mCourseLearningProgress = (CourseLearningProgress) list.get(0).getMessageBody();
         mCourseMember = (CourseMember) list.get(1).getMessageBody();
-        mLearnProgressRate.setProgress(courseLearningProgress.progress);
+        mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
     }
 }

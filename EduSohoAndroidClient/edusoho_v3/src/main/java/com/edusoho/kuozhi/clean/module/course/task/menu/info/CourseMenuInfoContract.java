@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.clean.module.course.task.menu.info;
 
-import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoContract;
 
 /**
@@ -11,7 +10,6 @@ public class CourseMenuInfoContract {
 
     interface MenuCourseInfoView extends CourseProjectInfoContract.View {
 
-        void showCourseProgress(CourseLearningProgress courseLearningProgress);
     }
 
     interface MenuCourseInfoPresenter extends CourseProjectInfoContract.Presenter {

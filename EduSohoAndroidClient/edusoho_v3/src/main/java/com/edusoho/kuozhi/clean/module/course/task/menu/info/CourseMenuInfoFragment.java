@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -35,8 +36,8 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
     private TextView mMyCourseProgress;
     private TextView mCourseProgress;
     private TextView mDeadline;
-    private AppCompatRatingBar mMyCourseProgressRate;
-    private AppCompatRatingBar mCourseProgressRate;
+    private ProgressBar mMyCourseProgressRate;
+    private ProgressBar mCourseProgressRate;
 
     private CourseProject mCourseProject;
     private CourseLearningProgress mCourseLearningProgress;
@@ -72,8 +73,8 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
         mDeadline = (TextView) view.findViewById(R.id.tv_deadline);
         mMyCourseProgress = (TextView) view.findViewById(R.id.tv_my_course_progress);
         mCourseProgress = (TextView) view.findViewById(R.id.tv_course_progress);
-        mMyCourseProgressRate = (AppCompatRatingBar) view.findViewById(R.id.my_course_progress_rate);
-        mMyCourseProgressRate = (AppCompatRatingBar) view.findViewById(R.id.course_progress_rate);
+        mMyCourseProgressRate = (ProgressBar) view.findViewById(R.id.my_course_progress_rate);
+        mCourseProgressRate = (ProgressBar) view.findViewById(R.id.course_progress_rate);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
@@ -95,14 +96,18 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
             }
         });
 
-        mPresenter = new CourseMenuInfoPresenter(this, mCourseProject, mCourseLearningProgress);
+        mCourseTitle.setText(mCourseProject.title);
+        showCourseProgress(mCourseLearningProgress, mCourseMember);
+        mPresenter = new CourseMenuInfoPresenter(this, mCourseProject, mCourseLearningProgress, mCourseMember);
         mPresenter.subscribe();
     }
 
-    @Override
-    public void showCourseProgress(CourseLearningProgress progress) {
+    private void showCourseProgress(CourseLearningProgress progress, CourseMember courseMember) {
         mMyCourseProgress.setText(String.format(getString(R.string.course_finish_progress), progress.taskResultCount, progress.taskCount));
+        mMyCourseProgressRate.setProgress(progress.taskResultCount * 100 / progress.taskCount);
         mCourseProgress.setText(String.format(getString(R.string.course_plan_progress), progress.planStudyTaskCount, progress.taskCount));
-        mDeadline.setText(String.format(getString(R.string.course_progress_deadline), TimeUtils.getStringTime(mCourseMember.deadline, "yyyy.MM.dd")));
+        mCourseProgressRate.setProgress(progress.planStudyTaskCount * 100 / progress.taskCount);
+        mDeadline.setText(String.format(getString(R.string.course_progress_deadline),
+                "0".equals(courseMember.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(courseMember.deadline, "yyyy.MM.dd")));
     }
 }
