@@ -1,13 +1,12 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ClipboardManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -289,20 +288,23 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
     }
 
     private void showDialog(String text){
-        Dialog dialog = new AlertDialog.Builder(this)
-                .setTitle("提醒")
-                .setMessage(text)
-                .setPositiveButton("复制微信号", new DialogInterface.OnClickListener() {
+        final AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.show();
+        dialog.getWindow().setContentView(R.layout.dialog_limited);
+        TextView tvText = (TextView) dialog.getWindow().findViewById(R.id.tv_text);
+        tvText.setText(text);
+        dialog.getWindow().findViewById(R.id.tv_copy)
+                .setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(View view) {
                         ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                         cm.setText("eLicht-Academy");
                         CommonUtil.shortToast(ClassroomActivity.this, "已复制");
+                        dialog.dismiss();
                     }
-                })
-                .create();
+                });
         dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
+
     }
 
     @Override
