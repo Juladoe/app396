@@ -15,6 +15,5 @@ public class CourseMenuInfoContract {
     }
 
     interface MenuCourseInfoPresenter extends CourseProjectInfoContract.Presenter {
-
     }
 }

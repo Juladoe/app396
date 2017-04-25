@@ -73,7 +73,8 @@ public class LearnCourseProgressDialog extends DialogFragment {
         }
         mFinishProgress.setText(String.format(getString(R.string.course_finish_progress), mProgress.taskResultCount, mProgress.taskCount));
         mPlanProgress.setText(String.format(getString(R.string.course_plan_progress), mProgress.planStudyTaskCount, mProgress.taskCount));
-        mPlanDeadline.setText(String.format(getString(R.string.course_progress_deadline), TimeUtils.getStringTime(mMember.deadline, "yyyy.MM.dd")));
+        mPlanDeadline.setText(String.format(getString(R.string.course_progress_deadline),
+                "0".equals(mMember.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(mMember.deadline, "yyyy.MM.dd")));
     }
 
     @Override

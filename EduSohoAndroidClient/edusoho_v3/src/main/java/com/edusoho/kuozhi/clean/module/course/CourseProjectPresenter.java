@@ -7,12 +7,15 @@ import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.JsonObject;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +37,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private CourseProjectContract.View mView;
     private int mCourseProjectId;
     private Teacher mTeacher;
-    private CourseLearningProgress mProgress;
     private CourseMember mMember;
     private CourseProject mCourseProject;
     private boolean mIsJoin = false;
@@ -105,10 +107,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseTask trialTask) {
                         if (trialTask != null && trialTask.id != 0) {
-                            mView.setTrialTaskVisible(true);
                             mView.initTrailTask(trialTask);
-                        } else {
-                            mView.setTrialTaskVisible(false);
                         }
                     }
                 });
@@ -155,11 +154,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         }
                     }
                 });
-    }
-
-    @Override
-    public void showCourseProgressInfo() {
-        mView.launchDialogProgress(mProgress, mMember);
     }
 
     private void initLoginCourseMemberStatus(final CourseProject courseProject) {
@@ -229,11 +223,15 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(CourseLearningProgress courseLearningProgress) {
-                        mProgress = courseLearningProgress;
-                        mView.setProgressBar(courseLearningProgress.progress);
-                        mView.setTrialTaskVisible(true);
-                        mView.initNextTask(courseLearningProgress.nextTask);
+                    public void onNext(CourseLearningProgress progress) {
+                        // TODO: 2017/4/25 非常不好的处理方式，需要封装
+                        MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress);
+                        MessageEvent<CourseMember> memberMsg = new MessageEvent<>(mMember);
+                        List<MessageEvent> listMsg = new ArrayList<>();
+                        listMsg.add(progressMsg);
+                        listMsg.add(memberMsg);
+                        EventBus.getDefault().post(listMsg);
+                        mView.initNextTask(progress.nextTask);
                     }
                 });
     }

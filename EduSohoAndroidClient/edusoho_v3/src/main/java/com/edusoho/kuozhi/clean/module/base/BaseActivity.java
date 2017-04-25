@@ -13,4 +13,9 @@ public class BaseActivity<T extends BasePresenter> extends AppCompatActivity imp
     public void showToast(int resId) {
         Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
 }
