@@ -539,5 +539,8 @@
     <string name="course_menu_share">分享</string>
     <string name="course_menu_discuss">讨论</string>
     <string name="course_menu_rate">评价</string>
+    <string name="my_course_progress">我的进度</string>
+    <string name="course_progress">计划进度</string>
+    <string name="permnent_expired">永久有效</string>
 
 </resources>

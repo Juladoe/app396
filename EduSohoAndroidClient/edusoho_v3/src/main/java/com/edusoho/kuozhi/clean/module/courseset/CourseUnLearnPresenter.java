@@ -281,7 +281,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             if (mCourseProjects != null) {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
-                    switch (courseProject.access){
+                    switch (courseProject.access1){
                         case "1":
                             mView.showToast(R.string.course_unpublish);
                             break;

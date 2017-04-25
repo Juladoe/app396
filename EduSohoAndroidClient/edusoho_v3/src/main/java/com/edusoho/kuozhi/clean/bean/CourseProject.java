@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Cover;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 
@@ -27,11 +28,12 @@ public class CourseProject implements Serializable {
     public String buyable;
     public int vipLevelId;
     public int publishedTaskNum;
-    public String access;
+    public String access1;
     public Service[] services;
     public Teacher[] teachers;
     public SimpleCourseSet courseSet;
     public LearningExpiryDate learningExpiryDate;
+    public Access access;
 
     public static class Service implements Serializable {
         public String shortName;

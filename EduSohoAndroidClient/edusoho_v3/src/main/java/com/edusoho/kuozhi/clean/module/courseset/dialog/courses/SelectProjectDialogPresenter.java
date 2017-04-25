@@ -61,7 +61,7 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
 
     @Override
     public void confirm() {
-        switch (mCourseProject.access){
+        switch (mCourseProject.access1){
             case "1":
                 mView.showToast(R.string.course_unpublish);
                 break;

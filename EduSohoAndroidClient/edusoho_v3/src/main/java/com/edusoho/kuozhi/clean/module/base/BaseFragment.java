@@ -9,8 +9,14 @@ import android.widget.Toast;
 
 public class BaseFragment<T extends BasePresenter> extends Fragment implements BaseView<T> {
 
+
     @Override
     public void showToast(int resId) {
         Toast.makeText(getActivity(), resId, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 }

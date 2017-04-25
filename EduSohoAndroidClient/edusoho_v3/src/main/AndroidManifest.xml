@@ -343,16 +343,22 @@
             android:theme="@style/AppThemeNoActionBar" />
 
         <activity
+            android:name=".clean.widget.FragmentPageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
+
+        <activity
             android:name=".clean.module.courseset.CourseUnLearnActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"/>
+            android:theme="@style/AppThemeNoActionBar" />
 
         <activity
             android:name=".clean.module.order.payments.PaymentsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"/>
+            android:theme="@style/AppThemeNoActionBar" />
 
         <activity
             android:name=".clean.module.order.confirm.ConfirmOrderActivity"
@@ -364,7 +370,7 @@
             android:name=".clean.module.order.alipay.AlipayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"/>
+            android:theme="@style/AppThemeNoActionBar" />
 
     </application>
 

@@ -29,7 +29,6 @@ public class CourseProjectRatesFragment extends BaseFragment<CourseProjectRatesC
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private CourseProjectRatesContract.Presenter mPresenter;
     private ESPullAndLoadRecyclerView mRateRecyclerView;
-    private RecyclerView mRecyclerView;
     CourseProjectRatingAdapter adapter;
 
     @Override

@@ -71,6 +71,11 @@ public class ESBottomDialog<T extends BasePresenter> extends DialogFragment impl
         Toast.makeText(getActivity(), resId, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+    }
+
     public interface BottomDialogContentView {
 
         View getContentView(ViewGroup parentView);

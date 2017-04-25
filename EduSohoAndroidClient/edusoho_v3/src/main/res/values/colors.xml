@@ -12,6 +12,8 @@
     <color name="disabled1_hint_color">#F9F9F9</color>
     <color name="disabled2_hint_color">#FFFFFF</color>
 
+    <color name="menu_course_progress_bg_color">#50DDAF</color>
+
     <!-- end -->
 
     <color name="color_gray">#F6F6F6</color>

@@ -19,13 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
-import com.edusoho.kuozhi.clean.module.course.dialog.LearnCourseProgressDialog;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
@@ -38,12 +35,15 @@ import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by JesseHuang on 2017/3/22.
  */
 
-public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Presenter> implements CourseProjectContract.View {
+public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Presenter> implements
+        CourseProjectContract.View {
 
     private static final String COURSE_PROJECT_ID = "CourseProjectId";
 
@@ -52,7 +52,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private CourseProjectViewPagerAdapter mAdapter;
     private Toolbar mToolbar;
     private ImageView mCourseCover;
-    private View mProgressLayout;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private View mBottomView;
@@ -62,8 +61,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private ESIconView mBack;
     private ESIconView mShare;
     private ESIconView mCache;
-    private ESIconView mProgressInfo;
-    private View mTrialLayout;
+    private View mPlayLayout;
     private TextView mLatestLearnedTitle;
     private TextView mLatestTaskTitle;
     private TextView mLatestLearned;
@@ -96,7 +94,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 mPresenter.exitCourse();
             }
         });
-        mProgressLayout = findViewById(R.id.layout_progress);
         mProgressBar = (ESProgressBar) findViewById(R.id.pb_learn_progress);
         mTabLayout = (TabLayout) findViewById(R.id.tl_task);
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
@@ -109,13 +106,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             }
         });
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
-        mProgressInfo = (ESIconView) findViewById(R.id.icon_progress_info);
-        mProgressInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.showCourseProgressInfo();
-            }
-        });
 
         mLearnTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +117,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mBack = (ESIconView) findViewById(R.id.iv_back);
         mShare = (ESIconView) findViewById(R.id.icon_share);
         mCache = (ESIconView) findViewById(R.id.icon_cache);
-        mTrialLayout = findViewById(R.id.rl_trial_layout);
+        mPlayLayout = findViewById(R.id.rl_play_layout);
         mLatestLearnedTitle = (TextView) findViewById(R.id.tv_latest_learned_title);
         mLatestTaskTitle = (TextView) findViewById(R.id.tv_latest_task_title);
         mLatestLearned = (TextView) findViewById(R.id.tv_latest_learned);
@@ -154,6 +144,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void initTrailTask(CourseTask trialTask) {
+        setTrialTaskVisible(true);
         mLatestLearnedTitle.setVisibility(View.VISIBLE);
         mLatestTaskTitle.setText(trialTask.title);
         mLatestLearned.setText(R.string.start_learn_trial_task);
@@ -161,14 +152,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void initNextTask(CourseTask nextTask) {
+        setTrialTaskVisible(true);
         mLatestLearnedTitle.setVisibility(View.GONE);
         mLatestTaskTitle.setText(nextTask.title);
         mLatestLearned.setText(R.string.start_learn_next_task);
     }
 
-    @Override
-    public void setTrialTaskVisible(boolean visible) {
-        mTrialLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
+    private void setTrialTaskVisible(boolean visible) {
+        mPlayLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -229,7 +220,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
      */
     @Override
     public void exitCourseLayout() {
-        mProgressLayout.setVisibility(View.GONE);
         mTabLayout.setVisibility(View.VISIBLE);
         mAdapter.clear();
         mAdapter.addFragment(CourseProjectEnum.INFO);
@@ -266,17 +256,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             mLearnTextView.setText(R.string.course_closed);
             mLearnTextView.setBackgroundResource(R.color.secondary2_font_color);
         }
-    }
-
-    @Override
-    public void setProgressBar(int progress) {
-        mProgressLayout.setVisibility(View.VISIBLE);
-        mProgressBar.setProgress(progress);
-    }
-
-    @Override
-    public void launchDialogProgress(CourseLearningProgress progress, CourseMember member) {
-        LearnCourseProgressDialog.newInstance(progress, member).show(getSupportFragmentManager(), "DialogProgress");
     }
 
     @Override
@@ -336,6 +315,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         return mPresenter.isJoin();
     }
 
+    private Map<String, Fragment> mfragments;
+
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 
         private List<CourseProjectEnum> mCourseProjectModules;
@@ -344,6 +325,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
         public CourseProjectViewPagerAdapter(FragmentManager fm, List<CourseProjectEnum> courseProjects, CourseProject courseProject) {
             super(fm);
+            mfragments = new TreeMap<>();
             mFragmentManager = fm;
             mCourseProjectModules = courseProjects;
             mCourseProject = courseProject;
@@ -355,6 +337,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             Bundle bundle = new Bundle();
             bundle.putSerializable(((CourseProjectFragmentListener) fragment).getBundleKey(), mCourseProject);
             fragment.setArguments(bundle);
+            mfragments.put(mCourseProjectModules.get(position).getModuleName(), fragment);
             return fragment;
         }
 
@@ -396,6 +379,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                         this.destroyItem(null, position, mFragmentManager.getFragments().get(position));
                         mCourseProjectModules.remove(position);
                         mFragmentManager.getFragments().remove(position);
+                        mfragments.remove(mCourseProjectModules.get(position).getModuleName());
                         notifyDataSetChanged();
                     }
                 }
