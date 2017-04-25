@@ -42,6 +42,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
+import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -526,7 +527,12 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                                 } else if(mCourseMember.levelId >0 && EdusohoApp.app.loginUser.vip.levelId < mCourseMember.levelId){
                                     tvVipHint.setText("会员等级不够，不能学习此课程");
                                 } else if(deadline > 0 && deadline < System.currentTimeMillis()/1000){
-                                    tvVipHint.setText("您的会员已过期，不能学习此课程");
+                                    if(!"1".equals(CourseStudyDetailActivity.mCourseDetail.getCourse().buyable)){
+                                        tvVipHint.setText("您的会员已过期，不能学习此课程");
+                                    } else {
+                                        rlVipAppear.setVisibility(View.VISIBLE);
+                                        tvVipHint.setVisibility(View.GONE);
+                                    }
                                 } else {
                                     rlVipAppear.setVisibility(View.VISIBLE);
                                     tvVipHint.setVisibility(View.GONE);

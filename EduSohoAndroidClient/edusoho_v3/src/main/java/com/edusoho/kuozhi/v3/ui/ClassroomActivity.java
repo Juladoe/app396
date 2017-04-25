@@ -208,16 +208,38 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
     @Override
     protected void add() {
         if (mClassroomId != 0) {
-            if (!"1".equals(mClassroomDetail.getClassRoom().buyable)) {
-                if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip == null) {
-                    showDialog();
-                    return;
-                } else if(((EdusohoApp) getApplication()).loginUser == null){
-                    showProcessDialog();
-                }  else {
-                    showDialog();
-                    return;
+            if (EdusohoApp.app.loginUser == null) {
+                CourseUtil.notLogin();
+                return;
+            }
+
+            if(mClassroomDetail.getClassRoom().status.equals("closed")){
+                CommonUtil.longToast(ClassroomActivity.this, "班级已关闭!");
+                return;
+            }
+
+            if(mClassroomDetail.getClassRoom().vipLevelId > 0) {
+                if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip != null) {
+                    int vipId = EdusohoApp.app.loginUser.vip.levelId;
+
+                    if (vipId < mClassroomDetail.getClassRoom().vipLevelId) {
+                        showDialog("该班级不支持当前会员等级，请联系管理员小知，微信号eLicht-Academy");
+                        return;
+                    }
+                    if (EdusohoApp.app.loginUser.vip.VipDeadLine < System.currentTimeMillis() / 1000) {
+                        CommonUtil.longToast(ClassroomActivity.this, "您的会员已过期");
+                        return;
+                    }
+                    if (!mClassroomDetail.getClassRoom().buyable.equals("1") && mClassroomDetail.getClassRoom().vipLevelId > 0 && EdusohoApp.app.loginUser.vip.levelId < mClassroomDetail.getClassRoom().vipLevelId) {
+                        CommonUtil.longToast(ClassroomActivity.this, "该班级为会员班级，成为会员免费学习");
+                        return;
+                    }
                 }
+            }
+
+            if(!mClassroomDetail.getClassRoom().buyable.equals("1")){
+                showDialog("该班级限制加入，请联系管理员小知，微信号eLicht-Academy");
+                return;
             }
 
             showProcessDialog();
@@ -228,10 +250,6 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                     @Override
                     public void onAddClassroomSuccee(String response) {
                         hideProcesDialog();
-                        if(response.contains("不能以会员身份加入班级")){
-                            CommonUtil.shortToast(ClassroomActivity.this, "您的会员已过期");
-                            return;
-                        }
                         CommonUtil.shortToast(ClassroomActivity.this, getResources()
                                 .getString(R.string.success_add_classroom));
                         initData();
@@ -270,10 +288,10 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
         }
     }
 
-    private void showDialog(){
+    private void showDialog(String text){
         Dialog dialog = new AlertDialog.Builder(this)
                 .setTitle("提醒")
-                .setMessage(getResources().getString(R.string.add_error_close))
+                .setMessage(text)
                 .setPositiveButton("复制微信号", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

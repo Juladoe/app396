@@ -60,7 +60,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     protected void initView(View view) {
         super.initView(view);
         mAdapter = new ReviewAdapter();
-        mVipLayout.setVisibility(View.GONE);
+        mVipLayout.setVisibility(View.VISIBLE);
         mLvReview.setAdapter(mAdapter);
         mTvTeacher.setText(R.string.classroom_teacher_txt);
         mTvStudent1.setText(R.string.txt_classroom_student);
@@ -179,12 +179,12 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             if (classRoom.vipLevelId == 0) {
-                mVipLayout.setVisibility(View.GONE);
+                mVipLayout.setVisibility(View.VISIBLE);
             } else {
                 mVipLayout.setVisibility(View.VISIBLE);
                 mTvVipDesc.setText(String.format("加入%s，免费学习更多课程",
                         mClassroomDetail.getVipLevels().size() > classRoom.vipLevelId - 1 ?
-                                mClassroomDetail.getVipLevels().get(classRoom.vipLevelId - 1).name : ""));
+                                mClassroomDetail.getVipLevels().get(classRoom.vipLevelId - 1).name : "高级会员"));
             }
             if (classRoom.price == 0) {
                 mTvPriceNow.setText(R.string.txt_free);
@@ -200,7 +200,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             mTvPriceOld.setVisibility(View.GONE);
         } else {
             mPriceLayout.setVisibility(View.GONE);
-            mVipLayout.setVisibility(View.GONE);
+            mVipLayout.setVisibility(View.VISIBLE);
         }
         mTvTitleStudentNum.setText(String.format("%s名学生",
                 classRoom.studentNum));

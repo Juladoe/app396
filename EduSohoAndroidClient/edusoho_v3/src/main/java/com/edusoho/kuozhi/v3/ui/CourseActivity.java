@@ -307,22 +307,36 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void add() {
         if (mCourseId != 0) {
-            if (!"1".equals(mCourseDetail.getCourse().buyable)) {
+            if (EdusohoApp.app.loginUser == null) {
+                CourseUtil.notLogin();
+                return;
+            }
+            if(mCourseDetail.getCourse().status.equals("closed")){
+                CommonUtil.longToast(CourseActivity.this, "课程已关闭!");
+                return;
+            }
+            if(mCourseDetail.getCourse().vipLevelId > 0) {
+                if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip != null) {
+                    int vipId = EdusohoApp.app.loginUser.vip.levelId;
+                    if (vipId < mCourseDetail.getCourse().vipLevelId) {
+                        showDialog("该课程不支持当前会员等级，请联系管理员小知，微信号eLicht-Academy");
+                        return;
+                    }
+                    if (EdusohoApp.app.loginUser.vip.VipDeadLine < System.currentTimeMillis() / 1000) {
+                        CommonUtil.longToast(CourseActivity.this, "您的会员已过期");
+                        return;
+                    }
+
+                    if (!mCourseDetail.getCourse().buyable.equals("1") && mCourseDetail.getCourse().vipLevelId > 0 && EdusohoApp.app.loginUser.vip.levelId < mCourseDetail.getCourse().vipLevelId) {
+                        CommonUtil.longToast(CourseActivity.this, "该课程为会员课程，成为会员免费学习");
+                        return;
+                    }
+                }
+            }
+
+            if(!mCourseDetail.getCourse().buyable.equals("1")){
                 if(((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip == null) {
-                    Dialog dialog = new AlertDialog.Builder(this)
-                            .setTitle("提醒")
-                            .setMessage(getResources().getString(R.string.add_error_close))
-                            .setPositiveButton("复制微信号", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                                    cm.setText("eLicht-Academy");
-                                    CommonUtil.shortToast(CourseActivity.this, "已复制");
-                                }
-                            })
-                            .create();
-                    dialog.setCanceledOnTouchOutside(true);
-                    dialog.show();
+                    showDialog("该课程限制加入，请联系管理员小知，微信号eLicht-Academy");
                     return;
                 }
             }
@@ -375,6 +389,24 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     });
 //            mIvGrade2.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    private void showDialog(String text){
+        Dialog dialog = new AlertDialog.Builder(this)
+                .setTitle("提醒")
+                .setMessage(text)
+                .setPositiveButton("复制微信号", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        cm.setText("eLicht-Academy");
+                        CommonUtil.shortToast(CourseActivity.this, "已复制");
+                    }
+                })
+                .create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     @Override

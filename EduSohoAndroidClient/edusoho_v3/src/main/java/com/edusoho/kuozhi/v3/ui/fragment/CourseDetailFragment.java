@@ -148,12 +148,12 @@ public class CourseDetailFragment extends BaseDetailFragment {
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             if (mCourseDetail.getCourse().vipLevelId == 0) {
-                mVipLayout.setVisibility(View.GONE);
+                mVipLayout.setVisibility(View.VISIBLE);
             } else {
                 mVipLayout.setVisibility(View.VISIBLE);
                 mTvVipDesc.setText(String.format("加入%s，免费学习更多课程",
                         mCourseDetail.getVipLevels().size() > course.vipLevelId - 1 ?
-                                mCourseDetail.getVipLevels().get(course.vipLevelId - 1).name : ""));
+                                mCourseDetail.getVipLevels().get(course.vipLevelId - 1).name : "高级会员"));
             }
             if (course.price == 0) {
                 mTvPriceNow.setText("免费");
@@ -178,7 +178,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             }
         } else {
             mPriceLayout.setVisibility(View.GONE);
-            mVipLayout.setVisibility(View.GONE);
+            mVipLayout.setVisibility(View.VISIBLE);
         }
         mTvTitleStudentNum.setText(String.format("%s名学生",
                 course.studentNum));
