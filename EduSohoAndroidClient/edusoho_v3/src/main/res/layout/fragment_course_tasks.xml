@@ -19,7 +19,8 @@
             android:paddingBottom="20dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:paddingTop="20dp">
+            android:paddingTop="20dp"
+            android:visibility="gone">
 
             <com.edusoho.kuozhi.clean.widget.ESProgressBar
                 android:id="@+id/pb_learn_progress"

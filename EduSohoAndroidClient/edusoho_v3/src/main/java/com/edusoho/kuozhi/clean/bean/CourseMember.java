@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
 import com.google.gson.annotations.SerializedName;
 
@@ -26,6 +27,7 @@ public class CourseMember implements Serializable {
     public String lastViewTime;
     public int courseSetId;
     public User user;
+    public Access access;
 
     public static class User implements Serializable {
         public String id;

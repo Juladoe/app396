@@ -69,6 +69,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private AlertDialog mCourseExpiredDialog;
     private AlertDialog mCourseMemberExpiredDialog;
 
+    private Map<String, Fragment> mFragments;
+
     public static void launch(Context context, int courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
         intent.putExtra(COURSE_PROJECT_ID, courseProjectId);
@@ -144,21 +146,22 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void initTrailTask(CourseTask trialTask) {
-        setTrialTaskVisible(true);
-        mLatestLearnedTitle.setVisibility(View.VISIBLE);
+        setPlayLayoutVisible(true);
+        mLatestLearnedTitle.setVisibility(View.GONE);
         mLatestTaskTitle.setText(trialTask.title);
         mLatestLearned.setText(R.string.start_learn_trial_task);
     }
 
     @Override
     public void initNextTask(CourseTask nextTask) {
-        setTrialTaskVisible(true);
-        mLatestLearnedTitle.setVisibility(View.GONE);
-        mLatestTaskTitle.setText(nextTask.title);
+        setPlayLayoutVisible(true);
+        mLatestLearnedTitle.setVisibility(View.VISIBLE);
+        mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
         mLatestLearned.setText(R.string.start_learn_next_task);
     }
 
-    private void setTrialTaskVisible(boolean visible) {
+    @Override
+    public void setPlayLayoutVisible(boolean visible) {
         mPlayLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
@@ -204,13 +207,15 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     /**
      * 点击加入界面显示
+     *
+     * @param mode 是否解锁计划
      */
     @Override
-    public void initJoinCourseLayout() {
+    public void initJoinCourseLayout(CourseProject.LearnMode mode) {
         mTabLayout.setVisibility(View.GONE);
         mAdapter.destroyItem(CourseProjectEnum.RATE);
         mAdapter.destroyItem(CourseProjectEnum.INFO);
-        showCacheButton(true);
+        showCacheButton(mode == CourseProject.LearnMode.FREEMODE);
         showShareButton(false);
         showBottomLayout(false);
     }
@@ -233,11 +238,13 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     /**
      * 进入页面显示：已加入
+     *
+     * @param mode 是否解锁计划
      */
     @Override
-    public void initLearnLayout() {
+    public void initLearnLayout(CourseProject.LearnMode mode) {
         mTabLayout.setVisibility(View.GONE);
-        showCacheButton(true);
+        showCacheButton(mode == CourseProject.LearnMode.FREEMODE);
         showShareButton(false);
         showBottomLayout(false);
     }
@@ -315,7 +322,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         return mPresenter.isJoin();
     }
 
-    private Map<String, Fragment> mfragments;
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -325,7 +331,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
         public CourseProjectViewPagerAdapter(FragmentManager fm, List<CourseProjectEnum> courseProjects, CourseProject courseProject) {
             super(fm);
-            mfragments = new TreeMap<>();
+            mFragments = new TreeMap<>();
             mFragmentManager = fm;
             mCourseProjectModules = courseProjects;
             mCourseProject = courseProject;
@@ -337,7 +343,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             Bundle bundle = new Bundle();
             bundle.putSerializable(((CourseProjectFragmentListener) fragment).getBundleKey(), mCourseProject);
             fragment.setArguments(bundle);
-            mfragments.put(mCourseProjectModules.get(position).getModuleName(), fragment);
+            mFragments.put(mCourseProjectModules.get(position).getModuleName(), fragment);
             return fragment;
         }
 
@@ -379,7 +385,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                         this.destroyItem(null, position, mFragmentManager.getFragments().get(position));
                         mCourseProjectModules.remove(position);
                         mFragmentManager.getFragments().remove(position);
-                        mfragments.remove(mCourseProjectModules.get(position).getModuleName());
+                        mFragments.remove(mCourseProjectModules.get(position).getModuleName());
                         notifyDataSetChanged();
                     }
                 }

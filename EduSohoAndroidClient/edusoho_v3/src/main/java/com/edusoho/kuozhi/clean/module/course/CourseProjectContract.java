@@ -33,19 +33,21 @@ public interface CourseProjectContract {
 
         void showShareButton(boolean visible);
 
-        void initJoinCourseLayout();
+        void initJoinCourseLayout(CourseProject.LearnMode mode);
 
         void initTrailTask(CourseTask trialTask);
 
         void initNextTask(CourseTask nextTask);
 
-        void initLearnLayout();
+        void initLearnLayout(CourseProject.LearnMode mode);
 
         void setJoinButton(boolean isCourseStarted);
 
         void launchConfirmOrderActivity(int courseSetId, int courseId);
 
         void showExitDialog(CourseProjectActivity.DialogType type);
+
+        void setPlayLayoutVisible(boolean visible);
 
         void exitCourseLayout();
     }

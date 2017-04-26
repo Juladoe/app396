@@ -31,6 +31,9 @@ public interface UserApi {
     @GET("me/favorite_course_sets/{courseSetId}")
     Observable<JsonObject> getFavorite(@Path("courseSetId") int courseSetId);
 
+    @GET("me/course_members/{courseId}")
+    Observable<CourseMember> getCourseMember(@Path("courseId") int courseId);
+
     @FormUrlEncoded
     @POST("me/favorite_course_sets")
     Observable<JsonObject> favoriteCourseSet(@Field("courseSetId") int courseSetId);
@@ -38,7 +41,7 @@ public interface UserApi {
     @DELETE("me/favorite_course_sets/{courseSetId}")
     Observable<JsonObject> cancelFavoriteCourseSet(@Path("courseSetId") int courseSetId);
 
-    @DELETE("me/courses/{courseId}/members")
+    @DELETE("me/course_members/{courseId}")
     Observable<JsonObject> exitCourse(@Path("courseId") int courseId);
 
 }

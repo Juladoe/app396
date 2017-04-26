@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
@@ -43,15 +42,15 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private CourseTasksContract.Presenter mPresenter;
-    private RecyclerView taskRecyclerView;
+    private RecyclerView mTaskRecyclerView;
     private FloatingActionButton mMenuButton;
     private TextView mMenuClose;
     private View mCourseMenuLayout;
+    private View mCourseProgressBar;
     private CourseMenuButton mCourseInfo;
     private ESProgressBar mLearnProgressRate;
     private ESIconView mCourseProgressInfo;
     private CourseLearningProgress mCourseLearningProgress;
-    private CourseMember mCourseMember;
 
     private CourseProject mCourseProject;
 
@@ -82,17 +81,18 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        taskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
+        mTaskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
         mMenuButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
         mCourseInfo = (CourseMenuButton) view.findViewById(R.id.btn_course_menu_info);
         mLearnProgressRate = (ESProgressBar) view.findViewById(R.id.pb_learn_progress);
+        mCourseProgressBar = view.findViewById(R.id.layout_progress);
         mCourseProgressInfo = (ESIconView) view.findViewById(R.id.icon_progress_info);
 
         mCourseProgressInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LearnCourseProgressDialog.newInstance(mCourseLearningProgress,
-                        mCourseMember).show(getActivity().getSupportFragmentManager(), "LearnCourseProgressDialog");
+                LearnCourseProgressDialog.newInstance(mCourseLearningProgress)
+                        .show(getActivity().getSupportFragmentManager(), "LearnCourseProgressDialog");
             }
         });
         mMenuClose = (TextView) view.findViewById(R.id.tv_close_menu);
@@ -120,7 +120,6 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROJECT_MODEL, mCourseProject);
                 bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROGRESS, mCourseLearningProgress);
-                bundle.putSerializable(CourseMenuInfoFragment.MEMBER_INFO, mCourseMember);
                 FragmentPageActivity.launchFragmentPageActivity(getActivity(), CourseMenuInfoFragment.class.getName(), bundle);
             }
         });
@@ -182,14 +181,23 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     @Override
     public void showCourseTasks(List<CourseItem> taskItems) {
         CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems);
-        taskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        taskRecyclerView.setAdapter(adapter);
+        mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTaskRecyclerView.setAdapter(adapter);
     }
 
     @Subscribe
-    public void onReceiveJoinMessage(List<MessageEvent> list) {
-        mCourseLearningProgress = (CourseLearningProgress) list.get(0).getMessageBody();
-        mCourseMember = (CourseMember) list.get(1).getMessageBody();
-        mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
+    public void onReceiveExitMessage(MessageEvent messageEvent) {
+        if (MessageEvent.MessageEventCode.COURSE_EXIT == messageEvent.getType()) {
+            mCourseProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Subscribe
+    public void onReceiveJoinMessage(MessageEvent<CourseLearningProgress> messageEvent) {
+        if (MessageEvent.MessageEventCode.COURSE_JOIN == messageEvent.getType()) {
+            mCourseProgressBar.setVisibility(View.VISIBLE);
+            mCourseLearningProgress = messageEvent.getMessageBody();
+            mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
+        }
     }
 }

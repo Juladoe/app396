@@ -23,11 +23,12 @@ public class CourseProject implements Serializable {
     public float price;
     public float originPrice;
     public String learnMode;
-    public String isFree;
+    public int isFree;
     public int taskNum;
     public String buyable;
     public int vipLevelId;
     public int publishedTaskNum;
+    public int enableFinish;
     public Service[] services;
     public Teacher[] teachers;
     public SimpleCourseSet courseSet;
@@ -66,5 +67,27 @@ public class CourseProject implements Serializable {
 
     public static enum CourseStatus {
         CLOSED, PUBLISHED, DRAFT
+    }
+
+    public enum LearnMode {
+        FREEMODE("freeMode"), LOCKMODE("lockMode");
+
+        private String mName;
+
+        LearnMode(String name) {
+            this.mName = name;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+        public static LearnMode getMode(String name) {
+            for (LearnMode mode : values()) {
+                if (mode.getName().equals(name))
+                    return mode;
+            }
+            return null;
+        }
     }
 }

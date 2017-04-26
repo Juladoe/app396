@@ -49,4 +49,12 @@ public class CourseTask implements Serializable {
         public String createdTime;
         public String updatedTime;
     }
+
+    public String toTaskItemSequence() {
+        if (seq != 0 && number != 0) {
+            return seq + " - " + number;
+        } else {
+            return number + "";
+        }
+    }
 }

@@ -37,9 +37,6 @@ public interface CourseApi {
     Observable<DataPageResult<Member>> getCourseMembers(@Path("id") int courseId, @Query("role") String role,
                                                         @Query("offset") int offset, @Query("limit") int limit);
 
-    @GET("courses/{courseId}/members/{userId}")
-    Observable<CourseMember> getCourseMember(@Path("courseId") int courseId, @Path("userId") int userId);
-
     @GET("courses/{courseId}/reviews")
     Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") int courseId,
                                                                @Query("offset") int offset, @Query("limit") int limit);

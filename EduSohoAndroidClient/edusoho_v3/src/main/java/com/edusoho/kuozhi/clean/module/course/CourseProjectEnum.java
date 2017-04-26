@@ -45,9 +45,9 @@ public enum CourseProjectEnum {
     }
 
     public static String getModuleTitleByPosition(int position) {
-        for (CourseProjectEnum modele : values()) {
-            if (modele.getPosition() == position) {
-                return modele.getModuleTitle();
+        for (CourseProjectEnum module : values()) {
+            if (module.getPosition() == position) {
+                return module.getModuleTitle();
             }
         }
         return "";

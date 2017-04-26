@@ -86,16 +86,22 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 return R.string.task_audio;
             case LIVE:
                 return R.string.task_live;
+            case DISCUSS:
+                return R.string.discuss;
             case FLASH:
                 return R.string.task_flash;
             case DOC:
                 return R.string.task_doc;
+            case PPT:
+                return R.string.task_ppt;
             case TESTPAPER:
                 return R.string.task_testpaper;
             case HOMEWORK:
                 return R.string.task_homework;
             case EXERCISE:
                 return R.string.task_exercise;
+            case DOWNLOAD:
+                return R.string.task_download;
             default:
                 return R.string.task_download;
         }
