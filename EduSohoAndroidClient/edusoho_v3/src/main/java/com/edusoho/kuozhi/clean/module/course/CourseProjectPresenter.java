@@ -150,8 +150,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             EventBus.getDefault().post(new MessageEvent(MessageEvent.MessageEventCode.COURSE_EXIT));
                             mIsJoin = false;
                             mView.showToast(R.string.exit_course_success);
-                            mView.exitCourseLayout();
                             initTrialFirstTask(mCourseProjectId);
+                            mView.exitCourseLayout();
                         } else {
                             mView.showToast(R.string.exit_course_failure);
                         }
