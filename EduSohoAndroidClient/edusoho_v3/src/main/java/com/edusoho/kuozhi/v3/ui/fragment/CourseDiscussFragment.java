@@ -33,9 +33,6 @@ import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 /**
  * Created by DF on 2017/1/4.
  */
@@ -45,7 +42,6 @@ public class CourseDiscussFragment extends Fragment implements
 
     private View mLoadView;
     private CourseDiscussAdapter catalogueAdapter;
-    private Queue<WidgetMessage> mUIMessageQueue;
     private int mRunStatus;
     private int mCourseId;
     private RecyclerView mRvDiscuss;
@@ -65,7 +61,6 @@ public class CourseDiscussFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUIMessageQueue = new ArrayDeque<>();
         ((EdusohoApp) getActivity().getApplication()).registMsgSource(this);
         mCourseId = getArguments().getInt(getActivity() instanceof CourseStudyDetailActivity ? Const.COURSE_ID : Const.CLASSROOM_ID);
     }

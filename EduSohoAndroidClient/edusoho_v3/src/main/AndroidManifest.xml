@@ -372,6 +372,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
 
+        <activity
+            android:name=".clean.module.course.task.menu.rate.RatesActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"/>
+
+        <activity
+            android:name=".clean.module.course.task.menu.discuss.DiscussActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"/>
+
     </application>
 
 </manifest>

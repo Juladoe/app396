@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        app:contentInsetStart="0dp"
+        android:background="@color/disabled1_hint_color">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.edusoho.kuozhi.clean.widget.ESIconView
+                android:id="@+id/es_back"
+                android:layout_centerVertical="true"
+                android:text="@string/new_font_back"
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/font_xl"
+                android:layout_width="@dimen/common_44"
+                android:layout_height="@dimen/common_44" />
+
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/course_menu_rate"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/font_xl" />
+
+            <com.edusoho.kuozhi.clean.widget.ESIconView
+                android:id="@+id/es_publish"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/discuss_publish"
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/font_xl"
+                android:layout_width="@dimen/common_44"
+                android:layout_height="@dimen/common_44" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        android:background="@color/disabled_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"/>
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

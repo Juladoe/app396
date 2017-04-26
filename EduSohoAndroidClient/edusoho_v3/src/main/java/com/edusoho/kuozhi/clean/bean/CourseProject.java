@@ -29,7 +29,6 @@ public class CourseProject implements Serializable {
     public int vipLevelId;
     public int publishedTaskNum;
     public int enableFinish;
-    public String access1;
     public Service[] services;
     public Teacher[] teachers;
     public SimpleCourseSet courseSet;

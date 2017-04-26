@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.adapter.discuss;
+package com.edusoho.kuozhi.clean.module.course.task.menu.discuss;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
-import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -20,12 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by DF on 2017/2/9.
+ * Created by DF on 2017/4/25.
  */
 
-public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.OnClickListener{
+public class DiscussAdapter extends RecyclerView.Adapter implements View.OnClickListener{
 
-    public List<DiscussDetail.ResourcesBean> mList;
+
+    private List<DiscussDetail.ResourcesBean> mList;
     private Context mContext;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
     private static final int TYPE_ITEM   = 0;
@@ -33,17 +33,13 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
     //上拉加载更多
     public static final int PULLUP_LOAD_MORE = 0;
     //正在加载中
-    public static final int LOADING_MORE     = 1;
+    public static final int LOADING_MORE = 1;
     //没有加载更多 隐藏
-    public static final int NO_LOAD_MORE     = 2;
+    public static final int NO_LOAD_MORE = 2;
     //上拉加载更多状态-默认为0
     private int mLoadMoreStatus = 0;
 
-    public List<DiscussDetail.ResourcesBean> getmList() {
-        return mList;
-    }
-
-    public CourseDiscussAdapter(Context mContext) {
+    public DiscussAdapter(Context mContext) {
         this.mContext = mContext;
         this.mList = new ArrayList<>();
     }
@@ -63,7 +59,7 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
         notifyDataSetChanged();
     }
 
-    public void reFreshData(List<DiscussDetail.ResourcesBean> list) {
+    public void setData(List<DiscussDetail.ResourcesBean> list) {
         mList.clear();
         mList = list;
         notifyDataSetChanged();
@@ -99,7 +95,7 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
         }
         View rootView= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_discuss_topic,parent,false);
         rootView.setOnClickListener(this);
-        return new MyViewHolder(rootView);
+        return new DiscussViewHolder(rootView);
     }
 
     @Override
@@ -111,22 +107,23 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof MyViewHolder) {
+        if (holder instanceof DiscussViewHolder) {
             DiscussDetail.ResourcesBean resourcesBean = mList.get(position);
             holder.itemView.setTag(mList.get(position));
-            ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), ((MyViewHolder)holder).ivUser, EdusohoApp.app.mAvatarOptions);
-            ((MyViewHolder)holder).tvUserName.setText(resourcesBean.getUser().getNickname());
-            ((MyViewHolder)holder).tvContent.setText(String.format("         %s", resourcesBean.getTitle()));
-            ((MyViewHolder)holder).tvCommentNum.setText(resourcesBean.getPostNum());
-            ((MyViewHolder)holder).tvTime.setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(mContext instanceof CourseStudyDetailActivity ? resourcesBean.getLatestPostTime() : resourcesBean.getUpdatedTime()) + 28800000).substring(2, 16));
+            DiscussViewHolder discussViewHolder = (DiscussViewHolder) holder;
+            ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), ((DiscussViewHolder)holder).ivUser, EdusohoApp.app.mAvatarOptions);
+            discussViewHolder.tvUserName.setText(resourcesBean.getUser().getNickname());
+            discussViewHolder.tvContent.setText(String.format("         %s", resourcesBean.getTitle()));
+            discussViewHolder.tvCommentNum.setText(resourcesBean.getPostNum());
+            discussViewHolder.tvTime.setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(resourcesBean.getLatestPostTime()) + 28800000).substring(2, 16));
             if ("question".equals(resourcesBean.getType())) {
-                ((MyViewHolder)holder).tvKind.setText("问题");
-                ((MyViewHolder)holder).tvKind.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-                ((MyViewHolder)holder).tvKind.setBackgroundResource(R.drawable.discuss_question);
+                discussViewHolder.tvKind.setText("问题");
+                discussViewHolder.tvKind.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                discussViewHolder.tvKind.setBackgroundResource(R.drawable.discuss_question);
             } else {
-                ((MyViewHolder)holder).tvKind.setText("话题");
-                ((MyViewHolder)holder).tvKind.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
-                ((MyViewHolder)holder).tvKind.setBackgroundResource(R.drawable.discuss_topic);
+                discussViewHolder.tvKind.setText("话题");
+                discussViewHolder.tvKind.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
+                discussViewHolder.tvKind.setBackgroundResource(R.drawable.discuss_topic);
             }
         } else if (holder instanceof FooterViewHolder) {
             FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
@@ -150,7 +147,7 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
             return mList.size() + 1;
         }
 
-    private class MyViewHolder extends RecyclerView.ViewHolder{
+    private class DiscussViewHolder extends RecyclerView.ViewHolder{
         private ImageView ivUser;
         private TextView tvUserName;
         private TextView tvKind;
@@ -158,7 +155,7 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
         private TextView tvCommentNum;
         private TextView tvTime;
 
-        private MyViewHolder(View itemView) {
+        private DiscussViewHolder(View itemView) {
             super(itemView);
             ivUser = (ImageView) itemView.findViewById(R.id.iv_user_icon);
             tvUserName = (TextView) itemView.findViewById(R.id.tv_user_name);

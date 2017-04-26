@@ -7,10 +7,12 @@ import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.Review;
+import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -41,5 +43,8 @@ public interface CourseApi {
 
     @POST("courses/{id}/members")
     Observable<CourseMember> joinFreeOrVipCourse(@Path("id") int courseId);
+
+    @GET("courses/{courseId}/threads?limit=15&simplify=0&sort=posted")
+    Observable<DiscussDetail> getCourseDiscuss(@Header("X-Auth-Token") String token, @Path("courseId") int courseId, @Query("courseId") int courseid, @Query("start") int start);
 
 }

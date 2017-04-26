@@ -20,7 +20,9 @@ import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.module.course.dialog.LearnCourseProgressDialog;
+import com.edusoho.kuozhi.clean.module.course.task.menu.discuss.DiscussActivity;
 import com.edusoho.kuozhi.clean.module.course.task.menu.info.CourseMenuInfoFragment;
+import com.edusoho.kuozhi.clean.module.course.task.menu.rate.RatesActivity;
 import com.edusoho.kuozhi.clean.widget.CourseMenuButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -124,6 +126,24 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
         mPresenter = new CourseTasksPresenter(this, mCourseProject, isJoin());
         mPresenter.subscribe();
+        view.findViewById(R.id.btn_course_menu_question).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DiscussActivity.launch(getContext(), mCourseProject.id);
+            }
+        });
+        view.findViewById(R.id.btn_course_menu_rate).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RatesActivity.launch(getContext(), mCourseProject);
+            }
+        });
+        view.findViewById(R.id.btn_course_menu_discuss).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private boolean isJoin() {

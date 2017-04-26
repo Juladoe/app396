@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+        android:id="@+id/tv_topic"
+        android:text="@string/course_menu_discuss_topic"
+        android:gravity="center"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="90dp"
+        android:background="@drawable/shape_discuss_topic"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_s"
+        android:visibility="visible"/>
+
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+        android:id="@+id/tv_question"
+        android:text="@string/course_menu_discuss_question"
+        android:gravity="center"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="90dp"
+        android:background="@drawable/shape_inclass_back"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_s"
+        android:visibility="visible"/>
+
+</RelativeLayout>

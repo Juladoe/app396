@@ -9,6 +9,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
 
+import retrofit2.http.HEAD;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -61,17 +62,17 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
 
     @Override
     public void confirm() {
-        switch (mCourseProject.access1){
-            case "1":
+        switch (mCourseProject.access.code){
+            case "unpublished":
                 mView.showToast(R.string.course_unpublish);
                 break;
-            case "2":
+            case "closed":
                 mView.showToast(R.string.course_limit_join);
                 break;
-            case "3":
+            case "expired":
                 mView.showToast(R.string.course_date_limit);
                 break;
-            case "4":
+            case "buy_expired":
                 mView.showToast(R.string.course_project_expire_hint);
                 break;
             default:

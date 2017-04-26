@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.clean.module.course.rate;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -51,6 +50,10 @@ public class CourseProjectRatesFragment extends BaseFragment<CourseProjectRatesC
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
+        mPresenter.subscribe();
+    }
+
+    public void reFreshView(){
         mPresenter.subscribe();
     }
 

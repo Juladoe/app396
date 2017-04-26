@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.google.gson.internal.LinkedTreeMap;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -217,8 +218,8 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(info.get("createdTime").toString()) + 28800000).substring(2, 16));
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(Html.fromHtml(info.get("title").toString()));
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(Html.fromHtml(info.get("content").toString()));
-        ImageLoader.getInstance().displayImage(((LinkedHashMap<String, String>) info.get("user")).get("avatar"), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(((LinkedHashMap<String, String>) info.get("user")).get("nickname"));
+        ImageLoader.getInstance().displayImage(((LinkedTreeMap<String, String>) info.get("user")).get("avatar"), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(((LinkedTreeMap<String, String>) info.get("user")).get("nickname"));
         if ("question".equals(info.get("type").toString())) {
             ((TextView) VIEW_HEADER.findViewById(R.id.tdh_label)).setText("问题");
         } else {
@@ -226,9 +227,9 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         }
         VIEW_HEADER.findViewById(R.id.tdh_label).setBackgroundResource(R.drawable.shape_question_answer);
         if ("course".equals(bundle.getString("kind"))) {
-            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自课程《%s》", ((LinkedHashMap<String, String>) info.get("course")).get("title")));
+            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自课程《%s》", ((LinkedTreeMap<String, String>) info.get("course")).get("title")));
         } else {
-            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", ((LinkedHashMap<String, String>) info.get("target")).get("title")));
+            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", ((LinkedTreeMap<String, String>) info.get("target")).get("title")));
         }
         VIEW_HEADER.findViewById(R.id.tdh_from_course).setOnClickListener(new View.OnClickListener() {
             @Override
