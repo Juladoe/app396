@@ -183,7 +183,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mIsJoin = member.user != null;
                         if (mIsJoin) {
                             mView.showFragments(initCourseModules(true), courseProject);
-                            mView.initLearnLayout();
+                            mView.initLearnLayout(courseProject.isFree);
                             setCourseLearningProgress(courseProject.id);
                             if (courseProject.learningExpiryDate.expired) {
                                 mView.showExitDialog(CourseProjectActivity.DialogType.COURSE_EXPIRED);
@@ -231,10 +231,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseLearningProgress progress) {
                         // TODO: 2017/4/25 非常不好的处理方式，需要封装
                         MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress, MessageEvent.MessageEventCode.COURSE_JOIN);
-//                        MessageEvent<CourseMember> memberMsg = new MessageEvent<>(mMember);
-//                        List<MessageEvent> listMsg = new ArrayList<>();
-//                        listMsg.add(progressMsg);
-//                        listMsg.add(memberMsg);
                         EventBus.getDefault().post(progressMsg);
                         mView.initNextTask(progress.nextTask);
                     }
@@ -264,7 +260,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         if (courseMember != null) {
                             mIsJoin = true;
                             mView.showToast(R.string.join_course_success);
-                            mView.initJoinCourseLayout();
+                            mView.initJoinCourseLayout(mCourseProject.isFree);
                             setCourseLearningProgress(courseId);
                         }
                     }

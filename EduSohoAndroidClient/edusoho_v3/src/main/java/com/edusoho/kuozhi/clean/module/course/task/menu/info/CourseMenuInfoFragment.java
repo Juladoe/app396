@@ -100,11 +100,15 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
     }
 
     private void showCourseProgress(CourseLearningProgress progress) {
-        mMyCourseProgress.setText(String.format(getString(R.string.course_finish_progress), progress.taskResultCount, progress.taskCount));
-        mMyCourseProgressRate.setProgress(progress.taskResultCount * 100 / progress.taskCount);
-        mCourseProgress.setText(String.format(getString(R.string.course_plan_progress), progress.planStudyTaskCount, progress.taskCount));
-        mCourseProgressRate.setProgress(progress.planStudyTaskCount * 100 / progress.taskCount);
-        mDeadline.setText(String.format(getString(R.string.course_progress_deadline),
-                "0".equals(progress.member.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(progress.member.deadline, "yyyy.MM.dd")));
+        try {
+            mMyCourseProgress.setText(String.format(getString(R.string.course_finish_progress), progress.taskResultCount, progress.taskCount));
+            mMyCourseProgressRate.setProgress(progress.taskCount == 0 ? 0 : progress.taskResultCount * 100 / progress.taskCount);
+            mCourseProgress.setText(String.format(getString(R.string.course_plan_progress), progress.planStudyTaskCount, progress.taskCount));
+            mCourseProgressRate.setProgress(progress.taskCount == 0 ? 0 : progress.planStudyTaskCount * 100 / progress.taskCount);
+            mDeadline.setText(String.format(getString(R.string.course_progress_deadline),
+                    "0".equals(progress.member.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(progress.member.deadline, "yyyy.MM.dd")));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

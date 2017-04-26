@@ -23,11 +23,12 @@ public class CourseProject implements Serializable {
     public float price;
     public float originPrice;
     public String learnMode;
-    public String isFree;
+    public int isFree;
     public int taskNum;
     public String buyable;
     public int vipLevelId;
     public int publishedTaskNum;
+    public int enableFinish;
     public String access1;
     public Service[] services;
     public Teacher[] teachers;

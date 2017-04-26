@@ -93,7 +93,8 @@
                 android:gravity="center"
                 android:text="@string/new_font_share"
                 android:textColor="@color/disabled2_hint_color"
-                android:textSize="@dimen/font_xl" />
+                android:textSize="@dimen/font_xl"
+                android:visibility="gone" />
 
             <com.edusoho.kuozhi.clean.widget.ESIconView
                 android:id="@+id/icon_cache"

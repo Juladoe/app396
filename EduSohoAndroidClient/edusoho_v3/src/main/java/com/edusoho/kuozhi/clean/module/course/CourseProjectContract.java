@@ -33,13 +33,13 @@ public interface CourseProjectContract {
 
         void showShareButton(boolean visible);
 
-        void initJoinCourseLayout();
+        void initJoinCourseLayout(int isFree);
 
         void initTrailTask(CourseTask trialTask);
 
         void initNextTask(CourseTask nextTask);
 
-        void initLearnLayout();
+        void initLearnLayout(int isFree);
 
         void setJoinButton(boolean isCourseStarted);
 
