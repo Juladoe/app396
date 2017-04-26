@@ -160,7 +160,8 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     @Override
     public void showCourseTasks(List<CourseItem> taskItems) {
-        CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems);
+        CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems,
+                CourseProject.LearnMode.getMode(mCourseProject.learnMode));
         mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTaskRecyclerView.setAdapter(adapter);
     }

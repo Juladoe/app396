@@ -276,6 +276,8 @@
     <string name="discuss_comment">&#xe698;</string>
     <string name="discuss_publish">&#xe697;</string>
     <string name="discuss_close">&#xe671;</string>
+    <string name="course_task_lock">&#xe671;</string>
+    <string name="course_task_unlock">&#xe66c;</string>
     <string name="cache_course">缓存课程</string>
     <string name="cache_hint">本地剩余空间不足，无法缓存</string>
     <string name="unjoin_course_hint">加入课程后才能开始学习</string>
