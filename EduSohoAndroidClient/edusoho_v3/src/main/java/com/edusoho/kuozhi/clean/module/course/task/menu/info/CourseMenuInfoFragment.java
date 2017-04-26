@@ -28,7 +28,6 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
 
     public static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     public static final String COURSE_PROGRESS = "CourseProgress";
-    public static final String MEMBER_INFO = "member_info";
     private CourseMenuInfoContract.MenuCourseInfoPresenter mPresenter;
     private View mBack;
     private View mShare;
@@ -41,7 +40,6 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
 
     private CourseProject mCourseProject;
     private CourseLearningProgress mCourseLearningProgress;
-    private CourseMember mCourseMember;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +47,6 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
         Bundle bundle = getArguments();
         mCourseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
         mCourseLearningProgress = (CourseLearningProgress) bundle.getSerializable(COURSE_PROGRESS);
-        mCourseMember = (CourseMember) bundle.getSerializable(MEMBER_INFO);
     }
 
     @Nullable
@@ -97,17 +94,17 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
         });
 
         mCourseTitle.setText(mCourseProject.title);
-        showCourseProgress(mCourseLearningProgress, mCourseMember);
-        mPresenter = new CourseMenuInfoPresenter(this, mCourseProject, mCourseLearningProgress, mCourseMember);
+        showCourseProgress(mCourseLearningProgress);
+        mPresenter = new CourseMenuInfoPresenter(this, mCourseProject, mCourseLearningProgress);
         mPresenter.subscribe();
     }
 
-    private void showCourseProgress(CourseLearningProgress progress, CourseMember courseMember) {
+    private void showCourseProgress(CourseLearningProgress progress) {
         mMyCourseProgress.setText(String.format(getString(R.string.course_finish_progress), progress.taskResultCount, progress.taskCount));
         mMyCourseProgressRate.setProgress(progress.taskResultCount * 100 / progress.taskCount);
         mCourseProgress.setText(String.format(getString(R.string.course_plan_progress), progress.planStudyTaskCount, progress.taskCount));
         mCourseProgressRate.setProgress(progress.planStudyTaskCount * 100 / progress.taskCount);
         mDeadline.setText(String.format(getString(R.string.course_progress_deadline),
-                "0".equals(courseMember.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(courseMember.deadline, "yyyy.MM.dd")));
+                "0".equals(progress.member.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(progress.member.deadline, "yyyy.MM.dd")));
     }
 }

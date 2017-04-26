@@ -25,18 +25,15 @@ import com.edusoho.kuozhi.clean.utils.TimeUtils;
 public class LearnCourseProgressDialog extends DialogFragment {
 
     private static final String PROGRESS_INFO = "progress_info";
-    private static final String MEMBER_INFO = "member_info";
     private CourseLearningProgress mProgress;
-    private CourseMember mMember;
     private TextView mFinishProgress;
     private TextView mPlanProgress;
     private TextView mPlanDeadline;
     private View mCloseDialog;
 
-    public static LearnCourseProgressDialog newInstance(CourseLearningProgress progress, CourseMember member) {
+    public static LearnCourseProgressDialog newInstance(CourseLearningProgress progress) {
         Bundle args = new Bundle();
         args.putSerializable(PROGRESS_INFO, progress);
-        args.putSerializable(MEMBER_INFO, member);
         LearnCourseProgressDialog fragment = new LearnCourseProgressDialog();
         fragment.setArguments(args);
         return fragment;
@@ -69,12 +66,11 @@ public class LearnCourseProgressDialog extends DialogFragment {
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             mProgress = (CourseLearningProgress) bundle.getSerializable(PROGRESS_INFO);
-            mMember = (CourseMember) bundle.getSerializable(MEMBER_INFO);
         }
         mFinishProgress.setText(String.format(getString(R.string.course_finish_progress), mProgress.taskResultCount, mProgress.taskCount));
         mPlanProgress.setText(String.format(getString(R.string.course_plan_progress), mProgress.planStudyTaskCount, mProgress.taskCount));
         mPlanDeadline.setText(String.format(getString(R.string.course_progress_deadline),
-                "0".equals(mMember.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(mMember.deadline, "yyyy.MM.dd")));
+                "0".equals(mProgress.member.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(mProgress.member.deadline, "yyyy.MM.dd")));
     }
 
     @Override

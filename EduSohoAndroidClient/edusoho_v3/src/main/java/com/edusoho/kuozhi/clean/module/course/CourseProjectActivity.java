@@ -69,6 +69,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private AlertDialog mCourseExpiredDialog;
     private AlertDialog mCourseMemberExpiredDialog;
 
+    private Map<String, Fragment> mFragments;
+
     public static void launch(Context context, int courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
         intent.putExtra(COURSE_PROJECT_ID, courseProjectId);
@@ -315,7 +317,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         return mPresenter.isJoin();
     }
 
-    private Map<String, Fragment> mfragments;
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -325,7 +326,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
         public CourseProjectViewPagerAdapter(FragmentManager fm, List<CourseProjectEnum> courseProjects, CourseProject courseProject) {
             super(fm);
-            mfragments = new TreeMap<>();
+            mFragments = new TreeMap<>();
             mFragmentManager = fm;
             mCourseProjectModules = courseProjects;
             mCourseProject = courseProject;
@@ -337,7 +338,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             Bundle bundle = new Bundle();
             bundle.putSerializable(((CourseProjectFragmentListener) fragment).getBundleKey(), mCourseProject);
             fragment.setArguments(bundle);
-            mfragments.put(mCourseProjectModules.get(position).getModuleName(), fragment);
+            mFragments.put(mCourseProjectModules.get(position).getModuleName(), fragment);
             return fragment;
         }
 
@@ -379,7 +380,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                         this.destroyItem(null, position, mFragmentManager.getFragments().get(position));
                         mCourseProjectModules.remove(position);
                         mFragmentManager.getFragments().remove(position);
-                        mfragments.remove(mCourseProjectModules.get(position).getModuleName());
+                        mFragments.remove(mCourseProjectModules.get(position).getModuleName());
                         notifyDataSetChanged();
                     }
                 }

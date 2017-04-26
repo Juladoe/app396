@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,10 +82,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             initLoginCourseMemberStatus(courseProject);
                         } else {
                             initLogoutCourseMemberStatus(courseProject);
+                            initTrialFirstTask(mCourseProjectId);
                         }
                     }
                 });
-        initTrialFirstTask(mCourseProjectId);
     }
 
     private void initTrialFirstTask(final int courseId) {
@@ -146,9 +147,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                            EventBus.getDefault().post(new MessageEvent(MessageEvent.MessageEventCode.COURSE_EXIT));
                             mIsJoin = false;
                             mView.showToast(R.string.exit_course_success);
                             mView.exitCourseLayout();
+                            initTrialFirstTask(mCourseProjectId);
                         } else {
                             mView.showToast(R.string.exit_course_failure);
                         }
@@ -158,8 +161,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private void initLoginCourseMemberStatus(final CourseProject courseProject) {
         HttpUtils.getInstance()
-                .createApi(CourseApi.class)
-                .getCourseMember(courseProject.id, EdusohoApp.app.loginUser.id)
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .getCourseMember(courseProject.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseMember>() {
@@ -189,6 +193,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             // TODO: 2017/4/20 还需要处理vip过期问题
                         } else {
                             mView.showFragments(initCourseModules(false), courseProject);
+                            initTrialFirstTask(mCourseProjectId);
                             if (courseProject.learningExpiryDate.expired) {
                                 mView.setJoinButton(false);
                             }
@@ -225,12 +230,12 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseLearningProgress progress) {
                         // TODO: 2017/4/25 非常不好的处理方式，需要封装
-                        MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress);
-                        MessageEvent<CourseMember> memberMsg = new MessageEvent<>(mMember);
-                        List<MessageEvent> listMsg = new ArrayList<>();
-                        listMsg.add(progressMsg);
-                        listMsg.add(memberMsg);
-                        EventBus.getDefault().post(listMsg);
+                        MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress, MessageEvent.MessageEventCode.COURSE_JOIN);
+//                        MessageEvent<CourseMember> memberMsg = new MessageEvent<>(mMember);
+//                        List<MessageEvent> listMsg = new ArrayList<>();
+//                        listMsg.add(progressMsg);
+//                        listMsg.add(memberMsg);
+                        EventBus.getDefault().post(progressMsg);
                         mView.initNextTask(progress.nextTask);
                     }
                 });
