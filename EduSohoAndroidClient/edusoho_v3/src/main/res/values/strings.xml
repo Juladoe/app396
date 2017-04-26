@@ -263,13 +263,13 @@
     <string name="task_video">&#xe673;</string>
     <string name="task_audio">&#xe674;</string>
     <string name="task_live">&#xe691;</string>
-    <string name="task_discuss">&#xe674;</string>
+    <string name="task_discuss">&#xe6c7;</string>
     <string name="task_flash">&#xe689;</string>
     <string name="task_doc">&#xe690;</string>
     <string name="task_ppt">&#xe68f;</string>
     <string name="task_testpaper">&#xe680;</string>
-    <string name="task_homework">&#xe674;</string>
-    <string name="task_exercise">&#xe674;</string>
+    <string name="task_homework">&#xe6c8;</string>
+    <string name="task_exercise">&#xe6c9;</string>
     <string name="task_download">&#xe672;</string>
     <string name="course_project_promise_icon">&#xe6be;</string>
 

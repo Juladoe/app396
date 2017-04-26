@@ -10,12 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
@@ -42,7 +40,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private CourseTasksContract.Presenter mPresenter;
-    private RecyclerView taskRecyclerView;
+    private RecyclerView mTaskRecyclerView;
     private FloatingActionButton mMenuButton;
     private TextView mMenuClose;
     private View mCourseMenuLayout;
@@ -81,7 +79,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        taskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
+        mTaskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
         mMenuButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
         mCourseInfo = (CourseMenuButton) view.findViewById(R.id.btn_course_menu_info);
         mLearnProgressRate = (ESProgressBar) view.findViewById(R.id.pb_learn_progress);
@@ -163,8 +161,8 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     @Override
     public void showCourseTasks(List<CourseItem> taskItems) {
         CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems);
-        taskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        taskRecyclerView.setAdapter(adapter);
+        mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTaskRecyclerView.setAdapter(adapter);
     }
 
     @Subscribe
