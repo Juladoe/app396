@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.model.provider.MyThreadProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.StudyFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.umeng.analytics.MobclickAgent;
@@ -27,7 +28,7 @@ import java.util.Arrays;
  * Created by JesseHuang on 2017/2/8.
  */
 
-public class MyQuestionFragment extends BaseFragment implements MineFragment.RefreshFragment {
+public class MyQuestionFragment extends BaseFragment implements StudyFragment.RefreshFragment {
 
     private static int ASK = 1;
     private static int ANSWER = 2;

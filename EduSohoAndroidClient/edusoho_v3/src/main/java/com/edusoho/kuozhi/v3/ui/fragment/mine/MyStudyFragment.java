@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +24,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.StudyFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyStudyFragment extends BaseFragment implements MineFragment.RefreshFragment {
+public class MyStudyFragment extends BaseFragment implements StudyFragment.RefreshFragment {
 
     public static final int LATEST_COURSE = 1;
     public static final int NORMAL_COURSE = 2;

@@ -477,4 +477,6 @@
     <color name="trans_color">#00000000</color>
     <color name="question_detail">#97BCF0</color>
 
+    <color name="mine_view_hint">#F6F6F6</color>
+
 </resources>

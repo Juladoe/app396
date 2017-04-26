@@ -19,7 +19,7 @@ public class MsgReminderActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_msg_reminder);
-        setBackMode(BACK, "新消息提醒");
+        setBackMode(BACK, "新消息通知");
         initView();
         initData();
     }

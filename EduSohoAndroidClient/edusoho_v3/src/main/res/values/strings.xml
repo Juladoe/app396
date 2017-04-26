@@ -297,6 +297,7 @@
     <string name="title_find">发现</string>
     <string name="title_friends">校友</string>
     <string name="title_mine">我</string>
+    <string name="title_study">学习中心</string>
 
     <string name="exercise">练习</string>
     <string name="homework">作业</string>
@@ -421,5 +422,13 @@
     <string name="classroom_teacher_txt">班主任</string>
     <string name="go_to_course">前往课程</string>
     <string name="go_to_classroom">前往班级</string>
+
+    <!--minefragment1-->
+    <string name="mine_my_vip">我的会员</string>
+    <string name="mine_dynamic">动态</string>
+    <string name="mine_news">新消息通知</string>
+    <string name="mine_wifi_down">允许4G网络下视频播放/缓存</string>
+    <string name="mine_about">关于</string>
+    <string name="mine_logout_btn">退出登录</string>
 
 </resources>

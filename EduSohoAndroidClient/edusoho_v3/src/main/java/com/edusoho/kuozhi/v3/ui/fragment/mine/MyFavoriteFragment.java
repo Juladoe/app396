@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.StudyFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import cn.trinea.android.common.util.ToastUtils;
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyFavoriteFragment extends BaseFragment implements MineFragment.RefreshFragment {
+public class MyFavoriteFragment extends BaseFragment implements StudyFragment.RefreshFragment {
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;

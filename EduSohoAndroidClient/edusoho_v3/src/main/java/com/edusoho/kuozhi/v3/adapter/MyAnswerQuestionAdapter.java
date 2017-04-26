@@ -13,11 +13,10 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.StudyFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyQuestionFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +61,7 @@ public class MyAnswerQuestionAdapter extends RecyclerView.Adapter<RecyclerView.V
             return new MyQuestionFragment.ViewHolderAnswer(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
-            return new MineFragment.EmptyViewHolder(view);
+            return new StudyFragment.EmptyViewHolder(view);
         }
     }
 

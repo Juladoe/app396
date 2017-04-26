@@ -49,6 +49,7 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.LinkedHashMap;
 import java.util.Queue;
 
+
 /**
  * Created by JesseHuang on 15/4/24.
  */
@@ -58,10 +59,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private String mCurrentTag;
     private int mSelectBtn;
     private LinearLayout mNavLayout;
-    private EduSohoTextBtn mDownTabNews;
     private EduSohoTextBtn mDownTabFind;
-    private EduSohoTextBtn mDownTabFriends;
     private EduSohoTextBtn mDownTabMine;
+    private EduSohoTextBtn mDownTabStudy;
     private Toolbar tbActionBar;
     private TextView tvTitle;
     private TextView tvSitting;
@@ -156,10 +156,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private void initView() {
         mNavLayout = (LinearLayout) findViewById(R.id.nav_bottom_layout);
-        mDownTabNews = (EduSohoTextBtn) findViewById(R.id.nav_tab_news);
         mDownTabFind = (EduSohoTextBtn) findViewById(R.id.nav_tab_find);
-        mDownTabFriends = (EduSohoTextBtn) findViewById(R.id.nav_tab_friends);
         mDownTabMine = (EduSohoTextBtn) findViewById(R.id.nav_tab_mine);
+        mDownTabStudy = (EduSohoTextBtn) findViewById(R.id.nav_tab_study);
         tbActionBar = (Toolbar) findViewById(R.id.tb_action_bar);
         tvTitle = (TextView) findViewById(R.id.tv_title);
         tvSitting = (TextView) findViewById(R.id.tv_sitting);
@@ -177,16 +176,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             child.setOnClickListener(mNavDownTabClickListener);
         }
 
-        User user = getAppSettingProvider().getCurrentUser();
-        if (user != null) {
-            selectDownTab(R.id.nav_tab_news);
-        } else {
-            selectDownTab(R.id.nav_tab_find);
-        }
-        mDownTabNews.setUpdateIcon(0);
-        if (app.config.newVerifiedNotify) {
-            mDownTabFriends.setBageIcon(true);
-        }
+        selectDownTab(R.id.nav_tab_find);
+
         tvSitting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,25 +228,23 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         tvTitle.setTextColor(Color.parseColor("#ffffff"));
         tvSitting.setVisibility(View.GONE);
         vToolbarBreakline.setVisibility(View.GONE);
-        if (id == R.id.nav_tab_news) {
-            tag = "NewsFragment";
-            setTitle(getString(R.string.title_news));
-            setTitleLoading(true);
-        } else if (id == R.id.nav_tab_find) {
+        if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
             setTitle(getSchoolTitle());
             setTitleLoading(false);
-        } else if (id == R.id.nav_tab_friends) {
-            tag = "FriendFragment";
-            setTitle(getString(R.string.title_friends));
+        } else if (id == R.id.nav_tab_study) {
+            tag = "StudyFragment";
+            setTitle(getString(R.string.title_study));
             setTitleLoading(false);
+            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFFFF")));
+            tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
         } else {
             MobclickAgent.onEvent(this, "i_userInformationPortal");
-            tag = "MineFragment";
+            tag = "MineFragment1";
             setTitle(getString(R.string.title_mine));
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ccf9f9f9")));
             tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
-            tvSitting.setVisibility(View.VISIBLE);
+            tvSitting.setVisibility(View.GONE);
             vToolbarBreakline.setVisibility(View.VISIBLE);
             setTitleLoading(false);
         }
@@ -319,16 +308,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     private void changeBtnIcon(int id) {
-        mDownTabNews.setIcon(getResources().getString(R.string.font_news));
         mDownTabFind.setIcon(getResources().getString(R.string.font_find));
-        mDownTabFriends.setIcon(getResources().getString(R.string.font_friends));
+        mDownTabStudy.setIcon(getResources().getString(R.string.font_friends));
         mDownTabMine.setIcon(getResources().getString(R.string.font_mine));
-        if (id == R.id.nav_tab_news) {
-            mDownTabNews.setIcon(getResources().getString(R.string.font_news_pressed));
-        } else if (id == R.id.nav_tab_find) {
+        if (id == R.id.nav_tab_find) {
             mDownTabFind.setIcon(getResources().getString(R.string.font_find_pressed));
-        } else if (id == R.id.nav_tab_friends) {
-            mDownTabFriends.setIcon(getResources().getString(R.string.font_friends_pressed));
+        } else if (id == R.id.nav_tab_study) {
+            mDownTabStudy.setIcon(getResources().getString(R.string.font_friends_pressed));
         } else if (id == R.id.nav_tab_mine) {
             mDownTabMine.setIcon(getResources().getString(R.string.font_mine_pressed));
         }
@@ -371,7 +357,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    mDownTabNews.setUpdateIcon(message.data.getInt("badge"));
+//                    mDownTabNews.setUpdateIcon(message.data.getInt("badge"));
                 }
             });
             return;
@@ -385,7 +371,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                     if (getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
                         selectDownTab(R.id.nav_tab_find);
                     } else {
-                        selectDownTab(R.id.nav_tab_news);
+                        selectDownTab(R.id.nav_tab_find);
                     }
                     mLogoutFlag = false;
                 }
@@ -395,7 +381,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    mDownTabNews.setUpdateIcon(0);
+//                    mDownTabNews.setUpdateIcon(0);
                 }
             });
         }
@@ -403,11 +389,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if (message.data.getBoolean("isNew")) {
-                        mDownTabFriends.setBageIcon(true);
-                    } else {
-                        mDownTabFriends.setBageIcon(false);
-                    }
+//                    if (message.data.getBoolean("isNew")) {
+//                        mDownTabFriends.setBageIcon(true);
+//                    } else {
+//                        mDownTabFriends.setBageIcon(false);
+//                    }
                 }
             });
         }

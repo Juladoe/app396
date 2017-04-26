@@ -12,7 +12,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.StudyFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyTeachFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
@@ -58,7 +58,7 @@ public class MyTeachAdapter extends RecyclerView.Adapter {
             return new MyTeachFragment.CourseTeachViewHolder(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
-            return new MineFragment.EmptyViewHolder(view);
+            return new StudyFragment.EmptyViewHolder(view);
         }
     }
 

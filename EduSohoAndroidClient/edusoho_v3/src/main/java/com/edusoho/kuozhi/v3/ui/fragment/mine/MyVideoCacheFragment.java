@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.StudyFragment;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 
@@ -22,7 +23,7 @@ import com.edusoho.kuozhi.v3.util.M3U8Util;
  * Created by JesseHuang on 2017/2/10.
  */
 
-public class MyVideoCacheFragment extends BaseFragment implements MineFragment.RefreshFragment {
+public class MyVideoCacheFragment extends BaseFragment implements StudyFragment.RefreshFragment {
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;

@@ -15,6 +15,6 @@
         android:singleLine="true"
         android:text=""
         android:textColor="@android:color/white"
-        android:textSize="@dimen/large_font_size" />
+        android:textSize="@dimen/font_xl" />
 
 </LinearLayout>

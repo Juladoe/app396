@@ -14,12 +14,13 @@ import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.StudyFragment;
 
 /**
  * Created by DF on 2017/2/28.
  */
 
-public class MyTeachFragment extends BaseFragment implements MineFragment.RefreshFragment {
+public class MyTeachFragment extends BaseFragment implements StudyFragment.RefreshFragment {
 
     private SwipeRefreshLayout mSrlContent;
     private RecyclerView mRvContent;

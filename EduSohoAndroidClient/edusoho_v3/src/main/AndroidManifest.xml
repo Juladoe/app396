@@ -117,14 +117,12 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".v3.ui.ForgetPasswordActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".v3.view.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -179,8 +177,8 @@
             android:name=".v3.ui.DiscussDetailActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".v3.ui.RegisterConfirmActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -192,16 +190,15 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:theme="@style/DownLoadTheme"
             android:name=".v3.ui.DownloadManagerActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/DownLoadTheme" />
         <activity
             android:name=".v3.ui.LessonActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
-
         <activity
             android:name=".v3.ui.NewsCourseActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -227,7 +224,6 @@
             android:name=".v3.ui.friend.GroupListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".v3.ui.friend.ServiceListActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -275,26 +271,22 @@
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".v3.ui.WebViewDataActivity"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".v3.ui.CourseActivity"
-            android:theme="@style/AppThemeNoActionBar"
-            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".v3.ui.ClassroomActivity"
-            android:theme="@style/AppThemeNoActionBar"
-            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".v3.ui.NoteActivity"
             android:screenOrientation="user"
@@ -310,7 +302,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".v3.ui.CompletePhoneActivity"
             android:configChanges="orientation|keyboard|screenSize"
@@ -323,18 +314,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
-            android:theme="@style/VideoPlayerActionBar"
             android:name=".v3.ui.VideoPlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTop" />
-
+            android:launchMode="singleTop"
+            android:theme="@style/VideoPlayerActionBar" />
         <activity
-            android:theme="@style/AppThemeNoActionBar"
             android:name=".v3.ui.course.CourseStudyDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
 
     </application>
 

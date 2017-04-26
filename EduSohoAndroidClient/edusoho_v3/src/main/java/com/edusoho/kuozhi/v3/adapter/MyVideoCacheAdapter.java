@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.DownloadCourse;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.StudyFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyVideoCacheFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -59,7 +59,7 @@ public class MyVideoCacheAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return new MyVideoCacheFragment.VideoCacheViewHolder(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
-            return new MineFragment.EmptyViewHolder(view);
+            return new StudyFragment.EmptyViewHolder(view);
         }
     }
 
