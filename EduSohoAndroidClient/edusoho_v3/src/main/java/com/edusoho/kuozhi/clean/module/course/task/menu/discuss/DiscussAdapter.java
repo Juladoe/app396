@@ -33,9 +33,9 @@ public class DiscussAdapter extends RecyclerView.Adapter implements View.OnClick
     //上拉加载更多
     public static final int PULLUP_LOAD_MORE = 0;
     //正在加载中
-    public static final int LOADING_MORE     = 1;
+    public static final int LOADING_MORE = 1;
     //没有加载更多 隐藏
-    public static final int NO_LOAD_MORE     = 2;
+    public static final int NO_LOAD_MORE = 2;
     //上拉加载更多状态-默认为0
     private int mLoadMoreStatus = 0;
 
@@ -59,7 +59,7 @@ public class DiscussAdapter extends RecyclerView.Adapter implements View.OnClick
         notifyDataSetChanged();
     }
 
-    public void reFreshData(List<DiscussDetail.ResourcesBean> list) {
+    public void setData(List<DiscussDetail.ResourcesBean> list) {
         mList.clear();
         mList = list;
         notifyDataSetChanged();

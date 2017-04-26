@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import retrofit2.http.HEAD;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

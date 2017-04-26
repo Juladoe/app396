@@ -4,12 +4,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_content"
+    <RelativeLayout
+        android:id="@+id/task_info_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/disabled2_hint_color"
-        android:padding="10dp" />
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/layout_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_below="@+id/iv_course_cover"
+            android:background="@color/disabled2_hint_color"
+            android:paddingBottom="20dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="20dp">
+
+            <com.edusoho.kuozhi.clean.widget.ESProgressBar
+                android:id="@+id/pb_learn_progress"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/icon_progress_info"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/bg_course_progress"
+                app:percent_size="@dimen/font_s" />
+
+            <com.edusoho.kuozhi.clean.widget.ESIconView
+                android:id="@+id/icon_progress_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="@string/new_font_info"
+                android:textColor="@color/secondary2_font_color"
+                android:textSize="@dimen/font_xxl" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_progress"
+            android:background="@color/disabled2_hint_color"
+            android:padding="10dp" />
+
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_button"
@@ -21,7 +64,7 @@
         app:backgroundTint="@color/primary_color"
         app:borderWidth="0dp"
         app:fabSize="normal"
-        app:layout_anchor="@id/rv_content"
+        app:layout_anchor="@id/task_info_layout"
         app:layout_anchorGravity="bottom|right"
         app:rippleColor="@color/primary" />
 

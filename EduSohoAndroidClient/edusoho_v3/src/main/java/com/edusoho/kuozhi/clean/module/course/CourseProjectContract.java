@@ -8,6 +8,8 @@ import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
+import android.support.v4.app.Fragment;
+
 import java.util.List;
 
 
@@ -37,15 +39,9 @@ public interface CourseProjectContract {
 
         void initNextTask(CourseTask nextTask);
 
-        void setTrialTaskVisible(boolean visible);
-
         void initLearnLayout();
 
         void setJoinButton(boolean isCourseStarted);
-
-        void setProgressBar(int progress);
-
-        void launchDialogProgress(CourseLearningProgress progress, CourseMember member);
 
         void launchConfirmOrderActivity(int courseSetId, int courseId);
 
@@ -59,8 +55,6 @@ public interface CourseProjectContract {
         void consult();
 
         void joinCourseProject(int courseId);
-
-        void showCourseProgressInfo();
 
         void exitCourse();
 

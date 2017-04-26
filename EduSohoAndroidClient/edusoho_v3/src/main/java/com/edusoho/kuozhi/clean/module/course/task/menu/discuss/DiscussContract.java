@@ -18,7 +18,13 @@ public interface DiscussContract {
 
         void setSwipeView(boolean isShow);
 
-        void showCompleteView(List<DiscussDetail.ResourcesBean> mList);
+        void showCompleteView(List<DiscussDetail.ResourcesBean> mList, boolean isHave);
+
+        void addAdapterData(List<DiscussDetail.ResourcesBean> list, boolean isHave);
+
+        void setAdapterStatus(int status);
+
+        void changeAdapterMoreStatus(int status);
 
         void goToDiscussDetailActivity(DiscussDetail.ResourcesBean resourcesBean);
 

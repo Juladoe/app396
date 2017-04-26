@@ -359,6 +359,7 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                                 mMessageListFragment.updateListByEntity(messageEntity);
                             }
                         }
+                        setResult(RESULT_OK);
                         MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, null);
                     }
                 }).fail(new NormalCallback<VolleyError>() {

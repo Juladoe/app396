@@ -25,7 +25,6 @@ import java.util.List;
 
 public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.OnClickListener{
 
-
     public List<DiscussDetail.ResourcesBean> mList;
     private Context mContext;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;

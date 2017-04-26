@@ -27,7 +27,7 @@ public class CourseMember implements Serializable {
     public int courseSetId;
     public User user;
 
-    public static class User {
+    public static class User implements Serializable {
         public String id;
         public String nickname;
         public String title;

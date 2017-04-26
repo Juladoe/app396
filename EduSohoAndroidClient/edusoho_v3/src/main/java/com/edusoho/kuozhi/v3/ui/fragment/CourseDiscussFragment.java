@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.clean.module.course.task.menu.discuss.DiscussAdapter;
+import com.edusoho.kuozhi.v3.adapter.discuss.CourseDiscussAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
@@ -41,7 +41,7 @@ public class CourseDiscussFragment extends Fragment implements
         MessageEngine.MessageCallback, SwipeRefreshLayout.OnRefreshListener, ICourseStateListener, BaseStudyDetailActivity.WidgtState {
 
     private View mLoadView;
-    private DiscussAdapter catalogueAdapter;
+    private CourseDiscussAdapter catalogueAdapter;
     private int mRunStatus;
     private int mCourseId;
     private RecyclerView mRvDiscuss;
@@ -87,13 +87,13 @@ public class CourseDiscussFragment extends Fragment implements
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mSwipe.setColorSchemeResources(R.color.primary_color);
         mSwipe.setOnRefreshListener(this);
-        catalogueAdapter = new DiscussAdapter(getActivity());
+        catalogueAdapter = new CourseDiscussAdapter(getActivity());
         mRvDiscuss.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvDiscuss.setAdapter(catalogueAdapter);
         setRecyclerViewListener();
         if (TextUtils.isEmpty(((EdusohoApp) getActivity().getApplication()).token)) {
             mUnLoginView.setVisibility(View.VISIBLE);
-            catalogueAdapter.changeMoreStatus(DiscussAdapter.NO_LOAD_MORE);
+            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
             mSwipe.setEnabled(false);
         } else {
             initData();
@@ -109,14 +109,14 @@ public class CourseDiscussFragment extends Fragment implements
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem == catalogueAdapter.getItemCount() - 1) {
-                    catalogueAdapter.changeMoreStatus(DiscussAdapter.LOADING_MORE);
+                    catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.LOADING_MORE);
                     //设置正在加载更多
                     if (!isHave && !mEmpty.isShown()) {
                         if (isFirst) {
                             isFirst = false;
                             CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
                         }
-                        catalogueAdapter.changeMoreStatus(DiscussAdapter.NO_LOAD_MORE);
+                        catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
                         return;
                     }
                     new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, start)
@@ -132,13 +132,13 @@ public class CourseDiscussFragment extends Fragment implements
                                     } else {
                                         isHave = true;
                                     }
-                                    catalogueAdapter.setStatus(DiscussAdapter.NO_LOAD_MORE);
+                                    catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
                                     catalogueAdapter.AddFooterItem(discussDetail.getResources());
                                 }
                             }).fail(new NormalCallback<VolleyError>() {
                         @Override
                         public void success(VolleyError obj) {
-                            catalogueAdapter.changeMoreStatus(DiscussAdapter.NO_LOAD_MORE);
+                            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
                         }
                     });
                 }
@@ -154,7 +154,7 @@ public class CourseDiscussFragment extends Fragment implements
             }
         });
 
-        catalogueAdapter.setOnItemClickListener(new DiscussAdapter.OnRecyclerViewItemClickListener() {
+        catalogueAdapter.setOnItemClickListener(new CourseDiscussAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, DiscussDetail.ResourcesBean resourcesBean) {
                 if (mCourseStateCallback.isExpired()) {
@@ -198,13 +198,13 @@ public class CourseDiscussFragment extends Fragment implements
             isHave = false;
             mLoadView.setVisibility(View.GONE);
             mEmpty.setVisibility(View.VISIBLE);
-            catalogueAdapter.changeMoreStatus(DiscussAdapter.NO_LOAD_MORE);
+            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
             return;
         }
         if (discussDetail.getResources().size() < 20) {
             isHave = false;
         }
-        catalogueAdapter.setStatus(DiscussAdapter.NO_LOAD_MORE);
+        catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
         catalogueAdapter.setDataAndNotifyData(discussDetail.getResources());
 
     }

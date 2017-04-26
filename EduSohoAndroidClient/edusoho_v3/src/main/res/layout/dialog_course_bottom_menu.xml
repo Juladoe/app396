@@ -128,8 +128,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/menu_layout_2"
-            android:layout_margin="30dp"
-            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:padding="30dp"
             android:text="@string/discuss_close"
             android:textColor="@color/disabled2_hint_color"
             android:textSize="@dimen/font_l" />

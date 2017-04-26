@@ -1,12 +1,14 @@
 package com.edusoho.kuozhi.clean.module.course.task.menu.discuss;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +22,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
@@ -50,6 +51,7 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
     private SwipeRefreshLayout mRefresh;
 
     private boolean mIsAdd;
+    private boolean mIsHave;
     private int mCourseProjectId;
     private DiscussAdapter mAdapter;
 
@@ -75,6 +77,7 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
         }
         initView();
         initEvent();
+        setRecyclerViewListener();
     }
 
     private void initView() {
@@ -100,11 +103,55 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
 
     private void initEvent() {
         mEditTopic.setOnClickListener(this);
-        mToolbar.setNavigationOnClickListener(this);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mPresenter.subscribe();
+            }
+        });
+    }
 
+
+    private void setRecyclerViewListener() {
+        mContent.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!mIsHave) {
+                    return;
+                }
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem == mAdapter.getItemCount() - 1) {
+                    mAdapter.changeMoreStatus(DiscussAdapter.LOADING_MORE);
+                    mPresenter.reFreshData();
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            }
+        });
+
+        mAdapter.setOnItemClickListener(new DiscussAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, DiscussDetail.ResourcesBean resourcesBean) {
+//                if (mCourseStateCallback.isExpired()) {
+//                    mCourseStateCallback.handlerCourseExpired();
+//                    return;
+//                }
+                goToDiscussDetailActivity(resourcesBean);
             }
         });
     }
@@ -120,8 +167,44 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
     }
 
     @Override
-    public void showCompleteView(List<DiscussDetail.ResourcesBean> list) {
-        mAdapter.setDataAndNotifyData(list);
+    public void showCompleteView(List<DiscussDetail.ResourcesBean> list, boolean isHave) {
+        mAdapter.setData(list);
+        mIsHave = isHave;
+    }
+
+    @Override
+    public void addAdapterData(List<DiscussDetail.ResourcesBean> list, boolean isHave) {
+        mAdapter.AddFooterItem(list);
+        mIsHave = isHave;
+    }
+
+    @Override
+    public void setAdapterStatus(int status) {
+        switch (status) {
+            case 0:
+                mAdapter.setStatus(DiscussAdapter.PULLUP_LOAD_MORE);
+                break;
+            case 1:
+                mAdapter.setStatus(DiscussAdapter.LOADING_MORE);
+                break;
+            case 2:
+                mAdapter.setStatus(DiscussAdapter.NO_LOAD_MORE);
+                break;
+        }
+
+    }
+
+    @Override
+    public void changeAdapterMoreStatus(int status) {
+        mAdapter.changeMoreStatus(status);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            mPresenter.subscribe();
+        }
     }
 
     private void goToThreadCreateActivity(String type) {
@@ -134,7 +217,7 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
         bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");
-        ((EdusohoApp) getApplication()).mEngine.runNormalPluginWithBundle("ThreadCreateActivity", this, bundle);
+        CoreEngine.create(this).runNormalPluginWithBundleForResult("ThreadCreateActivity", this, bundle, 0);
     }
 
     @Override
@@ -144,14 +227,14 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
             bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, Integer.parseInt(resourcesBean.getCourseId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(resourcesBean.getId()));
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, resourcesBean.getType());
-            CoreEngine.create(this).runNormalPluginWithBundle("DiscussDetailActivity", this, bundle);
+            CoreEngine.create(this).runNormalPluginWithBundleForResult("DiscussDetailActivity", this, bundle, 0);
     }
 
     private void showEditPop() {
         MobclickAgent.onEvent(this, "courseDetailsPage_Q&A_launchButton");
         if (!mIsAdd) {
             mIsAdd = true;
-            View popupView = getLayoutInflater().inflate(R.layout.dialog_discuss_publish, null);
+            View popupView = getLayoutInflater().inflate(R.layout.dialog_discuss, null);
             mPopupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT, true);
             mPopupWindow.setTouchable(true);
             mPopupWindow.setOutsideTouchable(true);
@@ -162,6 +245,8 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
                 public void onClick(View v) {
                     MobclickAgent.onEvent(DiscussActivity.this, "courseDetailsPage_Q&A_topic");
                     goToThreadCreateActivity("discussion");
+                    mEditTopic.setBackground(ContextCompat.getDrawable(DiscussActivity.this, R.drawable.shape_inclass_back));
+                    mEditTopic.setText(R.string.discuss_publish);
                     mPopupWindow.dismiss();
                 }
             });
@@ -171,23 +256,28 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
                 public void onClick(View v) {
                     MobclickAgent.onEvent(DiscussActivity.this, "courseDetailsPage_questionsAnswers");
                     goToThreadCreateActivity("question");
+                    mEditTopic.setBackground(ContextCompat.getDrawable(DiscussActivity.this, R.drawable.shape_inclass_back));
+                    mEditTopic.setText(R.string.discuss_publish);
                     mPopupWindow.dismiss();
                 }
             });
-            popupView.findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
+            mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
-                public void onClick(View v) {
-                    mPopupWindow.dismiss();
+                public void onDismiss() {
+                    mEditTopic.setBackground(ContextCompat.getDrawable(DiscussActivity.this, R.drawable.shape_inclass_back));
+                    mEditTopic.setText(R.string.discuss_publish);
                 }
             });
         }
-        mPopupWindow.showAsDropDown(mEditTopic, 0, -AppUtil.dp2px(this, 204));
+        mEditTopic.setText(R.string.discuss_close);
+        mEditTopic.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_discuss_cancel));
+        mPopupWindow.showAsDropDown(mEditTopic, 0, -AppUtil.dp2px(this, 198));
         startAnimation();
     }
 
     public void startAnimation() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mQuestion, "translationY", 0, -AppUtil.dp2px(DiscussActivity.this, 73));
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(mTopic, "translationY", 0, -AppUtil.dp2px(DiscussActivity.this, 146));
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mQuestion, "translationY", 0, -AppUtil.dp2px(DiscussActivity.this, 13));
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(mTopic, "translationY", 0, -AppUtil.dp2px(DiscussActivity.this, 77));
         animator.setInterpolator(new LinearInterpolator());
         animator1.setInterpolator(new LinearInterpolator());
         animator.setDuration(150);
@@ -201,8 +291,6 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
         int id = v.getId();
         if (id == R.id.tv_edit_topic) {
             showEditPop();
-        } else if(id == R.id.tb_toolbar){
-            finish();
         }
     }
 }

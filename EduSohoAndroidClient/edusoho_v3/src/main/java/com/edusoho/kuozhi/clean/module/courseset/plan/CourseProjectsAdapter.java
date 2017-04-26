@@ -158,8 +158,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag();
-//                CourseProjectActivity.launch(mContext, mList.get(position).id);
-                DiscussActivity.launch(mContext, mList.get(position).id);
+                CourseProjectActivity.launch(mContext, mList.get(position).id);
             }
         };
     }

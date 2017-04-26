@@ -42,7 +42,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
     @Override
     public void subscribe() {
-        mView.showCourseProjectInfo(mCourseProject);
+        mView.initCourseProjectInfo(mCourseProject);
         showPrice();
         showVip(mCourseProject.vipLevelId);
         showServices(mCourseProject.services);
