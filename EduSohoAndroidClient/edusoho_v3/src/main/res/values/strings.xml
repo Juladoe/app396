@@ -531,7 +531,7 @@
     <string name="exit_course_success">退出成功</string>
     <string name="exit_course_failure">退出失败</string>
     <string name="join_course_success">加入成功</string>
-    <string name="latest_task_title">上次学到</string>
+    <string name="latest_task_title">上次学到:</string>
     <string name="start_learn_trial_task">开始试学</string>
     <string name="start_learn_next_task">继续学习</string>
     <string name="course_menu_info">简介</string>

@@ -156,7 +156,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     public void initNextTask(CourseTask nextTask) {
         setPlayLayoutVisible(true);
         mLatestLearnedTitle.setVisibility(View.VISIBLE);
-        mLatestTaskTitle.setText(nextTask.title);
+        mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
         mLatestLearned.setText(R.string.start_learn_next_task);
     }
 

@@ -19,7 +19,7 @@ public class CourseItem implements Serializable {
 
     public String toTaskItemSequence() {
         if (seq != 0 && number != 0) {
-            return seq + "-" + number;
+            return seq + " - " + number;
         } else {
             return number + "";
         }
