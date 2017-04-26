@@ -109,6 +109,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseTask trialTask) {
                         if (trialTask != null && trialTask.id != 0) {
                             mView.initTrailTask(trialTask);
+                        } else {
+                            mView.setPlayLayoutVisible(false);
                         }
                     }
                 });
@@ -232,7 +234,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         // TODO: 2017/4/25 非常不好的处理方式，需要封装
                         MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress, MessageEvent.MessageEventCode.COURSE_JOIN);
                         EventBus.getDefault().post(progressMsg);
-                        mView.initNextTask(progress.nextTask);
+                        if (progress.nextTask != null) {
+                            mView.initNextTask(progress.nextTask);
+                        } else {
+                            mView.setPlayLayoutVisible(false);
+                        }
                     }
                 });
     }

@@ -47,6 +47,8 @@ public interface CourseProjectContract {
 
         void showExitDialog(CourseProjectActivity.DialogType type);
 
+        void setPlayLayoutVisible(boolean visible);
+
         void exitCourseLayout();
     }
 

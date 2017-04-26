@@ -146,7 +146,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void initTrailTask(CourseTask trialTask) {
-        setTrialTaskVisible(true);
+        setPlayLayoutVisible(true);
         mLatestLearnedTitle.setVisibility(View.GONE);
         mLatestTaskTitle.setText(trialTask.title);
         mLatestLearned.setText(R.string.start_learn_trial_task);
@@ -154,13 +154,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void initNextTask(CourseTask nextTask) {
-        setTrialTaskVisible(true);
+        setPlayLayoutVisible(true);
         mLatestLearnedTitle.setVisibility(View.VISIBLE);
         mLatestTaskTitle.setText(nextTask.title);
         mLatestLearned.setText(R.string.start_learn_next_task);
     }
 
-    private void setTrialTaskVisible(boolean visible) {
+    @Override
+    public void setPlayLayoutVisible(boolean visible) {
         mPlayLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
