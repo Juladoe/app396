@@ -185,7 +185,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mIsJoin = member.user != null;
                         if (mIsJoin) {
                             mView.showFragments(initCourseModules(true), courseProject);
-                            mView.initLearnLayout(courseProject.isFree);
+                            mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
                             setCourseLearningProgress(courseProject.id);
                             if (courseProject.learningExpiryDate.expired) {
                                 mView.showExitDialog(CourseProjectActivity.DialogType.COURSE_EXPIRED);
@@ -266,7 +266,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         if (courseMember != null) {
                             mIsJoin = true;
                             mView.showToast(R.string.join_course_success);
-                            mView.initJoinCourseLayout(mCourseProject.isFree);
+                            mView.initJoinCourseLayout(CourseProject.LearnMode.getMode(mCourseProject.learnMode));
                             setCourseLearningProgress(courseId);
                         }
                     }

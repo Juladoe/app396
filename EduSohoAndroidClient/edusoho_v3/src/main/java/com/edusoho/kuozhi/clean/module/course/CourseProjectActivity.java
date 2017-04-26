@@ -208,14 +208,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     /**
      * 点击加入界面显示
      *
-     * @param isFree 是否解锁计划
+     * @param mode 是否解锁计划
      */
     @Override
-    public void initJoinCourseLayout(int isFree) {
+    public void initJoinCourseLayout(CourseProject.LearnMode mode) {
         mTabLayout.setVisibility(View.GONE);
         mAdapter.destroyItem(CourseProjectEnum.RATE);
         mAdapter.destroyItem(CourseProjectEnum.INFO);
-        showCacheButton(isFree == 0);
+        showCacheButton(mode == CourseProject.LearnMode.FREEMODE);
         showShareButton(false);
         showBottomLayout(false);
     }
@@ -239,12 +239,12 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     /**
      * 进入页面显示：已加入
      *
-     * @param isFree 是否解锁计划
+     * @param mode 是否解锁计划
      */
     @Override
-    public void initLearnLayout(int isFree) {
+    public void initLearnLayout(CourseProject.LearnMode mode) {
         mTabLayout.setVisibility(View.GONE);
-        showCacheButton(isFree == 0);
+        showCacheButton(mode == CourseProject.LearnMode.FREEMODE);
         showShareButton(false);
         showBottomLayout(false);
     }

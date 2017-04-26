@@ -69,4 +69,26 @@ public class CourseProject implements Serializable {
     public static enum CourseStatus {
         CLOSED, PUBLISHED, DRAFT
     }
+
+    public enum LearnMode {
+        FREEMODE("freeMode"), LOCKMODE("lockMode");
+
+        private String mName;
+
+        LearnMode(String name) {
+            this.mName = name;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+        public static LearnMode getMode(String name) {
+            for (LearnMode mode : values()) {
+                if (mode.getName().equals(name))
+                    return mode;
+            }
+            return null;
+        }
+    }
 }
