@@ -26,6 +26,7 @@ public class CourseTask implements Serializable {
     public String maxOnlineNum;
     public String fromCourseSetId;
     public String length;
+    public boolean lock;
     public String copyId;
     public String createdUserId;
     public String createdTime;
