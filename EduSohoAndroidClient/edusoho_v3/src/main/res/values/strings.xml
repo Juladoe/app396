@@ -276,6 +276,8 @@
     <string name="discuss_comment">&#xe698;</string>
     <string name="discuss_publish">&#xe697;</string>
     <string name="discuss_close">&#xe671;</string>
+    <string name="course_task_lock">&#xe6cb;</string>
+    <string name="course_task_unlock">&#xe6cc;</string>
     <string name="cache_course">缓存课程</string>
     <string name="cache_hint">本地剩余空间不足，无法缓存</string>
     <string name="unjoin_course_hint">加入课程后才能开始学习</string>
@@ -546,5 +548,8 @@
     <string name="permnent_expired">永久有效</string>
     <string name="course_menu_discuss_question">问题</string>
     <string name="course_menu_discuss_topic">话题</string>
+    <string name="donwload_task_not_support">移动端暂不支持下载资料任务</string>
+    <string name="discuss_task_not_support">移动端暂不支持讨论任务</string>
+    <string name="flash_task_not_support">移动端暂不支持Flash任务</string>
 
 </resources>
