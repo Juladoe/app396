@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
@@ -227,7 +228,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         }
         VIEW_HEADER.findViewById(R.id.tdh_label).setBackgroundResource(R.drawable.shape_question_answer);
         if ("course".equals(bundle.getString("kind"))) {
-            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自课程《%s》", ((LinkedTreeMap<String, String>) info.get("course")).get("title")));
+            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自计划《%s》", ((LinkedTreeMap<String, String>) info.get("course")).get("title")));
         } else {
             ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", ((LinkedTreeMap<String, String>) info.get("target")).get("title")));
         }
@@ -235,12 +236,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
             @Override
             public void onClick(View v) {
                 if ("course".equals(bundle.getString("kind"))) {
-                    EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
-                        @Override
-                        public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.COURSE_ID, Integer.parseInt(info.get("courseId").toString()));
-                        }
-                    });
+                    CourseProjectActivity.launch(mContext, Integer.parseInt(info.get("courseId").toString()));
                 } else {
                     EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                         @Override

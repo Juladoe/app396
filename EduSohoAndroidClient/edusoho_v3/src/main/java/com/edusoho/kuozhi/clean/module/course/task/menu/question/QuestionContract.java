@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.task.menu.discuss;
+package com.edusoho.kuozhi.clean.module.course.task.menu.question;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by DF on 2017/4/25.
  */
 
-public interface DiscussContract {
+public interface QuestionContract {
 
     interface View extends BaseView<Presenter>{
 
@@ -21,8 +21,6 @@ public interface DiscussContract {
         void showCompleteView(List<DiscussDetail.ResourcesBean> mList, boolean isHave);
 
         void addAdapterData(List<DiscussDetail.ResourcesBean> list, boolean isHave);
-
-        void setAdapterStatus(int status);
 
         void changeAdapterMoreStatus(int status);
 

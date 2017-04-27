@@ -116,8 +116,6 @@ public class ReviewActivity extends BaseNoTitleActivity {
                             CommonUtil.shortToast(ReviewActivity.this,"评价失败");
                         }
                     });
-                }else{
-
                 }
             }
         });
