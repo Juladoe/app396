@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -23,8 +24,11 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
+import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
+import com.edusoho.kuozhi.clean.module.course.task.TaskIconEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
@@ -69,6 +73,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private TextView mLatestLearnedTitle;
     private TextView mLatestTaskTitle;
     private TextView mLatestLearned;
+    private TextView mFinishTask;
     private FrameLayout mTaskPlayContainer;
 
     private AlertDialog mCourseExpiredDialog;
@@ -129,20 +134,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLatestLearnedTitle = (TextView) findViewById(R.id.tv_latest_learned_title);
         mLatestTaskTitle = (TextView) findViewById(R.id.tv_latest_task_title);
         mLatestLearned = (TextView) findViewById(R.id.tv_latest_learned);
-
         mLatestLearned.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt(Const.LESSON_ID, 26);
-                bundle.putString(Const.REMAINT_TIME, "67");
-                fragment.setArguments(bundle);
-                transaction.replace(R.id.task_container, fragment);
-                transaction.commitAllowingStateLoss();
+
             }
         });
+
+        mFinishTask = (TextView) findViewById(R.id.tv_finish_task);
 
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -342,6 +341,65 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         return mPresenter.isJoin();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onReceiveMessage(MessageEvent messageEvent) {
+        switch (messageEvent.getType()) {
+            case MessageEvent.LEARN_TASK:
+                CourseTask task = (CourseTask) messageEvent.getMessageBody();
+                learnTask(task);
+                break;
+        }
+        setPlayLayoutVisible(false);
+    }
+
+    private void learnTask(CourseTask task) {
+        TaskIconEnum taskType = TaskIconEnum.fromString(task.type);
+        switch (taskType) {
+            case TEXT:
+                break;
+            case VIDEO:
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.LESSON_ID, task.id);
+                bundle.putString(Const.REMAINT_TIME, task.length);
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.task_container, fragment);
+                transaction.commitAllowingStateLoss();
+                break;
+            case AUDIO:
+                break;
+            case LIVE:
+                break;
+            case DISCUSS:
+                break;
+            case FLASH:
+                break;
+            case DOC:
+                break;
+            case PPT:
+                break;
+            case TESTPAPER:
+                break;
+            case HOMEWORK:
+                break;
+            case EXERCISE:
+                break;
+            case DOWNLOAD:
+                break;
+            default:
+        }
+        showFinishButton(!TaskResultEnum.FINISH.toString().equals(task.result.status));
+    }
+
+    private void showFinishButton(boolean show) {
+        mFinishTask.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 

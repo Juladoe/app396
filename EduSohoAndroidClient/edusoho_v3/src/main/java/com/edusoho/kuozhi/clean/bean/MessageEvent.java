@@ -6,12 +6,17 @@ package com.edusoho.kuozhi.clean.bean;
 
 public class MessageEvent<T> {
 
+    public static final int NO_CODE = -1;
+    public static final int COURSE_JOIN = 0;
+    public static final int COURSE_EXIT = 1;
+    public static final int LEARN_TASK = 2;
+
     private T mMessage;
     private int mCode;
 
     public MessageEvent(T message) {
         mMessage = message;
-        mCode = MessageEventCode.NO_CODE;
+        mCode = NO_CODE;
     }
 
     public MessageEvent(T message, int code) {
@@ -30,12 +35,5 @@ public class MessageEvent<T> {
 
     public int getType() {
         return mCode;
-    }
-
-    public static class MessageEventCode {
-        public static final int NO_CODE = -1;
-        public static final int COURSE_JOIN = 0;
-        public static final int COURSE_EXIT = 1;
-        public static final int LEARN_TASK = 2;
     }
 }

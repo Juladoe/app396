@@ -152,7 +152,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
-                            EventBus.getDefault().post(new MessageEvent(MessageEvent.MessageEventCode.COURSE_EXIT));
+                            EventBus.getDefault().post(new MessageEvent(MessageEvent.COURSE_EXIT));
                             mIsJoin = false;
                             mView.showToast(R.string.exit_course_success);
                             initTrialFirstTask(mCourseProjectId);
@@ -235,7 +235,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseLearningProgress progress) {
                         // TODO: 2017/4/25 非常不好的处理方式，需要封装
-                        MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress, MessageEvent.MessageEventCode.COURSE_JOIN);
+                        MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress, MessageEvent.COURSE_JOIN);
                         EventBus.getDefault().post(progressMsg);
                         if (progress.nextTask != null) {
                             mView.initNextTask(progress.nextTask);

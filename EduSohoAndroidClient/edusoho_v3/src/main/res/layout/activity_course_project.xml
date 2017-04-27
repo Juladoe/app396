@@ -88,7 +88,21 @@
                 android:gravity="center"
                 android:text="@string/new_font_back"
                 android:textColor="@color/disabled2_hint_color"
-                android:textSize="@dimen/font_xl" />
+                android:textSize="@dimen/font_l" />
+
+            <TextView
+                android:id="@+id/tv_finish_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="56dp"
+                android:padding="10dp"
+                android:text="学完"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_l"
+                android:visibility="gone" />
+
 
             <com.edusoho.kuozhi.clean.widget.ESIconView
                 android:id="@+id/icon_share"

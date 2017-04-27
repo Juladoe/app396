@@ -32,6 +32,7 @@ public class CourseTask implements Serializable {
     public String createdTime;
     public String updatedTime;
     public Activity activity;
+    public Result result;
 
     public static class Activity {
         public String id;
@@ -49,6 +50,11 @@ public class CourseTask implements Serializable {
         public String endTime;
         public String createdTime;
         public String updatedTime;
+    }
+
+    public static class Result {
+        public int id;
+        public String status;
     }
 
     public String toTaskItemSequence() {

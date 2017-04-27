@@ -196,7 +196,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                         break;
                     default:
                         EventBus.getDefault().post(new MessageEvent<>(item.task
-                                , MessageEvent.MessageEventCode.LEARN_TASK));
+                                , MessageEvent.LEARN_TASK));
                 }
 
             }
@@ -205,12 +205,15 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     @Override
     public void onReceiveMessage(MessageEvent messageEvent) {
-        if (MessageEvent.MessageEventCode.COURSE_EXIT == messageEvent.getType()) {
-            mCourseProgressBar.setVisibility(View.GONE);
-        } else if (MessageEvent.MessageEventCode.COURSE_JOIN == messageEvent.getType()) {
-            mCourseProgressBar.setVisibility(View.VISIBLE);
-            mCourseLearningProgress = (CourseLearningProgress) messageEvent.getMessageBody();
-            mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
+        switch (messageEvent.getType()) {
+            case MessageEvent.COURSE_EXIT:
+                mCourseProgressBar.setVisibility(View.GONE);
+                break;
+            case MessageEvent.COURSE_JOIN:
+                mCourseProgressBar.setVisibility(View.VISIBLE);
+                mCourseLearningProgress = (CourseLearningProgress) messageEvent.getMessageBody();
+                mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
+                break;
         }
     }
 }
