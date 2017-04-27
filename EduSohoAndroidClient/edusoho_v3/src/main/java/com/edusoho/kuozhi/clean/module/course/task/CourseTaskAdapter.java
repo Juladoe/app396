@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.module.course.task;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 
 import java.util.List;
@@ -20,11 +22,13 @@ import java.util.List;
 
 public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<CourseItem> mTaskItems;
+    private CourseProject.LearnMode mLearnMode;
     private Context mContext;
 
-    public CourseTaskAdapter(Context context, List<CourseItem> taskItems) {
+    public CourseTaskAdapter(Context context, List<CourseItem> taskItems, CourseProject.LearnMode mode) {
         this.mTaskItems = taskItems;
         this.mContext = context;
+        this.mLearnMode = mode;
     }
 
     @Override
@@ -63,10 +67,32 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, taskItem.title));
         } else {
             CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
+            setTaskLockLayout(taskHolder, mLearnMode, taskItem);
             taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskItemSequence(), taskItem.title));
             taskHolder.taskDuration.setText(taskItem.task.length);
             taskHolder.taskIsFree.setVisibility(taskItem.task.isFree == 1 ? View.VISIBLE : View.GONE);
             taskHolder.taskType.setText(getTaskIconResId(taskItem.task.type));
+        }
+    }
+
+    private void setTaskLockLayout(CourseTaskViewHolder holder, CourseProject.LearnMode mode, CourseItem taskItem) {
+        if (mode == CourseProject.LearnMode.FREEMODE) {
+            holder.taskLock.setVisibility(View.GONE);
+        } else {
+            holder.taskLock.setVisibility(View.VISIBLE);
+            if (taskItem.task.lock) {
+                holder.taskLock.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.font_l));
+                holder.taskLock.setText(R.string.course_task_lock);
+                holder.taskType.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
+                holder.taskName.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
+                holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
+            } else {
+                holder.taskLock.setText(R.string.course_task_unlock);
+                holder.taskLock.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.font_m));
+                holder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
+                holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+                holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+            }
         }
     }
 
@@ -87,7 +113,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case LIVE:
                 return R.string.task_live;
             case DISCUSS:
-                return R.string.discuss;
+                return R.string.task_discuss;
             case FLASH:
                 return R.string.task_flash;
             case DOC:
@@ -107,7 +133,12 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+    public CourseItem getItem(int position) {
+        return mTaskItems.get(position);
+    }
+
     public static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
+        public ESIconView taskLock;
         public ESIconView taskType;
         public TextView taskName;
         public TextView taskDuration;
@@ -115,6 +146,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public CourseTaskViewHolder(View view) {
             super(view);
+            taskLock = (ESIconView) view.findViewById(R.id.ev_task_lock);
             taskType = (ESIconView) view.findViewById(R.id.ev_task_type);
             taskName = (TextView) view.findViewById(R.id.tv_task_name);
             taskDuration = (TextView) view.findViewById(R.id.tv_task_duration);

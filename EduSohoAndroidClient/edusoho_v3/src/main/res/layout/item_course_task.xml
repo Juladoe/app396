@@ -10,10 +10,19 @@
     android:paddingTop="20dp">
 
     <com.edusoho.kuozhi.clean.widget.ESIconView
+        android:id="@+id/ev_task_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:text="@string/catalog_lesson_audio"
+        android:textColor="@color/disabled_hint_color"
+        android:textSize="@dimen/font_l" />
+
+    <com.edusoho.kuozhi.clean.widget.ESIconView
         android:id="@+id/ev_task_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/catalog_lesson_audio"
+        android:text="@string/course_task_lock"
         android:textColor="@color/secondary2_font_color"
         android:textSize="@dimen/font_xl" />
 

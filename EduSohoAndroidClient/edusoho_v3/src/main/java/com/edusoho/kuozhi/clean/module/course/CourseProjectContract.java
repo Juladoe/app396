@@ -56,7 +56,7 @@ public interface CourseProjectContract {
 
         void consult();
 
-        void joinCourseProject(int courseId);
+        void joinCourseProject();
 
         void exitCourse();
 
