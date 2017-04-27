@@ -550,5 +550,6 @@
     <string name="donwload_task_not_support">移动端暂不支持下载资料任务</string>
     <string name="discuss_task_not_support">移动端暂不支持讨论任务</string>
     <string name="flash_task_not_support">移动端暂不支持Flash任务</string>
+    <string name="task_finished_button">学过了</string>
 
 </resources>

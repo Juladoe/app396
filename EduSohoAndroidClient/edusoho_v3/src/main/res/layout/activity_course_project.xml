@@ -97,10 +97,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="56dp"
-                android:padding="10dp"
-                android:text="学完"
+                android:background="@drawable/task_finish_button_bg"
+                android:text="@string/task_finished_button"
                 android:textColor="@color/disabled2_hint_color"
-                android:textSize="@dimen/font_l"
+                android:textSize="@dimen/font_s"
                 android:visibility="gone" />
 
 
