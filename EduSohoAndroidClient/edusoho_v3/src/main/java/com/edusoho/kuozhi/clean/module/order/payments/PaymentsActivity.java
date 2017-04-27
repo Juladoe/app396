@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -25,8 +26,6 @@ import com.edusoho.kuozhi.clean.module.order.payments.PaymentsContract.Presenter
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
-import retrofit2.http.HEAD;
-
 /**
  * Created by DF on 2017/4/7.
  */
@@ -44,7 +43,7 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
     private TextView mDiscount;
     private TextView mBalance;
     private TextView mAvailableName;
-    private View mPay;
+    private TextView mPay;
     private Dialog mDialog;
     private LoadDialog mProcessDialog;
     private EditText mInputPw;
@@ -85,7 +84,7 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
         mDiscount = (TextView) findViewById(R.id.tv_discount);
         mBalance = (TextView) findViewById(R.id.tv_available_balance);
         mAvailableName = (TextView) findViewById(R.id.tv_available_name);
-        mPay = findViewById(R.id.tv_pay);
+        mPay = (TextView) findViewById(R.id.tv_pay);
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -135,9 +134,9 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
     private void clickAlipay() {
         mAlipay.setSelected(true);
         mVirtualCoin.setSelected(false);
-        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
-            mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
-        }
+        mPay.setEnabled(true);
+        mPay.setText(R.string.go_pay);
+        mPay.setBackgroundColor(ContextCompat.getColor(this, R.color.primary));
         mDiscount.setText(String.format(getString(R.string.yuan), mOrderPrice));
     }
 
@@ -145,7 +144,9 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
         mAlipay.setSelected(false);
         mVirtualCoin.setSelected(true);
         if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice * mOrderInfo.cashRate > mOrderInfo.account.cash) {
-            mBalance.setText(R.string.insufficient_balance);
+            mPay.setBackgroundColor(ContextCompat.getColor(this, R.color.secondary_font_color));
+            mPay.setText(R.string.insufficient_balance);
+            mPay.setEnabled(false);
         }
         if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
             mDiscount.setText(String.format("%.2f %s", mOrderPrice * mOrderInfo.cashRate, mOrderInfo.coinName));
@@ -157,10 +158,6 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
             showProcessDialog();
             mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null, -1);
         } else {
-            if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice * mOrderInfo.cashRate > mOrderInfo.account.cash) {
-                showToast(R.string.insufficient_balance);
-                return;
-            }
             showDialog();
         }
     }
