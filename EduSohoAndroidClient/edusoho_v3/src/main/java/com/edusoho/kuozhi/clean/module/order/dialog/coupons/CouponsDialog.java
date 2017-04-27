@@ -25,7 +25,7 @@ public class CouponsDialog extends ESBottomDialog
     private ListView mCoupons;
     private CouponsAdapter mAdapter;
     private List<OrderInfo.Coupon> mList;
-    private int mPosition = -1;
+    private int mPosition = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,9 +56,7 @@ public class CouponsDialog extends ESBottomDialog
                     coupon.isSelector = !coupon.isSelector;
                 } else {
                     coupon.isSelector = true;
-                    if (mPosition != -1) {
-                        mList.get(mPosition).isSelector = false;
-                    }
+                    mList.get(mPosition).isSelector = false;
                 }
                 mAdapter.notifyDataSetChanged();
                 mPosition = position;
@@ -75,7 +73,7 @@ public class CouponsDialog extends ESBottomDialog
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPosition != -1 && mList.get(mPosition).isSelector) {
+                if (mList.get(mPosition).isSelector) {
                     ((ModifyView) getActivity()).setPriceView(mPosition);
                 } else {
                     ((ModifyView) getActivity()).setPriceView(-1);
