@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.module.course.task;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,12 +81,14 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else {
             holder.taskLock.setVisibility(View.VISIBLE);
             if (taskItem.task.lock) {
+                holder.taskLock.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.font_l));
                 holder.taskLock.setText(R.string.course_task_lock);
                 holder.taskType.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
                 holder.taskName.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
                 holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
             } else {
                 holder.taskLock.setText(R.string.course_task_unlock);
+                holder.taskLock.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.font_m));
                 holder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
                 holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
                 holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
