@@ -71,18 +71,12 @@
             android:paddingLeft="15dp"
             android:paddingRight="25dp">
 
-            <ImageView
-                android:id="@+id/iv_vip"
-                android:src="@drawable/vip"
-                android:layout_centerVertical="true"
-                android:layout_width="18dp"
-                android:layout_height="18dp" />
-
             <TextView
+                android:drawableLeft="@drawable/vip"
+                android:drawablePadding="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/iv_vip"
                 android:text="@string/mine_my_vip"
                 android:textColor="@color/edit_text_color"
@@ -273,7 +267,6 @@
             android:textColor="@color/primary_color"
             android:gravity="center"
             android:background="@null"
-            android:button="@null"
             android:layout_width="match_parent"
             android:layout_height="56dp" />
     </LinearLayout>

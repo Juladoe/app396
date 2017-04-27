@@ -430,5 +430,8 @@
     <string name="mine_wifi_down">允许4G网络下视频播放/缓存</string>
     <string name="mine_about">关于</string>
     <string name="mine_logout_btn">退出登录</string>
+    <string name="mine_coupon">优惠券</string>
+    <string name="vip_gift_month">每月赠送</string>
+    <string name="vip_opened">立即开通</string>
 
 </resources>

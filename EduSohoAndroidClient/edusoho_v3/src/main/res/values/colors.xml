@@ -478,5 +478,6 @@
     <color name="question_detail">#97BCF0</color>
 
     <color name="mine_view_hint">#F6F6F6</color>
+    <color name="mine_coupon_color">#BEC2C6</color>
 
 </resources>

@@ -110,7 +110,7 @@ public class MineFragment1 extends BaseFragment {
         @Override
         public void onClick(View v) {
             MobclickAgent.onEvent(mContext, "i_my_vip");
-            mActivity.app.mEngine.runNormalPlugin("MyVipActivity", mActivity , null);
+            mActivity.app.mEngine.runNormalPlugin("MyVipActivity", mActivity ,null);
         }
     };
 

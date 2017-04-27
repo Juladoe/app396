@@ -134,7 +134,10 @@
         name="TestpaperActivity"
         package="com.edusoho.kuozhi.v3.ui.test.TestpaperActivity"
         version="1.0" />
-
+    <plugin
+        name="MyVipActivity"
+        package="com.edusoho.kuozhi.v3.ui.MyVipActivity"
+        version="1.0" />
 
     <plugin
         name="NewsFragment"
