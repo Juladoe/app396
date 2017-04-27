@@ -119,21 +119,29 @@ public class CourseIntroduceFragment extends BaseLazyFragment<CourseIntroduceCon
     }
 
     private void showCourseNowPrice() {
-        if (mCourseSet.maxCoursePrice == 0) {
-            mPriceNow.setText(getContext().getString(R.string.txt_free));
-            mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
-        } else {
-            float discount = mCourseSet.discount;
-            if (discount != 10) {
-                mDiscount.setVisibility(View.VISIBLE);
-                mPriceNow.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
-                mPriceOld.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice / discount * 10,
-                        mCourseSet.maxCoursePrice / discount * 10));
-                mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-                mPriceNow.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice,
-                        mCourseSet.maxCoursePrice));
+        if (mCourseSet.discountId == 0) {
+            if (mCourseSet.maxOriginPrice <= 0) {
+                mPriceNow.setText(getContext().getString(R.string.txt_free));
+                mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
+                return;
             }
+            mPriceNow.setText(mCourseSet.maxOriginPrice == mCourseSet.minOriginPrice ?
+                    String.format(getString(R.string.price_format), mCourseSet.maxOriginPrice) :
+                    String.format(getString(R.string.double_price_format), mCourseSet.minOriginPrice, mCourseSet.maxOriginPrice));
+        } else {
+            mDiscount.setVisibility(View.VISIBLE);
+            mPriceOld.setText(mCourseSet.maxOriginPrice == mCourseSet.minOriginPrice ?
+                    String.format(getString(R.string.price_format), mCourseSet.maxOriginPrice) :
+                    String.format(getString(R.string.double_price_format), mCourseSet.minOriginPrice, mCourseSet.maxOriginPrice));
+            mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            if (mCourseSet.maxCoursePrice <= 0) {
+                mPriceNow.setText(getContext().getString(R.string.txt_free));
+                mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
+                return;
+            }
+            mPriceNow.setText(mCourseSet.maxCoursePrice == mCourseSet.minCoursePrice ?
+                    String.format(getString(R.string.price_format), mCourseSet.maxCoursePrice) :
+                    String.format(getString(R.string.double_price_format), mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
         }
     }
 
