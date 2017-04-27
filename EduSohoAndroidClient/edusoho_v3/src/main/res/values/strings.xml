@@ -493,7 +493,7 @@
     <string name="join_fail">加入失败</string>
     <string name="course_unpublish">课程未发布</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
-    <string name="course_date_limit">课程已过有效截止日期，无法加入学习</string>
+    <string name="course_date_limit">课程已过购买截止日期，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
     <string name="from_course_set">来自课程&#160;&#160;|&#160;&#160;&#160;</string>
@@ -522,7 +522,7 @@
     <string name="course_progress_deadline">课程有效期至：%1$s</string>
     <string name="selector_payments">选择支付方式</string>
     <string name="course_closed">课程已过期</string>
-    <string name="course_project_expire_hint">课程已经超过购买截止日期，不允许购买</string>
+    <string name="course_project_expire_hint">课程已过有效截止日期，无法加入学习</string>
     <string name="unset_pw_hint">请按提示设置密码</string>
     <string name="pw_long_wrong_hint">密码长度有误</string>
     <string name="course_expired_dialog">课程已过购买截止日期，无法加入学习</string>
