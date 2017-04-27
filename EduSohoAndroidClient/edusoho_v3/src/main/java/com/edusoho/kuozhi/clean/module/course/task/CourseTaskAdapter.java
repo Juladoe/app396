@@ -110,7 +110,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case LIVE:
                 return R.string.task_live;
             case DISCUSS:
-                return R.string.discuss;
+                return R.string.task_discuss;
             case FLASH:
                 return R.string.task_flash;
             case DOC:
@@ -128,6 +128,10 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             default:
                 return R.string.task_download;
         }
+    }
+
+    public CourseItem getItem(int position) {
+        return mTaskItems.get(position);
     }
 
     public static class CourseTaskViewHolder extends RecyclerView.ViewHolder {

@@ -36,5 +36,6 @@ public class MessageEvent<T> {
         public static final int NO_CODE = -1;
         public static final int COURSE_JOIN = 0;
         public static final int COURSE_EXIT = 1;
+        public static final int LEARN_TASK = 2;
     }
 }

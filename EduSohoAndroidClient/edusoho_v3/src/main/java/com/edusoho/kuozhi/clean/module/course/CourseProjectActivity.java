@@ -10,11 +10,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +33,9 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -65,6 +69,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private TextView mLatestLearnedTitle;
     private TextView mLatestTaskTitle;
     private TextView mLatestLearned;
+    private FrameLayout mTaskPlayContainer;
 
     private AlertDialog mCourseExpiredDialog;
     private AlertDialog mCourseMemberExpiredDialog;
@@ -88,6 +93,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     private void init() {
+        mTaskPlayContainer = (FrameLayout) findViewById(R.id.task_container);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mCourseCover = (ImageView) findViewById(R.id.iv_course_cover);
         mCourseCover.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +129,20 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLatestLearnedTitle = (TextView) findViewById(R.id.tv_latest_learned_title);
         mLatestTaskTitle = (TextView) findViewById(R.id.tv_latest_task_title);
         mLatestLearned = (TextView) findViewById(R.id.tv_latest_learned);
+
+        mLatestLearned.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.LESSON_ID, 26);
+                bundle.putString(Const.REMAINT_TIME, "67");
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.task_container, fragment);
+                transaction.commitAllowingStateLoss();
+            }
+        });
 
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
