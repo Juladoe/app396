@@ -496,6 +496,7 @@
     <string name="course_date_limit">课程已过购买截止日期，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
+    <string name="double_price_format">￥&#160;%1$.2f-%2$.2f</string>
     <string name="from_course_set">来自课程&#160;&#160;|&#160;&#160;&#160;</string>
     <string name="remain">剩余&#160;%1$s&#160;天&#160;</string>
     <string name="hour">%s&#160;小时&#160;</string>
