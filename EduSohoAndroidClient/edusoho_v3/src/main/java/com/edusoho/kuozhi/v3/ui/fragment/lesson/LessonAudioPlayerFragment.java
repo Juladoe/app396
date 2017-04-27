@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +59,9 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mMenuCallback = (BaseStudyDetailActivity) activity;
+        if (activity instanceof BaseStudyDetailActivity) {
+            mMenuCallback = (BaseStudyDetailActivity) activity;
+        }
     }
 
     protected void setCoverViewState(boolean isShow) {
@@ -67,24 +70,24 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
 
     private void loadPlayUrl() {
         new LessonProvider(getContext()).getLesson(mLessonId)
-        .success(new NormalCallback<LessonItem>() {
-            @Override
-            public void success(LessonItem lessonItem) {
-                if (getActivity() == null
-                        || getActivity().isFinishing()
-                        || !isAdded()
-                        || isDetached()) {
-                    return;
-                }
-                changeToolBarState(false);
-                setCoverViewState(true);
-                if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
-                    return;
-                }
+                .success(new NormalCallback<LessonItem>() {
+                    @Override
+                    public void success(LessonItem lessonItem) {
+                        if (getActivity() == null
+                                || getActivity().isFinishing()
+                                || !isAdded()
+                                || isDetached()) {
+                            return;
+                        }
+                        changeToolBarState(false);
+                        setCoverViewState(true);
+                        if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
+                            return;
+                        }
 
-                playAudio(lessonItem.mediaUri);
-            }
-        }).fail(new NormalCallback<VolleyError>() {
+                        playAudio(lessonItem.mediaUri);
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
             }
@@ -100,8 +103,10 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                 .build();
         mVideoControllerView.setControllerOptions(options);
         initPlayContainer();
-        mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
-        mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
+        if (mMenuCallback != null) {
+            mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
+            mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
+        }
         loadPlayUrl();
     }
 
@@ -197,7 +202,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
             mMenuCallback.getMenu().dismiss();
         }
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();

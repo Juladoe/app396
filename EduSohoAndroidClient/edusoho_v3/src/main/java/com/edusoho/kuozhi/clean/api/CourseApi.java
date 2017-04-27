@@ -46,5 +46,5 @@ public interface CourseApi {
 
     @GET("courses/{courseId}/threads?limit=15&simplify=0&sort=posted")
     Observable<DiscussDetail> getCourseDiscuss(@Header("X-Auth-Token") String token, @Path("courseId") int courseId, @Query("courseId") int courseid, @Query("start") int start);
-
+    
 }

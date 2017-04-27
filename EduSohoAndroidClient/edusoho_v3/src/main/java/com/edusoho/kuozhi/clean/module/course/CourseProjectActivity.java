@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -37,6 +36,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -54,8 +54,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         CourseProjectContract.View {
 
     private static final String COURSE_PROJECT_ID = "CourseProjectId";
+    private static final String FRAGMENT_VIDEO_TAG = "video";
+    private static final String FRAGMENT_AUDIO_TAG = "audio";
 
     private int mCourseProjectId;
+    private String mCourseCoverImageUrl;
     private CourseProjectContract.Presenter mPresenter;
     private CourseProjectViewPagerAdapter mAdapter;
     private Toolbar mToolbar;
@@ -95,6 +98,12 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             mCourseProjectId = getIntent().getIntExtra(COURSE_PROJECT_ID, 0);
         }
         init();
+    }
+
+    @Override
+    protected void onDestroy() {
+        clearTaskFragment(FRAGMENT_AUDIO_TAG);
+        super.onDestroy();
     }
 
     private void init() {
@@ -142,6 +151,12 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         });
 
         mFinishTask = (TextView) findViewById(R.id.tv_finish_task);
+        mFinishTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,6 +201,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void showCover(String imageUrl) {
+        mCourseCoverImageUrl = imageUrl;
         ImageLoader.getInstance().displayImage(imageUrl, mCourseCover, EdusohoApp.app.mOptions);
     }
 
@@ -363,16 +379,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             case TEXT:
                 break;
             case VIDEO:
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt(Const.LESSON_ID, task.id);
-                bundle.putString(Const.REMAINT_TIME, task.length);
-                fragment.setArguments(bundle);
-                transaction.replace(R.id.task_container, fragment);
-                transaction.commitAllowingStateLoss();
+                playVideo(task);
                 break;
             case AUDIO:
+                playAudio(task);
                 break;
             case LIVE:
                 break;
@@ -394,11 +404,57 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 break;
             default:
         }
-        showFinishButton(!TaskResultEnum.FINISH.toString().equals(task.result.status));
+        if (task.result != null) {
+            setTaskFinishButtonBackground(!TaskResultEnum.FINISH.toString().equals(task.result.status));
+        } else {
+            setTaskFinishButtonBackground(false);
+        }
     }
 
-    private void showFinishButton(boolean show) {
-        mFinishTask.setVisibility(show ? View.VISIBLE : View.GONE);
+    private void playVideo(CourseTask task) {
+        clearTaskFragment(FRAGMENT_AUDIO_TAG);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        LessonVideoPlayerFragment videoFragment = new LessonVideoPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.LESSON_ID, task.id);
+        bundle.putString(Const.REMAINT_TIME, task.length);
+        videoFragment.setArguments(bundle);
+        transaction.replace(R.id.task_container, videoFragment, FRAGMENT_VIDEO_TAG);
+        transaction.commitAllowingStateLoss();
+    }
+
+    private void playAudio(CourseTask task) {
+        clearTaskFragment(FRAGMENT_VIDEO_TAG);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        LessonAudioPlayerFragment audioFragment = new LessonAudioPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseCoverImageUrl);
+        bundle.putInt(Const.LESSON_ID, task.id);
+        audioFragment.setArguments(bundle);
+        transaction.replace(R.id.task_container, audioFragment, FRAGMENT_AUDIO_TAG);
+        transaction.commitAllowingStateLoss();
+    }
+
+    private void clearTaskFragment(String tag) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.task_container);
+        if (fragment == null) {
+            return;
+        }
+        if (fragment instanceof LessonAudioPlayerFragment) {
+            ((LessonAudioPlayerFragment) fragment).destoryService();
+        }
+
+        transaction.remove(fragment).commitAllowingStateLoss();
+    }
+
+    private void setTaskFinishButtonBackground(boolean learned) {
+        mFinishTask.setVisibility(View.VISIBLE);
+        if (learned) {
+            mFinishTask.setBackground(getResources().getDrawable(R.drawable.task_finish_button_bg));
+        } else {
+            mFinishTask.setBackground(getResources().getDrawable(R.drawable.task_unfinish_button_bg));
+        }
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
@@ -431,7 +487,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
         @Override
         public long getItemId(int position) {
-            Log.d("pager", "getItemId: " + position);
             return position;
         }
 

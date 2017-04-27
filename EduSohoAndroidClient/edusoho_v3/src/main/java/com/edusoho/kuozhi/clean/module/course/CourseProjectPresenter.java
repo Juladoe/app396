@@ -131,6 +131,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     @Override
+    public void finishTask() {
+
+    }
+
+    @Override
     public void exitCourse() {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)

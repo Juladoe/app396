@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Result;
+
 import java.io.Serializable;
 
 /**
@@ -50,11 +52,6 @@ public class CourseTask implements Serializable {
         public String endTime;
         public String createdTime;
         public String updatedTime;
-    }
-
-    public static class Result {
-        public int id;
-        public String status;
     }
 
     public String toTaskItemSequence() {
