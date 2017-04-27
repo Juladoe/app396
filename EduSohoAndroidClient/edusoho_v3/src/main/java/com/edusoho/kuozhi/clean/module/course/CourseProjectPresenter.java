@@ -117,13 +117,16 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     @Override
-    public void joinCourseProject(final int courseId) {
+    public void joinCourseProject() {
+        if (mCourseProject.learningExpiryDate.expired) {
+            return;
+        }
         if (mCourseProject.originPrice == FREE_PRICE) {
-            joinFreeOrVipCourse(courseId);
+            joinFreeOrVipCourse(mCourseProjectId);
         } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
-            joinFreeOrVipCourse(courseId);
+            joinFreeOrVipCourse(mCourseProjectId);
         } else {
-            mView.launchConfirmOrderActivity(mCourseProject.courseSet.id, courseId);
+            mView.launchConfirmOrderActivity(mCourseProject.courseSet.id, mCourseProjectId);
         }
     }
 

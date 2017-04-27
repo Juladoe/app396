@@ -118,7 +118,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLearnTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.joinCourseProject(mCourseProjectId);
+                mPresenter.joinCourseProject();
             }
         });
 
