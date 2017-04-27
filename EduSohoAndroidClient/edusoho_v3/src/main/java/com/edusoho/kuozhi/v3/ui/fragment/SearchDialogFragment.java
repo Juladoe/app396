@@ -16,9 +16,9 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +47,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -242,7 +241,7 @@ public class SearchDialogFragment extends DialogFragment {
                 convertView = mLayoutInflater.inflate(R.layout.add_friend_item, null);
                 holder.image = (RoundedImageView) convertView.findViewById(R.id.add_friend_image);
                 holder.name = (TextView) convertView.findViewById(R.id.add_friend_name);
-                holder.state = (ImageView) convertView.findViewById(R.id.add_friend_state);
+                holder.state = (Button) convertView.findViewById(R.id.add_friend_state);
                 convertView.setTag(holder);
             } else {
                 holder = (ItemHolder) convertView.getTag();
@@ -260,13 +259,15 @@ public class SearchDialogFragment extends DialogFragment {
             }
             switch (friend.friendship) {
                 case Const.HAVE_ADD_TRUE:
-                    holder.state.setImageResource(R.drawable.have_add_friend_true);
+                    holder.state.setBackgroundResource(R.drawable.have_add_friend_true);
+                    holder.state.setText("");
                     break;
                 case Const.HAVE_ADD_FALSE:
-                    holder.state.setImageResource(R.drawable.add_friend_selector);
+                    holder.state.setBackgroundResource(R.drawable.add_friend_selector);
                     break;
                 case Const.HAVE_ADD_WAIT:
-                    holder.state.setImageResource(R.drawable.have_add_friend_wait);
+                    holder.state.setBackgroundResource(R.drawable.have_add_friend_wait);
+                    holder.state.setText("");
                     break;
             }
             holder.state.setOnClickListener(new View.OnClickListener() {
@@ -291,7 +292,7 @@ public class SearchDialogFragment extends DialogFragment {
         private class ItemHolder {
             RoundedImageView image;
             TextView name;
-            ImageView state;
+            Button state;
         }
     }
 

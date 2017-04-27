@@ -55,15 +55,18 @@
             android:text="伯牙"
             android:textSize="16sp" />
 
-        <ImageView
+        <Button
             android:id="@+id/add_friend_state"
-            android:layout_width="64dp"
+            android:text="+ 添加"
+            android:textSize="10sp"
+            android:textColor="@color/add_friends_sel"
+            android:layout_width="60dp"
             android:layout_height="24dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:clickable="true"
             android:scaleType="centerInside"
-            android:src="@drawable/add_friend_selector" />
+            android:background="@drawable/add_friend_selector" />
 
     </RelativeLayout>
 

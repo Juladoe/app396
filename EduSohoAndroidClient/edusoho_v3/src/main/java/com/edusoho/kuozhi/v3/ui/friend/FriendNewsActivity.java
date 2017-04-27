@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +35,6 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -238,7 +237,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 holder.content = (TextView) convertView.findViewById(R.id.news_content);
                 holder.time = (TextView) convertView.findViewById(R.id.news_time);
                 holder.avatar = (RoundedImageView) convertView.findViewById(R.id.new_follower_avatar);
-                holder.relation = (ImageView) convertView.findViewById(R.id.fans_relation);
+                holder.relation = (Button) convertView.findViewById(R.id.fans_relation);
                 convertView.setTag(holder);
             } else {
                 holder = (ItemHolder) convertView.getTag();
@@ -266,14 +265,16 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 }
                 switch (relation) {
                     case Const.HAVE_ADD_TRUE:
-                        holder.relation.setImageResource(R.drawable.have_add_friend_true);
+                        holder.relation.setBackgroundResource(R.drawable.have_add_friend_true);
+                        holder.relation.setText("");
                         break;
                     case Const.HAVE_ADD_ME:
                     case Const.HAVE_ADD_FALSE:
-                        holder.relation.setImageResource(R.drawable.add_friend_selector);
+                        holder.relation.setBackgroundResource(R.drawable.add_friend_selector);
                         break;
                     case Const.HAVE_ADD_WAIT:
-                        holder.relation.setImageResource(R.drawable.have_add_friend_wait);
+                        holder.relation.setBackgroundResource(R.drawable.have_add_friend_wait);
+                        holder.relation.setText("");
                         break;
                 }
                 if (relation.equals(Const.HAVE_ADD_FALSE) || relation.equals(Const.HAVE_ADD_ME)) {
@@ -326,7 +327,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             RoundedImageView avatar;
             TextView content;
             TextView time;
-            ImageView relation;
+            Button relation;
         }
     }
 

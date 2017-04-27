@@ -5,6 +5,6 @@
         android:bottomRightRadius="17dp"
         android:topRightRadius="17dp" />
 
-    <solid android:color="@color/found_title_btn_color" />
+    <solid android:color="@color/primary_font_color" />
 
 </shape>

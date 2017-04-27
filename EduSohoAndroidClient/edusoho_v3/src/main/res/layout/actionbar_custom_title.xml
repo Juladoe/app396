@@ -14,7 +14,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text=""
-        android:textColor="@android:color/white"
+        android:textColor="@color/primary_font_color"
         android:textSize="@dimen/large_font_size" />
 
 </LinearLayout>

@@ -50,15 +50,17 @@
         android:background="@color/material_grey">
     </View>
 
-    <ImageView
+    <Button
         android:id="@+id/fans_relation"
-        android:layout_width="64dp"
+        android:text="+ 添加"
+        android:textSize="10sp"
+        android:textColor="@color/add_friends_sel"
+        android:layout_width="60dp"
         android:layout_height="24dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"
         android:clickable="true"
         android:scaleType="centerInside"
-        android:src="@drawable/add_friend_selector" />
+        android:background="@drawable/add_friend_selector" />
 
 </RelativeLayout>

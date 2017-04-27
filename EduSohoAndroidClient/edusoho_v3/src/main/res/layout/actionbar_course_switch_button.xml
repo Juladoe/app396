@@ -25,7 +25,7 @@
             android:paddingRight="12dp"
             android:paddingTop="2dp"
             android:text="@string/study"
-            android:textColor="@android:color/white"
+            android:textColor="@color/radiobtn_sel"
             android:textSize="@dimen/small_font_size" />
 
         <RadioButton
@@ -40,7 +40,7 @@
             android:paddingRight="12dp"
             android:paddingTop="2dp"
             android:text="@string/discuss"
-            android:textColor="@android:color/white"
+            android:textColor="@color/radiobtn_sel"
             android:textSize="@dimen/small_font_size" />
     </com.edusoho.kuozhi.v3.view.EduSohoCompoundButton>
 
