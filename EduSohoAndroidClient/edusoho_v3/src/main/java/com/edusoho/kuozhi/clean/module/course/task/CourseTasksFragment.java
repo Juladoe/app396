@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.module.course.task;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -22,7 +23,7 @@ import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.module.course.dialog.LearnCourseProgressDialog;
-import com.edusoho.kuozhi.clean.module.course.task.menu.discuss.DiscussActivity;
+import com.edusoho.kuozhi.clean.module.course.task.menu.question.QuestionActivity;
 import com.edusoho.kuozhi.clean.module.course.task.menu.info.CourseMenuInfoFragment;
 import com.edusoho.kuozhi.clean.module.course.task.menu.rate.RatesActivity;
 import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
@@ -30,6 +31,9 @@ import com.edusoho.kuozhi.clean.widget.CourseMenuButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
 import com.edusoho.kuozhi.clean.widget.FragmentPageActivity;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -120,7 +124,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         view.findViewById(R.id.btn_course_menu_question).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DiscussActivity.launch(getContext(), mCourseProject.id);
+                QuestionActivity.launch(getContext(), mCourseProject.id);
             }
         });
         view.findViewById(R.id.btn_course_menu_rate).setOnClickListener(new View.OnClickListener() {
@@ -132,7 +136,18 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         view.findViewById(R.id.btn_course_menu_discuss).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                goDiscuss();
+            }
+        });
+    }
 
+    protected void goDiscuss() {
+        CoreEngine.create(getContext()).runNormalPlugin("NewsCourseActivity", getContext(), new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseProject.id);
+                startIntent.putExtra(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);
+                startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseProject.title);
             }
         });
     }

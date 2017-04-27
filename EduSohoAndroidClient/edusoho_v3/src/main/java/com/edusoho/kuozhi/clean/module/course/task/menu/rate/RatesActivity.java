@@ -23,10 +23,9 @@ public class RatesActivity extends BaseActivity {
 
     private View mBack;
     private View mPublish;
-    private View mContent;
     private CourseProjectRatesFragment mCourseProjectRatesFragment;
 
-    public static void launch(Context context, CourseProject courseProject){
+    public static void launch(Context context, CourseProject courseProject) {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putSerializable(COURSE_PROJECT_MODEL, courseProject);
@@ -48,9 +47,6 @@ public class RatesActivity extends BaseActivity {
     private void initView() {
         mBack = findViewById(R.id.es_back);
         mPublish = findViewById(R.id.es_publish);
-        mContent = findViewById(R.id.fl_content);
-
-
     }
 
     private void initFragment(Bundle bundle) {

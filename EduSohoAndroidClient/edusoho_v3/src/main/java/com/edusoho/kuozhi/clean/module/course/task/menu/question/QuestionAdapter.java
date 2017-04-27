@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.task.menu.discuss;
+package com.edusoho.kuozhi.clean.module.course.task.menu.question;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +22,7 @@ import java.util.List;
  * Created by DF on 2017/4/25.
  */
 
-public class DiscussAdapter extends RecyclerView.Adapter implements View.OnClickListener{
+public class QuestionAdapter extends RecyclerView.Adapter implements View.OnClickListener{
 
 
     private List<DiscussDetail.ResourcesBean> mList;
@@ -37,9 +37,9 @@ public class DiscussAdapter extends RecyclerView.Adapter implements View.OnClick
     //没有加载更多 隐藏
     public static final int NO_LOAD_MORE = 2;
     //上拉加载更多状态-默认为0
-    private int mLoadMoreStatus = 0;
+    private int mLoadMoreStatus = 2;
 
-    public DiscussAdapter(Context mContext) {
+    public QuestionAdapter(Context mContext) {
         this.mContext = mContext;
         this.mList = new ArrayList<>();
     }
@@ -93,7 +93,7 @@ public class DiscussAdapter extends RecyclerView.Adapter implements View.OnClick
             View itemVIew = LayoutInflater.from(parent.getContext()).inflate(R.layout.foot_item, parent, false);
             return new FooterViewHolder(itemVIew);
         }
-        View rootView= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_discuss_topic,parent,false);
+        View rootView= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_question,parent,false);
         rootView.setOnClickListener(this);
         return new DiscussViewHolder(rootView);
     }
