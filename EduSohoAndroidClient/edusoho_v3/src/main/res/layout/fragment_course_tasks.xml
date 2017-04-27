@@ -45,11 +45,18 @@
                 android:textSize="@dimen/font_xxl" />
         </RelativeLayout>
 
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@+id/layout_progress"
+            android:background="@color/grey_dddddd" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/layout_progress"
+            android:layout_below="@+id/line"
             android:background="@color/disabled2_hint_color"
             android:padding="10dp" />
 

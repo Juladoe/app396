@@ -11,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
@@ -24,6 +26,7 @@ import com.edusoho.kuozhi.clean.module.course.dialog.LearnCourseProgressDialog;
 import com.edusoho.kuozhi.clean.module.course.task.menu.question.QuestionActivity;
 import com.edusoho.kuozhi.clean.module.course.task.menu.info.CourseMenuInfoFragment;
 import com.edusoho.kuozhi.clean.module.course.task.menu.rate.RatesActivity;
+import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
 import com.edusoho.kuozhi.clean.widget.CourseMenuButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -63,18 +66,6 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         mCourseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
     }
 
     @Nullable
@@ -195,23 +186,45 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     @Override
     public void showCourseTasks(List<CourseItem> taskItems) {
-        CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems);
+        final CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems,
+                CourseProject.LearnMode.getMode(mCourseProject.learnMode));
         mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTaskRecyclerView.setAdapter(adapter);
+        ItemClickSupport.addTo(mTaskRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                if (adapter.getItemViewType(position) == CourseItemEnum.CHAPTER.getIndex()
+                        || adapter.getItemViewType(position) == CourseItemEnum.UNIT.getIndex()) {
+                    return;
+                }
+                CourseItem item = adapter.getItem(position);
+                TaskIconEnum type = TaskIconEnum.fromString(item.task.type);
+                switch (type) {
+                    case DOWNLOAD:
+                        showToast(getString(R.string.donwload_task_not_support));
+                        break;
+                    case DISCUSS:
+                        showToast(getString(R.string.discuss_task_not_support));
+                        break;
+                    case FLASH:
+                        showToast(getString(R.string.flash_task_not_support));
+                        break;
+                    default:
+                        EventBus.getDefault().post(new MessageEvent<>(item.task
+                                , MessageEvent.MessageEventCode.LEARN_TASK));
+                }
+
+            }
+        });
     }
 
-    @Subscribe
-    public void onReceiveExitMessage(MessageEvent messageEvent) {
+    @Override
+    public void onReceiveMessage(MessageEvent messageEvent) {
         if (MessageEvent.MessageEventCode.COURSE_EXIT == messageEvent.getType()) {
             mCourseProgressBar.setVisibility(View.GONE);
-        }
-    }
-
-    @Subscribe
-    public void onReceiveJoinMessage(MessageEvent<CourseLearningProgress> messageEvent) {
-        if (MessageEvent.MessageEventCode.COURSE_JOIN == messageEvent.getType()) {
+        } else if (MessageEvent.MessageEventCode.COURSE_JOIN == messageEvent.getType()) {
             mCourseProgressBar.setVisibility(View.VISIBLE);
-            mCourseLearningProgress = messageEvent.getMessageBody();
+            mCourseLearningProgress = (CourseLearningProgress) messageEvent.getMessageBody();
             mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
         }
     }
