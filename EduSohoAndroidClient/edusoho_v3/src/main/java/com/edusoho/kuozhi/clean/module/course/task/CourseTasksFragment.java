@@ -6,6 +6,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -178,11 +179,14 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         ItemClickSupport.addTo(mTaskRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                if (adapter.getItemViewType(position) == CourseItemEnum.CHAPTER.getIndex()
-                        || adapter.getItemViewType(position) == CourseItemEnum.UNIT.getIndex()) {
+                int viewType = adapter.getItemViewType(position);
+                if (viewType == CourseItemEnum.CHAPTER.getIndex() || viewType == CourseItemEnum.UNIT.getIndex()) {
                     return;
                 }
                 CourseItem item = adapter.getItem(position);
+                if (item.task.lock) {
+                    return;
+                }
                 TaskIconEnum type = TaskIconEnum.fromString(item.task.type);
                 switch (type) {
                     case DOWNLOAD:
