@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Avatar;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,7 +23,8 @@ public class CourseReview implements Serializable {
 
         public static class UserBean {
             public String nickname;
-            public String mediumAvatar;
+            public Avatar avatar;
+
         }
 
         public static class CourseBean {
