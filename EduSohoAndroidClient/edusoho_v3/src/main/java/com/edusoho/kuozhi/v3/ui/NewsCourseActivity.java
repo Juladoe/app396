@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
@@ -197,9 +198,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt(Const.COURSE_ID, mCourseId);
-                CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
+                CourseProjectActivity.launch(NewsCourseActivity.this, mCourseId);
             }
         };
     }

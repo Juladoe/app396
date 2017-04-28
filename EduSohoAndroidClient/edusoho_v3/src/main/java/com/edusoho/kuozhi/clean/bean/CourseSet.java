@@ -25,6 +25,8 @@ public class CourseSet implements Serializable {
     public float discount;
     public String parentId;
     public String locked;
+    public float maxOriginPrice;
+    public float minOriginPrice;
     public float maxCoursePrice;
     public float minCoursePrice;
 

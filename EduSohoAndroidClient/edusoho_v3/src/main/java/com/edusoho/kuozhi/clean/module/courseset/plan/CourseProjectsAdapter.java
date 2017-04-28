@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
-import com.edusoho.kuozhi.clean.module.course.task.menu.discuss.DiscussActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.FlowLayout;
@@ -30,7 +29,7 @@ import java.util.List;
 
 public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder> {
 
-    private static final String IS_FREE = "1";
+    private static final int FREE = 1;
 
     private List<CourseProject> mList;
     private List<VipInfo> mVipInfos;
@@ -76,7 +75,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
     }
 
     private void loadPrice(CourseProjectViewHolder holder, CourseProject courseProject) {
-        if (IS_FREE.equals(courseProject.isFree)) {
+        if (FREE == courseProject.isFree) {
             holder.mDiscount.setVisibility(View.GONE);
             holder.mOriginalPrice.setVisibility(View.GONE);
             holder.mPrice.setText(R.string.free_course_project);

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.task.menu.discuss;
+package com.edusoho.kuozhi.clean.module.course.task.menu.question;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -36,8 +36,8 @@ import java.util.List;
  * Created by DF on 2017/4/24.
  */
 
-public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
-                                implements DiscussContract.View, View.OnClickListener{
+public class QuestionActivity extends BaseActivity<QuestionContract.Presenter>
+                                implements QuestionContract.View, View.OnClickListener{
 
     private static final String COURSE_PROJECT_ID = "course_project_id";
 
@@ -53,14 +53,14 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
     private boolean mIsAdd;
     private boolean mIsHave;
     private int mCourseProjectId;
-    private DiscussAdapter mAdapter;
+    private QuestionAdapter mAdapter;
 
-    private DiscussContract.Presenter mPresenter;
+    private QuestionContract.Presenter mPresenter;
 
     public static void launch(Context context, int courseProjectId){
         Intent intent = new Intent();
         intent.putExtra(COURSE_PROJECT_ID, courseProjectId);
-        intent.setClass(context, DiscussActivity.class);
+        intent.setClass(context, QuestionActivity.class);
         context.startActivity(intent);
     }
 
@@ -87,7 +87,7 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
         mEditTopic = (TextView) findViewById(R.id.tv_edit_topic);
         mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
         mContent.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new DiscussAdapter(this);
+        mAdapter = new QuestionAdapter(this);
         mContent.setAdapter(mAdapter);
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -97,7 +97,7 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
         mRefresh.setColorSchemeResources(R.color.primary_color);
         mRefresh.setRefreshing(true);
 
-        mPresenter = new DiscussPresenter(this, mCourseProjectId);
+        mPresenter = new QuestionPresenter(this, mCourseProjectId);
         mPresenter.subscribe();
     }
 
@@ -117,7 +117,6 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
         });
     }
 
-
     private void setRecyclerViewListener() {
         mContent.setOnScrollListener(new RecyclerView.OnScrollListener() {
             int lastVisibleItem;
@@ -129,7 +128,7 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
                     return;
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem == mAdapter.getItemCount() - 1) {
-                    mAdapter.changeMoreStatus(DiscussAdapter.LOADING_MORE);
+                    mAdapter.changeMoreStatus(QuestionAdapter.LOADING_MORE);
                     mPresenter.reFreshData();
                 }
             }
@@ -144,13 +143,9 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
             }
         });
 
-        mAdapter.setOnItemClickListener(new DiscussAdapter.OnRecyclerViewItemClickListener() {
+        mAdapter.setOnItemClickListener(new QuestionAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, DiscussDetail.ResourcesBean resourcesBean) {
-//                if (mCourseStateCallback.isExpired()) {
-//                    mCourseStateCallback.handlerCourseExpired();
-//                    return;
-//                }
                 goToDiscussDetailActivity(resourcesBean);
             }
         });
@@ -179,22 +174,6 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
     }
 
     @Override
-    public void setAdapterStatus(int status) {
-        switch (status) {
-            case 0:
-                mAdapter.setStatus(DiscussAdapter.PULLUP_LOAD_MORE);
-                break;
-            case 1:
-                mAdapter.setStatus(DiscussAdapter.LOADING_MORE);
-                break;
-            case 2:
-                mAdapter.setStatus(DiscussAdapter.NO_LOAD_MORE);
-                break;
-        }
-
-    }
-
-    @Override
     public void changeAdapterMoreStatus(int status) {
         mAdapter.changeMoreStatus(status);
     }
@@ -208,10 +187,6 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
     }
 
     private void goToThreadCreateActivity(String type) {
-//        if (mCourseDetail != null && validCourseIsExpird(mCourseDetail.getMember())) {
-//            showCourseExpireDlg();
-//            return;
-//        }
         Bundle bundle = new Bundle();
         bundle.putInt(ThreadCreateActivity.TARGET_ID, mCourseProjectId);
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
@@ -243,9 +218,9 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
             mTopic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MobclickAgent.onEvent(DiscussActivity.this, "courseDetailsPage_Q&A_topic");
+                    MobclickAgent.onEvent(QuestionActivity.this, "courseDetailsPage_Q&A_topic");
                     goToThreadCreateActivity("discussion");
-                    mEditTopic.setBackground(ContextCompat.getDrawable(DiscussActivity.this, R.drawable.shape_inclass_back));
+                    mEditTopic.setBackground(ContextCompat.getDrawable(QuestionActivity.this, R.drawable.shape_inclass_back));
                     mEditTopic.setText(R.string.discuss_publish);
                     mPopupWindow.dismiss();
                 }
@@ -254,9 +229,9 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
             mQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MobclickAgent.onEvent(DiscussActivity.this, "courseDetailsPage_questionsAnswers");
+                    MobclickAgent.onEvent(QuestionActivity.this, "courseDetailsPage_questionsAnswers");
                     goToThreadCreateActivity("question");
-                    mEditTopic.setBackground(ContextCompat.getDrawable(DiscussActivity.this, R.drawable.shape_inclass_back));
+                    mEditTopic.setBackground(ContextCompat.getDrawable(QuestionActivity.this, R.drawable.shape_inclass_back));
                     mEditTopic.setText(R.string.discuss_publish);
                     mPopupWindow.dismiss();
                 }
@@ -264,7 +239,7 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
             mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
                 public void onDismiss() {
-                    mEditTopic.setBackground(ContextCompat.getDrawable(DiscussActivity.this, R.drawable.shape_inclass_back));
+                    mEditTopic.setBackground(ContextCompat.getDrawable(QuestionActivity.this, R.drawable.shape_inclass_back));
                     mEditTopic.setText(R.string.discuss_publish);
                 }
             });
@@ -276,8 +251,8 @@ public class DiscussActivity extends BaseActivity<DiscussContract.Presenter>
     }
 
     public void startAnimation() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mQuestion, "translationY", 0, -AppUtil.dp2px(DiscussActivity.this, 13));
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(mTopic, "translationY", 0, -AppUtil.dp2px(DiscussActivity.this, 77));
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mQuestion, "translationY", 0, -AppUtil.dp2px(QuestionActivity.this, 13));
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(mTopic, "translationY", 0, -AppUtil.dp2px(QuestionActivity.this, 77));
         animator.setInterpolator(new LinearInterpolator());
         animator1.setInterpolator(new LinearInterpolator());
         animator.setDuration(150);

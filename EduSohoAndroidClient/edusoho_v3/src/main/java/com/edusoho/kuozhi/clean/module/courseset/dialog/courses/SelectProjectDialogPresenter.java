@@ -9,7 +9,6 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
 
-import retrofit2.http.HEAD;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -20,10 +19,6 @@ import rx.schedulers.Schedulers;
 
 class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presenter {
 
-    private static final String BUY_ABLE = "1";
-    private static final String IS_FREE = "1";
-    private static final String FREE = "free";
-    private static final String VIP = "vip";
     private static final String END_DATE_MODE = "end_date";
     private static final String DAYS_MODE = "days";
     private static final String DATE_MODE = "date";
@@ -63,16 +58,16 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
     @Override
     public void confirm() {
         switch (mCourseProject.access.code){
-            case "unpublished":
+            case "course.unpublished":
                 mView.showToast(R.string.course_unpublish);
                 break;
-            case "closed":
+            case "course.closed":
                 mView.showToast(R.string.course_limit_join);
                 break;
-            case "expired":
+            case "course.expired":
                 mView.showToast(R.string.course_date_limit);
                 break;
-            case "buy_expired":
+            case "course.buy_expired":
                 mView.showToast(R.string.course_project_expire_hint);
                 break;
             default:

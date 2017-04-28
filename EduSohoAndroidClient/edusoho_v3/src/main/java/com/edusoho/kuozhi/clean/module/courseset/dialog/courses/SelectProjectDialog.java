@@ -36,7 +36,7 @@ import java.util.List;
 public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContract.Presenter> implements
         ESBottomDialog.BottomDialogContentView, SelectProjectDialogContract.View {
 
-    private final String IS_FREE = "1";
+    private final int FREE = 1;
     private final String FREE_STATE = "freeMode";
 
     private View mDiscount;
@@ -219,7 +219,7 @@ public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContr
 
     @Override
     public void showPriceView(CourseProject courseProject) {
-        if (IS_FREE.equals(courseProject.isFree)) {
+        if (FREE == courseProject.isFree) {
             mDiscount.setVisibility(View.GONE);
             mOriginalPrice.setVisibility(View.GONE);
             mDiscountPrice.setText(R.string.free_course_project);

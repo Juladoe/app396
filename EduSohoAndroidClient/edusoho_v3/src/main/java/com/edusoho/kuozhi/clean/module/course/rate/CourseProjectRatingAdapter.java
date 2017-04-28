@@ -36,6 +36,10 @@ public class CourseProjectRatingAdapter extends RecyclerView.Adapter<CourseProje
         notifyDataSetChanged();
     }
 
+    public void clearData(){
+        mReviews.clear();
+    }
+
     @Override
     public CourseProjectRatingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_course_project_rate, parent, false);

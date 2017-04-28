@@ -60,6 +60,8 @@ public class CourseProjectRatesPresenter implements CourseProjectRatesContract.P
 
     @Override
     public void subscribe() {
+        mOffset = 0;
+        mView.clearData();
         getRates(mCourseProject.id);
     }
 

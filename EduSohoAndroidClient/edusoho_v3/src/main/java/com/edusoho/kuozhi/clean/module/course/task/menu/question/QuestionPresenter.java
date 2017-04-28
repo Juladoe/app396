@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.task.menu.discuss;
+package com.edusoho.kuozhi.clean.module.course.task.menu.question;
 
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
@@ -17,13 +17,13 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/25.
  */
 
-public class DiscussPresenter implements DiscussContract.Presenter {
+public class QuestionPresenter implements QuestionContract.Presenter {
 
     private int mCourseProjectId;
     private int mStart;
-    private DiscussContract.View mView;
+    private QuestionContract.View mView;
 
-    public DiscussPresenter(DiscussContract.View mView, int mCourseProjectId) {
+    public QuestionPresenter(QuestionContract.View mView, int mCourseProjectId) {
         this.mView = mView;
         this.mCourseProjectId = mCourseProjectId;
     }
@@ -48,15 +48,16 @@ public class DiscussPresenter implements DiscussContract.Presenter {
                     public void onError(Throwable e) {
                         mView.setSwipeView(false);
                         mView.setEmptyView(true);
-                        mView.changeAdapterMoreStatus(DiscussAdapter.NO_LOAD_MORE);
+                        mView.changeAdapterMoreStatus(QuestionAdapter.NO_LOAD_MORE);
                     }
 
                     @Override
                     public void onNext(DiscussDetail discussDetail) {
                         mView.setSwipeView(false);
-                        mView.setAdapterStatus(2);
+                        mView.changeAdapterMoreStatus(QuestionAdapter.NO_LOAD_MORE);
                         if (discussDetail != null && discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
                             mStart = 15;
+                            mView.setEmptyView(false);
                             mView.showCompleteView(discussDetail.getResources(), discussDetail.getResources().size() >= 15);
                         } else {
                             mView.setEmptyView(true);
@@ -83,13 +84,15 @@ public class DiscussPresenter implements DiscussContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        mView.changeAdapterMoreStatus(QuestionAdapter.NO_LOAD_MORE);
                     }
 
                     @Override
                     public void onNext(DiscussDetail discussDetail) {
                         mView.setSwipeView(false);
+                        mView.changeAdapterMoreStatus(QuestionAdapter.NO_LOAD_MORE);
                         if (discussDetail != null && discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
-                            mView.setAdapterStatus(2);
+                            mView.setEmptyView(false);
                             mView.addAdapterData(discussDetail.getResources(), discussDetail.getResources().size() >= 15);
                         }
                     }

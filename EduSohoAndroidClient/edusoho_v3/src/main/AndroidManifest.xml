@@ -379,7 +379,7 @@
             android:theme="@style/AppThemeNoActionBar"/>
 
         <activity
-            android:name=".clean.module.course.task.menu.discuss.DiscussActivity"
+            android:name=".clean.module.course.task.menu.question.QuestionActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"/>
