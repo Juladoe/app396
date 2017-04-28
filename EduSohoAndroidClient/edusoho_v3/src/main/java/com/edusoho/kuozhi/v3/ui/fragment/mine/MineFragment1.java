@@ -172,7 +172,6 @@ public class MineFragment1 extends BaseFragment {
                         new IMServiceProvider(mContext).unBindServer();
                         getAppSettingProvider().setUser(null);
                         app.removeToken();
-                        btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
                         app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
                     }

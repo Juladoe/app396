@@ -433,5 +433,6 @@
     <string name="mine_coupon">优惠券</string>
     <string name="vip_gift_month">每月赠送</string>
     <string name="vip_opened">立即开通</string>
+    <string name="voucher_desc">使用说明</string>
 
 </resources>
