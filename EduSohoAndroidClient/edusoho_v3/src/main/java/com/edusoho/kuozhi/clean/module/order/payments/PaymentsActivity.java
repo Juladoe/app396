@@ -216,7 +216,7 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
         mProcessDialog.show();
     }
 
-    protected void hideProcesDialog() {
+    protected void hideProcessDialog() {
         if (mProcessDialog == null) {
             return;
         }
@@ -230,7 +230,7 @@ public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presen
         if (isShow) {
             showProcessDialog();
         } else {
-            hideProcesDialog();
+            hideProcessDialog();
         }
     }
 
