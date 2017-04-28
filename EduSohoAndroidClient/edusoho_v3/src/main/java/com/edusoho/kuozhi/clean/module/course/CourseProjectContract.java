@@ -52,6 +52,8 @@ public interface CourseProjectContract {
         void exitCourseLayout();
 
         void setTaskFinishButtonBackground(boolean learned);
+
+        void setCurrentTaskStatus(CourseTask.CourseTaskStatusEnum status);
     }
 
     interface Presenter extends BasePresenter {

@@ -464,6 +464,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         }
     }
 
+    @Override
+    public void setCurrentTaskStatus(CourseTask.CourseTaskStatusEnum status) {
+        CourseTask task = (CourseTask) mFinishTask.getTag();
+        if (task != null) {
+            task.result.status = CourseTask.CourseTaskStatusEnum.FINISH.toString();
+        }
+    }
+
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 
         private List<CourseProjectEnum> mCourseProjectModules;
