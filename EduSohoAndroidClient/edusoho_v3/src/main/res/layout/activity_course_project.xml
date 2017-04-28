@@ -98,7 +98,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="56dp"
                 android:background="@drawable/task_finish_button_bg"
-                android:drawableLeft="@drawable/task_finish_left_icon"
                 android:drawablePadding="5dp"
                 android:paddingBottom="4dp"
                 android:paddingLeft="8dp"

@@ -8,6 +8,7 @@ import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
@@ -131,8 +132,29 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     @Override
-    public void finishTask() {
+    public void finishTask(CourseTask task) {
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseApi.class)
+                .setCourseTaskStatus(mCourseProjectId, task.id, CourseTask.CourseTaskStatusEnum.FINISH.toString())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<TaskEvent>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TaskEvent taskEvent) {
+                        mView.setTaskFinishButtonBackground(true);
+                    }
+                });
     }
 
     @Override

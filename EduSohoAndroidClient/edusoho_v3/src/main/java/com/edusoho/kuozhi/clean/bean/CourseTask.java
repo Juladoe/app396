@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 public class CourseTask implements Serializable {
     public int id;
-    public String courseId;
+    public int courseId;
     public int seq;
     public String categoryId;
     public String activityId;
@@ -59,6 +59,21 @@ public class CourseTask implements Serializable {
             return seq + " - " + number;
         } else {
             return number + "";
+        }
+    }
+
+    public enum CourseTaskStatusEnum {
+        FINISH("finish"), DOING("doing");
+
+        private String mName;
+
+        CourseTaskStatusEnum(String name) {
+            this.mName = name;
+        }
+
+        @Override
+        public String toString() {
+            return mName;
         }
     }
 }

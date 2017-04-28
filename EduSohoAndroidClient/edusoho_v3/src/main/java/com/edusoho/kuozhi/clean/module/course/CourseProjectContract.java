@@ -50,6 +50,8 @@ public interface CourseProjectContract {
         void setPlayLayoutVisible(boolean visible);
 
         void exitCourseLayout();
+
+        void setTaskFinishButtonBackground(boolean learned);
     }
 
     interface Presenter extends BasePresenter {
@@ -62,6 +64,6 @@ public interface CourseProjectContract {
 
         boolean isJoin();
 
-        void finishTask();
+        void finishTask(CourseTask task);
     }
 }

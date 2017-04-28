@@ -102,7 +102,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     protected void onDestroy() {
-        clearTaskFragment(FRAGMENT_AUDIO_TAG);
+        clearTaskFragment();
         super.onDestroy();
     }
 
@@ -146,7 +146,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLatestLearned.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // TODO: 2017/4/28 继续学习&试学
             }
         });
 
@@ -154,7 +154,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mFinishTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                CourseTask task = (CourseTask) v.getTag();
+                if (task.result != null && !TaskResultEnum.FINISH.toString().equals(task.result.status)) {
+                    mPresenter.finishTask(task);
+                }
             }
         });
 
@@ -364,9 +367,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void onReceiveMessage(MessageEvent messageEvent) {
+        CourseTask task = (CourseTask) messageEvent.getMessageBody();
+        mFinishTask.setTag(task);
         switch (messageEvent.getType()) {
             case MessageEvent.LEARN_TASK:
-                CourseTask task = (CourseTask) messageEvent.getMessageBody();
                 learnTask(task);
                 break;
         }
@@ -405,14 +409,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             default:
         }
         if (task.result != null) {
-            setTaskFinishButtonBackground(!TaskResultEnum.FINISH.toString().equals(task.result.status));
+            setTaskFinishButtonBackground(TaskResultEnum.FINISH.toString().equals(task.result.status));
         } else {
             setTaskFinishButtonBackground(false);
         }
     }
 
     private void playVideo(CourseTask task) {
-        clearTaskFragment(FRAGMENT_AUDIO_TAG);
+        clearTaskFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         LessonVideoPlayerFragment videoFragment = new LessonVideoPlayerFragment();
         Bundle bundle = new Bundle();
@@ -424,7 +428,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     private void playAudio(CourseTask task) {
-        clearTaskFragment(FRAGMENT_VIDEO_TAG);
+        clearTaskFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         LessonAudioPlayerFragment audioFragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();
@@ -435,7 +439,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         transaction.commitAllowingStateLoss();
     }
 
-    private void clearTaskFragment(String tag) {
+    private void clearTaskFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.task_container);
         if (fragment == null) {
@@ -448,11 +452,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         transaction.remove(fragment).commitAllowingStateLoss();
     }
 
-    private void setTaskFinishButtonBackground(boolean learned) {
+    @Override
+    public void setTaskFinishButtonBackground(boolean learned) {
         mFinishTask.setVisibility(View.VISIBLE);
         if (learned) {
+            mFinishTask.setCompoundDrawablesWithIntrinsicBounds(R.drawable.task_finish_left_icon, 0, 0, 0);
             mFinishTask.setBackground(getResources().getDrawable(R.drawable.task_finish_button_bg));
         } else {
+            mFinishTask.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mFinishTask.setBackground(getResources().getDrawable(R.drawable.task_unfinish_button_bg));
         }
     }
