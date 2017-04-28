@@ -125,25 +125,25 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
         new CourseProvider(getBaseContext()).getCourse(mCourseId)
-        .success(new NormalCallback<CourseDetailsResult>() {
-            @Override
-            public void success(CourseDetailsResult courseDetailsResult) {
-                loadDialog.dismiss();
-                if (courseDetailsResult == null || courseDetailsResult.course == null) {
-                    return;
-                }
-                final Course course = courseDetailsResult.course;
-                runOnUiThread(new Runnable() {
+                .success(new NormalCallback<CourseDetailsResult>() {
                     @Override
-                    public void run() {
-                        String shareUrl = String.format("%s/course/%d", app.host, mCourseId);
-                        ShareTool shareTool = new ShareTool(
-                                mActivity, shareUrl, course.title, mLessonItem.title, course.middlePicture);
-                        shareTool.shardCourse();
+                    public void success(CourseDetailsResult courseDetailsResult) {
+                        loadDialog.dismiss();
+                        if (courseDetailsResult == null || courseDetailsResult.course == null) {
+                            return;
+                        }
+                        final Course course = courseDetailsResult.course;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String shareUrl = String.format("%s/course/%d", app.host, mCourseId);
+                                ShareTool shareTool = new ShareTool(
+                                        mActivity, shareUrl, course.title, mLessonItem.title, course.middlePicture);
+                                shareTool.shardCourse();
+                            }
+                        });
                     }
-                });
-            }
-        }).fail(new NormalCallback<VolleyError>() {
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
                 loadDialog.dismiss();

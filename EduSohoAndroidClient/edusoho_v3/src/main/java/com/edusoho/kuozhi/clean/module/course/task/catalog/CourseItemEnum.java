@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.task;
+package com.edusoho.kuozhi.clean.module.course.task.catalog;
 
 /**
  * Created by JesseHuang on 2017/4/6.

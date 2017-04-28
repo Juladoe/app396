@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.task;
+package com.edusoho.kuozhi.clean.module.course.task.catalog;
 
 import java.util.HashMap;
 import java.util.Map;

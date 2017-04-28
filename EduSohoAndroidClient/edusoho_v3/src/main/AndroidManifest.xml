@@ -211,6 +211,7 @@
             android:name=".v3.ui.NewsCourseProfileActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".v3.ui.test.TestpaperActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -343,6 +344,12 @@
             android:theme="@style/AppThemeNoActionBar" />
 
         <activity
+            android:name=".clean.module.course.task.CourseTaskActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
+
+        <activity
             android:name=".clean.widget.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
@@ -376,13 +383,13 @@
             android:name=".clean.module.course.task.menu.rate.RatesActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"/>
+            android:theme="@style/AppThemeNoActionBar" />
 
         <activity
             android:name=".clean.module.course.task.menu.question.QuestionActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"/>
+            android:theme="@style/AppThemeNoActionBar" />
 
     </application>
 

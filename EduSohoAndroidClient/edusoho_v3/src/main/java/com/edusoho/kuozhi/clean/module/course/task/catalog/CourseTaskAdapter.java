@@ -1,8 +1,7 @@
-package com.edusoho.kuozhi.clean.module.course.task;
+package com.edusoho.kuozhi.clean.module.course.task.catalog;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;

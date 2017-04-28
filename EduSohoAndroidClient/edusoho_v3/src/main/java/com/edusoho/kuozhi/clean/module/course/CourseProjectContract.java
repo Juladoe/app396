@@ -67,5 +67,7 @@ public interface CourseProjectContract {
         boolean isJoin();
 
         void finishTask(CourseTask task);
+
+        CourseTask getFirstTrialTask();
     }
 }

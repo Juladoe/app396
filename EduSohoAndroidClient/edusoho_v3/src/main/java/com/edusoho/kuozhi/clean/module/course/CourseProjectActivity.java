@@ -27,7 +27,7 @@ import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
-import com.edusoho.kuozhi.clean.module.course.task.TaskIconEnum;
+import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskIconEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
@@ -36,6 +36,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
+import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
@@ -75,7 +76,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private View mPlayLayout;
     private TextView mLatestLearnedTitle;
     private TextView mLatestTaskTitle;
-    private TextView mLatestLearned;
+    private TextView mImmediateLearn;
     private TextView mFinishTask;
     private FrameLayout mTaskPlayContainer;
 
@@ -142,8 +143,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mPlayLayout = findViewById(R.id.rl_play_layout);
         mLatestLearnedTitle = (TextView) findViewById(R.id.tv_latest_learned_title);
         mLatestTaskTitle = (TextView) findViewById(R.id.tv_latest_task_title);
-        mLatestLearned = (TextView) findViewById(R.id.tv_latest_learned);
-        mLatestLearned.setOnClickListener(new View.OnClickListener() {
+        mImmediateLearn = (TextView) findViewById(R.id.tv_immediate_learn);
+        mImmediateLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: 2017/4/28 继续学习&试学
@@ -186,7 +187,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         setPlayLayoutVisible(true);
         mLatestLearnedTitle.setVisibility(View.GONE);
         mLatestTaskTitle.setText(trialTask.title);
-        mLatestLearned.setText(R.string.start_learn_trial_task);
+        mImmediateLearn.setText(R.string.start_learn_trial_task);
     }
 
     @Override
@@ -194,7 +195,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         setPlayLayoutVisible(true);
         mLatestLearnedTitle.setVisibility(View.VISIBLE);
         mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
-        mLatestLearned.setText(R.string.start_learn_next_task);
+        mImmediateLearn.setText(R.string.start_learn_next_task);
     }
 
     @Override
@@ -378,45 +379,54 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     private void learnTask(CourseTask task) {
+        mFinishTask.setVisibility(View.GONE);
+        clearTaskFragment();
         TaskIconEnum taskType = TaskIconEnum.fromString(task.type);
         switch (taskType) {
-            case TEXT:
+            case LIVE:
+                // TODO: 2017/4/28 course2.0以前代码
+                final String url = String.format(EdusohoApp.app.host + Const.WEB_LESSON, mCourseProjectId, task.id);
+                CoreEngine.create(getApplicationContext()).runNormalPlugin("WebViewActivity", getApplicationContext(), new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
                 break;
             case VIDEO:
                 playVideo(task);
+                if (task.result != null) {
+                    setTaskFinishButtonBackground(TaskResultEnum.FINISH.toString().equals(task.result.status));
+                } else {
+                    setTaskFinishButtonBackground(false);
+                }
                 break;
             case AUDIO:
                 playAudio(task);
+                if (task.result != null) {
+                    setTaskFinishButtonBackground(TaskResultEnum.FINISH.toString().equals(task.result.status));
+                } else {
+                    setTaskFinishButtonBackground(false);
+                }
                 break;
-            case LIVE:
-                break;
-            case DISCUSS:
-                break;
-            case FLASH:
-                break;
+            case TEXT:
             case DOC:
-                break;
             case PPT:
-                break;
             case TESTPAPER:
-                break;
             case HOMEWORK:
-                break;
             case EXERCISE:
+                // TODO: 2017/4/28 course2.0以前代码
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.LESSON_ID, task.id);
+                bundle.putInt(Const.COURSE_ID, mCourseProjectId);
+                bundle.putInt(LessonActivity.MEMBER_STATE, 1);
+                CoreEngine.create(getApplicationContext()).runNormalPluginWithBundleForResult(
+                        "LessonActivity", this, bundle, LessonActivity.REQUEST_LEARN);
                 break;
-            case DOWNLOAD:
-                break;
-            default:
-        }
-        if (task.result != null) {
-            setTaskFinishButtonBackground(TaskResultEnum.FINISH.toString().equals(task.result.status));
-        } else {
-            setTaskFinishButtonBackground(false);
         }
     }
 
     private void playVideo(CourseTask task) {
-        clearTaskFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         LessonVideoPlayerFragment videoFragment = new LessonVideoPlayerFragment();
         Bundle bundle = new Bundle();
@@ -428,7 +438,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     private void playAudio(CourseTask task) {
-        clearTaskFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         LessonAudioPlayerFragment audioFragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();

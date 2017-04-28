@@ -56,7 +56,7 @@ import java.util.Queue;
 /**
  * Created by DF on 2016/12/13.
  */
-public class CourseCatalogFragment extends Fragment implements ICourseStateListener,MessageEngine.MessageCallback {
+public class CourseCatalogFragment extends Fragment implements ICourseStateListener, MessageEngine.MessageCallback {
 
     private static final int ISMEMBER = 1;
     private static final int VISITOR = 2;
@@ -130,25 +130,25 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         setLessonEmptyViewVisibility(View.GONE);
 
         new LessonProvider(getActivity()).getCourseLessons(mCourseId)
-        .success(new NormalCallback<CourseCatalogue>() {
-            @Override
-            public void success(CourseCatalogue courseCatalogue) {
-                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    return;
-                }
-                mCourseCatalogue = courseCatalogue;
-                mAdapter = new CourseCatalogueAdapter(getActivity());
-                mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
-                mLvCatalog.setAdapter(mAdapter);
-                if (mCourseCatalogue.getLessons().size() != 0) {
-                    initFirstLearnLesson();
-                    initCustomChapterSetting();
-                } else {
-                    setLessonEmptyViewVisibility(View.VISIBLE);
-                    setLoadViewStatus(View.GONE);
-                }
-            }
-        }).fail(new NormalCallback<VolleyError>() {
+                .success(new NormalCallback<CourseCatalogue>() {
+                    @Override
+                    public void success(CourseCatalogue courseCatalogue) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            return;
+                        }
+                        mCourseCatalogue = courseCatalogue;
+                        mAdapter = new CourseCatalogueAdapter(getActivity());
+                        mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
+                        mLvCatalog.setAdapter(mAdapter);
+                        if (mCourseCatalogue.getLessons().size() != 0) {
+                            initFirstLearnLesson();
+                            initCustomChapterSetting();
+                        } else {
+                            setLessonEmptyViewVisibility(View.VISIBLE);
+                            setLoadViewStatus(View.GONE);
+                        }
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
                 setLoadViewStatus(View.GONE);
@@ -158,20 +158,20 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
 
     private void initCustomChapterSetting() {
         new CourseProvider(getContext()).getSetting()
-        .success(new NormalCallback<CourseSetting>() {
-            @Override
-            public void success(CourseSetting courseSetting) {
-                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    return;
-                }
-                setLoadViewStatus(View.GONE);
-                if (courseSetting != null && "1".equals(courseSetting.getCustomChapterEnable())) {
-                    initLessonCatalog(courseSetting.getChapterName(), courseSetting.getPartName());
-                }else {
-                    initLessonCatalog(null, null);
-                }
-            }
-        }).fail(new NormalCallback<VolleyError>() {
+                .success(new NormalCallback<CourseSetting>() {
+                    @Override
+                    public void success(CourseSetting courseSetting) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            return;
+                        }
+                        setLoadViewStatus(View.GONE);
+                        if (courseSetting != null && "1".equals(courseSetting.getCustomChapterEnable())) {
+                            initLessonCatalog(courseSetting.getChapterName(), courseSetting.getPartName());
+                        } else {
+                            initLessonCatalog(null, null);
+                        }
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
                 setLoadViewStatus(View.GONE);
@@ -186,14 +186,14 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
 
     private void updateLessonStatuses() {
         new LessonProvider(getContext()).getCourseLessonLearnStatus(mCourseId)
-        .success(new NormalCallback<Map<String, String>>() {
-            @Override
-            public void success(Map<String, String> learnes) {
-                if (mAdapter != null) {
-                    mAdapter.setLearnStatuses(learnes);
-                }
-            }
-        });
+                .success(new NormalCallback<Map<String, String>>() {
+                    @Override
+                    public void success(Map<String, String> learnes) {
+                        if (mAdapter != null) {
+                            mAdapter.setLearnStatuses(learnes);
+                        }
+                    }
+                });
     }
 
     public void initLessonCatalog(String chapter, String unit) {
@@ -220,7 +220,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                     return;
                 }
                 //判断归属于班级的课程有没有加入相关班级
-                if ( getActivity().getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
+                if (getActivity().getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
                         && mMemberStatus != ISMEMBER && "0".equals(lessonsBean.getFree())) {
                     CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_class_course_hint));
                     return;
@@ -256,7 +256,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                 //所有课时学完
                 lessonsBean = findFirstLessonInList();
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_FINISH);
-            }else {
+            } else {
                 lessonsBean = findFirseLearnLessonWithStatus(mCourseCatalogue);
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
             }
@@ -269,7 +269,8 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                         public void success(LessonItem lessonItem) {
                             bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
                             MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
-                        }});
+                        }
+                    });
         }
     }
 
@@ -361,22 +362,22 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
-                    if ("waiting".equals(lessonItem.mediaConvertStatus)) {
-                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading));
-                        return;
-                    }
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
-                    MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
-                    bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
-                    MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+                        if ("waiting".equals(lessonItem.mediaConvertStatus)) {
+                            CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading));
+                            return;
+                        }
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+                        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-                    @Override
-                    public void success(VolleyError obj) {
-                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.course_loading_fail));
-                    }
-                });
+            @Override
+            public void success(VolleyError obj) {
+                CommonUtil.shortCenterToast(getActivity(), getString(R.string.course_loading_fail));
+            }
+        });
     }
 
     public void perpareStartLearnLesson(CourseCatalogue.LessonsBean lessonsBean) {
@@ -390,7 +391,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         if ("live".equals(lessonsBean.getType())) {
             isOk = true;
             School school = getAppSettingProvider().getCurrentSchool();
-            final String url = String.format(school.host + Const.WEB_LESSON, mCourseId, lessonsBean.getId() );
+            final String url = String.format(school.host + Const.WEB_LESSON, mCourseId, lessonsBean.getId());
             CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity", getContext(), new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
@@ -438,6 +439,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     }
 
     private boolean isOk = false;
+
     /**
      * 外部刷新数据
      */
