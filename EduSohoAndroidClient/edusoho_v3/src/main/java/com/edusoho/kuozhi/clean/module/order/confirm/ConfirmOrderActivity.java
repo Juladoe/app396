@@ -24,6 +24,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by DF on 2017/3/25.
+ * 确认订单界面
  */
 
 public class ConfirmOrderActivity extends BaseFinishActivity<ConfirmOrderContract.Presenter>

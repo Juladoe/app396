@@ -31,6 +31,7 @@ import java.util.List;
 
 /**
  * Created by DF on 2017/4/12.
+ * 课程-选择计划确定界面
  */
 
 public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContract.Presenter> implements

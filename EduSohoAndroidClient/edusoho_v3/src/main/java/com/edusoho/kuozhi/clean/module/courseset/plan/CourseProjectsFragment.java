@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by DF on 2017/3/21.
+ * 课程-计划界面
  */
 
 public class CourseProjectsFragment extends BaseLazyFragment<CourseProjectsContract.Presenter>
