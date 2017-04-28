@@ -68,6 +68,6 @@ public interface CourseProjectContract {
 
         void finishTask(CourseTask task);
 
-        CourseTask getFirstTrialTask();
+        CourseMember getCourseMember();
     }
 }

@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
@@ -419,7 +420,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.LESSON_ID, task.id);
                 bundle.putInt(Const.COURSE_ID, mCourseProjectId);
-                bundle.putInt(LessonActivity.MEMBER_STATE, 1);
+                bundle.putInt(LessonActivity.MEMBER_STATE
+                        , mPresenter.getCourseMember() != null ? CourseMember.MEMBER : CourseMember.NONE);
                 CoreEngine.create(getApplicationContext()).runNormalPluginWithBundleForResult(
                         "LessonActivity", this, bundle, LessonActivity.REQUEST_LEARN);
                 break;

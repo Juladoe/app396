@@ -40,6 +40,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private CourseProjectContract.View mView;
     private int mCourseProjectId;
     private Teacher mTeacher;
+    private CourseMember mMember;
     private CourseTask mFirstTrailTask;
     private CourseProject mCourseProject;
     private boolean mIsJoin = false;
@@ -214,6 +215,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(CourseMember member) {
+                        mMember = member;
                         mIsJoin = member.user != null;
                         if (mIsJoin) {
                             mView.showFragments(initCourseModules(true), courseProject);
@@ -322,8 +324,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return mIsJoin;
     }
 
-    public CourseTask getFirstTrialTask() {
-        return mFirstTrailTask;
+    @Override
+    public CourseMember getCourseMember() {
+        return mMember;
     }
 
     @Override
