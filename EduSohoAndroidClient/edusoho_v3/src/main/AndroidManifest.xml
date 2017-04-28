@@ -344,12 +344,6 @@
             android:theme="@style/AppThemeNoActionBar" />
 
         <activity
-            android:name=".clean.module.course.task.CourseTaskActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" />
-
-        <activity
             android:name=".clean.widget.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
