@@ -95,7 +95,9 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         mActionBar = getSupportActionBar();
-        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
+        if (mActionBar != null) {
+            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
+        }
         mContext = getBaseContext();
         setContentView(createView());
         initParams();

@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -27,7 +27,7 @@ public class NoteActivity extends ActionBarBaseActivity implements View.OnClickL
     private TextView tvCancel;
     private TextView tvPost;
     private EditText etNoteContent;
-    private Switch swShare;
+    private CheckBox swShare;
 
     private int mCourseId;
     private int mLessonId;
@@ -47,7 +47,7 @@ public class NoteActivity extends ActionBarBaseActivity implements View.OnClickL
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         tvCancel = (TextView) findViewById(R.id.tv_cancel);
         tvPost = (TextView) findViewById(R.id.tv_post);
-        swShare = (Switch) findViewById(R.id.sw_share);
+        swShare = (CheckBox) findViewById(R.id.sw_share);
         etNoteContent = (EditText) findViewById(R.id.et_note_content);
         setSupportActionBar(toolbar);
         tvCancel.setOnClickListener(this);

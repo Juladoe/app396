@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.html.EduImageGetterHandler;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -216,7 +217,17 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         final LinkedHashMap info = (LinkedHashMap<String, String>) bundle.getSerializable("info");
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(info.get("createdTime").toString()) + 28800000).substring(2, 16));
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(Html.fromHtml(info.get("title").toString()));
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(Html.fromHtml(info.get("content").toString()));
+        String[] content = info.get("content").toString().split("src=\"");
+        for(int i=1; i<content.length; i++){
+            content[i] = "src=\"" + EdusohoApp.app.host + content[i];
+        }
+        StringBuffer sb = new StringBuffer();
+        for(int i=0; i<content.length; i++){
+            sb.append(content[i]);
+        }
+        TextView tvContent = (TextView) VIEW_HEADER.findViewById(R.id.tdh_content);
+        tvContent.setText(Html.fromHtml(sb.toString(), new EduImageGetterHandler(mContext, tvContent), null));
+
         ImageLoader.getInstance().displayImage(((LinkedHashMap<String, String>) info.get("user")).get("avatar"), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(((LinkedHashMap<String, String>) info.get("user")).get("nickname"));
         if ("question".equals(info.get("type").toString())) {
@@ -244,7 +255,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
                     EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.CLASSROOM_ID, info.get("targetId").toString());
+                            startIntent.putExtra(Const.CLASSROOM_ID, Integer.parseInt(info.get("targetId").toString()));
                         }
                     });
                 }
