@@ -32,6 +32,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity<ConfirmOrderContrac
     private static final String COURSE_SET_ID = "course_set_id";
     private static final String COURSE_ID = "course_id";
     private static final String MINUS = "minus";
+    private static final String RMBPRICETYPE = "RMB";
 
     private Toolbar mToolbar;
     private ImageView mCourseImg;
@@ -108,7 +109,8 @@ public class ConfirmOrderActivity extends BaseFinishActivity<ConfirmOrderContrac
     @Override
     public void showPriceView(OrderInfo orderInfo) {
         mOrderInfo = orderInfo;
-        mTotalPrice = orderInfo.totalPrice / orderInfo.cashRate;
+        mTotalPrice = RMBPRICETYPE.equals(orderInfo.priceType) ?
+                orderInfo.totalPrice : orderInfo.totalPrice / orderInfo.cashRate;
         mPayPrice = mTotalPrice;
         if (orderInfo.availableCoupons != null && orderInfo.availableCoupons.size() != 0) {
             mCoupon = orderInfo.availableCoupons.get(0);
@@ -155,7 +157,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity<ConfirmOrderContrac
         if (id == R.id.rl_coupon) {
             showCouponDialog();
         } else if (id == R.id.tv_pay) {
-            PaymentsActivity.launch(this, mOrderInfo, mPayPrice < 0 ? 0 : mPayPrice, mCoupon == null ? -1
+            PaymentsActivity.launch(this, mOrderInfo, mPayPrice <= 0 ? 0 : mPayPrice, mCoupon == null ? -1
                     : mOrderInfo.availableCoupons.indexOf(mCoupon));
         }
     }
@@ -205,7 +207,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity<ConfirmOrderContrac
         }
         mCoupon = mOrderInfo.availableCoupons.get(position);
         float rate = mCoupon.rate;
-        mPayPrice = MINUS.equals(mCoupon.type) ? mTotalPrice - rate : mTotalPrice * rate;
+        mPayPrice = MINUS.equals(mCoupon.type) ? mTotalPrice - rate : mTotalPrice * rate / 10;
         mTotal.setText(String.format(getString(R.string.order_price_total), mPayPrice > 0 ? mPayPrice : 0));
         mCouponSub.setText(MINUS.equals(mCoupon.type) ? String.format(getString(R.string.order_price_subtract), rate)
                 : String.format(getString(R.string.order_price_discount), rate));

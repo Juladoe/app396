@@ -15,6 +15,7 @@ public class OrderInfo implements Serializable {
     public AccountBean account;
     public int hasPayPassword;
     public String coinName;
+    public String priceType;
     public float cashRate;
     public String fullCoinPayable;
     public String title;

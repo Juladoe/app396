@@ -19,10 +19,6 @@ import rx.schedulers.Schedulers;
 
 class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presenter {
 
-    private static final String BUY_ABLE = "1";
-    private static final String IS_FREE = "1";
-    private static final String FREE = "free";
-    private static final String VIP = "vip";
     private static final String END_DATE_MODE = "end_date";
     private static final String DAYS_MODE = "days";
     private static final String DATE_MODE = "date";

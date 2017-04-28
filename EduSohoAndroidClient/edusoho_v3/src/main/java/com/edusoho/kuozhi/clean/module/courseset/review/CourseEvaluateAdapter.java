@@ -83,7 +83,7 @@ class CourseEvaluateAdapter extends RecyclerView.Adapter {
             EvaluateViewHolder evaluateViewHolder = (EvaluateViewHolder) holder;
             evaluateViewHolder.mFrom.setText(String.format(mContext.getString(R.string.review_free), courseReview.course.title));
             evaluateViewHolder.mName.setText(courseReview.user.nickname);
-            evaluateViewHolder.mTime.setText(CommonUtil.convertWeekTime(courseReview.createdTime));
+            evaluateViewHolder.mTime.setText(CommonUtil.convertWeekTime(courseReview.updatedTime));
             evaluateViewHolder.mDesc.setText(courseReview.content);
             evaluateViewHolder.mStar.setRating(Integer.parseInt(courseReview.rating));
             ImageLoader.getInstance().displayImage(courseReview.user.avatar.middle, evaluateViewHolder.mUserIcon, EdusohoApp.app.mAvatarOptions);

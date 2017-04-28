@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
 public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Presenter {
 
     private static final int NO_VIP = 0;
-    private static final String FREE = "1";
+    private static final int FREE = 1;
     private CourseProject mCourseProject;
     private CourseProjectInfoContract.View mView;
 
@@ -57,7 +57,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showPrice() {
-        if (FREE.equals(mCourseProject.isFree)) {
+        if (FREE == mCourseProject.isFree) {
             mView.showPrice(CourseProjectPriceEnum.FREE, mCourseProject.price, mCourseProject.originPrice);
         } else if (mCourseProject.originPrice == mCourseProject.price) {
             mView.showPrice(CourseProjectPriceEnum.ORIGINAL, mCourseProject.price, mCourseProject.originPrice);

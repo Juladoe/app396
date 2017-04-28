@@ -17,7 +17,7 @@ public class CourseReview implements Serializable {
 
         public String content;
         public String rating;
-        public String createdTime;
+        public String updatedTime;
         public UserBean user;
         public CourseBean course;
 
