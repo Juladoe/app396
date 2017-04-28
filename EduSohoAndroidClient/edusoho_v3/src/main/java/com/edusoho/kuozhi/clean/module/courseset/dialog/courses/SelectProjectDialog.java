@@ -27,6 +27,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -119,7 +120,7 @@ public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContr
      * 动态添加RadioButton到RadioGroup中
      */
     private void addButton(RadioGroup mRg) {
-        int mostStudentNumPlan = getMostStudentNumPlan();
+        List mostStudentNumPlans = getMostStudentNumPlan();
         for (int i = 0; i < mCourseProjects.size(); i++) {
             RadioButton mRb = new RadioButton(getContext());
             mRb.setGravity(Gravity.CENTER);
@@ -132,7 +133,7 @@ public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContr
                     , AppUtil.dp2px(getContext(), 7), AppUtil.dp2px(getContext(), 4));
             mRb.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.teach_type_rb_selector));
             mRb.setText(mCourseProjects.get(i).title);
-            if (mostStudentNumPlan == i) {
+            if (mostStudentNumPlans.contains(i)) {
                 Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.hot);
                 drawable.setBounds(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 13));
                 mRb.setCompoundDrawablePadding(AppUtil.dp2px(getContext(), 5));
@@ -145,16 +146,20 @@ public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContr
         }
     }
 
-    private int getMostStudentNumPlan() {
+    private List getMostStudentNumPlan() {
         int num = 0;
-        int maxIndex = 0;
+        List<Integer> list = new ArrayList<>();
         for (int i = 0; i < mCourseProjects.size(); i++) {
             if (mCourseProjects.get(i).studentNum > num) {
                 num = mCourseProjects.get(i).studentNum;
-                maxIndex = i;
             }
         }
-        return maxIndex;
+        for (int index = 0; index < mCourseProjects.size(); index++) {
+            if (mCourseProjects.get(index).studentNum == num) {
+                list.add(index);
+            }
+        }
+        return list;
     }
 
     @Override
