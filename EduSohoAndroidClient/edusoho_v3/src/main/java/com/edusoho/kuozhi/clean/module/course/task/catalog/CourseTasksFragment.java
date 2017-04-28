@@ -55,6 +55,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     private ESProgressBar mLearnProgressRate;
     private ESIconView mCourseProgressInfo;
     private CourseLearningProgress mCourseLearningProgress;
+    private int mCurrentPosition = -1;
 
     private CourseProject mCourseProject;
 
@@ -210,6 +211,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                         showToast(getString(R.string.flash_task_not_support));
                         break;
                     default:
+                        adapter.switchClickPosition(v);
                         EventBus.getDefault().post(new MessageEvent<>(item.task
                                 , MessageEvent.LEARN_TASK));
                 }

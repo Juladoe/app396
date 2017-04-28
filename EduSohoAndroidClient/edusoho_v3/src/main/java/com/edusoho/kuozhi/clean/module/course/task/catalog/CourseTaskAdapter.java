@@ -23,6 +23,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<CourseItem> mTaskItems;
     private CourseProject.LearnMode mLearnMode;
     private Context mContext;
+    private CourseTaskViewHolder mLastCourseTaskViewHolder;
 
     public CourseTaskAdapter(Context context, List<CourseItem> taskItems, CourseProject.LearnMode mode) {
         this.mTaskItems = taskItems;
@@ -93,6 +94,21 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
             }
         }
+    }
+
+    void switchClickPosition(View currentClickView) {
+        CourseTaskViewHolder taskViewHolder = new CourseTaskViewHolder(currentClickView);
+        if (mLastCourseTaskViewHolder != null) {
+            taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
+            mLastCourseTaskViewHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
+            mLastCourseTaskViewHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+            mLastCourseTaskViewHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+        }
+        taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        taskViewHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        taskViewHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        taskViewHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        mLastCourseTaskViewHolder = taskViewHolder;
     }
 
     @Override
