@@ -627,4 +627,7 @@ public class Const {
      * 获取老师教学
      */
     public static final String TEACHER_TEACH = "/api/me/courses?relation=teaching&start=0&limit=1000";
+
+    public static final String VIP_COUPON_LIST = "/api/vip/coupons";
+    public static final String MY_VIP_COUPON_LIST = "/api/my/vip/coupons";
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">好知网</string>
-    <string name="app_host">http://www.howzhi.com</string>
+    <string name="app_host">http://howzhi.be.edusoho.cn</string>
     <string name="school_about">关于好知</string>
     <string name="app_code">howzhi</string>
     <string name="down_tab_school">在学</string>

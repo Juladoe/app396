@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/mine_view_hint"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginTop="15dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_top"
+        android:background="@drawable/coupon_qrcode_bg"
+        android:layout_width="match_parent"
+        android:layout_height="280dp">
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:text="300元K12学习抵用券"
+            android:textColor="@color/primary_color"
+            android:textSize="@dimen/font_xxl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_deadline"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="65dp"
+            android:text="有效期至1223-22-11"
+            android:textColor="@color/mine_coupon_color"
+            android:textSize="@dimen/font_s"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/iv_qrcode"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/tv_deadline"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_code"
+            android:layout_below="@id/iv_qrcode"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:text="123456789"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_s"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_center"
+        android:layout_below="@id/rl_top"
+        android:layout_marginTop="25dp"
+        android:text="使用规则"
+        android:textColor="@color/secondary_font_color"
+        android:textSize="@dimen/font_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/tv_use_rule"
+        android:layout_marginTop="15dp"
+        android:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈和哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
+        android:textColor="@color/primary_font_color"
+        android:textSize="@dimen/font_s"
+        android:lineSpacingExtra="15dp"
+        android:layout_below="@id/tv_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.VipVoucher;
+import com.edusoho.kuozhi.v3.model.bal.VipCoupon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +18,17 @@ import java.util.List;
  * Created by tree on 2017/4/27.
  */
 
-public class VipVoucherAdapter extends BaseAdapter{
+public class VipCouponAdapter extends BaseAdapter{
 
     private Context mContext;
-    private List<VipVoucher> mList;
+    private List<VipCoupon> mList;
 
-    public VipVoucherAdapter(Context context){
+    public VipCouponAdapter(Context context){
         this.mContext = context;
         this.mList = new ArrayList<>();
     }
 
-    public void setData(List<VipVoucher> list){
+    public void setData(List<VipCoupon> list){
         mList.addAll(list);
         notifyDataSetChanged();
     }
@@ -59,10 +59,10 @@ public class VipVoucherAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final VipVoucher voucher = mList.get(position);
-        holder.mVoucherName.setText(voucher.name);
-        holder.mVoucherPrice.setText(voucher.price + "");
-        holder.mUserDesc.setText(voucher.desc);
+        final VipCoupon voucher = mList.get(position);
+        holder.mCouponName.setText(voucher.name);
+        holder.mCouponPrice.setText(voucher.rate);
+        holder.mUserDesc.setText(voucher.detail);
         if(voucher.isShow){
             holder.mUserDesc.setVisibility(View.VISIBLE);
             holder.mUseDescArrow.setText(mContext.getResources().getString(R.string.new_font_fold));
@@ -83,15 +83,15 @@ public class VipVoucherAdapter extends BaseAdapter{
 
 
     public static class ViewHolder{
-        TextView mVoucherName;
-        TextView mVoucherPrice;
+        TextView mCouponName;
+        TextView mCouponPrice;
         TextView mUseDescArrow;
         TextView mUserDesc;
         View ll_use_desc;
 
         public ViewHolder(View view){
-            mVoucherName = (TextView) view.findViewById(R.id.tv_voucher_name);
-            mVoucherPrice = (TextView) view.findViewById(R.id.tv_voucher_price);
+            mCouponName = (TextView) view.findViewById(R.id.tv_voucher_name);
+            mCouponPrice = (TextView) view.findViewById(R.id.tv_voucher_price);
             mUseDescArrow = (TextView) view.findViewById(R.id.tv_desc_arrow);
             mUserDesc = (TextView) view.findViewById(R.id.tv_use_desc);
             ll_use_desc =  view.findViewById(R.id.ll_use_desc);
