@@ -61,14 +61,6 @@ public class CourseProject implements Serializable {
         public boolean expired;
     }
 
-    public static enum CourseLearnMode {
-        FREE, LOCK
-    }
-
-    public static enum CourseStatus {
-        CLOSED, PUBLISHED, DRAFT
-    }
-
     public enum LearnMode {
         FREEMODE("freeMode"), LOCKMODE("lockMode");
 

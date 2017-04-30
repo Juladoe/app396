@@ -98,7 +98,8 @@ public class LessonMenuHelper {
                         if (state == null) {
                             return;
                         }
-                        setLearnBtnState(state.learnStatus);
+                        mCurrentLearnState = state.learnStatus.status;
+                        setLearnBtnState("finish".equals(state.learnStatus.status));
                     }
                 });
     }
@@ -148,21 +149,21 @@ public class LessonMenuHelper {
         }
         view.setEnabled(false);
         new LessonProvider(mContext).startLearnLesson(mLessonId, mCourseId)
-                .success(new NormalCallback<LearnStatus>() {
+                .success(new NormalCallback<String>() {
                     @Override
-                    public void success(LearnStatus state) {
+                    public void success(String state) {
                         view.setEnabled(true);
-                        if (state != null && "finish".equals(state.status)) {
+                        if (state != null && "finished".equals(state)) {
                             MessageEngine.getInstance().sendMsg(Const.LESSON_STATUS_REFRESH, null);
                         }
-                        setLearnBtnState(state);
+                        mCurrentLearnState = "finish";
+                        setLearnBtnState("finished".equals(state));
                     }
                 });
     }
 
-    private void setLearnBtnState(LearnStatus state) {
-        if (state != null && "finish".equals(state.status)) {
-            mCurrentLearnState = state.status;
+    private void setLearnBtnState(boolean isLearn) {
+        if (isLearn) {
             MenuPop.Item item = mMenuPop.getItem(3);
             item.setName("已学完");
             item.setColor(mContext.getResources().getColor(R.color.primary_color));
