@@ -31,7 +31,7 @@ public class LessonMenuHelper {
 
     private int mLessonId;
     private int mCourseId;
-    private LearnStatus mCurrentLearnState;
+    private String mCurrentLearnState;
     private List<LessonPluginViewItem> mExerciseItemList;
     private Context mContext;
     private MenuPop mMenuPop;
@@ -47,7 +47,7 @@ public class LessonMenuHelper {
     }
 
     public void initMenu(MenuPop menuPop) {
-        if(menuPop == null){
+        if (menuPop == null) {
             return;
         }
         this.mMenuPop = menuPop;
@@ -143,7 +143,7 @@ public class LessonMenuHelper {
     }
 
     private synchronized void changeLessonLearnState(final View view) {
-        if (mCurrentLearnState == LearnStatus.finished) {
+        if ("finish".equals(mCurrentLearnState)) {
             return;
         }
         view.setEnabled(false);
@@ -152,7 +152,7 @@ public class LessonMenuHelper {
                     @Override
                     public void success(LearnStatus state) {
                         view.setEnabled(true);
-                        if (state != null && LearnStatus.finished == state) {
+                        if (state != null && "finish".equals(state.status)) {
                             MessageEngine.getInstance().sendMsg(Const.LESSON_STATUS_REFRESH, null);
                         }
                         setLearnBtnState(state);
@@ -161,8 +161,8 @@ public class LessonMenuHelper {
     }
 
     private void setLearnBtnState(LearnStatus state) {
-        if (state != null && LearnStatus.finished == state) {
-            mCurrentLearnState = state;
+        if (state != null && "finish".equals(state.status)) {
+            mCurrentLearnState = state.status;
             MenuPop.Item item = mMenuPop.getItem(3);
             item.setName("已学完");
             item.setColor(mContext.getResources().getColor(R.color.primary_color));

@@ -369,14 +369,16 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void onReceiveMessage(MessageEvent messageEvent) {
-        CourseTask task = (CourseTask) messageEvent.getMessageBody();
-        mFinishTask.setTag(task);
-        switch (messageEvent.getType()) {
-            case MessageEvent.LEARN_TASK:
-                learnTask(task);
-                break;
+        if (messageEvent.getType() == MessageEvent.LEARN_TASK) {
+            CourseTask task = (CourseTask) messageEvent.getMessageBody();
+            mFinishTask.setTag(task);
+            switch (messageEvent.getType()) {
+                case MessageEvent.LEARN_TASK:
+                    learnTask(task);
+                    break;
+            }
+            setPlayLayoutVisible(false);
         }
-        setPlayLayoutVisible(false);
     }
 
     private void learnTask(CourseTask task) {
