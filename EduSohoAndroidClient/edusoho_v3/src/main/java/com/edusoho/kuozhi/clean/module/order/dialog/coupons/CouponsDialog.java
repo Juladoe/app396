@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by DF on 2017/4/14.
+ * 优惠券选择界面
  */
 
 public class CouponsDialog extends ESBottomDialog

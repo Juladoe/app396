@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 /**
  * Created by DF on 2017/4/12.
+ * 跳转进支付宝界面
  */
 
 public class AlipayActivity extends BaseActivity {
