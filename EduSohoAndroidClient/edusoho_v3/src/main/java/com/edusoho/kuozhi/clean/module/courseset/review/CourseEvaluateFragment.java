@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by DF on 2017/3/21.
+ * 课程-评价界面
  */
 
 public class CourseEvaluateFragment extends BaseLazyFragment<CourseEvaluateContract.Presenter> implements CourseEvaluateContract.View {

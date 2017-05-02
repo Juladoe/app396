@@ -30,6 +30,7 @@ import java.util.List;
 
 /**
  * Created by DF on 2017/3/21.
+ * 课程-简介界面
  */
 
 public class CourseIntroduceFragment extends BaseLazyFragment<CourseIntroduceContract.Presenter>

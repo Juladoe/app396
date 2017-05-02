@@ -12,6 +12,7 @@ import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 
 /**
  * Created by DF on 2017/4/12.
+ * 广播关掉activity基类
  */
 
 public class BaseFinishActivity<T extends BasePresenter> extends BaseActivity<T> {

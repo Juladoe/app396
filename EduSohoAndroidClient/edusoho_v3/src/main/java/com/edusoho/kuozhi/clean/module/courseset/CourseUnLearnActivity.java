@@ -49,6 +49,7 @@ import extensions.PagerSlidingTabStrip;
 
 /**
  * Created by DF on 2017/3/21.
+ * 课程activity
  */
 
 public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContract.Presenter>

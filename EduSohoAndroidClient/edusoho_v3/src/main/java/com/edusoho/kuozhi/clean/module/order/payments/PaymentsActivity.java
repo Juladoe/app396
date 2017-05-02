@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 /**
  * Created by DF on 2017/4/7.
+ * 支付选择界面
  */
 
 public class PaymentsActivity extends BaseFinishActivity<PaymentsContract.Presenter> implements View.OnClickListener, PaymentsContract.View {

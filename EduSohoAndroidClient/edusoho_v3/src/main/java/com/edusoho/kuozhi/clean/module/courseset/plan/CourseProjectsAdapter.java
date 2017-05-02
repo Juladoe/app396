@@ -125,6 +125,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
             if (courseProject.vipLevelId == vipInfo.id) {
                 holder.mVip.setVisibility(View.VISIBLE);
                 holder.mVip.setText(String.format(mContext.getString(R.string.vip_free), vipInfo.name));
+                break;
             }
         }
     }
