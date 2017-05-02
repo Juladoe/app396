@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
@@ -17,11 +21,16 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.MenuPop;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by suju on 16/12/21.
@@ -31,6 +40,7 @@ public class LessonMenuHelper {
 
     private int mLessonId;
     private int mCourseId;
+    private int mEnableFinish;
     private String mCurrentLearnState;
     private List<LessonPluginViewItem> mExerciseItemList;
     private Context mContext;
@@ -40,6 +50,13 @@ public class LessonMenuHelper {
         this.mContext = context;
         this.mLessonId = lessonId;
         this.mCourseId = courseId;
+    }
+
+    public LessonMenuHelper(Context context, int lessonId, int courseId, int enableFinish) {
+        this.mContext = context;
+        this.mLessonId = lessonId;
+        this.mCourseId = courseId;
+        this.mEnableFinish = enableFinish;
     }
 
     public MenuPop getMenuPop() {
@@ -144,20 +161,38 @@ public class LessonMenuHelper {
     }
 
     private synchronized void changeLessonLearnState(final View view) {
+        if (mEnableFinish == 0) {
+            CommonUtil.longToast(mContext, mContext.getString(R.string.course_limit_task));
+            return;
+        }
         if ("finish".equals(mCurrentLearnState)) {
             return;
         }
         view.setEnabled(false);
-        new LessonProvider(mContext).startLearnLesson(mLessonId, mCourseId)
-                .success(new NormalCallback<String>() {
+        HttpUtils.getInstance()
+                .createApi(CourseApi.class)
+                .setCourseTaskStatus(mCourseId, mLessonId, CourseTask.CourseTaskStatusEnum.FINISH.toString())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<TaskEvent>() {
                     @Override
-                    public void success(String state) {
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TaskEvent taskEvent) {
                         view.setEnabled(true);
-                        if (state != null && "finished".equals(state)) {
+                        if (taskEvent.result != null && CourseTask.CourseTaskStatusEnum.FINISH.toString().equals(taskEvent.result.status)) {
                             MessageEngine.getInstance().sendMsg(Const.LESSON_STATUS_REFRESH, null);
+                            setLearnBtnState(true);
+                            mCurrentLearnState = "finish";
                         }
-                        mCurrentLearnState = "finish";
-                        setLearnBtnState("finished".equals(state));
                     }
                 });
     }

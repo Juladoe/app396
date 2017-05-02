@@ -79,6 +79,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String LESSON_IDS = "lesson_ids";
     public static final String RESULT_ID = "resultId";
     public static final String MEMBER_STATE = "member_state";
+    public static final String ENABLE_FINISH = "enable_finish";
 
     private String mCurrentFragmentName;
     private Class mCurrentFragmentClass;
@@ -90,6 +91,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private int mCourseId;
     private int mLessonId;
+    private int mEnableFinish;
     private int mIsMember;
     private String mLessonType;
     private Bundle fragmentData;
@@ -178,6 +180,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             if (data != null) {
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
+                mEnableFinish = data.getIntExtra(ENABLE_FINISH, 0);
                 mIsMember = data.getIntExtra(LessonActivity.MEMBER_STATE, CourseMember.NONE);
             }
 

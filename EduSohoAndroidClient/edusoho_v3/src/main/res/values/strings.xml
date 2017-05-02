@@ -553,5 +553,6 @@
     <string name="discuss_task_not_support">移动端暂不支持讨论任务</string>
     <string name="flash_task_not_support">移动端暂不支持Flash任务</string>
     <string name="task_finished_button">学过了</string>
+    <string name="course_limit_task">限制任务：必须观看%d分钟</string>
 
 </resources>

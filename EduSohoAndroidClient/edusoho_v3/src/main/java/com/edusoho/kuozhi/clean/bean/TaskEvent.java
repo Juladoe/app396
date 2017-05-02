@@ -1,14 +1,15 @@
 package com.edusoho.kuozhi.clean.bean;
 
-import com.edusoho.kuozhi.clean.bean.innerbean.Result;
+import com.edusoho.kuozhi.clean.bean.innerbean.TaskResult;
 
 /**
  * Created by JesseHuang on 2017/4/27.
  */
 
 public class TaskEvent {
-    public Result result;
+    public TaskResult result;
     public String event;
-    public CourseTask nextTag;
+    public CourseTask nextTask;
+    public String lastTime;
     public String completionRate;
 }
