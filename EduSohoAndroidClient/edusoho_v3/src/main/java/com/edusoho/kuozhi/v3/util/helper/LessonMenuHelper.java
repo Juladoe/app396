@@ -32,7 +32,6 @@ public class LessonMenuHelper {
     private int mLessonId;
     private int mCourseId;
     private String mCurrentLearnState;
-    private List<LessonPluginViewItem> mExerciseItemList;
     private Context mContext;
     private MenuPop mMenuPop;
 
@@ -53,18 +52,9 @@ public class LessonMenuHelper {
         this.mMenuPop = menuPop;
         mMenuPop.removeAll();
         mMenuPop.addItem("记笔记");
-        mExerciseItemList = getExerciseItemList();
-        if (mExerciseItemList != null) {
-            for (int i = 0; i < mExerciseItemList.size(); i++) {
-                LessonPluginViewItem pluginViewItem = mExerciseItemList.get(i);
-                pluginViewItem.setPosition(i + 1);
-                mMenuPop.addItem(pluginViewItem.title);
-            }
-        }
         mMenuPop.addItem("学完");
         mMenuPop.setVisibility(true);
         mMenuPop.setOnMenuClickListener(getMenuClickListener());
-        mMenuPop.setMenuShowListener(getMenuShowListener());
         loadLessonStatus();
     }
 
@@ -73,18 +63,7 @@ public class LessonMenuHelper {
     }
 
     public void updatePluginItemState() {
-        if (mExerciseItemList == null || mExerciseItemList.isEmpty()) {
-            return;
-        }
-        boolean hasNotice = false;
-        for (PluginViewItem item : mExerciseItemList) {
-            item.callback.initState(item);
-            if (item.status == PluginViewItem.NEW) {
-                hasNotice = true;
-            }
-        }
 
-        mMenuPop.setNotice(hasNotice);
     }
 
     /**
@@ -104,15 +83,6 @@ public class LessonMenuHelper {
                 });
     }
 
-    private MenuPop.IMenuShowListener getMenuShowListener() {
-        return new MenuPop.IMenuShowListener() {
-            @Override
-            public void onShow(boolean isShow) {
-                updatePluginItemState();
-            }
-        };
-    }
-
     private MenuPop.OnMenuClickListener getMenuClickListener() {
         return new MenuPop.OnMenuClickListener() {
             @Override
@@ -130,16 +100,9 @@ public class LessonMenuHelper {
                 startNodeActivity();
                 break;
             case 1:
-                MobclickAgent.onEvent(mContext, "hoursOfStudy_topOfTheThree_operation");
-                startExerciseOrHomeWorkActivity(v, 0);
-                break;
-            case 2:
-                MobclickAgent.onEvent(mContext, "timeToLearn_topThreePoints_practice");
-                startExerciseOrHomeWorkActivity(v, 1);
-                break;
-            case 3:
                 MobclickAgent.onEvent(mContext, "timeToLearn_topThreePoints_finished");
                 changeLessonLearnState(v);
+                break;
         }
     }
 
@@ -164,24 +127,12 @@ public class LessonMenuHelper {
 
     private void setLearnBtnState(boolean isLearn) {
         if (isLearn) {
-            MenuPop.Item item = mMenuPop.getItem(3);
+            MenuPop.Item item = mMenuPop.getItem(1);
             item.setName("已学完");
             item.setColor(mContext.getResources().getColor(R.color.primary_color));
         } else {
-            mMenuPop.getItem(3).setName("学完");
+            mMenuPop.getItem(1).setName("学完");
         }
-    }
-
-    private void startExerciseOrHomeWorkActivity(View v, int index) {
-        PluginViewItem item = mExerciseItemList.get(index);
-        if (!item.callback.click(v)) {
-            return;
-        }
-        Intent intent = new Intent();
-        intent.putExtras(item.bundle);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClassName(mContext.getPackageName(), item.action);
-        mContext.startActivity(intent);
     }
 
     private void startNodeActivity() {
@@ -189,60 +140,5 @@ public class LessonMenuHelper {
         bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, mLessonId);
         CoreEngine.create(mContext).runNormalPluginWithBundle("NoteActivity", mContext, bundle);
-    }
-
-    private List<LessonPluginViewItem> getExerciseItemList() {
-        List<LessonPluginViewItem> list = new ArrayList<>();
-
-        Bundle bundle = new Bundle();
-        bundle.putInt("lessonId", mLessonId);
-        Intent intent = new Intent();
-        intent.setPackage(mContext.getPackageName());
-        intent.putExtra(Const.LESSON_ID, mLessonId);
-        intent.setAction(Const.LESSON_PLUGIN);
-
-        List<ResolveInfo> resolveInfos = mContext.getPackageManager().queryIntentActivities(
-                intent, PackageManager.GET_ACTIVITIES);
-
-        for (ResolveInfo resolveInfo : resolveInfos) {
-            LessonPluginViewItem item = new LessonPluginViewItem();
-            item.iconRes = mContext.getResources().getDrawable(resolveInfo.activityInfo.icon);
-            item.title = resolveInfo.loadLabel(mContext.getPackageManager()).toString();
-            item.bundle = intent.getExtras();
-            item.action = resolveInfo.activityInfo.name;
-            try {
-                Class lessonPluginCallbackCls = Class.forName(resolveInfo.activityInfo.name + "$Callback");
-                item.callback = (LessonPluginCallback) lessonPluginCallbackCls.getConstructor(Context.class).newInstance(mContext);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            item.callback.initPlugin(item);
-            list.add(item);
-        }
-
-        return list;
-    }
-
-    class LessonPluginViewItem extends PluginViewItem {
-
-        private int mPosition;
-
-        public void setPosition(int position) {
-            this.mPosition = position;
-        }
-
-        @Override
-        public void setStatus(int status) {
-            super.setStatus(status);
-            mMenuPop.getItem(mPosition).setHasPoint(status == NEW);
-            boolean hasNotice = false;
-            for (MenuPop.Item item : mMenuPop.getItems()) {
-                if (item.isHasPoint()) {
-                    hasNotice = true;
-                }
-            }
-
-            mMenuPop.setNotice(hasNotice);
-        }
     }
 }

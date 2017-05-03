@@ -621,7 +621,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onResume() {
         super.onResume();
-        mLessonMenuHelper.updatePluginItemState();
+        //mLessonMenuHelper.updatePluginItemState();
         invalidateOptionsMenu();
         CacheServerFactory.getInstance().resume();
     }
