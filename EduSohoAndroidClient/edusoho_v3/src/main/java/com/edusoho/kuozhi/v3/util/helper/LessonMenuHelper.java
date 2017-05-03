@@ -62,10 +62,6 @@ public class LessonMenuHelper {
         mMenuPop.showAsDropDown(view, x, y);
     }
 
-    public void updatePluginItemState() {
-
-    }
-
     /**
      * 获取课时是否已学状态
      */
