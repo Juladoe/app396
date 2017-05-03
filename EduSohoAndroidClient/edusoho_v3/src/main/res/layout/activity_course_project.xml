@@ -185,7 +185,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_toRightOf="@+id/tb_consult"
-            android:background="@color/primary"
+            android:background="@color/primary_color"
             android:gravity="center"
             android:text="@string/learn_course_project"
             android:textColor="@android:color/white"
