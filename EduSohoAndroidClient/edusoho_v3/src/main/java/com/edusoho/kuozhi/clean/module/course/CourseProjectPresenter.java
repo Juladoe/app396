@@ -8,6 +8,8 @@ import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
+import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
@@ -39,6 +41,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private int mCourseProjectId;
     private Teacher mTeacher;
     private CourseMember mMember;
+    private CourseTask mFirstTrailTask;
     private CourseProject mCourseProject;
     private boolean mIsJoin = false;
 
@@ -108,6 +111,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseTask trialTask) {
                         if (trialTask != null && trialTask.id != 0) {
+                            mFirstTrailTask = trialTask;
                             mView.initTrailTask(trialTask);
                         } else {
                             mView.setPlayLayoutVisible(false);
@@ -128,6 +132,33 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         } else {
             mView.launchConfirmOrderActivity(mCourseProject.courseSet.id, mCourseProjectId);
         }
+    }
+
+    @Override
+    public void finishTask(CourseTask task) {
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseApi.class)
+                .setCourseTaskStatus(mCourseProjectId, task.id, CourseTask.CourseTaskStatusEnum.FINISH.toString())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<TaskEvent>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TaskEvent taskEvent) {
+                        mView.setTaskFinishButtonBackground(true);
+                        mView.setCurrentTaskStatus(CourseTask.CourseTaskStatusEnum.FINISH);
+                    }
+                });
     }
 
     @Override
@@ -152,7 +183,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
-                            EventBus.getDefault().post(new MessageEvent(MessageEvent.MessageEventCode.COURSE_EXIT));
+                            EventBus.getDefault().post(new MessageEvent(MessageEvent.COURSE_EXIT));
                             mIsJoin = false;
                             mView.showToast(R.string.exit_course_success);
                             initTrialFirstTask(mCourseProjectId);
@@ -235,7 +266,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseLearningProgress progress) {
                         // TODO: 2017/4/25 非常不好的处理方式，需要封装
-                        MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress, MessageEvent.MessageEventCode.COURSE_JOIN);
+                        MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress, MessageEvent.COURSE_JOIN);
                         EventBus.getDefault().post(progressMsg);
                         if (progress.nextTask != null) {
                             mView.initNextTask(progress.nextTask);
@@ -291,6 +322,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public boolean isJoin() {
         return mIsJoin;
+    }
+
+    @Override
+    public CourseMember getCourseMember() {
+        return mMember;
     }
 
     @Override

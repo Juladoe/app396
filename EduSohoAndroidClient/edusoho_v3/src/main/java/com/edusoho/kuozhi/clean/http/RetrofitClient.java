@@ -25,9 +25,8 @@ public class RetrofitClient {
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
         }
-        if (headerMaps != null) {
-            mRequestInterceptor = new RequestInterceptor(headerMaps);
-        }
+        headerMaps.put("Accept", "application/vnd.edusoho.v2+json");
+        mRequestInterceptor = new RequestInterceptor(headerMaps);
         retrofitBuilder.baseUrl(getBaseUrl()).client(getClient());
         return retrofitBuilder.build();
     }

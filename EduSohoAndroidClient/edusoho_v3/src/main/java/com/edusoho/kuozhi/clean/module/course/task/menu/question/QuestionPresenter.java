@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.clean.module.course.task.menu.question;
 
 import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;

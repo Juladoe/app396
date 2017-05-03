@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.clean.http;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,7 +23,6 @@ public class RequestInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder request = chain.request().newBuilder();
-        request.addHeader("Accept", "application/vnd.edusoho.v2+json").build();
         if (mHeaderMaps.size() > 0) {
             for (Map.Entry<String, String> entry : mHeaderMaps.entrySet()) {
                 request.addHeader(entry.getKey(), entry.getValue());

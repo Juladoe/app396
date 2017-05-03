@@ -95,7 +95,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             @Override
             public void success(HomeWorkModel homeWorkModel) {
                 mLoadLayout.setVisibility(View.GONE);
-                if (homeWorkModel == null){
+                if (homeWorkModel == null) {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                     return;
                 }
@@ -110,7 +110,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
         });
     }
 
-    private void initExerciseSummary(){
+    private void initExerciseSummary() {
         String url = new StringBuilder()
                 .append(String.format(Const.EXERCISE_CONTENT, mLessonId))
                 .append("?_idType=lesson")
@@ -120,7 +120,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
             @Override
             public void success(ExerciseModel exerciseModel) {
                 mLoadLayout.setVisibility(View.GONE);
-                if (exerciseModel == null){
+                if (exerciseModel == null) {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                     return;
                 }
@@ -152,7 +152,7 @@ public class HomeWorkSummaryFragment extends BaseFragment {
         });
     }
 
-    private void renderExerciseView(final ExerciseModel exerciseModel){
+    private void renderExerciseView(final ExerciseModel exerciseModel) {
         tvCourseTitle.setText(exerciseModel.getCourseTitle());
         homeworkNameContent.setText(exerciseModel.getLessonTitle());
         if (exerciseModel.getDescription() != null) {

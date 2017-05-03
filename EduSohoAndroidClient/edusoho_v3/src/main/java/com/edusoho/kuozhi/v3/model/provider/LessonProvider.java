@@ -33,7 +33,8 @@ public class LessonProvider extends ModelProvider {
         requestUrl.heads.put("Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<LessonItem>(){});
+                requestUrl, new TypeToken<LessonItem>() {
+                });
 
         return requestOption.build();
     }
@@ -45,7 +46,8 @@ public class LessonProvider extends ModelProvider {
         requestUrl.heads.put("Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<LinkedHashMap>(){});
+                requestUrl, new TypeToken<LinkedHashMap>() {
+                });
 
         return requestOption.build();
     }
@@ -59,12 +61,13 @@ public class LessonProvider extends ModelProvider {
         requestUrl.heads.put("token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<LessonStatus>(){});
+                requestUrl, new TypeToken<LessonStatus>() {
+                });
 
         return requestOption.build();
     }
 
-    public ProviderListener<LearnStatus> startLearnLesson(int lessonId, int courseId) {
+    public ProviderListener<String> startLearnLesson(int lessonId, int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
         String token = ApiTokenUtil.getTokenString(mContext);
 
@@ -73,7 +76,8 @@ public class LessonProvider extends ModelProvider {
         requestUrl.heads.put("token", token);
 
         RequestOption requestOption = buildSimplePostRequest(
-                requestUrl, new TypeToken<LearnStatus>(){});
+                requestUrl, new TypeToken<String>() {
+                });
 
         return requestOption.build();
     }
@@ -87,7 +91,8 @@ public class LessonProvider extends ModelProvider {
         requestUrl.heads.put("token", token);
 
         RequestOption requestOption = buildSimplePostRequest(
-                requestUrl, new TypeToken<LearnStatus>(){});
+                requestUrl, new TypeToken<LearnStatus>() {
+                });
 
         return requestOption.build();
     }
@@ -101,7 +106,8 @@ public class LessonProvider extends ModelProvider {
         requestUrl.heads.put("token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<Map<String, String>>(){});
+                requestUrl, new TypeToken<Map<String, String>>() {
+                });
 
         return requestOption.build();
     }
@@ -114,7 +120,8 @@ public class LessonProvider extends ModelProvider {
         requestUrl.heads.put("token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<CourseCatalogue>(){});
+                requestUrl, new TypeToken<CourseCatalogue>() {
+                });
 
         return requestOption.build();
     }

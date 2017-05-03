@@ -543,7 +543,7 @@
 
     <plugin
         name="CourseTasksFragment"
-        package="com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment"
+        package="com.edusoho.kuozhi.clean.module.course.task.catalog.CourseTasksFragment"
         version="1.0" />
 
     <plugin

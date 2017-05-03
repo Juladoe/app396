@@ -36,7 +36,6 @@ public class MenuPop {
     private MenuAdapter mAdapter = new MenuAdapter();
     private View mBindView;
     private boolean mHasNotice;
-    private IMenuShowListener mIMenuShowListener;
     private IMenuNoticeChangeListener mIMenuNoticeChangeListener;
 
     public MenuPop(Context context, View bindView) {
@@ -168,10 +167,6 @@ public class MenuPop {
         return this;
     }
 
-    public void setMenuShowListener(IMenuShowListener iMenuShowListener) {
-        this.mIMenuShowListener = iMenuShowListener;
-    }
-
     public void removeAll() {
         mNames.clear();
     }
@@ -226,20 +221,10 @@ public class MenuPop {
         MobclickAgent.onEvent(mContext, "hoursOfStudy_topThreePoints");
         mAdapter.notifyDataSetChanged();
         mPopup.showAsDropDown(view, x, y);
-        if (mIMenuShowListener != null) {
-            mIMenuShowListener.onShow(true);
-        }
     }
 
     public void dismiss() {
         mPopup.dismiss();
-        if (mIMenuShowListener != null) {
-            mIMenuShowListener.onShow(false);
-        }
-    }
-
-    public interface IMenuShowListener {
-        void onShow(boolean isShow);
     }
 
     public interface IMenuNoticeChangeListener {
