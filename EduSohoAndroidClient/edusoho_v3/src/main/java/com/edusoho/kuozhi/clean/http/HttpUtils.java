@@ -1,5 +1,9 @@
 package com.edusoho.kuozhi.clean.http;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -10,6 +14,7 @@ import java.util.TreeMap;
 public class HttpUtils {
 
     private static final String TOKEN_KEY = "X-Auth-Token";
+    private static final String MAPI_V2_TOKEN_KEY = "token";
     private static HttpUtils mInstance;
     private static String mBaseUrl;
     private Map<String, String> mHeaderMaps = new TreeMap<>();
@@ -26,15 +31,8 @@ public class HttpUtils {
         return mInstance;
     }
 
-    public static HttpUtils getInstance(String baseUrl) {
-        mBaseUrl = baseUrl;
-        if (mInstance == null) {
-            synchronized (HttpUtils.class) {
-                if (mInstance == null) {
-                    mInstance = new HttpUtils();
-                }
-            }
-        }
+    public static HttpUtils baseOnMapiV2() {
+        mBaseUrl = EdusohoApp.app.host + "/mapi_v2/";
         return mInstance;
     }
 
@@ -48,6 +46,11 @@ public class HttpUtils {
 
     public HttpUtils addTokenHeader(String token) {
         mHeaderMaps.put(TOKEN_KEY, token);
+        return mInstance;
+    }
+
+    public HttpUtils addMapiV2TokenHeader(String token) {
+        mHeaderMaps.put(MAPI_V2_TOKEN_KEY, token);
         return mInstance;
     }
 

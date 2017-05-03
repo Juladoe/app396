@@ -32,7 +32,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.MediaUtil;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.videoplayer.media.listener.SimpleVideoControllerListener;
@@ -41,7 +40,6 @@ import com.edusoho.videoplayer.util.VLCOptions;
 import com.edusoho.videoplayer.view.VideoControllerView;
 import com.google.gson.reflect.TypeToken;
 
-import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.util.AndroidUtil;
 
 import java.util.Timer;
@@ -111,7 +109,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                         changeHeaderViewStatus(false);
                         if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
                             CommonUtil.shortToast(getContext(), "媒体资源不存在");
-                            ((ViewGroup)getView()).removeAllViews();
+                            ((ViewGroup) getView()).removeAllViews();
                             return;
                         }
                         Uri mediaUri = Uri.parse(lessonItem.mediaUri);
@@ -137,7 +135,8 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         }
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(getContext());
         return sqliteUtil.queryForObj(
-                new TypeToken<LessonItem>(){},
+                new TypeToken<LessonItem>() {
+                },
                 "where type=? and key=?",
                 Const.CACHE_LESSON_TYPE,
                 "lesson-" + mLessonId
@@ -238,14 +237,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (mLessonMenuHelper != null) {
-            mLessonMenuHelper.updatePluginItemState();
-        }
-    }
-
-    @Override
     protected void savePosition(long seekTime) {
         super.savePosition(seekTime);
         SharedPreferences.Editor editor = mSeekPositionSetting.edit();
@@ -310,8 +301,10 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                     public void onSuccess(String data) {
                         mPlayTime = 0;
                     }
+
                     @Override
-                    public void onFailure(String code, String message) {}
+                    public void onFailure(String code, String message) {
+                    }
                 });
             }
         };

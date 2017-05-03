@@ -55,6 +55,7 @@ import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.server.CacheServerFactory;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -63,7 +64,6 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
 
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
@@ -125,25 +125,25 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
         new CourseProvider(getBaseContext()).getCourse(mCourseId)
-        .success(new NormalCallback<CourseDetailsResult>() {
-            @Override
-            public void success(CourseDetailsResult courseDetailsResult) {
-                loadDialog.dismiss();
-                if (courseDetailsResult == null || courseDetailsResult.course == null) {
-                    return;
-                }
-                final Course course = courseDetailsResult.course;
-                runOnUiThread(new Runnable() {
+                .success(new NormalCallback<CourseDetailsResult>() {
                     @Override
-                    public void run() {
-                        String shareUrl = String.format("%s/course/%d", app.host, mCourseId);
-                        ShareTool shareTool = new ShareTool(
-                                mActivity, shareUrl, course.title, mLessonItem.title, course.middlePicture);
-                        shareTool.shardCourse();
+                    public void success(CourseDetailsResult courseDetailsResult) {
+                        loadDialog.dismiss();
+                        if (courseDetailsResult == null || courseDetailsResult.course == null) {
+                            return;
+                        }
+                        final Course course = courseDetailsResult.course;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String shareUrl = String.format("%s/course/%d", app.host, mCourseId);
+                                ShareTool shareTool = new ShareTool(
+                                        mActivity, shareUrl, course.title, mLessonItem.title, course.middlePicture);
+                                shareTool.shardCourse();
+                            }
+                        });
                     }
-                });
-            }
-        }).fail(new NormalCallback<VolleyError>() {
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
                 loadDialog.dismiss();
@@ -466,14 +466,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
                 return lessonItem;
             case PPT:
-                LessonItem<LinkedHashMap<String, ArrayList<String>>> pptLesson = lessonItem;
+                LessonItem<LinkedTreeMap<String, ArrayList<String>>> pptLesson = lessonItem;
                 fragmentData.putString(Const.LESSON_TYPE, "ppt");
                 ArrayList<String> pptContent = pptLesson.content.get("resource");
                 fragmentData.putStringArrayList(CONTENT, pptContent);
                 return pptLesson;
             case TESTPAPER:
-                LessonItem<LinkedHashMap> testpaperLesson = lessonItem;
-                LinkedHashMap status = testpaperLesson.content;
+                LessonItem<LinkedTreeMap> testpaperLesson = lessonItem;
+                LinkedTreeMap status = testpaperLesson.content;
                 fragmentData.putString(Const.LESSON_TYPE, "testpaper");
                 fragmentData.putInt(Const.MEDIA_ID, testpaperLesson.mediaId);
                 int resultId = AppUtil.parseInt(status.get("resultId").toString());
@@ -484,7 +484,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(Const.ACTIONBAR_TITLE, testpaperLesson.title);
                 return testpaperLesson;
             case DOCUMENT:
-                LessonItem<LinkedHashMap<String, String>> documentLessonItem = lessonItem;
+                LessonItem<LinkedTreeMap<String, String>> documentLessonItem = lessonItem;
                 fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
                 fragmentData.putString(CONTENT, documentLessonItem.content.get("previewUrl"));
                 return documentLessonItem;
@@ -621,7 +621,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onResume() {
         super.onResume();
-        mLessonMenuHelper.updatePluginItemState();
+        //mLessonMenuHelper.updatePluginItemState();
         invalidateOptionsMenu();
         CacheServerFactory.getInstance().resume();
     }

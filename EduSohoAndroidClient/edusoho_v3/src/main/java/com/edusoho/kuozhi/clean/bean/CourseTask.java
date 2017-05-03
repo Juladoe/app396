@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import com.edusoho.kuozhi.clean.bean.innerbean.Result;
+
 import java.io.Serializable;
 
 /**
@@ -9,7 +11,7 @@ import java.io.Serializable;
 
 public class CourseTask implements Serializable {
     public int id;
-    public String courseId;
+    public int courseId;
     public int seq;
     public String categoryId;
     public String activityId;
@@ -32,12 +34,13 @@ public class CourseTask implements Serializable {
     public String createdTime;
     public String updatedTime;
     public Activity activity;
+    public Result result;
 
     public static class Activity {
         public String id;
         public String title;
         public Object remark;
-        public String mediaId;
+        public int mediaId;
         public String mediaType;
         public String content;
         public String length;
@@ -56,6 +59,21 @@ public class CourseTask implements Serializable {
             return seq + " - " + number;
         } else {
             return number + "";
+        }
+    }
+
+    public enum CourseTaskStatusEnum {
+        FINISH("finish"), DOING("doing");
+
+        private String mName;
+
+        CourseTaskStatusEnum(String name) {
+            this.mName = name;
+        }
+
+        @Override
+        public String toString() {
+            return mName;
         }
     }
 }

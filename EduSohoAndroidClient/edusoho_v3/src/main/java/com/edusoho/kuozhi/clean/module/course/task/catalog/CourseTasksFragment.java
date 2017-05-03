@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.task;
+package com.edusoho.kuozhi.clean.module.course.task.catalog;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,13 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
@@ -36,7 +34,6 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -58,6 +55,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     private ESProgressBar mLearnProgressRate;
     private ESIconView mCourseProgressInfo;
     private CourseLearningProgress mCourseLearningProgress;
+    private int mCurrentPosition = -1;
 
     private CourseProject mCourseProject;
 
@@ -193,11 +191,14 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         ItemClickSupport.addTo(mTaskRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                if (adapter.getItemViewType(position) == CourseItemEnum.CHAPTER.getIndex()
-                        || adapter.getItemViewType(position) == CourseItemEnum.UNIT.getIndex()) {
+                int viewType = adapter.getItemViewType(position);
+                if (viewType == CourseItemEnum.CHAPTER.getIndex() || viewType == CourseItemEnum.UNIT.getIndex()) {
                     return;
                 }
                 CourseItem item = adapter.getItem(position);
+                if (item.task.lock) {
+                    return;
+                }
                 TaskIconEnum type = TaskIconEnum.fromString(item.task.type);
                 switch (type) {
                     case DOWNLOAD:
@@ -210,8 +211,9 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                         showToast(getString(R.string.flash_task_not_support));
                         break;
                     default:
+                        adapter.switchClickPosition(v);
                         EventBus.getDefault().post(new MessageEvent<>(item.task
-                                , MessageEvent.MessageEventCode.LEARN_TASK));
+                                , MessageEvent.LEARN_TASK));
                 }
 
             }
@@ -220,12 +222,15 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
     @Override
     public void onReceiveMessage(MessageEvent messageEvent) {
-        if (MessageEvent.MessageEventCode.COURSE_EXIT == messageEvent.getType()) {
-            mCourseProgressBar.setVisibility(View.GONE);
-        } else if (MessageEvent.MessageEventCode.COURSE_JOIN == messageEvent.getType()) {
-            mCourseProgressBar.setVisibility(View.VISIBLE);
-            mCourseLearningProgress = (CourseLearningProgress) messageEvent.getMessageBody();
-            mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
+        switch (messageEvent.getType()) {
+            case MessageEvent.COURSE_EXIT:
+                mCourseProgressBar.setVisibility(View.GONE);
+                break;
+            case MessageEvent.COURSE_JOIN:
+                mCourseProgressBar.setVisibility(View.VISIBLE);
+                mCourseLearningProgress = (CourseLearningProgress) messageEvent.getMessageBody();
+                mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
+                break;
         }
     }
 }
