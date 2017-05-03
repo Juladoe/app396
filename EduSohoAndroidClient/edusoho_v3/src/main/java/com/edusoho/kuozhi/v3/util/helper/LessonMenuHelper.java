@@ -95,7 +95,7 @@ public class LessonMenuHelper {
                 .success(new NormalCallback<LessonStatus>() {
                     @Override
                     public void success(LessonStatus state) {
-                        if (state == null) {
+                        if (state.learnStatus == null) {
                             return;
                         }
                         mCurrentLearnState = state.learnStatus.status;

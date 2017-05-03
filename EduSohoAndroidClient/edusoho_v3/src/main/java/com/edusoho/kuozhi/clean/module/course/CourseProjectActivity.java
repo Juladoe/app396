@@ -58,6 +58,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private static final String COURSE_PROJECT_ID = "CourseProjectId";
     private static final String FRAGMENT_VIDEO_TAG = "video";
     private static final String FRAGMENT_AUDIO_TAG = "audio";
+    private static final String HOMEWORK_CLASSNAME = "com.edusoho.kuozhi.homework.HomeworkSummaryActivity";
+    private static final String EXERCISE_CLASSNAME = "com.edusoho.kuozhi.homework.ExerciseSummaryActivity";
 
     private int mCourseProjectId;
     private String mCourseCoverImageUrl;
@@ -416,9 +418,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             case DOC:
             case PPT:
             case TESTPAPER:
-            case HOMEWORK:
-            case EXERCISE:
-                // TODO: 2017/4/28 course2.0以前代码
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.LESSON_ID, task.id);
                 bundle.putInt(Const.COURSE_ID, mCourseProjectId);
@@ -426,6 +425,12 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                         , mPresenter.getCourseMember() != null ? CourseMember.MEMBER : CourseMember.NONE);
                 CoreEngine.create(getApplicationContext()).runNormalPluginWithBundleForResult(
                         "LessonActivity", this, bundle, LessonActivity.REQUEST_LEARN);
+                break;
+            case HOMEWORK:
+                startActivity(new Intent().setClassName(getPackageName(), HOMEWORK_CLASSNAME).putExtra(Const.LESSON_ID, task.id));
+                break;
+            case EXERCISE:
+                startActivity(new Intent().setClassName(getPackageName(), EXERCISE_CLASSNAME).putExtra(Const.LESSON_ID, task.id));
                 break;
         }
     }
