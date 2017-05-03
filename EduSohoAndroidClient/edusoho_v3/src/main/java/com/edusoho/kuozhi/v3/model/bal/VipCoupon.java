@@ -7,7 +7,6 @@ package com.edusoho.kuozhi.v3.model.bal;
 public class VipCoupon {
 
     public String id;
-    public String name;
     public String deadline;
     public String type;
     public String rate;
@@ -26,21 +25,17 @@ public class VipCoupon {
     public String createdTime;
     public String receiveTime;
     public String fullDiscountPrice;
+    public String url;
 
     /**
      * 属于batchs的属性
      */
-
+    public String name;
+    public String description;
 
     /**
      * 是否显示“使用说明”的布局，属于ui使用的变量，与业务无关
      */
     public boolean isShow;
 
-
-    public VipCoupon(String name, String rate, String detail) {
-        this.name = name;
-        this.rate = rate;
-        this.detail = detail;
-    }
 }

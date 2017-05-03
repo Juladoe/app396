@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tree on 2017/4/28.
@@ -43,6 +42,8 @@ public class MyCardPackActivity extends ActionBarBaseActivity {
     public static final String COUPON_PRICE = "coupon_price";
     public static final String COUPON_DEADLINE = "coupon_deadline";
     public static final String COUPON_QRCODE = "coupon_qrcode";
+    public static final String COUPON_URL = "coupon_url";
+    public static final String COUPON_DESC = "coupon_desc";
 
     private TextView mTitle;
     private ListView mCouponList;
@@ -76,20 +77,15 @@ public class MyCardPackActivity extends ActionBarBaseActivity {
                 MyCouponListResult myCouponListResult = parseJsonValue(response, new TypeToken<MyCouponListResult>() {
                 });
                 if (myCouponListResult != null) {
-                    Map<String, VipCoupon> couponMap = myCouponListResult.coupons;
-                    Map<String, CouponBatchs> batchsMap = myCouponListResult.batchs;
-                    for (String key : couponMap.keySet()) {
-                        vipCoupons.add(couponMap.get(key));
-                    }
-                    for (String key : batchsMap.keySet()) {
-                        batchses.add(batchsMap.get(key));
-                    }
+                    vipCoupons.addAll(myCouponListResult.coupons);
+                    batchses.addAll(myCouponListResult.batchs);
                     for (int i = 0; i < vipCoupons.size(); i++) {
                         VipCoupon vipCoupon = vipCoupons.get(i);
                         for (int j = 0; j < batchses.size(); j++) {
                             CouponBatchs batchs = batchses.get(j);
                             if (vipCoupon.batchId.equals(batchs.id)) {
                                 vipCoupon.name = batchs.name;
+                                vipCoupon.description = batchs.description == null ? "默认说明哦" : batchs.description;
                                 break;
                             }
                         }
@@ -97,21 +93,7 @@ public class MyCardPackActivity extends ActionBarBaseActivity {
                     Collections.reverse(vipCoupons);
                     CardPackAdapter adapter = new CardPackAdapter(vipCoupons);
                     mCouponList.setAdapter(adapter);
-                    mCouponList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
-                            mActivity.app.mEngine.runNormalPlugin("CouponDetailActivity", mContext, new PluginRunCallback() {
-                                @Override
-                                public void setIntentDate(Intent startIntent) {
-                                    VipCoupon coupon = (VipCoupon) parent.getAdapter().getItem(position);
-                                    startIntent.putExtra(COUPON_NAME, coupon.name);
-                                    startIntent.putExtra(COUPON_PRICE, coupon.rate);
-                                    startIntent.putExtra(COUPON_DEADLINE, coupon.deadline);
-                                    startIntent.putExtra(COUPON_QRCODE, coupon.code);
-                                }
-                            });
-                        }
-                    });
+                    onItemListener();
                 } else {
                     CommonUtil.longToast(mContext, "获取优惠券信息失败");
                 }
@@ -121,6 +103,32 @@ public class MyCardPackActivity extends ActionBarBaseActivity {
             public void onErrorResponse(VolleyError error) {
                 dialog.dismiss();
                 CommonUtil.longToast(mContext, "获取优惠券信息失败");
+            }
+        });
+    }
+
+    private void onItemListener() {
+        mCouponList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
+                String deadline = ((VipCoupon) parent.getAdapter().getItem(position)).deadline;
+                if (Long.parseLong(deadline) < System.currentTimeMillis() / 1000) {
+                    return;
+                } else {
+                    mActivity.app.mEngine.runNormalPlugin("CouponDetailActivity",
+                            mContext, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    VipCoupon coupon = (VipCoupon) parent.getAdapter().getItem(position);
+                                    startIntent.putExtra(COUPON_NAME, coupon.name);
+                                    startIntent.putExtra(COUPON_PRICE, coupon.rate);
+                                    startIntent.putExtra(COUPON_DEADLINE, coupon.deadline);
+                                    startIntent.putExtra(COUPON_QRCODE, coupon.code);
+                                    startIntent.putExtra(COUPON_URL, coupon.url);
+                                    startIntent.putExtra(COUPON_DESC, coupon.description);
+                            }
+                    });
+                }
             }
         });
     }
@@ -161,18 +169,18 @@ public class MyCardPackActivity extends ActionBarBaseActivity {
             }
             VipCoupon coupon = mList.get(position);
             holder.mName.setText(coupon.name);
-            holder.mPrice.setText((int)Double.parseDouble(coupon.rate) + "");
+            holder.mPrice.setText((int) Double.parseDouble(coupon.rate) + "");
             if (Long.parseLong(coupon.deadline) > System.currentTimeMillis() / 1000) {
                 holder.mBg.setBackgroundResource(R.drawable.voucher_bg);
             } else {
                 holder.mBg.setBackgroundResource(R.drawable.voucher_expired_bg);
             }
-            holder.mDeadline.setText("有效期限至"+getDeadline(coupon.deadline));
+            holder.mDeadline.setText("有效期至" + getDeadline(coupon.deadline));
             return convertView;
         }
     }
 
-    private String getDeadline(String time){
+    private String getDeadline(String time) {
         SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd");
         @SuppressWarnings("unused")
         long lcc = Long.valueOf(time);

@@ -117,7 +117,7 @@ public class MineFragment1 extends BaseFragment {
     private View.OnClickListener dynamicClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            mActivity.app.mEngine.runNormalPlugin("NewsActivity", mActivity, null);
         }
     };
 

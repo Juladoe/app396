@@ -336,7 +336,20 @@
             android:name=".v3.ui.CouponDetailActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".v3.ui.VipOrderActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".v3.ui.ConfirmPayActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".v3.ui.VipPaySuccessActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"/>
 
     </application>
 

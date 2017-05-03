@@ -144,6 +144,7 @@
     <string name="login_password_hint">密码</string>
     <string name="login_line_text">其他方式登录</string>
     <string name="reg_phone_hint">请输入手机号</string>
+    <string name="reg_vip_phone_hint">请输入移动号码</string>
     <string name="reg_mail_hint">请输入邮箱地址</string>
     <string name="reg_code_hint">请输入验证码</string>
     <string name="reg_username_hint">请输入手机号／邮箱号／用户名</string>
@@ -434,5 +435,17 @@
     <string name="vip_gift_month">每月赠送</string>
     <string name="vip_opened">立即开通</string>
     <string name="voucher_desc">使用说明</string>
+    <string name="get_phone_code">获取验证码</string>
+    <string name="vip_msg_code">短信验证码</string>
+    <string name="charge_reminders">* 该号码将用于支付扣费</string>
+    <string name="confirm_pay_month">包月订购确认</string>
+    <string name="vip_order">会员订购</string>
+    <string name="order_sumbit">提交</string>
+    <string name="confirm_pay">确认支付</string>
+    <string name="complete_msgcode_empty">请输入短信验证码</string>
+    <string name="msgcode_error">验证码错误</string>
+    <string name="pay_success_text">购买成功!</string>
+    <string name="back_vip_text">返回会员中心</string>
+    <string name="check_my_pack_text">查看我的卡包</string>
 
 </resources>

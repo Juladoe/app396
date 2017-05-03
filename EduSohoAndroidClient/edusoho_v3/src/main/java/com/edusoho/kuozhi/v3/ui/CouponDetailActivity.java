@@ -64,11 +64,14 @@ public class CouponDetailActivity extends ActionBarBaseActivity {
             String price = data.getStringExtra(MyCardPackActivity.COUPON_PRICE);
             String deadline = data.getStringExtra(MyCardPackActivity.COUPON_DEADLINE);
             String code = data.getStringExtra(MyCardPackActivity.COUPON_QRCODE);
+            String url = data.getStringExtra(MyCardPackActivity.COUPON_URL);
+            String desc = data.getStringExtra(MyCardPackActivity.COUPON_DESC);
             mName.setText((int)Double.parseDouble(price) + "元" + name);
-            Bitmap bitmap = createQRCodeBitmap(name, AppUtil.dp2px(mContext, 150), AppUtil.dp2px(mContext, 150));
-            mQrCode.setImageBitmap(bitmap);
-            mDeadline.setText("有效期限至" + getDeadline(deadline));
+            mDeadline.setText("有效期至" + getDeadline(deadline));
+            mUserRule.setText(desc);
             mCode.setText(code);
+            Bitmap bitmap = createQRCodeBitmap(url, AppUtil.dp2px(mContext, 150), AppUtil.dp2px(mContext, 150));
+            mQrCode.setImageBitmap(bitmap);
         }
     }
 

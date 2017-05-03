@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Created by tree on 2017/4/29.
@@ -8,6 +8,6 @@ import java.util.LinkedHashMap;
 
 public class MyCouponListResult {
 
-    public LinkedHashMap<String, VipCoupon> coupons;
-    public LinkedHashMap<String, CouponBatchs> batchs;
+    public List<VipCoupon> coupons;
+    public List<CouponBatchs> batchs;
 }

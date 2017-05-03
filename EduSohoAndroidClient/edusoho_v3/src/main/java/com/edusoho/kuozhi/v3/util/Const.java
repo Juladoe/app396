@@ -630,4 +630,6 @@ public class Const {
 
     public static final String VIP_COUPON_LIST = "/api/vip/coupons";
     public static final String MY_VIP_COUPON_LIST = "/api/my/vip/coupons";
+    public static final String MY_COUPON_COUNT = "/api/my/cards";
+
 }

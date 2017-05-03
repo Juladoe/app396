@@ -77,7 +77,6 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:text="2"
                             android:id="@+id/tv_voucher_num"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -123,6 +122,7 @@
                 android:layout_below="@id/tv_coupon_list_title"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
+                android:layout_marginBottom="25dp"
                 android:divider="@color/transparent"
                 android:dividerHeight="26dp"
                 android:scrollbars="none" />

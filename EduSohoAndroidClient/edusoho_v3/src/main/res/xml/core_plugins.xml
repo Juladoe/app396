@@ -146,6 +146,22 @@
         name="CouponDetailActivity"
         package="com.edusoho.kuozhi.v3.ui.CouponDetailActivity"
         version="1.0" />
+    <plugin
+        name="ConfirmPayActivity"
+        package="com.edusoho.kuozhi.v3.ui.ConfirmPayActivity"
+        version="1.0" />
+    <plugin
+        name="VipOrderActivity"
+        package="com.edusoho.kuozhi.v3.ui.VipOrderActivity"
+        version="1.0" />
+    <plugin
+        name="VipPaySuccessActivity"
+        package="com.edusoho.kuozhi.v3.ui.VipPaySuccessActivity"
+        version="1.0" />
+    <plugin
+        name="NewsActivity"
+        package="com.edusoho.kuozhi.v3.ui.NewsActivity"
+        version="1.0" />
 
 
 

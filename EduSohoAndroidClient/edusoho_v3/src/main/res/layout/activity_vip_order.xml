@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/mine_view_hint"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_actionbar"
+        android:background="@color/disabled2_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/head_register_height">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/iv_register"
+            android:layout_height="@dimen/iv_register"
+            android:layout_centerVertical="true"
+            android:scaleType="center"
+            android:src="@drawable/action_icon_back" />
+
+        <TextView
+            android:id="@+id/tv_actionbar_title"
+            android:layout_centerInParent="true"
+            android:text="@string/vip_order"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_xl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_get_code"
+        android:layout_below="@id/rl_actionbar"
+        android:layout_marginTop="15dp"
+        android:paddingLeft="15dp"
+        android:background="@color/disabled2_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_marginRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <TextView
+                android:id="@+id/tv_get_code"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/get_phone_code"
+                android:textSize="@dimen/font_l"
+                android:gravity="center"
+                android:textColor="@color/primary_color"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+            <ImageView
+                android:visibility="invisible"
+                android:id="@+id/iv_clear_phone"
+                android:scaleType="center"
+                android:src="@drawable/clear_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="130dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/ll_get_code"
+                android:clickable="true"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tv_send"
+                    android:text=""
+                    android:textSize="@dimen/font_l"
+                    android:textColor="@color/primary_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_show_time"
+                    android:text="@string/register_resend"
+                    android:textSize="@dimen/font_s"
+                    android:textColor="@color/secondary_font_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_phone_num"
+                style="@style/edittext_style"
+                android:layout_toLeftOf="@id/iv_clear_phone"
+                android:hint="@string/reg_vip_phone_hint"
+                android:maxLength="11"
+                android:textColorHint="@color/disabled_hint_color"
+                android:textSize="@dimen/font_l"
+                android:textColor="@color/primary_font_color"/>
+
+        </RelativeLayout>
+        <View
+            android:id="@+id/line"
+            android:layout_marginTop="56dp"
+            android:background="@color/mine_view_hint"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+
+
+        <RelativeLayout
+            android:layout_marginRight="15dp"
+            android:layout_below="@id/line"
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+            <ImageView
+                android:visibility="invisible"
+                android:id="@+id/iv_clear_code"
+                android:scaleType="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/clear_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/et_phone_code"
+                style="@style/edittext_style"
+                android:layout_toLeftOf="@id/iv_clear_code"
+                android:layout_marginRight="5dp"
+                android:hint="@string/vip_msg_code"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:maxLength="6"
+                android:textColorHint="@color/disabled_hint_color"
+                android:textSize="@dimen/font_l"
+                android:textColor="@color/primary_font_color"/>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_below="@id/rl_get_code"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/charge_reminders"
+        android:textColor="@color/mine_coupon_color"
+        android:textSize="@dimen/font_s"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_alignParentBottom="true"
+        android:background="@color/primary_color"
+        android:text="@string/order_sumbit"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_xl"
+        android:layout_width="match_parent"
+        android:layout_height="49dp" />
+</RelativeLayout>

@@ -22,10 +22,12 @@ public class VipCouponAdapter extends BaseAdapter{
 
     private Context mContext;
     private List<VipCoupon> mList;
+    public static List<String> mCouponNameList;
 
     public VipCouponAdapter(Context context){
         this.mContext = context;
         this.mList = new ArrayList<>();
+        this.mCouponNameList = new ArrayList<>();
     }
 
     public void setData(List<VipCoupon> list){
@@ -55,6 +57,7 @@ public class VipCouponAdapter extends BaseAdapter{
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_voucher_month, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
+            mCouponNameList.add(mList.get(position).rate + "元" +mList.get(position).name);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
@@ -77,7 +80,6 @@ public class VipCouponAdapter extends BaseAdapter{
                 notifyDataSetChanged();
             }
         });
-
         return convertView;
     }
 
