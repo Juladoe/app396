@@ -58,8 +58,14 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
     @Override
     public void confirm() {
         switch (mCourseProject.access.code){
+            case "user.locked":
+                mView.showToast(R.string.course_user_locked);
+                break;
             case "course.unpublished":
                 mView.showToast(R.string.course_unpublish);
+                break;
+            case "course.not_buyable":
+                mView.showToast(R.string.course_not_buy);
                 break;
             case "course.closed":
                 mView.showToast(R.string.course_limit_join);
@@ -70,8 +76,9 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
             case "course.buy_expired":
                 mView.showToast(R.string.course_project_expire_hint);
                 break;
-            default:
+            case "success":
                 joinFreeOrVipCourse(mCourseProject.id);
+                break;
         }
     }
 

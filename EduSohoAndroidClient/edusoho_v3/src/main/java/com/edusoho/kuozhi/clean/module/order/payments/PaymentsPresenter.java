@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.module.order.payments;
 
 import android.support.annotation.NonNull;
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.OrderApi;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
@@ -70,8 +71,11 @@ class PaymentsPresenter implements Presenter {
                                     .addTokenHeader(EdusohoApp.app.token)
                                     .createApi(OrderApi.class)
                                     .goPay(orderId, mOrderInfo.targetType, payment);
+                        } else {
+                            mView.showLoadDialog(false);
+                            mView.showToast(R.string.pay_fail);
+                            return null;
                         }
-                        return null;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
