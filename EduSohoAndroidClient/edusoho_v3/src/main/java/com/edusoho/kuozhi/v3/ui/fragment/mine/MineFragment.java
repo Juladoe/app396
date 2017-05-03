@@ -52,6 +52,12 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        initUserInfo();
+    }
+
+    @Override
     protected void initView(View view) {
         rlayoutUserInfo = view.findViewById(R.id.rlayout_user_info);
         rlayoutUserInfo.setOnClickListener(getUserViewClickListener());
