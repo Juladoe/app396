@@ -451,6 +451,7 @@
     <string name="study_progress">学习进度</string>
     <string name="pay_way">支付方式</string>
     <string name="zhifubao">支付宝</string>
+    <string name="pay_fail">支付失败</string>
     <string name="virtual_coin">虚拟币</string>
     <string name="coupons">优惠券</string>
     <string name="confirm">确定</string>
@@ -493,9 +494,12 @@
     <string name="favorite_success">收藏成功</string>
     <string name="join_success">加入成功</string>
     <string name="join_fail">加入失败</string>
+    <string name="course_user_locked">用户被锁,无法加入学习</string>
     <string name="course_unpublish">课程未发布</string>
+    <string name="course_close">课程已关闭</string>
+    <string name="course_not_buy">课程已被设置不可购买，无法加入学习</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
-    <string name="course_date_limit">课程已过购买截止日期，无法加入学习</string>
+    <string name="course_date_limit">课程已过有效截止日期，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
     <string name="double_price_format">￥&#160;%1$.2f-%2$.2f</string>
@@ -525,7 +529,7 @@
     <string name="course_progress_deadline">课程有效期至：%1$s</string>
     <string name="selector_payments">选择支付方式</string>
     <string name="course_closed">课程已过期</string>
-    <string name="course_project_expire_hint">课程已过有效截止日期，无法加入学习</string>
+    <string name="course_project_expire_hint">课程已过购买截止日期，无法加入学习</string>
     <string name="unset_pw_hint">请按提示设置密码</string>
     <string name="pw_long_wrong_hint">密码长度有误</string>
     <string name="course_expired_dialog">课程已过购买截止日期，无法加入学习</string>

@@ -237,14 +237,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (mLessonMenuHelper != null) {
-            mLessonMenuHelper.updatePluginItemState();
-        }
-    }
-
-    @Override
     protected void savePosition(long seekTime) {
         super.savePosition(seekTime);
         SharedPreferences.Editor editor = mSeekPositionSetting.edit();

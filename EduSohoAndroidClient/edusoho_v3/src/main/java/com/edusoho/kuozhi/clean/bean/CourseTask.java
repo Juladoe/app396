@@ -40,7 +40,7 @@ public class CourseTask implements Serializable {
         public String id;
         public String title;
         public Object remark;
-        public String mediaId;
+        public int mediaId;
         public String mediaType;
         public String content;
         public String length;

@@ -282,8 +282,14 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
                     switch (courseProject.access.code){
+                        case "user.locked":
+                            mView.showToast(R.string.course_user_locked);
+                            break;
                         case "course.unpublished":
                             mView.showToast(R.string.course_unpublish);
+                            break;
+                        case "course.not_buyable":
+                            mView.showToast(R.string.course_not_buy);
                             break;
                         case "course.closed":
                             mView.showToast(R.string.course_limit_join);
@@ -294,8 +300,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         case "course.buy_expired":
                             mView.showToast(R.string.course_project_expire_hint);
                             break;
-                        default:
+                        case "success":
                             joinFreeOrVipCourse();
+                            break;
                     }
                     return;
                 }

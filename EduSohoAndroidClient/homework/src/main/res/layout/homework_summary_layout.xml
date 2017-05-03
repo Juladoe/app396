@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/grey_feedback1"
     android:gravity="center|top"
-    android:paddingTop="70dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="81dp">
 
     <include layout="@layout/load_layout" />
 
