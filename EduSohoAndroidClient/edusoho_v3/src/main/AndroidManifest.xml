@@ -350,6 +350,12 @@
             android:name=".v3.ui.VipPaySuccessActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".v3.ui.NewsActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="adjustPan" />
 
     </application>
 

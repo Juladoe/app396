@@ -49,8 +49,8 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
+import com.edusoho.kuozhi.v3.ui.NewsActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -93,7 +93,7 @@ public class NewsFragment extends BaseFragment {
     private View mLoadProgressBar;
     private LoadingHandler mLoadingHandler;
     private boolean mIsNeedRefresh;
-    private DefaultPageActivity mParentActivity;
+    private NewsActivity mParentActivity;
     private IMMessageReceiver mIMMessageReceiver;
     private IMConnectStatusListener mIMConnectStatusListener;
 
@@ -119,11 +119,7 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mParentActivity.getCurrentFragment().equals(getClass().getSimpleName())) {
-            getRestCourse();
-        } else {
-            mIsNeedRefresh = true;
-        }
+        getRestCourse();
         registIMMessageReceiver();
         mIMConnectStatusListener = getIMConnectStatusListener();
         IMClient.getClient().addConnectStatusListener(mIMConnectStatusListener);
@@ -318,7 +314,7 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        mParentActivity = (DefaultPageActivity) getActivity();
+        mParentActivity = (NewsActivity) getActivity();
         mIsNeedRefresh = true;
         mLoadProgressBar = view.findViewById(R.id.news_progressbar);
         lvNewsList = (SwipeMenuListView) view.findViewById(R.id.lv_news_list);
