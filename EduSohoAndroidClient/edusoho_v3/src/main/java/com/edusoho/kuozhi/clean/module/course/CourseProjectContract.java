@@ -50,6 +50,10 @@ public interface CourseProjectContract {
         void setPlayLayoutVisible(boolean visible);
 
         void exitCourseLayout();
+
+        void setTaskFinishButtonBackground(boolean learned);
+
+        void setCurrentTaskStatus(CourseTask.CourseTaskStatusEnum status);
     }
 
     interface Presenter extends BasePresenter {
@@ -61,5 +65,9 @@ public interface CourseProjectContract {
         void exitCourse();
 
         boolean isJoin();
+
+        void finishTask(CourseTask task);
+
+        CourseMember getCourseMember();
     }
 }

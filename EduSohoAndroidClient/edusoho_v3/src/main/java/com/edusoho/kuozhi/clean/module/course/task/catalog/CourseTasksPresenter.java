@@ -1,13 +1,10 @@
-package com.edusoho.kuozhi.clean.module.course.task;
+package com.edusoho.kuozhi.clean.module.course.task.catalog;
 
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.edusoho.kuozhi.clean.module.course;
 
 import com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoFragment;
 import com.edusoho.kuozhi.clean.module.course.rate.CourseProjectRatesFragment;
-import com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment;
+import com.edusoho.kuozhi.clean.module.course.task.catalog.CourseTasksFragment;
 
 /**
  * Created by JesseHuang on 2017/3/26.

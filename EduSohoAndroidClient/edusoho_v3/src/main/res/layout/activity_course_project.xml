@@ -49,7 +49,7 @@
             android:textSize="@dimen/font_l" />
 
         <TextView
-            android:id="@+id/tv_latest_learned"
+            android:id="@+id/tv_immediate_learn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_latest_task_title"
@@ -88,7 +88,26 @@
                 android:gravity="center"
                 android:text="@string/new_font_back"
                 android:textColor="@color/disabled2_hint_color"
-                android:textSize="@dimen/font_xl" />
+                android:textSize="@dimen/font_l" />
+
+            <TextView
+                android:id="@+id/tv_finish_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="56dp"
+                android:background="@drawable/task_finish_button_bg"
+                android:drawablePadding="5dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp"
+                android:text="@string/task_finished_button"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_s"
+                android:visibility="gone" />
+
 
             <com.edusoho.kuozhi.clean.widget.ESIconView
                 android:id="@+id/icon_share"
@@ -166,7 +185,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_toRightOf="@+id/tb_consult"
-            android:background="@color/primary"
+            android:background="@color/primary_color"
             android:gravity="center"
             android:text="@string/learn_course_project"
             android:textColor="@android:color/white"
