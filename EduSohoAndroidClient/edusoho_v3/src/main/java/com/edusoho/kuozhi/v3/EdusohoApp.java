@@ -87,6 +87,7 @@ public class EdusohoApp extends Application {
     public School defaultSchool;
     public User loginUser;
     public String apiVersion;
+    public String isShowStudent;
     public String schoolVersion;
     public String schoolHost = "";
     public CoreEngine mEngine;
