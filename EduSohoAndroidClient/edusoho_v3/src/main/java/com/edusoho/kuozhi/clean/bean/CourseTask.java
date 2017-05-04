@@ -36,7 +36,7 @@ public class CourseTask implements Serializable {
     public Activity activity;
     public Result result;
 
-    public static class Activity {
+    public static class Activity implements Serializable {
         public String id;
         public String title;
         public Object remark;
