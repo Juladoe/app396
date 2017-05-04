@@ -28,6 +28,10 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
+import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
@@ -79,7 +83,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String LESSON_IDS = "lesson_ids";
     public static final String RESULT_ID = "resultId";
     public static final String MEMBER_STATE = "member_state";
-    public static final String ENABLE_FINISH = "enable_finish";
+    public static final String COURSE_TASK = "course_task";
 
     private String mCurrentFragmentName;
     private Class mCurrentFragmentClass;
@@ -91,8 +95,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private int mCourseId;
     private int mLessonId;
-    private int mEnableFinish;
     private int mIsMember;
+    private CourseTask mCourseTask;
     private String mLessonType;
     private Bundle fragmentData;
     private boolean mFromCache;
@@ -180,8 +184,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             if (data != null) {
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-                mEnableFinish = data.getIntExtra(ENABLE_FINISH, 0);
                 mIsMember = data.getIntExtra(LessonActivity.MEMBER_STATE, CourseMember.NONE);
+                mCourseTask = (CourseTask) data.getSerializableExtra(COURSE_TASK);
             }
 
             if (mLessonId == 0) {
@@ -292,7 +296,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 invalidateOptionsMenu();
             }
         });
-        mLessonMenuHelper = new LessonMenuHelper(getBaseContext(), mLessonId, mCourseId);
+
+
+        mLessonMenuHelper = new LessonMenuHelper(getBaseContext(), mLessonId, mCourseId).addMenuHelperListener(new LessonMenuHelper.MenuHelperFinishListener() {
+            @Override
+            public void showFinishTaskDialog(TaskEvent taskEvent) {
+                TaskFinishDialog.newInstance(taskEvent).show(getSupportFragmentManager(), "mTaskFinishDialog");
+            }
+        });
         mLessonMenuHelper.initMenu(menuPop);
     }
 
@@ -624,7 +635,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onResume() {
         super.onResume();
-        //mLessonMenuHelper.updatePluginItemState();
         invalidateOptionsMenu();
         CacheServerFactory.getInstance().resume();
     }

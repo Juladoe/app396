@@ -9,9 +9,12 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
@@ -28,8 +31,10 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -40,10 +45,10 @@ public class LessonMenuHelper {
 
     private int mLessonId;
     private int mCourseId;
-    private int mEnableFinish;
     private String mCurrentLearnState;
     private Context mContext;
     private MenuPop mMenuPop;
+    private MenuHelperFinishListener mMenuHelperFinishListener;
 
     public LessonMenuHelper(Context context, int lessonId, int courseId) {
         this.mContext = context;
@@ -51,11 +56,9 @@ public class LessonMenuHelper {
         this.mCourseId = courseId;
     }
 
-    public LessonMenuHelper(Context context, int lessonId, int courseId, int enableFinish) {
-        this.mContext = context;
-        this.mLessonId = lessonId;
-        this.mCourseId = courseId;
-        this.mEnableFinish = enableFinish;
+    public LessonMenuHelper addMenuHelperListener(MenuHelperFinishListener listener) {
+        mMenuHelperFinishListener = listener;
+        return this;
     }
 
     public MenuPop getMenuPop() {
@@ -120,20 +123,16 @@ public class LessonMenuHelper {
     }
 
     private synchronized void changeLessonLearnState(final View view) {
-        if (mEnableFinish == 0) {
-            CommonUtil.longToast(mContext, mContext.getString(R.string.course_limit_task));
-            return;
-        }
         if ("finish".equals(mCurrentLearnState)) {
             return;
         }
         view.setEnabled(false);
         HttpUtils.getInstance()
                 .createApi(CourseApi.class)
-                .setCourseTaskStatus(mCourseId, mLessonId, CourseTask.CourseTaskStatusEnum.FINISH.toString())
+                .getCourseProject(mCourseId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<TaskEvent>() {
+                .subscribe(new Subscriber<CourseProject>() {
                     @Override
                     public void onCompleted() {
 
@@ -145,12 +144,39 @@ public class LessonMenuHelper {
                     }
 
                     @Override
-                    public void onNext(TaskEvent taskEvent) {
-                        view.setEnabled(true);
-                        if (taskEvent.result != null && CourseTask.CourseTaskStatusEnum.FINISH.toString().equals(taskEvent.result.status)) {
-                            MessageEngine.getInstance().sendMsg(Const.LESSON_STATUS_REFRESH, null);
-                            setLearnBtnState(true);
-                            mCurrentLearnState = "finish";
+                    public void onNext(CourseProject courseProject) {
+                        if (courseProject.enableFinish == 1) {
+                            HttpUtils.getInstance()
+                                    .createApi(CourseApi.class)
+                                    .setCourseTaskStatus(mCourseId, mLessonId, CourseTask.CourseTaskStatusEnum.FINISH.toString())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Subscriber<TaskEvent>() {
+                                        @Override
+                                        public void onCompleted() {
+
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(TaskEvent taskEvent) {
+                                            view.setEnabled(true);
+                                            if (taskEvent.result != null && CourseTask.CourseTaskStatusEnum.FINISH.toString().equals(taskEvent.result.status)) {
+                                                MessageEngine.getInstance().sendMsg(Const.LESSON_STATUS_REFRESH, null);
+                                                setLearnBtnState(true);
+                                                mCurrentLearnState = "finish";
+                                                if (mMenuHelperFinishListener != null) {
+                                                    mMenuHelperFinishListener.showFinishTaskDialog(taskEvent);
+                                                }
+                                            }
+                                        }
+                                    });
+                        } else {
+                            CommonUtil.longToast(mContext, mContext.getString(R.string.course_limit_task));
                         }
                     }
                 });
@@ -171,5 +197,9 @@ public class LessonMenuHelper {
         bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, mLessonId);
         CoreEngine.create(mContext).runNormalPluginWithBundle("NoteActivity", mContext, bundle);
+    }
+
+    public interface MenuHelperFinishListener {
+        void showFinishTaskDialog(TaskEvent taskEvent);
     }
 }

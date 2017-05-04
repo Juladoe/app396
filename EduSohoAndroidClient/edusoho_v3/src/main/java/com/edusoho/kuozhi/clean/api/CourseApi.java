@@ -29,6 +29,9 @@ public interface CourseApi {
     @GET("courses/{id}/items")
     Observable<List<CourseItem>> getCourseItems(@Path("id") int courseId);
 
+    @GET("courses/{courseId}/tasks/{taskId}")
+    Observable<CourseTask> getCourseTask(@Path("courseId") int courseId, @Path("taskId") int taskId);
+
     @GET("courses/{id}")
     Observable<CourseProject> getCourseProject(@Path("id") int courseId);
 

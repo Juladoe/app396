@@ -558,5 +558,8 @@
     <string name="flash_task_not_support">移动端暂不支持Flash任务</string>
     <string name="task_finished_button">学过了</string>
     <string name="course_limit_task">限制任务：必须观看%d分钟</string>
+    <string name="congratulation_finish_task">恭喜完成！</string>
+    <string name="task_finish">学习完成</string>
+    <string name="next_task">下一课</string>
 
 </resources>
