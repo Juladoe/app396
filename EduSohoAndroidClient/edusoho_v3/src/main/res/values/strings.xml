@@ -448,6 +448,7 @@
     <string name="course_project_favorite">收藏</string>
     <string name="course_project_consult">咨询</string>
     <string name="learn_course_project">加入学习</string>
+    <string name="learn_course_project_free_to_learn">会员免费加入</string>
     <string name="study_progress">学习进度</string>
     <string name="pay_way">支付方式</string>
     <string name="zhifubao">支付宝</string>

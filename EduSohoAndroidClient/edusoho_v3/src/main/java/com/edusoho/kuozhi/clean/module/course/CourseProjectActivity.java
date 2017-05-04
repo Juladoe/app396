@@ -294,16 +294,24 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     /**
      * 未加入底部Layout处理
      *
-     * @param state true.未加入，false.课程已过期
+     * @param statusEnum
      */
     @Override
-    public void setJoinButton(boolean state) {
-        if (state) {
-            mLearnTextView.setText(R.string.learn_course_project);
-            mLearnTextView.setBackgroundResource(R.color.primary_color);
-        } else {
-            mLearnTextView.setText(R.string.course_closed);
-            mLearnTextView.setBackgroundResource(R.color.secondary2_font_color);
+    public void setJoinButton(JoinButtonStatusEnum statusEnum) {
+        switch (statusEnum) {
+            case NORMAL:
+                mLearnTextView.setText(R.string.learn_course_project);
+                mLearnTextView.setBackgroundResource(R.color.primary_color);
+                break;
+            case VIP_FREE:
+                mLearnTextView.setText(R.string.learn_course_project_free_to_learn);
+                mLearnTextView.setBackgroundResource(R.color.primary_color);
+                break;
+            case COURSE_EXPIRED:
+                mLearnTextView.setText(R.string.course_closed);
+                mLearnTextView.setBackgroundResource(R.color.secondary2_font_color);
+                break;
+
         }
     }
 
@@ -563,5 +571,9 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     public enum DialogType {
         COURSE_EXPIRED, COURSE_MEMBER_EXPIRED
+    }
+
+    public enum JoinButtonStatusEnum {
+        NORMAL, VIP_FREE, COURSE_EXPIRED
     }
 }

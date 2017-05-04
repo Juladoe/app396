@@ -41,7 +41,7 @@ public interface CourseProjectContract {
 
         void initLearnLayout(CourseProject.LearnMode mode);
 
-        void setJoinButton(boolean isCourseStarted);
+        void setJoinButton(CourseProjectActivity.JoinButtonStatusEnum statusEnum);
 
         void launchConfirmOrderActivity(int courseSetId, int courseId);
 

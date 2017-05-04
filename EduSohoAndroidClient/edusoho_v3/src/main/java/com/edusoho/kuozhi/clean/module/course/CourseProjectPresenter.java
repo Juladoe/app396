@@ -127,7 +127,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         }
         if (mCourseProject.originPrice == FREE_PRICE) {
             joinFreeOrVipCourse(mCourseProjectId);
-        } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
+        } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId <= mCourseProject.vipLevelId) {
             joinFreeOrVipCourse(mCourseProjectId);
         } else {
             mView.launchConfirmOrderActivity(mCourseProject.courseSet.id, mCourseProjectId);
@@ -231,7 +231,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             mView.showFragments(initCourseModules(false), courseProject);
                             initTrialFirstTask(mCourseProjectId);
                             if (courseProject.learningExpiryDate.expired) {
-                                mView.setJoinButton(false);
+                                mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.COURSE_EXPIRED);
+                            } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId <= mCourseProject.vipLevelId) {
+                                mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.VIP_FREE);
                             }
                         }
                     }
@@ -241,7 +243,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private void initLogoutCourseMemberStatus(final CourseProject courseProject) {
         mView.showFragments(initCourseModules(false), courseProject);
         if (courseProject.learningExpiryDate.expired) {
-            mView.setJoinButton(false);
+            mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.COURSE_EXPIRED);
         }
     }
 
@@ -336,5 +338,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private boolean isCourseMemberExpired(String deadline) {
         return !CommonConstant.EXPIRED_MODE_FOREVER.equals(deadline) && TimeUtils.getUTCtoDate(deadline).compareTo(new Date()) < 0;
+    }
+
+    private boolean isCourseStart(String startDate) {
+        return false;
     }
 }
