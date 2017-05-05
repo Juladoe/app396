@@ -33,7 +33,7 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
     public void subscribe() {
         mView.showCourseMenuButton(mIsJoin);
         HttpUtils.getInstance().createApi(CourseApi.class)
-                .getCourseItems(mCourseProject.id)
+                .getCourseItems(mCourseProject.id, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<CourseItem>>() {

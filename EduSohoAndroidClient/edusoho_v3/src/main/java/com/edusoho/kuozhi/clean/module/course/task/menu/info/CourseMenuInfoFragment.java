@@ -101,7 +101,7 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
 
     private void showCourseProgress(CourseLearningProgress progress) {
         try {
-            mMyCourseProgress.setText(String.format(getString(R.string.course_finish_progress), progress.taskResultCount, progress.taskCount));
+            mMyCourseProgress.setText(String.format(getString(R.string.task_finish_progress), progress.taskResultCount, progress.taskCount));
             mMyCourseProgressRate.setProgress(progress.taskCount == 0 ? 0 : progress.taskResultCount * 100 / progress.taskCount);
             mCourseProgress.setText(String.format(getString(R.string.course_plan_progress), progress.planStudyTaskCount, progress.taskCount));
             mCourseProgressRate.setProgress(progress.taskCount == 0 ? 0 : progress.planStudyTaskCount * 100 / progress.taskCount);

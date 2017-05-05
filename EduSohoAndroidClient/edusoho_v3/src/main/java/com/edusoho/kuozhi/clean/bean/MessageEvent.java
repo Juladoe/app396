@@ -10,6 +10,7 @@ public class MessageEvent<T> {
     public static final int COURSE_JOIN = 0;
     public static final int COURSE_EXIT = 1;
     public static final int LEARN_TASK = 2;
+    public static final int COURSE_ACCESS_STATUS = 3;
 
     private T mMessage;
     private int mCode;

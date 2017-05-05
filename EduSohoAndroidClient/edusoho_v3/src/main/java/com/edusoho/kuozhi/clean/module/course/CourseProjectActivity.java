@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -30,6 +29,7 @@ import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskIconEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.utils.AppUtils;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -38,15 +38,18 @@ import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
+import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 
 /**
  * Created by JesseHuang on 2017/3/22.
@@ -83,10 +86,12 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private TextView mFinishTask;
     private FrameLayout mTaskPlayContainer;
 
+    private Map<String, Fragment> mFragments;
+
+    private CourseProjectPresenter.ShowDialogHelper mShowDialogHelper;
+
     private AlertDialog mCourseExpiredDialog;
     private AlertDialog mCourseMemberExpiredDialog;
-
-    private Map<String, Fragment> mFragments;
 
     public static void launch(Context context, int courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
@@ -136,13 +141,35 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLearnTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.joinCourseProject();
+                if (mShowDialogHelper != null) {
+                    mShowDialogHelper.showError();
+                } else {
+                    mPresenter.joinCourseProject();
+                }
             }
         });
 
         mBack = (ESIconView) findViewById(R.id.iv_back);
         mShare = (ESIconView) findViewById(R.id.icon_share);
         mCache = (ESIconView) findViewById(R.id.icon_cache);
+        mCache.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mShowDialogHelper != null) {
+                    mShowDialogHelper.showError();
+                } else {
+                    if (AppUtils.getRomAvailableSize(getApplicationContext()).contains("M")) {
+                        if (Float.parseFloat(AppUtils.getRomAvailableSize(getApplicationContext())
+                                .replaceAll("[a-zA-Z]", "").trim()) < 100) {
+                            showToast(R.string.cache_hint);
+                            return;
+                        }
+                    }
+                    startActivity(new Intent(CourseProjectActivity.this, LessonDownloadingActivity.class)
+                            .putExtra(Const.COURSE_ID, mCourseProjectId));
+                }
+            }
+        });
         mPlayLayout = findViewById(R.id.rl_play_layout);
         mLatestLearnedTitle = (TextView) findViewById(R.id.tv_latest_learned_title);
         mLatestTaskTitle = (TextView) findViewById(R.id.tv_latest_task_title);
@@ -150,7 +177,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mImmediateLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2017/4/28 继续学习&试学
+                if (mShowDialogHelper != null) {
+                    mShowDialogHelper.showError();
+                } else {
+                    // TODO: 2017/4/28 继续学习&试学
+                }
             }
         });
 
@@ -178,7 +209,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         actionBar.setDisplayHomeAsUpEnabled(false);
 
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
-
         mCourseExpiredDialog = initCourseExpiredAlertDialog();
         mCourseMemberExpiredDialog = initCourseMemberExpiredAlertDialog();
         mPresenter = new CourseProjectPresenter(mCourseProjectId, this);
@@ -294,16 +324,24 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     /**
      * 未加入底部Layout处理
      *
-     * @param state true.未加入，false.课程已过期
+     * @param statusEnum
      */
     @Override
-    public void setJoinButton(boolean state) {
-        if (state) {
-            mLearnTextView.setText(R.string.learn_course_project);
-            mLearnTextView.setBackgroundResource(R.color.primary_color);
-        } else {
-            mLearnTextView.setText(R.string.course_closed);
-            mLearnTextView.setBackgroundResource(R.color.secondary2_font_color);
+    public void setJoinButton(JoinButtonStatusEnum statusEnum) {
+        switch (statusEnum) {
+            case NORMAL:
+                mLearnTextView.setText(R.string.learn_course_project);
+                mLearnTextView.setBackgroundResource(R.color.primary_color);
+                break;
+            case VIP_FREE:
+                mLearnTextView.setText(R.string.learn_course_project_free_to_learn);
+                mLearnTextView.setBackgroundResource(R.color.primary_color);
+                break;
+            case COURSE_EXPIRED:
+                mLearnTextView.setText(R.string.course_closed);
+                mLearnTextView.setBackgroundResource(R.color.secondary2_font_color);
+                break;
+
         }
     }
 
@@ -312,16 +350,18 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         ConfirmOrderActivity.launch(this, courseSetId, courseId);
     }
 
-    @Override
-    public void showExitDialog(DialogType type) {
-        switch (type) {
-            case COURSE_EXPIRED:
-                mCourseExpiredDialog.show();
-                break;
-            case COURSE_MEMBER_EXPIRED:
-                mCourseMemberExpiredDialog.show();
-                break;
-        }
+    public void showExitDialog(int msgRes, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
+        builder.setMessage(msgRes)
+                .setPositiveButton(R.string.course_exit_confirm, onClickListener)
+                .setNegativeButton(R.string.course_exit_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private AlertDialog initCourseExpiredAlertDialog() {
@@ -336,7 +376,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        dialog.dismiss();
                     }
                 }).setCancelable(false);
         return builder.create();
@@ -354,7 +394,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        dialog.dismiss();
                     }
                 }).setCancelable(false);
         return builder.create();
@@ -365,25 +405,24 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
-
-    @Override
     public void onReceiveMessage(MessageEvent messageEvent) {
         if (messageEvent.getType() == MessageEvent.LEARN_TASK) {
             CourseTask task = (CourseTask) messageEvent.getMessageBody();
             mFinishTask.setTag(task);
             switch (messageEvent.getType()) {
                 case MessageEvent.LEARN_TASK:
-                    learnTask(task);
+                    if (mShowDialogHelper != null) {
+                        mShowDialogHelper.showError();
+                    } else {
+                        learnTask(task);
+                    }
                     break;
             }
-            setPlayLayoutVisible(false);
         }
     }
 
     private void learnTask(CourseTask task) {
+        setPlayLayoutVisible(false);
         mFinishTask.setVisibility(View.GONE);
         clearTaskFragment();
         TaskIconEnum taskType = TaskIconEnum.fromString(task.type);
@@ -563,5 +602,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     public enum DialogType {
         COURSE_EXPIRED, COURSE_MEMBER_EXPIRED
+    }
+
+    public enum JoinButtonStatusEnum {
+        NORMAL, VIP_FREE, COURSE_EXPIRED
+    }
+
+    @Override
+    public void setShowError(CourseProjectPresenter.ShowDialogHelper helper) {
+        mShowDialogHelper = helper;
     }
 }

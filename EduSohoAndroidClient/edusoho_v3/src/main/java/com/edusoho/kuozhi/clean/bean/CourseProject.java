@@ -82,4 +82,19 @@ public class CourseProject implements Serializable {
             return null;
         }
     }
+
+    public enum ExpiryMode {
+        FOREVER("forever"), END_DATE("end_date"), DAYS("days"), DATE("date");
+
+        private String mName;
+
+        ExpiryMode(String name) {
+            this.mName = name;
+        }
+
+        @Override
+        public String toString() {
+            return mName;
+        }
+    }
 }

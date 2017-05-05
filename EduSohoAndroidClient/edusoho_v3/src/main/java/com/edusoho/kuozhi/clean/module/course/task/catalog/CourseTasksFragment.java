@@ -84,7 +84,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         mCourseProgressInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LearnCourseProgressDialog.newInstance(mCourseLearningProgress)
+                LearnCourseProgressDialog.newInstance(mCourseLearningProgress, mCourseProject)
                         .show(getActivity().getSupportFragmentManager(), "LearnCourseProgressDialog");
             }
         });
