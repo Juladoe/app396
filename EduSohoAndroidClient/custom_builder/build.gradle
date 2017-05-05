@@ -1,0 +1,96 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '22.0.1'
+
+    defaultConfig {
+        applicationId "com.edusoho"
+        minSdkVersion 16
+        targetSdkVersion 21
+        versionName "3.9.3"
+        versionCode 48
+
+        ndk {
+            abiFilters "armeabi-v7a", "armeabi"
+        }
+        multiDexEnabled true
+        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi"]
+    }
+
+    //签名
+    signingConfigs {
+
+        kunluncloud {
+            storeFile file("key/com.edusoho.kunluncloud.jks")
+            storePassword "10001000"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
+
+        qinsixueba {
+            storeFile file("key/com.edusoho.qinsixueba.jks")
+            storePassword "10001000"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
+
+        debugConfig {
+            storeFile file("key/com.edusoho.sandyunke.jks")
+            storePassword "10001000"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
+    }
+
+    productFlavors {
+        sandyunke {
+            signingConfig signingConfigs.debugConfig
+            applicationId "com.edusoho.sandyunke"
+            manifestPlaceholders = [wxpkg: "com.edusoho.sandyunke"]
+        }
+
+        qinsixueba {
+            signingConfig signingConfigs.qinsixueba
+            applicationId "com.edusoho.qinsixueba"
+            manifestPlaceholders = [wxpkg: "com.edusoho.qinsixueba"]
+        }
+
+    }
+
+    sourceSets {
+        sandyunke {
+            java.srcDirs = ['src/sandyunke/java']
+            res.srcDirs = ['src/sandyunke/res']
+            assets.srcDirs = ['src/sandyunke/assets']
+        }
+
+        qinsixueba {
+            java.srcDirs = ['src/qinsixueba/java']
+            res.srcDirs = ['src/qinsixueba/res']
+            assets.srcDirs = ['src/qinsixueba/assets']
+        }
+    }
+
+    buildTypes {
+        debug {
+            zipAlignEnabled true
+            minifyEnabled false
+            signingConfig signingConfigs.qinsixueba
+        }
+        release {
+            zipAlignEnabled true
+            minifyEnabled false
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile project(':edusoho_v3')
+    compile project(':homework')
+    compile project(':liveplayer')
+}

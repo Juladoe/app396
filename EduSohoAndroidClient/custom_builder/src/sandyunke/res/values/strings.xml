@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">3D云课</string>
+    <string name="app_host">http://ke.3dsjw.com</string>
+    <string name="app_code">sandyunke</string>
+    <string name="about_welcome">关于3D云课</string>
+    <string name="channel_name">sandyunke</string>
+    <string name="splash_num">3</string>
+    <string name="splash_padding">0</string>
+    <string name="app_id">wxb0183ce89d682955</string>
+    <string-array name="shard_filter">
+        <item>TencentWeibo</item>
+        <item>QZone</item>
+    </string-array>
+</resources>

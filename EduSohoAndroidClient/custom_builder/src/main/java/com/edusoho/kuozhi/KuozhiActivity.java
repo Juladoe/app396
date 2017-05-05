@@ -88,7 +88,7 @@ public class KuozhiActivity extends StartActivity {
             setDefaultSchool();
         }
         if (app.config.showSplash && school.splashs != null && school.splashs.length > 0) {
-            CustomSplashActivity.start(this, 0, school.splashs);
+            app.mEngine.runNormalPlugin("SplashActivity", this, null);
             app.config.showSplash = false;
             app.saveConfig();
             return;

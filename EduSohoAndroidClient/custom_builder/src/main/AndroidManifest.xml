@@ -28,6 +28,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
 
+        <activity
+            android:name=".kuozhi.LocalSplashActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="550f8dacfd98c56a3200084f" />

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">勤思学吧</string>
+
+    <string name="app_host">http://xue.qsiedu.com</string>
+    <string name="app_code">qinsixueba</string>
+    <string name="about_welcome">关于勤思学吧</string>
+    <string name="channel_name">qinsixueba</string>
+    <string name="splash_num">4</string>
+    <string name="splash_padding">0</string>
+    <string name="app_id">wxfa8a89e2e44aefc7</string>
+
+    <string-array
+        name="shard_filter"
+        >
+        <item>TencentWeibo</item>
+        <item>QZone</item>
+
+    </string-array>
+
+</resources>

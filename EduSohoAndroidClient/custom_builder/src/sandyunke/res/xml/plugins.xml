@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugins>
+    <plugin
+        name="SplashActivity"
+        package="com.edusoho.kuozhi.CustomSplashActivity"
+        version="1.0"/>
+    <plugin
+        name="StartActivity"
+        package="com.edusoho.kuozhi.CustomStartActivity"
+        version="1.0"/>
+</plugins>
