@@ -47,10 +47,6 @@ public interface CourseProjectContract {
 
         void launchConfirmOrderActivity(int courseSetId, int courseId);
 
-        void showExitDialog(CourseProjectActivity.DialogType type);
-
-        void showExitDialog(int msgRes);
-
         void showExitDialog(int msgRes, DialogInterface.OnClickListener onClickListener);
 
         void setShowError(CourseProjectPresenter.ShowDialogHelper helper);

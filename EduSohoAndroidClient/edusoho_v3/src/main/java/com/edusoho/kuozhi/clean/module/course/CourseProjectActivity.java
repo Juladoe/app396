@@ -339,38 +339,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         ConfirmOrderActivity.launch(this, courseSetId, courseId);
     }
 
-    @Override
-    public void showExitDialog(DialogType type) {
-//        switch (type) {
-//            case COURSE_EXPIRED:
-//                mCourseExpiredDialog.show();
-//                break;
-//            case COURSE_MEMBER_EXPIRED:
-//                mCourseMemberExpiredDialog.show();
-//                break;
-//        }
-    }
-
-    @Override
-    public void showExitDialog(int msgRes) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
-        builder.setMessage(msgRes)
-                .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.exitCourse();
-                    }
-                })
-                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setCancelable(false)
-                .show();
-    }
-
     public void showExitDialog(int msgRes, DialogInterface.OnClickListener onClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
         builder.setMessage(msgRes)

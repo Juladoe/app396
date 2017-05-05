@@ -568,5 +568,6 @@
     <string name="unknow_error">未知错误</string>
     <string name="course_exit_confirm">确定</string>
     <string name="course_exit_cancel">取消</string>
+    <string name="course_task_free">免费</string>
 
 </resources>
