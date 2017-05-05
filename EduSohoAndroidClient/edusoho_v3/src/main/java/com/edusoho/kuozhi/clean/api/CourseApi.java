@@ -27,7 +27,7 @@ import rx.Observable;
 public interface CourseApi {
 
     @GET("courses/{id}/items")
-    Observable<List<CourseItem>> getCourseItems(@Path("id") int courseId);
+    Observable<List<CourseItem>> getCourseItems(@Path("id") int courseId, @Query("onlyPublished") int status);
 
     @GET("courses/{id}")
     Observable<CourseProject> getCourseProject(@Path("id") int courseId);
