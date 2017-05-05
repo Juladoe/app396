@@ -27,14 +27,14 @@ import java.util.List;
  * Created by DF on 2017/3/24.
  */
 
-public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder> {
+class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder> {
 
     private static final int FREE = 1;
 
     private List<CourseProject> mList;
     private List<VipInfo> mVipInfos;
+    private List mMaxIndexs;
     private Context mContext;
-    private int maxIndex = -1;
 
     CourseProjectsAdapter(Context context) {
         this.mContext = context;
@@ -45,12 +45,8 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
     void reFreshData(List<CourseProject> list, List<VipInfo> mVipInfos) {
         this.mList = list;
         this.mVipInfos = mVipInfos;
-        int num = 0;
-        for (int i = 0; i < mList.size(); i++) {
-            if (mList.get(i).studentNum > num) {
-                num = mList.get(i).studentNum;
-                maxIndex = i;
-            }
+        if (mList.size() > 1) {
+            mMaxIndexs = getMostStudentNumPlan();
         }
         notifyDataSetChanged();
     }
@@ -108,7 +104,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
 
     private void loadHot(CourseProjectViewHolder holder, int position) {
         if (mList.size() > 1) {
-            if (maxIndex == position) {
+            if (mMaxIndexs.contains(position)) {
                 holder.mHot.setVisibility(View.VISIBLE);
             } else {
                 holder.mHot.setVisibility(View.GONE);
@@ -116,6 +112,22 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
         } else {
             holder.mHot.setVisibility(View.GONE);
         }
+    }
+
+    private List getMostStudentNumPlan() {
+        int num = 0;
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < mList.size(); i++) {
+            if (mList.get(i).studentNum > num) {
+                num = mList.get(i).studentNum;
+            }
+        }
+        for (int index = 0; index < mList.size(); index++) {
+            if (mList.get(index).studentNum == num) {
+                list.add(index);
+            }
+        }
+        return list;
     }
 
     private void loadVip(CourseProjectViewHolder holder, CourseProject courseProject) {
