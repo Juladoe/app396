@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.VipCouponAdapter;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.view.ChildListView;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class VipPaySuccessActivity extends ActionBarBaseActivity {
     private Button mBtnCheckPack;
     private ChildListView mClvCouponList;
     private CouponNameAdapter mAdapter;
+    private View mCheckRules;
     private List<String> mNameList = new ArrayList<>();
 
     @Override
@@ -39,6 +41,7 @@ public class VipPaySuccessActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vip_pay_success);
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
+        ActivityUtil.setStatusViewBackgroud(this,Color.BLACK);
         setBackMode(null, "会员订购");
         initView();
     }
@@ -50,6 +53,8 @@ public class VipPaySuccessActivity extends ActionBarBaseActivity {
         mBtnBackVip.setOnClickListener(backVipClickListener);
         mBtnCheckPack = (Button) findViewById(R.id.btn_check_pack);
         mBtnCheckPack.setOnClickListener(checkPackClickListener);
+        mCheckRules = findViewById(R.id.rl_check_rules);
+        mCheckRules.setOnClickListener(mRulesClickListener);
         mClvCouponList = (ChildListView) findViewById(R.id.clv_coupon_list);
         if(VipCouponAdapter.mCouponNameList != null) {
             mNameList.clear();
@@ -73,6 +78,13 @@ public class VipPaySuccessActivity extends ActionBarBaseActivity {
         }
     };
 
+    private View.OnClickListener mRulesClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+
 
     public class CouponNameAdapter extends BaseAdapter{
 
@@ -84,7 +96,7 @@ public class VipPaySuccessActivity extends ActionBarBaseActivity {
 
         @Override
         public int getCount() {
-            return mNameList.size();
+            return mNameList.size() >5 ? 5 : mNameList.size();
         }
 
         @Override

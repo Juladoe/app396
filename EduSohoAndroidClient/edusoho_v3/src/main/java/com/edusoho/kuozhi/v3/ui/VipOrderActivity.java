@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.Validator;
@@ -47,6 +49,7 @@ public class VipOrderActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vip_order);
+        ActivityUtil.setStatusViewBackgroud(this, Color.BLACK);
         initView();
     }
 

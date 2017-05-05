@@ -57,7 +57,9 @@ public class VipCouponAdapter extends BaseAdapter{
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_voucher_month, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-            mCouponNameList.add(mList.get(position).rate + "元" +mList.get(position).name);
+            if(!mCouponNameList.contains(mList.get(position).rate + "元" +mList.get(position).name)) {
+                mCouponNameList.add(mList.get(position).rate + "元" + mList.get(position).name);
+            }
         } else {
             holder = (ViewHolder) convertView.getTag();
         }

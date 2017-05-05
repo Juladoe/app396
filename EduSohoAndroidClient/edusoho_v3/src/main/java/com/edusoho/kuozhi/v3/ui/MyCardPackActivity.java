@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.model.bal.MyCouponListResult;
 import com.edusoho.kuozhi.v3.model.bal.VipCoupon;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -53,6 +54,7 @@ public class MyCardPackActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_card_pack);
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
+        ActivityUtil.setStatusViewBackgroud(this,Color.BLACK);
         setBackMode(null, "我的卡包");
         initView();
         initData();

@@ -218,6 +218,10 @@
     <string name="font_scan_code">&#xe608;</string>
     <string name="font_search">&#xe603;</string>
     <string name="font_back">&#xe618;</string>
+    <string name="font_howzhi_find">&#xe6ce;</string>
+    <string name="font_howzhi_study">&#xe6cf;</string>
+    <string name="font_howzhi_mine">&#xe6cd;</string>
+
 
     <string name="font_chat_add_media">&#xe611;</string>
     <string name="font_chat_keyboard">&#xe60d;</string>

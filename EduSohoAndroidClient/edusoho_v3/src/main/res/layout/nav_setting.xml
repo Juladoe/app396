@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_bottom_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_layout_height"
@@ -10,34 +9,32 @@
     android:background="@drawable/nav_layout_bg"
     android:orientation="horizontal">
 
-    <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
         android:id="@+id/nav_tab_find"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        app:fontColor="@color/nav_btn_sel"
-        app:image="@string/font_find"
-        app:size="@dimen/nav_layout_btn_size"/>
+        android:text="@string/font_howzhi_find"
+        android:textColor="@color/nav_btn_sel"
+        android:textSize="@dimen/nav_layout_btn_size"/>
 
-    <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
         android:id="@+id/nav_tab_study"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
-        app:fontColor="@color/nav_btn_sel"
-        app:image="@string/font_friends"
-        app:size="@dimen/nav_layout_btn_size" />
+        android:text="@string/font_howzhi_study"
+        android:textColor="@color/nav_btn_sel"
+        android:textSize="@dimen/nav_layout_btn_size"/>
 
 
-    <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
         android:id="@+id/nav_tab_mine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
-        app:fontColor="@color/nav_btn_sel"
-        app:image="@string/font_mine"
-        app:size="@dimen/nav_layout_btn_size"/>
+        android:text="@string/font_howzhi_mine"
+        android:textColor="@color/nav_btn_sel"
+        android:textSize="@dimen/nav_layout_btn_size"/>
 </LinearLayout>

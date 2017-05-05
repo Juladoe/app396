@@ -37,11 +37,12 @@ import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
-import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
+import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 import com.umeng.analytics.MobclickAgent;
@@ -59,9 +60,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private String mCurrentTag;
     private int mSelectBtn;
     private LinearLayout mNavLayout;
-    private EduSohoTextBtn mDownTabFind;
-    private EduSohoTextBtn mDownTabMine;
-    private EduSohoTextBtn mDownTabStudy;
+    private EduSohoNewIconView mDownTabFind;
+    private EduSohoNewIconView mDownTabMine;
+    private EduSohoNewIconView mDownTabStudy;
     private Toolbar tbActionBar;
     private TextView tvTitle;
     private TextView tvSitting;
@@ -156,9 +157,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private void initView() {
         mNavLayout = (LinearLayout) findViewById(R.id.nav_bottom_layout);
-        mDownTabFind = (EduSohoTextBtn) findViewById(R.id.nav_tab_find);
-        mDownTabMine = (EduSohoTextBtn) findViewById(R.id.nav_tab_mine);
-        mDownTabStudy = (EduSohoTextBtn) findViewById(R.id.nav_tab_study);
+        mDownTabFind = (EduSohoNewIconView) findViewById(R.id.nav_tab_find);
+        mDownTabMine = (EduSohoNewIconView) findViewById(R.id.nav_tab_mine);
+        mDownTabStudy = (EduSohoNewIconView) findViewById(R.id.nav_tab_study);
         tbActionBar = (Toolbar) findViewById(R.id.tb_action_bar);
         tvTitle = (TextView) findViewById(R.id.tv_title);
         tvSitting = (TextView) findViewById(R.id.tv_sitting);
@@ -232,17 +233,20 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             tag = "FindFragment";
             setTitle(getSchoolTitle());
             setTitleLoading(false);
+            ActivityUtil.setStatusViewBackgroud(this,getResources().getColor(R.color.primary_fb));
         } else if (id == R.id.nav_tab_study) {
             tag = "StudyFragment";
             setTitle(getString(R.string.title_study));
             setTitleLoading(false);
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFFFF")));
+            ActivityUtil.setStatusViewBackgroud(this,Color.BLACK);
             tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
         } else {
             MobclickAgent.onEvent(this, "i_userInformationPortal");
             tag = "MineFragment1";
             setTitle(getString(R.string.title_mine));
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ccf9f9f9")));
+            ActivityUtil.setStatusViewBackgroud(this,Color.BLACK);
             tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
             tvSitting.setVisibility(View.GONE);
             vToolbarBreakline.setVisibility(View.VISIBLE);
@@ -308,15 +312,18 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     private void changeBtnIcon(int id) {
-        mDownTabFind.setIcon(getResources().getString(R.string.font_find));
-        mDownTabStudy.setIcon(getResources().getString(R.string.font_friends));
-        mDownTabMine.setIcon(getResources().getString(R.string.font_mine));
         if (id == R.id.nav_tab_find) {
-            mDownTabFind.setIcon(getResources().getString(R.string.font_find_pressed));
+            mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
+            mDownTabStudy.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+            mDownTabMine.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         } else if (id == R.id.nav_tab_study) {
-            mDownTabStudy.setIcon(getResources().getString(R.string.font_friends_pressed));
+            mDownTabStudy.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
+            mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+            mDownTabMine.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         } else if (id == R.id.nav_tab_mine) {
-            mDownTabMine.setIcon(getResources().getString(R.string.font_mine_pressed));
+            mDownTabMine.setTextColor(getResources().getColor(R.color.nav_btn_pressed));
+            mDownTabStudy.setTextColor(getResources().getColor(R.color.nav_btn_normal));
+            mDownTabFind.setTextColor(getResources().getColor(R.color.nav_btn_normal));
         }
     }
 

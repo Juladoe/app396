@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.model.bal.CouponInfo;
 import com.edusoho.kuozhi.v3.model.bal.CouponListResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ChildListView;
@@ -48,7 +49,7 @@ public class MyVipActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_vip);
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
-//        ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.disabled2_hint_color));
+        ActivityUtil.setStatusViewBackgroud(this,Color.BLACK);
         setBackMode(null, "我的会员");
         initView();
         initUserInfo();
@@ -79,7 +80,7 @@ public class MyVipActivity extends ActionBarBaseActivity {
     private void initUserInfo(){
         if(app.loginUser != null){
             mTvName.setText(app.loginUser.nickname);
-            mTvUserType.setText(app.loginUser.userRole2String());
+            mTvUserType.setText(app.loginUser.vip == null ? "普通用户" : app.loginUser.vip.vipName);
             ImageLoader.getInstance().displayImage(app.loginUser.getMediumAvatar(), mIvAvatar, app.mAvatarOptions);
         }
         if(app.loginUser.vip != null){

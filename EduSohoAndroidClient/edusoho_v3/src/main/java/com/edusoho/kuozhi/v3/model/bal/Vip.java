@@ -16,4 +16,6 @@ public class Vip implements Serializable{
     public String boughtUnit;
     public double boughtAmount;
     public String createdTime;
+    public String VipDeadLine;
+    public String vipName;
 }

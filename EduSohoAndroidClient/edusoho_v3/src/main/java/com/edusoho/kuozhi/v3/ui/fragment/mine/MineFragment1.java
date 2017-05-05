@@ -85,7 +85,7 @@ public class MineFragment1 extends BaseFragment {
     private void initUserInfo(){
         if(app.loginUser != null){
             tvName.setText(app.loginUser.nickname);
-            tvUserType.setText(app.loginUser.userRole2String());
+            tvUserType.setText(app.loginUser.vip == null ? "普通用户" : app.loginUser.vip.vipName);
             ImageLoader.getInstance().displayImage(app.loginUser.getMediumAvatar(), ivAvatar, app.mAvatarOptions);
         }
     }

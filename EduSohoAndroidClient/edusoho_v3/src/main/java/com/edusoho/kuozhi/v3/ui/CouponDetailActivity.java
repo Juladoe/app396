@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -42,6 +43,7 @@ public class CouponDetailActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R. layout.activity_voucher_detail);
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
+        ActivityUtil.setStatusViewBackgroud(this,Color.BLACK);
         setBackMode(null,"卡券详情");
         initView();
         initData();
