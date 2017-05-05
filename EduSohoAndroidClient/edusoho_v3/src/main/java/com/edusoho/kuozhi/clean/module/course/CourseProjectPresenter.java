@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.content.DialogInterface;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.api.UserApi;
@@ -9,7 +11,6 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
-import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
@@ -79,20 +80,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseProject courseProject) {
                         mCourseProject = courseProject;
                         mView.showCover(mCourseProject.courseSet.cover.middle);
-//                        if (courseProject.teachers.length > 0) {
-//                            mTeacher = courseProject.teachers[0];
-//                        }
-//                        int errorRes = CourseHelper.getCourseErrorRes(courseProject.access.code);
-//                        if (CourseHelper.USER_NOT_LOGIN.equals(courseProject.access.code)) {
-//
-//                        } else if (CourseHelper.COURSE_SUCCESS.equals(courseProject.access.code)) {
-//                            initLoginCourseMemberStatus(courseProject);
-//                        } else {
-//                            initLogoutCourseMemberStatus(courseProject);
-//                            initTrialFirstTask(mCourseProjectId);
-//                            mView.showToast(errorRes);
-//                            mView.setCourseAccessMsgRes(errorRes);
-//                        }
+                        if (courseProject.teachers.length > 0) {
+                            mTeacher = courseProject.teachers[0];
+                        }
+
                         int errorRes = CourseHelper.getCourseErrorRes(courseProject.access.code);
                         switch (courseProject.access.code) {
                             case CourseHelper.USER_NOT_LOGIN:
@@ -103,17 +94,17 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                                 initLoginCourseMemberStatus(courseProject);
                                 break;
                             case CourseHelper.COURSE_EXPIRED:
-                                //mView.showExitDialog(errorRes);
                                 initLoginCourseMemberStatus(courseProject);
-//                                initLogoutCourseMemberStatus(courseProject);
-//                                initTrialFirstTask(mCourseProjectId);
-                                mView.setCourseAccessMsgRes(errorRes);
+                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                        .showErrorMsgResId(errorRes));
                                 break;
                             case CourseHelper.COURSE_NOT_BUYABLE:
                             case CourseHelper.COURSE_BUY_EXPIRED:
                                 initLogoutCourseMemberStatus(courseProject);
                                 initTrialFirstTask(mCourseProjectId);
-                                mView.setCourseAccessMsgRes(errorRes);
+                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                        .showErrorMsgResId(errorRes)
+                                        .showError());
                                 break;
 
                         }
@@ -146,29 +137,42 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         if (mIsJoin) {
                             mView.showFragments(initCourseModules(true), courseProject);
                             mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
+                            setCourseLearningProgress(courseProject.id);
                             if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
-                                mView.showExitDialog(R.string.course_expired_dialog);
-                                mView.setCourseAccessMsgRes(CourseHelper.getCourseErrorRes(courseProject.access.code));
+                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_DIALOG)
+                                        .showErrorMsgResId(R.string.course_expired_dialog)
+                                        .setAction(ShowDialogHelper.POSITIVE_ACTION_EXIT_COURSE)
+                                        .showError());
                                 return;
                             }
 
                             int errRes = CourseHelper.getCourseMemberErrorRes(member.access.code);
-                            if (!member.access.code.equals(CourseHelper.MEMBER_SUCCESS)) {
-                                //mView.showToast(errRes);
-                                mView.setCourseAccessMsgRes(errRes);
-//                                mView.showFragments(initCourseModules(true), courseProject);
-//                                mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
-                                setCourseLearningProgress(courseProject.id);
-                            } else {
-//                                mView.showFragments(initCourseModules(true), courseProject);
-//                                mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
-                                setCourseLearningProgress(courseProject.id);
+                            if (member.access.code.equals(CourseHelper.MEMBER_EXPIRED)) {
+                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_DIALOG)
+                                        .showErrorMsgResId(R.string.course_member_expired_dialog)
+                                        .setAction(ShowDialogHelper.POSITIVE_ACTION_EXIT_COURSE)
+                                        .showError());
+                            } else if (member.access.code.equals(CourseHelper.COURSE_NOT_ARRIVE)) {
+                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                        .showErrorMsgResId(errRes)
+                                        .showError());
+                            } else if (member.access.code.equals(CourseHelper.MEMBER_VIP_EXPIRED)) {
+                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_DIALOG)
+                                        .showErrorMsgResId(R.string.course_member_vip_expired_dialog)
+                                        .setAction(ShowDialogHelper.POSITIVE_ACTION_BUY_VIP)
+                                        .showError());
+                            } else if (!member.access.code.equals(CourseHelper.MEMBER_SUCCESS)) {
+                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                        .showErrorMsgResId(errRes)
+                                        .showError());
                             }
                         } else {
                             mView.showFragments(initCourseModules(false), courseProject);
                             initTrialFirstTask(mCourseProjectId);
                             if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
-                                mView.setCourseAccessMsgRes(CourseHelper.getCourseErrorRes(courseProject.access.code));
+                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                        .showErrorMsgResId(CourseHelper.getCourseErrorRes(courseProject.access.code))
+                                        .showError());
                                 return;
                             }
                             if (courseProject.learningExpiryDate.expired) {
@@ -325,6 +329,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private void joinFreeOrVipCourse(final int courseId) {
+
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
@@ -394,7 +399,49 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return !CommonConstant.EXPIRED_MODE_FOREVER.equals(startDate) && TimeUtils.getUTCtoDate(startDate).compareTo(new Date()) > 0;
     }
 
-    private void showDialogByAccessCode(Access access) {
+    class ShowDialogHelper {
+        private static final int TYPE_TOAST = 1;
+        private static final int TYPE_DIALOG = 2;
+        private static final int POSITIVE_ACTION_EXIT_COURSE = 3;
+        private static final int POSITIVE_ACTION_BUY_VIP = 4;
 
+        private int mShowType;
+        private int mMsgResId;
+        private int mActionType;
+
+        ShowDialogHelper showError() {
+            if (mShowType == TYPE_TOAST) {
+                mView.showToast(mMsgResId);
+            } else if (mShowType == TYPE_DIALOG) {
+                mView.showExitDialog(mMsgResId, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mActionType == POSITIVE_ACTION_EXIT_COURSE) {
+                            exitCourse();
+                        } else if (mActionType == POSITIVE_ACTION_BUY_VIP) {
+                            // TODO: 2017/5/5
+                            mView.showToast("购买vip，暂未做处理");
+                        }
+                        mView.setShowError(null);
+                    }
+                });
+            }
+            return this;
+        }
+
+        ShowDialogHelper showErrorType(int showType) {
+            mShowType = showType;
+            return this;
+        }
+
+        ShowDialogHelper showErrorMsgResId(int msgResId) {
+            mMsgResId = msgResId;
+            return this;
+        }
+
+        public ShowDialogHelper setAction(int action) {
+            mActionType = action;
+            return this;
+        }
     }
 }

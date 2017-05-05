@@ -502,6 +502,8 @@
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
     <string name="course_date_limit">课程已过有效截止日期，无法加入学习</string>
     <string name="course_expired_dialog">课程已到期，无法继续学习，是否退出</string>
+    <string name="course_member_expired_dialog">课程已到期，无法继续学习，是否重新加入</string>
+    <string name="course_member_vip_expired_dialog">会员已到期，无法继续学习，是否续费会员</string>
     <string name="course_not_start">教学计划未到开课时间</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
@@ -562,8 +564,9 @@
     <string name="member_expired">学员有效期已到</string>
     <string name="member_vip_expired">vip过期</string>
     <string name="member_vip_not_exist">vip等级不存在</string>
-    <string name="member_level_low">等级过低</string>
-    <string name="course_not_arrive">等级过低</string>
-    <string name="unkown_error">未知错误</string>
+    <string name="member_level_low">VIP等级过低</string>
+    <string name="unknow_error">未知错误</string>
+    <string name="course_exit_confirm">确定</string>
+    <string name="course_exit_cancel">取消</string>
 
 </resources>

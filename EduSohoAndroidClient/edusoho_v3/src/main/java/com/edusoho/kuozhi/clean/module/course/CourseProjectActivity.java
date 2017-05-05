@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -26,12 +25,10 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
-import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskIconEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
-import com.edusoho.kuozhi.clean.utils.CourseHelper;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -49,6 +46,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 
 /**
  * Created by JesseHuang on 2017/3/22.
@@ -85,9 +83,9 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private TextView mFinishTask;
     private FrameLayout mTaskPlayContainer;
 
-    private int mAccessMsgRes;
-
     private Map<String, Fragment> mFragments;
+
+    private CourseProjectPresenter.ShowDialogHelper mShowDialogHelper;
 
     private AlertDialog mCourseExpiredDialog;
     private AlertDialog mCourseMemberExpiredDialog;
@@ -140,8 +138,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLearnTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAccessMsgRes != 0) {
-                    showToast(mAccessMsgRes);
+                if (mShowDialogHelper != null) {
+                    mShowDialogHelper.showError();
                 } else {
                     mPresenter.joinCourseProject();
                 }
@@ -154,8 +152,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mCache.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAccessMsgRes != 0) {
-                    showToast(mAccessMsgRes);
+                if (mShowDialogHelper != null) {
+                    mShowDialogHelper.showError();
                 } else {
                     // TODO: 2017/5/5 跳转下载页面
                 }
@@ -168,8 +166,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mImmediateLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAccessMsgRes != 0) {
-                    showToast(mAccessMsgRes);
+                if (mShowDialogHelper != null) {
+                    mShowDialogHelper.showError();
                 } else {
                     // TODO: 2017/4/28 继续学习&试学
                 }
@@ -342,11 +340,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
-    public void setCourseAccessMsgRes(int msgRes) {
-        this.mAccessMsgRes = msgRes;
-    }
-
-    @Override
     public void showExitDialog(DialogType type) {
 //        switch (type) {
 //            case COURSE_EXPIRED:
@@ -369,6 +362,20 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                     }
                 })
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    public void showExitDialog(int msgRes, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
+        builder.setMessage(msgRes)
+                .setPositiveButton(R.string.course_exit_confirm, onClickListener)
+                .setNegativeButton(R.string.course_exit_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -425,8 +432,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             mFinishTask.setTag(task);
             switch (messageEvent.getType()) {
                 case MessageEvent.LEARN_TASK:
-                    if (mAccessMsgRes != 0) {
-                        showToast(mAccessMsgRes);
+                    if (mShowDialogHelper != null) {
+                        mShowDialogHelper.showError();
                     } else {
                         learnTask(task);
                     }
@@ -620,5 +627,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     public enum JoinButtonStatusEnum {
         NORMAL, VIP_FREE, COURSE_EXPIRED
+    }
+
+    @Override
+    public void setShowError(CourseProjectPresenter.ShowDialogHelper helper) {
+        mShowDialogHelper = helper;
     }
 }

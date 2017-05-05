@@ -52,7 +52,7 @@ public class CourseHelper {
                 result = R.string.course_project_expire_hint;
                 break;
             default:
-                result = R.string.unkown_error;
+                result = R.string.unknow_error;
         }
         return result;
     }
@@ -61,7 +61,7 @@ public class CourseHelper {
         int result;
         switch (code) {
             case MEMBER_EXPIRED:
-                result = R.string.member_expired;
+                result = R.string.course_member_expired_dialog;
                 break;
             case MEMBER_VIP_EXPIRED:
                 result = R.string.member_vip_expired;
@@ -73,10 +73,10 @@ public class CourseHelper {
                 result = R.string.member_level_low;
                 break;
             case COURSE_NOT_ARRIVE:
-                result = R.string.course_not_arrive;
+                result = R.string.course_not_start;
                 break;
             default:
-                result = R.string.unkown_error;
+                result = R.string.unknow_error;
         }
         return result;
     }

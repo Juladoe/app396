@@ -9,6 +9,7 @@ import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 
 import java.util.List;
@@ -46,11 +47,13 @@ public interface CourseProjectContract {
 
         void launchConfirmOrderActivity(int courseSetId, int courseId);
 
-        void setCourseAccessMsgRes(int msgRes);
-
         void showExitDialog(CourseProjectActivity.DialogType type);
 
         void showExitDialog(int msgRes);
+
+        void showExitDialog(int msgRes, DialogInterface.OnClickListener onClickListener);
+
+        void setShowError(CourseProjectPresenter.ShowDialogHelper helper);
 
         void setPlayLayoutVisible(boolean visible);
 
