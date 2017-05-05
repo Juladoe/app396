@@ -26,10 +26,12 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
+import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskIconEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.utils.CourseHelper;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -83,10 +85,12 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private TextView mFinishTask;
     private FrameLayout mTaskPlayContainer;
 
-    private AlertDialog mCourseExpiredDialog;
-    private AlertDialog mCourseMemberExpiredDialog;
+    private int mAccessMsgRes;
 
     private Map<String, Fragment> mFragments;
+
+    private AlertDialog mCourseExpiredDialog;
+    private AlertDialog mCourseMemberExpiredDialog;
 
     public static void launch(Context context, int courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
@@ -136,13 +140,27 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLearnTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.joinCourseProject();
+                if (mAccessMsgRes != 0) {
+                    showToast(mAccessMsgRes);
+                } else {
+                    mPresenter.joinCourseProject();
+                }
             }
         });
 
         mBack = (ESIconView) findViewById(R.id.iv_back);
         mShare = (ESIconView) findViewById(R.id.icon_share);
         mCache = (ESIconView) findViewById(R.id.icon_cache);
+        mCache.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAccessMsgRes != 0) {
+                    showToast(mAccessMsgRes);
+                } else {
+                    // TODO: 2017/5/5 跳转下载页面
+                }
+            }
+        });
         mPlayLayout = findViewById(R.id.rl_play_layout);
         mLatestLearnedTitle = (TextView) findViewById(R.id.tv_latest_learned_title);
         mLatestTaskTitle = (TextView) findViewById(R.id.tv_latest_task_title);
@@ -150,7 +168,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mImmediateLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2017/4/28 继续学习&试学
+                if (mAccessMsgRes != 0) {
+                    showToast(mAccessMsgRes);
+                } else {
+                    // TODO: 2017/4/28 继续学习&试学
+                }
             }
         });
 
@@ -178,7 +200,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         actionBar.setDisplayHomeAsUpEnabled(false);
 
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
-
         mCourseExpiredDialog = initCourseExpiredAlertDialog();
         mCourseMemberExpiredDialog = initCourseMemberExpiredAlertDialog();
         mPresenter = new CourseProjectPresenter(mCourseProjectId, this);
@@ -321,15 +342,40 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
+    public void setCourseAccessMsgRes(int msgRes) {
+        this.mAccessMsgRes = msgRes;
+    }
+
+    @Override
     public void showExitDialog(DialogType type) {
-        switch (type) {
-            case COURSE_EXPIRED:
-                mCourseExpiredDialog.show();
-                break;
-            case COURSE_MEMBER_EXPIRED:
-                mCourseMemberExpiredDialog.show();
-                break;
-        }
+//        switch (type) {
+//            case COURSE_EXPIRED:
+//                mCourseExpiredDialog.show();
+//                break;
+//            case COURSE_MEMBER_EXPIRED:
+//                mCourseMemberExpiredDialog.show();
+//                break;
+//        }
+    }
+
+    @Override
+    public void showExitDialog(int msgRes) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
+        builder.setMessage(msgRes)
+                .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPresenter.exitCourse();
+                    }
+                })
+                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private AlertDialog initCourseExpiredAlertDialog() {
@@ -344,7 +390,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        dialog.dismiss();
                     }
                 }).setCancelable(false);
         return builder.create();
@@ -362,7 +408,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        dialog.dismiss();
                     }
                 }).setCancelable(false);
         return builder.create();
@@ -373,25 +419,24 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
-
-    @Override
     public void onReceiveMessage(MessageEvent messageEvent) {
         if (messageEvent.getType() == MessageEvent.LEARN_TASK) {
             CourseTask task = (CourseTask) messageEvent.getMessageBody();
             mFinishTask.setTag(task);
             switch (messageEvent.getType()) {
                 case MessageEvent.LEARN_TASK:
-                    learnTask(task);
+                    if (mAccessMsgRes != 0) {
+                        showToast(mAccessMsgRes);
+                    } else {
+                        learnTask(task);
+                    }
                     break;
             }
-            setPlayLayoutVisible(false);
         }
     }
 
     private void learnTask(CourseTask task) {
+        setPlayLayoutVisible(false);
         mFinishTask.setVisibility(View.GONE);
         clearTaskFragment();
         TaskIconEnum taskType = TaskIconEnum.fromString(task.type);

@@ -9,16 +9,16 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
-import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
+import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
+import com.edusoho.kuozhi.clean.utils.CourseHelper;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,6 +59,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void subscribe() {
         HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
                 .getCourseProject(mCourseProjectId)
                 .subscribeOn(Schedulers.io())
@@ -78,17 +79,113 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseProject courseProject) {
                         mCourseProject = courseProject;
                         mView.showCover(mCourseProject.courseSet.cover.middle);
-                        if (courseProject.teachers.length > 0) {
-                            mTeacher = courseProject.teachers[0];
-                        }
-                        if (EdusohoApp.app.loginUser != null) {
-                            initLoginCourseMemberStatus(courseProject);
-                        } else {
-                            initLogoutCourseMemberStatus(courseProject);
-                            initTrialFirstTask(mCourseProjectId);
+//                        if (courseProject.teachers.length > 0) {
+//                            mTeacher = courseProject.teachers[0];
+//                        }
+//                        int errorRes = CourseHelper.getCourseErrorRes(courseProject.access.code);
+//                        if (CourseHelper.USER_NOT_LOGIN.equals(courseProject.access.code)) {
+//
+//                        } else if (CourseHelper.COURSE_SUCCESS.equals(courseProject.access.code)) {
+//                            initLoginCourseMemberStatus(courseProject);
+//                        } else {
+//                            initLogoutCourseMemberStatus(courseProject);
+//                            initTrialFirstTask(mCourseProjectId);
+//                            mView.showToast(errorRes);
+//                            mView.setCourseAccessMsgRes(errorRes);
+//                        }
+                        int errorRes = CourseHelper.getCourseErrorRes(courseProject.access.code);
+                        switch (courseProject.access.code) {
+                            case CourseHelper.USER_NOT_LOGIN:
+                                initLogoutCourseMemberStatus(courseProject);
+                                initTrialFirstTask(mCourseProjectId);
+                                break;
+                            case CourseHelper.COURSE_SUCCESS:
+                                initLoginCourseMemberStatus(courseProject);
+                                break;
+                            case CourseHelper.COURSE_EXPIRED:
+                                //mView.showExitDialog(errorRes);
+                                initLoginCourseMemberStatus(courseProject);
+//                                initLogoutCourseMemberStatus(courseProject);
+//                                initTrialFirstTask(mCourseProjectId);
+                                mView.setCourseAccessMsgRes(errorRes);
+                                break;
+                            case CourseHelper.COURSE_NOT_BUYABLE:
+                            case CourseHelper.COURSE_BUY_EXPIRED:
+                                initLogoutCourseMemberStatus(courseProject);
+                                initTrialFirstTask(mCourseProjectId);
+                                mView.setCourseAccessMsgRes(errorRes);
+                                break;
+
                         }
                     }
                 });
+    }
+
+    private void initLoginCourseMemberStatus(final CourseProject courseProject) {
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .getCourseMember(courseProject.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseMember>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseMember member) {
+                        mMember = member;
+                        mIsJoin = member.user != null;
+                        if (mIsJoin) {
+                            mView.showFragments(initCourseModules(true), courseProject);
+                            mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
+                            if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
+                                mView.showExitDialog(R.string.course_expired_dialog);
+                                mView.setCourseAccessMsgRes(CourseHelper.getCourseErrorRes(courseProject.access.code));
+                                return;
+                            }
+
+                            int errRes = CourseHelper.getCourseMemberErrorRes(member.access.code);
+                            if (!member.access.code.equals(CourseHelper.MEMBER_SUCCESS)) {
+                                //mView.showToast(errRes);
+                                mView.setCourseAccessMsgRes(errRes);
+//                                mView.showFragments(initCourseModules(true), courseProject);
+//                                mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
+                                setCourseLearningProgress(courseProject.id);
+                            } else {
+//                                mView.showFragments(initCourseModules(true), courseProject);
+//                                mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
+                                setCourseLearningProgress(courseProject.id);
+                            }
+                        } else {
+                            mView.showFragments(initCourseModules(false), courseProject);
+                            initTrialFirstTask(mCourseProjectId);
+                            if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
+                                mView.setCourseAccessMsgRes(CourseHelper.getCourseErrorRes(courseProject.access.code));
+                                return;
+                            }
+                            if (courseProject.learningExpiryDate.expired) {
+                                mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.COURSE_EXPIRED);
+                            } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId <= mCourseProject.vipLevelId) {
+                                mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.VIP_FREE);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void initLogoutCourseMemberStatus(final CourseProject courseProject) {
+        mView.showFragments(initCourseModules(false), courseProject);
+        if (courseProject.learningExpiryDate.expired) {
+            mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.COURSE_EXPIRED);
+        }
     }
 
     private void initTrialFirstTask(final int courseId) {
@@ -195,58 +292,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 });
     }
 
-    private void initLoginCourseMemberStatus(final CourseProject courseProject) {
-        HttpUtils.getInstance()
-                .addTokenHeader(EdusohoApp.app.token)
-                .createApi(UserApi.class)
-                .getCourseMember(courseProject.id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseMember>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(CourseMember member) {
-                        mMember = member;
-                        mIsJoin = member.user != null;
-                        if (mIsJoin) {
-                            mView.showFragments(initCourseModules(true), courseProject);
-                            mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
-                            setCourseLearningProgress(courseProject.id);
-                            if (courseProject.learningExpiryDate.expired) {
-                                mView.showExitDialog(CourseProjectActivity.DialogType.COURSE_EXPIRED);
-                            } else if (isCourseMemberExpired(member.deadline)) {
-                                mView.showExitDialog(CourseProjectActivity.DialogType.COURSE_MEMBER_EXPIRED);
-                            }
-                            // TODO: 2017/4/20 还需要处理vip过期问题
-                        } else {
-                            mView.showFragments(initCourseModules(false), courseProject);
-                            initTrialFirstTask(mCourseProjectId);
-                            if (courseProject.learningExpiryDate.expired) {
-                                mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.COURSE_EXPIRED);
-                            } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId <= mCourseProject.vipLevelId) {
-                                mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.VIP_FREE);
-                            }
-                        }
-                    }
-                });
-    }
-
-    private void initLogoutCourseMemberStatus(final CourseProject courseProject) {
-        mView.showFragments(initCourseModules(false), courseProject);
-        if (courseProject.learningExpiryDate.expired) {
-            mView.setJoinButton(CourseProjectActivity.JoinButtonStatusEnum.COURSE_EXPIRED);
-        }
-    }
-
     private void setCourseLearningProgress(int courseId) {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
@@ -340,7 +385,16 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return !CommonConstant.EXPIRED_MODE_FOREVER.equals(deadline) && TimeUtils.getUTCtoDate(deadline).compareTo(new Date()) < 0;
     }
 
+    private boolean isVipExpired(int courseVipLevelId) {
+        return EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId <= courseVipLevelId;
+    }
+
     private boolean isCourseStart(String startDate) {
-        return false;
+        //放到coursemember
+        return !CommonConstant.EXPIRED_MODE_FOREVER.equals(startDate) && TimeUtils.getUTCtoDate(startDate).compareTo(new Date()) > 0;
+    }
+
+    private void showDialogByAccessCode(Access access) {
+
     }
 }

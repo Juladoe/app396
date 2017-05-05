@@ -4,6 +4,7 @@ import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -45,7 +46,11 @@ public interface CourseProjectContract {
 
         void launchConfirmOrderActivity(int courseSetId, int courseId);
 
+        void setCourseAccessMsgRes(int msgRes);
+
         void showExitDialog(CourseProjectActivity.DialogType type);
+
+        void showExitDialog(int msgRes);
 
         void setPlayLayoutVisible(boolean visible);
 
