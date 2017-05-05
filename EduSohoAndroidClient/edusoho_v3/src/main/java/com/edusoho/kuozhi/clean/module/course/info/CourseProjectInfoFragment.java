@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.module.course.info;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,7 +25,10 @@ import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.module.course.dialog.ServicesDialog;
 import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -114,6 +118,24 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
         mCourseMembers = (LinearLayout) view.findViewById(R.id.ll_course_members);
         mCourseMembersLine = view.findViewById(R.id.v_course_members_line);
         mRelativeCourses = (RecyclerView) view.findViewById(R.id.rv_relative_courses);
+
+        mVipText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        Const.VIP_LIST
+                );
+                CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
+                        , getContext(), new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
+            }
+        });
     }
 
     @Override
