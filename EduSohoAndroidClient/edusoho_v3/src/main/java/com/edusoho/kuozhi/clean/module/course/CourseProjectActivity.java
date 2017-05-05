@@ -29,6 +29,7 @@ import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskIconEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.utils.AppUtils;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -37,9 +38,11 @@ import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
+import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -155,7 +158,15 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 if (mShowDialogHelper != null) {
                     mShowDialogHelper.showError();
                 } else {
-                    // TODO: 2017/5/5 跳转下载页面
+                    if (AppUtils.getRomAvailableSize(getApplicationContext()).contains("M")) {
+                        if (Float.parseFloat(AppUtils.getRomAvailableSize(getApplicationContext())
+                                .replaceAll("[a-zA-Z]", "").trim()) < 100) {
+                            showToast(R.string.cache_hint);
+                            return;
+                        }
+                    }
+                    startActivity(new Intent(CourseProjectActivity.this, LessonDownloadingActivity.class)
+                            .putExtra(Const.COURSE_ID, mCourseProjectId));
                 }
             }
         });
