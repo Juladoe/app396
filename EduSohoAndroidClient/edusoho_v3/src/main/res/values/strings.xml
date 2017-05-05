@@ -504,7 +504,7 @@
     <string name="course_expired_dialog">课程已到期，无法继续学习，是否退出</string>
     <string name="course_member_expired_dialog">课程已到期，无法继续学习，是否重新加入</string>
     <string name="course_member_vip_expired_dialog">会员已到期，无法继续学习，是否续费会员</string>
-    <string name="course_not_start">教学计划未到开课时间</string>
+    <string name="course_not_start">课程还未到开课时间，暂时无法学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
     <string name="double_price_format">￥&#160;%1$.2f-%2$.2f</string>
@@ -529,7 +529,7 @@
     <string name="go_pay">去支付</string>
     <string name="available_balance">%1$s余额:&#160;&#160;&#160;</string>
     <string name="insufficient_balance">余额不足</string>
-    <string name="course_finish_progress">已经完成计划：%1$d/%2$d</string>
+    <string name="task_finish_progress">已经完成任务：%1$d/%2$d</string>
     <string name="course_plan_progress">计划完成任务：%1$d/%2$d</string>
     <string name="course_progress_deadline">课程有效期至：%1$s</string>
     <string name="selector_payments">选择支付方式</string>
