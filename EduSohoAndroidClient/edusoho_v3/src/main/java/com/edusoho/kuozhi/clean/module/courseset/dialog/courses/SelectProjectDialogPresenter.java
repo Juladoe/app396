@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.utils.CourseSetUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
@@ -57,28 +58,11 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
 
     @Override
     public void confirm() {
-        switch (mCourseProject.access.code){
-            case "user.locked":
-                mView.showToast(R.string.course_user_locked);
-                break;
-            case "course.unpublished":
-                mView.showToast(R.string.course_unpublish);
-                break;
-            case "course.not_buyable":
-                mView.showToast(R.string.course_not_buy);
-                break;
-            case "course.closed":
-                mView.showToast(R.string.course_limit_join);
-                break;
-            case "course.expired":
-                mView.showToast(R.string.course_date_limit);
-                break;
-            case "course.buy_expired":
-                mView.showToast(R.string.course_project_expire_hint);
-                break;
-            case "success":
-                joinFreeOrVipCourse(mCourseProject.id);
-                break;
+        int result = CourseSetUtil.joinCourseProject(mCourseProject.access.code);
+        if (0 == result) {
+            joinFreeOrVipCourse(mCourseProject.id);
+        } else {
+            mView.showToast(result);
         }
     }
 

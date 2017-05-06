@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.clean.http;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -38,6 +36,11 @@ public class HttpUtils {
         return mInstance;
     }
 
+    public static HttpUtils baseOnApi() {
+        mBaseUrl = EdusohoApp.app.host + "/api/";
+        return mInstance;
+    }
+
     public <T> T createApi(final Class<T> clazz) {
         if ("".equals(mBaseUrl) || mBaseUrl == null) {
             return RetrofitClient.getInstance(mHeaderMaps).create(clazz);
@@ -47,6 +50,7 @@ public class HttpUtils {
     }
 
     public HttpUtils addTokenHeader(String token) {
+        mHeaderMaps.clear();
         mHeaderMaps.put(TOKEN_KEY, token);
         return mInstance;
     }
@@ -57,6 +61,7 @@ public class HttpUtils {
     }
 
     public HttpUtils addHeader(Map<String, String> headerMaps) {
+        mHeaderMaps.clear();
         mHeaderMaps.putAll(headerMaps);
         return mInstance;
     }
