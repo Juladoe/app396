@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.utils.CourseHelper;
 import com.edusoho.kuozhi.clean.utils.CourseSetUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
@@ -58,7 +59,7 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
 
     @Override
     public void confirm() {
-        int result = CourseSetUtil.joinCourseProject(mCourseProject.access.code);
+        int result = CourseHelper.getCourseErrorRes(mCourseProject.access.code);
         if (0 == result) {
             joinFreeOrVipCourse(mCourseProject.id);
         } else {

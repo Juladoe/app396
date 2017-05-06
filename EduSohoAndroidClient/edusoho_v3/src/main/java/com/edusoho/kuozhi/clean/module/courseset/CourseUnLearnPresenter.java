@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment;
 import com.edusoho.kuozhi.clean.module.courseset.plan.CourseProjectsFragment;
 import com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment;
+import com.edusoho.kuozhi.clean.utils.CourseHelper;
 import com.edusoho.kuozhi.clean.utils.CourseSetUtil;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -282,7 +283,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             if (mCourseProjects != null) {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
-                    int result = CourseSetUtil.joinCourseProject(courseProject.access.code);
+                    int result = CourseHelper.getCourseErrorRes(courseProject.access.code);
                     if (0 == result) {
                         joinFreeOrVipCourse();
                     } else {
