@@ -40,7 +40,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private int mCourseProjectId;
     private Teacher mTeacher;
     private CourseMember mMember;
-    private CourseTask mFirstTrailTask;
     private CourseProject mCourseProject;
     private boolean mIsJoin = false;
 
@@ -146,7 +145,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             }
 
                             int errRes = CourseHelper.getCourseMemberErrorRes(member.access.code);
-                            if (member.access.code.equals(CourseHelper.MEMBER_EXPIRED)) {
+                            if (member.access.code.equals(CourseHelper.MEMBER_SUCCESS)) {
+
+                            } else if (member.access.code.equals(CourseHelper.MEMBER_EXPIRED)) {
                                 mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_DIALOG)
                                         .showErrorMsgResId(R.string.course_member_expired_dialog)
                                         .setAction(ShowActionHelper.POSITIVE_ACTION_EXIT_COURSE)
@@ -160,7 +161,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                                         .showErrorMsgResId(R.string.course_member_vip_expired_dialog)
                                         .setAction(ShowActionHelper.POSITIVE_ACTION_BUY_VIP)
                                         .doAction());
-                            } else if (!member.access.code.equals(CourseHelper.MEMBER_SUCCESS)) {
+                            } else {
                                 mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(errRes)
                                         .doAction());
@@ -211,7 +212,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(CourseTask trialTask) {
                         if (trialTask != null && trialTask.id != 0) {
-                            mFirstTrailTask = trialTask;
                             mView.initTrailTask(trialTask);
                         } else {
                             mView.setPlayLayoutVisible(false);
