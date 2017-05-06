@@ -92,6 +92,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                                 initLoginCourseMemberStatus(courseProject);
                                 break;
                             case CourseHelper.COURSE_EXPIRED:
+                            case CourseHelper.COURSE_CLOSED:
                                 initLoginCourseMemberStatus(courseProject);
                                 mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(errorRes));
@@ -141,6 +142,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                                         .showErrorMsgResId(R.string.course_expired_dialog)
                                         .setAction(ShowActionHelper.POSITIVE_ACTION_EXIT_COURSE)
                                         .doAction());
+                                return;
+                            }
+                            if (CourseHelper.COURSE_CLOSED.equals(courseProject.access.code)) {
+                                //如果计划关闭，而且已经加入，可学
+                                mView.setShowError(null);
                                 return;
                             }
 

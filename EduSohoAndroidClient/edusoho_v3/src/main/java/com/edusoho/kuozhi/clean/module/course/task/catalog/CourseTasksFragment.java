@@ -229,7 +229,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
             case MessageEvent.COURSE_JOIN:
                 mCourseProgressBar.setVisibility(View.VISIBLE);
                 mCourseLearningProgress = (CourseLearningProgress) messageEvent.getMessageBody();
-                mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
+                mLearnProgressRate.setProgress(Math.round(mCourseLearningProgress.progress));
                 break;
         }
     }

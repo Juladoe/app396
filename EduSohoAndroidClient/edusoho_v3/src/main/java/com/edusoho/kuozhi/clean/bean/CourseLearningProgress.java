@@ -10,7 +10,7 @@ import java.util.List;
 public class CourseLearningProgress implements Serializable {
 
     public int taskCount;
-    public int progress;
+    public float progress;
     public int taskResultCount;
     public int taskPerDay;
     public int planStudyTaskCount;
