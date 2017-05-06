@@ -12,6 +12,8 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.module.course.task.menu.info.CourseMenuInfoPresenter;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.util.List;
@@ -43,8 +45,10 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     @Override
     public void subscribe() {
         mView.initCourseProjectInfo(mCourseProject);
-        showPrice();
-        showVip(mCourseProject.vipLevelId);
+        if (this instanceof CourseMenuInfoPresenter) {
+            showPrice();
+            showVip(mCourseProject.vipLevelId);
+        }
         showServices(mCourseProject.services);
         showIntroduce();
         showAudiences(mCourseProject.audiences);

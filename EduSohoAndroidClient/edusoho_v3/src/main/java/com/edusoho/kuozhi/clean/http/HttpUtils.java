@@ -51,12 +51,12 @@ public class HttpUtils {
 
     public HttpUtils addTokenHeader(String token) {
         mHeaderMaps.clear();
-        mHeaderMaps.put(TOKEN_KEY, token);
+        mHeaderMaps.put(TOKEN_KEY, token == null ? "" : token);
         return mInstance;
     }
 
     public HttpUtils addMapiV2TokenHeader(String token) {
-        mHeaderMaps.put(MAPI_V2_TOKEN_KEY, token);
+        mHeaderMaps.put(MAPI_V2_TOKEN_KEY, token == null ? "" : token);
         return mInstance;
     }
 
