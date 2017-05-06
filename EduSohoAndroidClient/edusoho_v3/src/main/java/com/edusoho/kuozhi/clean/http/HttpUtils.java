@@ -17,10 +17,11 @@ public class HttpUtils {
     private static final String MAPI_V2_TOKEN_KEY = "token";
     private static HttpUtils mInstance;
     private static String mBaseUrl;
-    private Map<String, String> mHeaderMaps = new TreeMap<>();
+    private static Map<String, String> mHeaderMaps = new TreeMap<>();
 
     public static HttpUtils getInstance() {
         mBaseUrl = "";
+        mHeaderMaps.clear();
         if (mInstance == null) {
             synchronized (HttpUtils.class) {
                 if (mInstance == null) {
@@ -32,6 +33,7 @@ public class HttpUtils {
     }
 
     public static HttpUtils baseOnMapiV2() {
+        mHeaderMaps.clear();
         mBaseUrl = EdusohoApp.app.host + "/mapi_v2/";
         return mInstance;
     }

@@ -522,10 +522,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
-    public void setCurrentTaskStatus(CourseTask.CourseTaskStatusEnum status) {
+    public void setCurrentTaskStatus(TaskResultEnum status) {
         CourseTask task = (CourseTask) mFinishTask.getTag();
         if (task != null) {
-            task.result.status = CourseTask.CourseTaskStatusEnum.FINISH.toString();
+            task.result.status = TaskResultEnum.FINISH.toString();
         }
     }
 

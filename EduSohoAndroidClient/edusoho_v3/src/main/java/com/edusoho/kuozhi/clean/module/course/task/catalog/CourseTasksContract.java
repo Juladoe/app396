@@ -14,7 +14,7 @@ import java.util.List;
 public interface CourseTasksContract {
 
     interface View extends BaseView<Presenter> {
-        void showCourseTasks(List<CourseItem> taskItems);
+        void showCourseTasks(List<CourseItem> taskItems, boolean isJoin);
 
         void showCourseMenuButton(boolean show);
     }

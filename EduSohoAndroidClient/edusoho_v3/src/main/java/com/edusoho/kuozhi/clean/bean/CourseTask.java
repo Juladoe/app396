@@ -61,19 +61,4 @@ public class CourseTask implements Serializable {
             return number + "";
         }
     }
-
-    public enum CourseTaskStatusEnum {
-        FINISH("finish"), DOING("doing");
-
-        private String mName;
-
-        CourseTaskStatusEnum(String name) {
-            this.mName = name;
-        }
-
-        @Override
-        public String toString() {
-            return mName;
-        }
-    }
 }

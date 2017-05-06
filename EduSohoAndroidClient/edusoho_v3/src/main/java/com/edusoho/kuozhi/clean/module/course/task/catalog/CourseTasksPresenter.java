@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
 
@@ -32,7 +33,8 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
     @Override
     public void subscribe() {
         mView.showCourseMenuButton(mIsJoin);
-        HttpUtils.getInstance().createApi(CourseApi.class)
+        HttpUtils.getInstance().addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseApi.class)
                 .getCourseItems(mCourseProject.id, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -49,7 +51,7 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
 
                     @Override
                     public void onNext(List<CourseItem> taskItems) {
-                        mView.showCourseTasks(taskItems);
+                        mView.showCourseTasks(taskItems, mIsJoin);
                     }
                 });
     }

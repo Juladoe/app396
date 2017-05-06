@@ -183,9 +183,9 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     }
 
     @Override
-    public void showCourseTasks(List<CourseItem> taskItems) {
+    public void showCourseTasks(List<CourseItem> taskItems, boolean isJoin) {
         final CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems,
-                CourseProject.LearnMode.getMode(mCourseProject.learnMode));
+                CourseProject.LearnMode.getMode(mCourseProject.learnMode), isJoin);
         mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTaskRecyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(mTaskRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {

@@ -6,11 +6,15 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
+import com.edusoho.kuozhi.clean.bean.innerbean.Result;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 
 import java.util.List;
@@ -22,13 +26,15 @@ import java.util.List;
 public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<CourseItem> mTaskItems;
     private CourseProject.LearnMode mLearnMode;
+    private boolean mIsJoin;
     private Context mContext;
     private CourseTaskViewHolder mLastCourseTaskViewHolder;
 
-    public CourseTaskAdapter(Context context, List<CourseItem> taskItems, CourseProject.LearnMode mode) {
+    public CourseTaskAdapter(Context context, List<CourseItem> taskItems, CourseProject.LearnMode mode, boolean isJoin) {
         this.mTaskItems = taskItems;
         this.mContext = context;
         this.mLearnMode = mode;
+        this.mIsJoin = isJoin;
     }
 
     @Override
@@ -68,6 +74,12 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else {
             CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
             setTaskLockLayout(taskHolder, mLearnMode, taskItem);
+            if (mIsJoin) {
+                setTaskResult(taskHolder, taskItem.task.result);
+                taskHolder.taskResult.setVisibility(View.VISIBLE);
+            } else {
+                taskHolder.taskResult.setVisibility(View.GONE);
+            }
             taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskItemSequence(), taskItem.title));
             taskHolder.taskDuration.setText(taskItem.task.length);
             taskHolder.taskIsFree.setVisibility(taskItem.task.isFree == 1 ? View.VISIBLE : View.GONE);
@@ -93,6 +105,16 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
                 holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
             }
+        }
+    }
+
+    private void setTaskResult(CourseTaskViewHolder holder, Result result) {
+        if (result == null) {
+            holder.taskResult.setImageResource(R.drawable.lesson_status);
+        } else if (TaskResultEnum.FINISH.toString().equals(result.status)) {
+            holder.taskResult.setImageResource(R.drawable.lesson_status_finish);
+        } else if (TaskResultEnum.START.toString().equals(result.status)) {
+            holder.taskResult.setImageResource(R.drawable.lesson_status_learning);
         }
     }
 
@@ -152,36 +174,38 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return mTaskItems.get(position);
     }
 
-    public static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
-        public ESIconView taskLock;
-        public ESIconView taskType;
-        public TextView taskName;
-        public TextView taskDuration;
-        public TextView taskIsFree;
+    static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
+        ESIconView taskLock;
+        ESIconView taskType;
+        TextView taskName;
+        TextView taskDuration;
+        TextView taskIsFree;
+        ImageView taskResult;
 
-        public CourseTaskViewHolder(View view) {
+        CourseTaskViewHolder(View view) {
             super(view);
             taskLock = (ESIconView) view.findViewById(R.id.ev_task_lock);
             taskType = (ESIconView) view.findViewById(R.id.ev_task_type);
             taskName = (TextView) view.findViewById(R.id.tv_task_name);
             taskDuration = (TextView) view.findViewById(R.id.tv_task_duration);
             taskIsFree = (TextView) view.findViewById(R.id.tv_task_is_free);
+            taskResult = (ImageView) view.findViewById(R.id.iv_task_result);
         }
     }
 
-    public static class CourseTaskUnitViewHolder extends RecyclerView.ViewHolder {
-        public TextView unitTitle;
+    static class CourseTaskUnitViewHolder extends RecyclerView.ViewHolder {
+        TextView unitTitle;
 
-        public CourseTaskUnitViewHolder(View view) {
+        CourseTaskUnitViewHolder(View view) {
             super(view);
             unitTitle = (TextView) view.findViewById(R.id.tv_unit_title);
         }
     }
 
-    public static class CourseTaskChapterViewHolder extends RecyclerView.ViewHolder {
-        public TextView chapterTitle;
+    static class CourseTaskChapterViewHolder extends RecyclerView.ViewHolder {
+        TextView chapterTitle;
 
-        public CourseTaskChapterViewHolder(View view) {
+        CourseTaskChapterViewHolder(View view) {
             super(view);
             chapterTitle = (TextView) view.findViewById(R.id.tv_chapter_title);
         }

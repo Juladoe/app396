@@ -4,6 +4,7 @@ import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
@@ -57,7 +58,7 @@ public interface CourseProjectContract {
 
         void setTaskFinishButtonBackground(boolean learned);
 
-        void setCurrentTaskStatus(CourseTask.CourseTaskStatusEnum status);
+        void setCurrentTaskStatus(TaskResultEnum status);
     }
 
     interface Presenter extends BasePresenter {
