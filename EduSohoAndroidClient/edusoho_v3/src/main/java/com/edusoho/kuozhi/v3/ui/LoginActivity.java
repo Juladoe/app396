@@ -107,6 +107,12 @@ public class LoginActivity extends BaseNoTitleActivity {
         }
     }
 
+    public static void launch(Context context) {
+        Intent intent = new Intent();
+        intent.setClass(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void initView() {
         super.initView();

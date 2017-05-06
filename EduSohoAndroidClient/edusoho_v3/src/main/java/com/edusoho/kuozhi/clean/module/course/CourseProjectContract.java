@@ -1,17 +1,14 @@
 package com.edusoho.kuozhi.clean.module.course;
 
-import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
-import com.edusoho.kuozhi.clean.bean.innerbean.Access;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
 import android.content.DialogInterface;
-import android.support.v4.app.Fragment;
 
 import java.util.List;
 
@@ -50,7 +47,7 @@ public interface CourseProjectContract {
 
         void showExitDialog(int msgRes, DialogInterface.OnClickListener onClickListener);
 
-        void setShowError(CourseProjectPresenter.ShowDialogHelper helper);
+        void setShowError(CourseProjectPresenter.ShowActionHelper helper);
 
         void setPlayLayoutVisible(boolean visible);
 
@@ -59,6 +56,8 @@ public interface CourseProjectContract {
         void setTaskFinishButtonBackground(boolean learned);
 
         void setCurrentTaskStatus(TaskResultEnum status);
+
+        void launchLoginActivity();
     }
 
     interface Presenter extends BasePresenter {

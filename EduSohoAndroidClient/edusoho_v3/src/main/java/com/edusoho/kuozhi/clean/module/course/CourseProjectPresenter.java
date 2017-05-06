@@ -14,16 +14,13 @@ import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
-import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.CourseHelper;
-import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import rx.Subscriber;
@@ -90,22 +87,23 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             case CourseHelper.USER_NOT_LOGIN:
                                 initLogoutCourseMemberStatus(courseProject);
                                 initTrialFirstTask(mCourseProjectId);
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_NOT_LOGIN));
                                 break;
                             case CourseHelper.COURSE_SUCCESS:
                                 initLoginCourseMemberStatus(courseProject);
                                 break;
                             case CourseHelper.COURSE_EXPIRED:
                                 initLoginCourseMemberStatus(courseProject);
-                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(errorRes));
                                 break;
                             case CourseHelper.COURSE_NOT_BUYABLE:
                             case CourseHelper.COURSE_BUY_EXPIRED:
                                 initLogoutCourseMemberStatus(courseProject);
                                 initTrialFirstTask(mCourseProjectId);
-                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(errorRes)
-                                        .showError());
+                                        .doAction());
                                 break;
 
                         }
@@ -140,40 +138,40 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
                             setCourseLearningProgress(courseProject.id);
                             if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
-                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_DIALOG)
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_DIALOG)
                                         .showErrorMsgResId(R.string.course_expired_dialog)
-                                        .setAction(ShowDialogHelper.POSITIVE_ACTION_EXIT_COURSE)
-                                        .showError());
+                                        .setAction(ShowActionHelper.POSITIVE_ACTION_EXIT_COURSE)
+                                        .doAction());
                                 return;
                             }
 
                             int errRes = CourseHelper.getCourseMemberErrorRes(member.access.code);
                             if (member.access.code.equals(CourseHelper.MEMBER_EXPIRED)) {
-                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_DIALOG)
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_DIALOG)
                                         .showErrorMsgResId(R.string.course_member_expired_dialog)
-                                        .setAction(ShowDialogHelper.POSITIVE_ACTION_EXIT_COURSE)
-                                        .showError());
+                                        .setAction(ShowActionHelper.POSITIVE_ACTION_EXIT_COURSE)
+                                        .doAction());
                             } else if (member.access.code.equals(CourseHelper.COURSE_NOT_ARRIVE)) {
-                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(errRes)
-                                        .showError());
+                                        .doAction());
                             } else if (member.access.code.equals(CourseHelper.MEMBER_VIP_EXPIRED)) {
-                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_DIALOG)
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_DIALOG)
                                         .showErrorMsgResId(R.string.course_member_vip_expired_dialog)
-                                        .setAction(ShowDialogHelper.POSITIVE_ACTION_BUY_VIP)
-                                        .showError());
+                                        .setAction(ShowActionHelper.POSITIVE_ACTION_BUY_VIP)
+                                        .doAction());
                             } else if (!member.access.code.equals(CourseHelper.MEMBER_SUCCESS)) {
-                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(errRes)
-                                        .showError());
+                                        .doAction());
                             }
                         } else {
                             mView.showFragments(initCourseModules(false), courseProject);
                             initTrialFirstTask(mCourseProjectId);
                             if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
-                                mView.setShowError(new ShowDialogHelper().showErrorType(ShowDialogHelper.TYPE_TOAST)
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(CourseHelper.getCourseErrorRes(courseProject.access.code))
-                                        .showError());
+                                        .doAction());
                                 return;
                             }
                             if (courseProject.learningExpiryDate.expired) {
@@ -387,30 +385,18 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     }
 
-    private boolean isCourseMemberExpired(String deadline) {
-        return !CommonConstant.EXPIRED_MODE_FOREVER.equals(deadline) && TimeUtils.getUTCtoDate(deadline).compareTo(new Date()) < 0;
-    }
-
-    private boolean isVipExpired(int courseVipLevelId) {
-        return EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId <= courseVipLevelId;
-    }
-
-    private boolean isCourseStart(String startDate) {
-        //放到coursemember
-        return !CommonConstant.EXPIRED_MODE_FOREVER.equals(startDate) && TimeUtils.getUTCtoDate(startDate).compareTo(new Date()) > 0;
-    }
-
-    class ShowDialogHelper {
-        private static final int TYPE_TOAST = 1;
-        private static final int TYPE_DIALOG = 2;
-        private static final int POSITIVE_ACTION_EXIT_COURSE = 3;
-        private static final int POSITIVE_ACTION_BUY_VIP = 4;
+    class ShowActionHelper {
+        public static final int TYPE_TOAST = 1;
+        public static final int TYPE_DIALOG = 2;
+        public static final int TYPE_NOT_LOGIN = 3;
+        public static final int POSITIVE_ACTION_EXIT_COURSE = 13;
+        public static final int POSITIVE_ACTION_BUY_VIP = 14;
 
         private int mShowType;
         private int mMsgResId;
         private int mActionType;
 
-        ShowDialogHelper showError() {
+        ShowActionHelper doAction() {
             if (mShowType == TYPE_TOAST) {
                 mView.showToast(mMsgResId);
             } else if (mShowType == TYPE_DIALOG) {
@@ -426,23 +412,29 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.setShowError(null);
                     }
                 });
+            } else if (mShowType == TYPE_NOT_LOGIN) {
+                mView.launchLoginActivity();
             }
             return this;
         }
 
-        ShowDialogHelper showErrorType(int showType) {
+        public ShowActionHelper showErrorType(int showType) {
             mShowType = showType;
             return this;
         }
 
-        ShowDialogHelper showErrorMsgResId(int msgResId) {
+        public ShowActionHelper showErrorMsgResId(int msgResId) {
             mMsgResId = msgResId;
             return this;
         }
 
-        public ShowDialogHelper setAction(int action) {
+        public ShowActionHelper setAction(int action) {
             mActionType = action;
             return this;
+        }
+
+        public int getErrorType() {
+            return mShowType;
         }
     }
 }

@@ -39,10 +39,10 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
+import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -88,7 +88,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     private Map<String, Fragment> mFragments;
 
-    private CourseProjectPresenter.ShowDialogHelper mShowDialogHelper;
+    private CourseProjectPresenter.ShowActionHelper mShowDialogHelper;
 
     private AlertDialog mCourseExpiredDialog;
     private AlertDialog mCourseMemberExpiredDialog;
@@ -133,7 +133,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mConsult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.consult();
+                if (mShowDialogHelper.getErrorType() == CourseProjectPresenter.ShowActionHelper.TYPE_NOT_LOGIN) {
+                    mShowDialogHelper.doAction();
+                } else {
+                    mPresenter.consult();
+                }
             }
         });
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
@@ -142,7 +146,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             @Override
             public void onClick(View v) {
                 if (mShowDialogHelper != null) {
-                    mShowDialogHelper.showError();
+                    mShowDialogHelper.doAction();
                 } else {
                     mPresenter.joinCourseProject();
                 }
@@ -156,7 +160,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             @Override
             public void onClick(View v) {
                 if (mShowDialogHelper != null) {
-                    mShowDialogHelper.showError();
+                    mShowDialogHelper.doAction();
                 } else {
                     if (AppUtils.getRomAvailableSize(getApplicationContext()).contains("M")) {
                         if (Float.parseFloat(AppUtils.getRomAvailableSize(getApplicationContext())
@@ -178,7 +182,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             @Override
             public void onClick(View v) {
                 if (mShowDialogHelper != null) {
-                    mShowDialogHelper.showError();
+                    mShowDialogHelper.doAction();
                 } else {
                     // TODO: 2017/4/28 继续学习&试学
                 }
@@ -412,7 +416,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             switch (messageEvent.getType()) {
                 case MessageEvent.LEARN_TASK:
                     if (mShowDialogHelper != null) {
-                        mShowDialogHelper.showError();
+                        mShowDialogHelper.doAction();
                     } else {
                         learnTask(task);
                     }
@@ -529,6 +533,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         }
     }
 
+    @Override
+    public void launchLoginActivity() {
+        LoginActivity.startLogin(this);
+    }
+
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 
         private List<CourseProjectEnum> mCourseProjectModules;
@@ -609,7 +618,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
-    public void setShowError(CourseProjectPresenter.ShowDialogHelper helper) {
+    public void setShowError(CourseProjectPresenter.ShowActionHelper helper) {
         mShowDialogHelper = helper;
     }
 }

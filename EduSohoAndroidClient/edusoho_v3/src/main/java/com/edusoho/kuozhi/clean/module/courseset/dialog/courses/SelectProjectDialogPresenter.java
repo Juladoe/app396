@@ -6,7 +6,6 @@ import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CourseHelper;
-import com.edusoho.kuozhi.clean.utils.CourseSetUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;

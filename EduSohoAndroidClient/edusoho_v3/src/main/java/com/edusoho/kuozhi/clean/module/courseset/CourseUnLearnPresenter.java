@@ -19,7 +19,6 @@ import com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment;
 import com.edusoho.kuozhi.clean.module.courseset.plan.CourseProjectsFragment;
 import com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment;
 import com.edusoho.kuozhi.clean.utils.CourseHelper;
-import com.edusoho.kuozhi.clean.utils.CourseSetUtil;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
