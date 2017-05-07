@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course.task.catalog;
 
 import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
@@ -9,8 +10,12 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -38,7 +43,19 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
                 .getCourseItems(mCourseProject.id, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<CourseItem>>() {
+                .doOnNext(new Action1<List<CourseItem>>() {
+                    @Override
+                    public void call(List<CourseItem> courseItems) {
+                        mView.showCourseTasks(courseItems, mIsJoin);
+                    }
+                })
+                .flatMap(new Func1<List<CourseItem>, Observable<CourseItem>>() {
+                    @Override
+                    public Observable<CourseItem> call(List<CourseItem> courseItems) {
+                        return courseItems == null ? null : Observable.just(courseItems.get(0));
+                    }
+                })
+                .subscribe(new Subscriber<CourseItem>() {
                     @Override
                     public void onCompleted() {
 
@@ -50,10 +67,39 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(List<CourseItem> taskItems) {
-                        mView.showCourseTasks(taskItems, mIsJoin);
+                    public void onNext(final CourseItem courseItem) {
+                        if (courseItem == null) {
+                            return;
+                        }
+                        getCourseLearningProgress(mCourseProject.id)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Subscriber<CourseLearningProgress>() {
+                                    @Override
+                                    public void onCompleted() {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onNext(CourseLearningProgress courseLearningProgress) {
+                                        mView.showLearnProgress(courseLearningProgress);
+                                        mView.showNextTaskOnCover(courseLearningProgress.nextTask, courseItem.task.id == courseLearningProgress.nextTask.id);
+                                    }
+                                });
                     }
                 });
+    }
+
+    private Observable<CourseLearningProgress> getCourseLearningProgress(int courseId) {
+        return HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .getMyCourseLearningProgress(courseId);
     }
 
     @Override

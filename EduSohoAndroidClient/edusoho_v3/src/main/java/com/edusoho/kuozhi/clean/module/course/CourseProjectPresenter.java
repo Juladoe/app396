@@ -136,7 +136,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         if (mIsJoin) {
                             mView.showFragments(initCourseModules(true), courseProject);
                             mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
-                            setCourseLearningProgress(courseProject.id);
+                            //setCourseLearningProgress(courseProject.id);
                             if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
                                 mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_DIALOG)
                                         .showErrorMsgResId(R.string.course_expired_dialog)
@@ -301,40 +301,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 });
     }
 
-    private void setCourseLearningProgress(int courseId) {
-        HttpUtils.getInstance()
-                .addTokenHeader(EdusohoApp.app.token)
-                .createApi(UserApi.class)
-                .getMyCourseLearningProgress(courseId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseLearningProgress>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(CourseLearningProgress progress) {
-                        // TODO: 2017/4/25 非常不好的处理方式，需要封装
-                        MessageEvent<CourseLearningProgress> progressMsg = new MessageEvent<>(progress, MessageEvent.COURSE_JOIN);
-                        EventBus.getDefault().post(progressMsg);
-                        if (progress.nextTask != null) {
-                            mView.initNextTask(progress.nextTask);
-                        } else {
-                            mView.setPlayLayoutVisible(false);
-                        }
-                    }
-                });
-    }
-
     private void joinFreeOrVipCourse(final int courseId) {
-
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
@@ -358,7 +325,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             mIsJoin = true;
                             mView.showToast(R.string.join_course_success);
                             mView.initJoinCourseLayout(CourseProject.LearnMode.getMode(mCourseProject.learnMode));
-                            setCourseLearningProgress(courseId);
                         }
                     }
                 });

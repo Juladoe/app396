@@ -14,6 +14,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -89,9 +91,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private Map<String, Fragment> mFragments;
 
     private CourseProjectPresenter.ShowActionHelper mShowDialogHelper;
-
-    private AlertDialog mCourseExpiredDialog;
-    private AlertDialog mCourseMemberExpiredDialog;
 
     public static void launch(Context context, int courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
@@ -213,8 +212,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         actionBar.setDisplayHomeAsUpEnabled(false);
 
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
-        mCourseExpiredDialog = initCourseExpiredAlertDialog();
-        mCourseMemberExpiredDialog = initCourseMemberExpiredAlertDialog();
         mPresenter = new CourseProjectPresenter(mCourseProjectId, this);
         mPresenter.subscribe();
     }
@@ -228,11 +225,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
-    public void initNextTask(CourseTask nextTask) {
+    public void initNextTask(CourseTask nextTask, boolean isFirstTask) {
         setPlayLayoutVisible(true);
-        mLatestLearnedTitle.setVisibility(View.VISIBLE);
         mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
-        mImmediateLearn.setText(R.string.start_learn_next_task);
+        mLatestLearnedTitle.setVisibility(isFirstTask && nextTask.result == null ? View.GONE : View.VISIBLE);
+        mImmediateLearn.setText(isFirstTask && nextTask.result == null ? R.string.start_learn_first_task : R.string.start_learn_next_task);
     }
 
     @Override
@@ -368,42 +365,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .show();
     }
 
-    private AlertDialog initCourseExpiredAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
-        builder.setMessage(R.string.course_expired_dialog)
-                .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.exitCourse();
-                    }
-                })
-                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setCancelable(false);
-        return builder.create();
-    }
-
-    private AlertDialog initCourseMemberExpiredAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
-        builder.setMessage(R.string.course_exit)
-                .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.exitCourse();
-                    }
-                })
-                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setCancelable(false);
-        return builder.create();
-    }
-
     public boolean isJoin() {
         return mPresenter.isJoin();
     }
@@ -422,6 +383,9 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                     }
                     break;
             }
+        } else if (messageEvent.getType() == MessageEvent.SHOW_NEXT_TASK) {
+            SparseArray<Object> nextTaskInfo = (SparseArray<Object>) messageEvent.getMessageBody();
+            initNextTask((CourseTask) nextTaskInfo.get(0), (boolean) nextTaskInfo.get(1));
         }
     }
 
@@ -607,10 +571,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 ex.printStackTrace();
             }
         }
-    }
-
-    public enum DialogType {
-        COURSE_EXPIRED, COURSE_MEMBER_EXPIRED
     }
 
     public enum JoinButtonStatusEnum {

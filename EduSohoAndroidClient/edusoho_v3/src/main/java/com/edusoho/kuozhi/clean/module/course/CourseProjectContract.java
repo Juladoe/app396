@@ -37,7 +37,7 @@ public interface CourseProjectContract {
 
         void initTrailTask(CourseTask trialTask);
 
-        void initNextTask(CourseTask nextTask);
+        void initNextTask(CourseTask nextTask, boolean isFirstTask);
 
         void initLearnLayout(CourseProject.LearnMode mode);
 
