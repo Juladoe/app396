@@ -35,6 +35,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
 import cn.trinea.android.common.util.StringUtils;
 
@@ -258,14 +259,21 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
             showMemberCount = (screenWidth + avatarMargin - 2 * viewMargin) / (memberAvatarWidth + avatarMargin);
             int size = (showMemberCount < members.size() ? showMemberCount : members.size());
             for (int i = 0; i < size; i++) {
-                CircularImageView memberAvatar = new CircularImageView(getActivity());
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
+                LinearLayout memberView = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.item_course_member, null);
+                ImageLoader.getInstance().displayImage(members.get(i).user.getMediumAvatar(), (CircularImageView) memberView.findViewById(R.id.avatar_course_member), EdusohoApp.app.mAvatarOptions);
+                ((TextView) memberView.findViewById(R.id.tv_member_name)).setText(members.get(i).user.nickname);
+
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 if (i != size - 1) {
                     lp.rightMargin = CommonUtil.dip2px(getActivity(), 24);
                 }
-                memberAvatar.setLayoutParams(lp);
-                ImageLoader.getInstance().displayImage(members.get(i).user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
-                mCourseMembers.addView(memberAvatar);
+                memberView.setLayoutParams(lp);
+//                CircularImageView memberAvatar = new CircularImageView(getActivity());
+//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
+
+                //memberAvatar.setLayoutParams(lp);
+                mCourseMembers.addView(memberView);
+
             }
         }
     }
