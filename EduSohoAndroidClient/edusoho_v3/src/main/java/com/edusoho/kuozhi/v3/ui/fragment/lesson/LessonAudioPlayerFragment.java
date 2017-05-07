@@ -49,6 +49,14 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     private LessonMenuHelper mLessonMenuHelper;
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof BaseStudyDetailActivity) {
+            mMenuCallback = (BaseStudyDetailActivity) activity;
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoverUrl = getArguments().getString(COVER);
@@ -57,10 +65,46 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof BaseStudyDetailActivity) {
-            mMenuCallback = (BaseStudyDetailActivity) activity;
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ControllerOptions options = new ControllerOptions.Builder()
+                .addOption(ControllerOptions.RATE, false)
+                .addOption(ControllerOptions.SCREEN, false)
+                .build();
+        mVideoControllerView.setControllerOptions(options);
+        initPlayContainer();
+        if (mMenuCallback != null) {
+            mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
+            mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
+        }
+        loadPlayUrl();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
+            mMenuCallback.getMenu().dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mService.isPlaying()) {
+            mService.pause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mAudioCoverAnim != null) {
+            mAudioCoverAnim.cancel();
+            mAudioCoverAnim = null;
+        }
+        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
+            mMenuCallback.getMenu().setVisibility(false);
         }
     }
 
@@ -92,22 +136,6 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
             public void success(VolleyError obj) {
             }
         });
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ControllerOptions options = new ControllerOptions.Builder()
-                .addOption(ControllerOptions.RATE, false)
-                .addOption(ControllerOptions.SCREEN, false)
-                .build();
-        mVideoControllerView.setControllerOptions(options);
-        initPlayContainer();
-        if (mMenuCallback != null) {
-            mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
-            mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
-        }
-        loadPlayUrl();
     }
 
     protected void initPlayContainer() {
@@ -187,23 +215,4 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
-            mMenuCallback.getMenu().dismiss();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mAudioCoverAnim != null) {
-            mAudioCoverAnim.cancel();
-            mAudioCoverAnim = null;
-        }
-        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
-            mMenuCallback.getMenu().setVisibility(false);
-        }
-    }
 }

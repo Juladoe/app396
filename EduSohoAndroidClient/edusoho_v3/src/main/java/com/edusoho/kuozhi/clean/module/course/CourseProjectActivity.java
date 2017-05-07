@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -90,9 +91,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private Map<String, Fragment> mFragments;
 
     private CourseProjectPresenter.ShowActionHelper mShowDialogHelper;
-
-    private AlertDialog mCourseExpiredDialog;
-    private AlertDialog mCourseMemberExpiredDialog;
 
     public static void launch(Context context, int courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
@@ -214,8 +212,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         actionBar.setDisplayHomeAsUpEnabled(false);
 
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
-        mCourseExpiredDialog = initCourseExpiredAlertDialog();
-        mCourseMemberExpiredDialog = initCourseMemberExpiredAlertDialog();
         mPresenter = new CourseProjectPresenter(mCourseProjectId, this);
         mPresenter.subscribe();
     }
@@ -367,42 +363,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 })
                 .setCancelable(false)
                 .show();
-    }
-
-    private AlertDialog initCourseExpiredAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
-        builder.setMessage(R.string.course_expired_dialog)
-                .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.exitCourse();
-                    }
-                })
-                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setCancelable(false);
-        return builder.create();
-    }
-
-    private AlertDialog initCourseMemberExpiredAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogTheme);
-        builder.setMessage(R.string.course_exit)
-                .setPositiveButton(R.string.course_exit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.exitCourse();
-                    }
-                })
-                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setCancelable(false);
-        return builder.create();
     }
 
     public boolean isJoin() {
