@@ -13,5 +13,4 @@ public interface CommonApi {
 
     @GET("setting/course")
     Observable<JsonObject> getCourseSet();
-
 }

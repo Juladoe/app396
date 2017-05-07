@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -228,11 +229,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
-    public void initNextTask(CourseTask nextTask) {
+    public void initNextTask(CourseTask nextTask, boolean isFirstTask) {
         setPlayLayoutVisible(true);
-        mLatestLearnedTitle.setVisibility(View.VISIBLE);
         mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
-        mImmediateLearn.setText(R.string.start_learn_next_task);
+        mLatestLearnedTitle.setVisibility(isFirstTask && nextTask.result == null ? View.GONE : View.VISIBLE);
+        mImmediateLearn.setText(isFirstTask && nextTask.result == null ? R.string.start_learn_first_task : R.string.start_learn_next_task);
     }
 
     @Override
@@ -422,6 +423,9 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                     }
                     break;
             }
+        } else if (messageEvent.getType() == MessageEvent.SHOW_NEXT_TASK) {
+            SparseArray<Object> nextTaskInfo = (SparseArray<Object>) messageEvent.getMessageBody();
+            initNextTask((CourseTask) nextTaskInfo.get(0), (boolean) nextTaskInfo.get(1));
         }
     }
 
@@ -607,10 +611,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 ex.printStackTrace();
             }
         }
-    }
-
-    public enum DialogType {
-        COURSE_EXPIRED, COURSE_MEMBER_EXPIRED
     }
 
     public enum JoinButtonStatusEnum {

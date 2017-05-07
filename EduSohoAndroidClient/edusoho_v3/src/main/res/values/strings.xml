@@ -546,6 +546,7 @@
     <string name="latest_task_title">上次学到:</string>
     <string name="start_learn_trial_task">开始试学</string>
     <string name="start_learn_next_task">继续学习</string>
+    <string name="start_learn_first_task">开始学习</string>
     <string name="course_menu_info">简介</string>
     <string name="course_menu_question">问答</string>
     <string name="course_menu_share">分享</string>
