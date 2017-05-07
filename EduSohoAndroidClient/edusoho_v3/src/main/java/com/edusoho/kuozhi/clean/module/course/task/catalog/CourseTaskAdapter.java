@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Result;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
 
@@ -67,10 +68,11 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         CourseItem taskItem = mTaskItems.get(position);
         if (holder instanceof CourseTaskChapterViewHolder) {
             CourseTaskChapterViewHolder chapterHolder = (CourseTaskChapterViewHolder) holder;
-            chapterHolder.chapterTitle.setText(String.format(mContext.getString(R.string.course_project_chapter), taskItem.number, taskItem.title));
+            chapterHolder.chapterTitle.setText(String.format(mContext.getString(R.string.course_project_chapter)
+                    , taskItem.number, EdusohoApp.app.courseSetting.chapterName, taskItem.title));
         } else if (holder instanceof CourseTaskUnitViewHolder) {
             CourseTaskUnitViewHolder unitHolder = (CourseTaskUnitViewHolder) holder;
-            unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, taskItem.title));
+            unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, EdusohoApp.app.courseSetting.partName, taskItem.title));
         } else {
             CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
             setTaskLockLayout(taskHolder, mLearnMode, taskItem);

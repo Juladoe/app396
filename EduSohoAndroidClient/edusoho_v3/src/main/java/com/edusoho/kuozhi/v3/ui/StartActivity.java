@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.api.CommonApi;
+import com.edusoho.kuozhi.clean.bean.CourseSetting;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -36,6 +39,11 @@ import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
+import java.util.TreeMap;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class StartActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
@@ -156,6 +164,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         }
 
         checkSchoolApiVersion();
+        getCourseSetting();
     }
 
     @Override
@@ -336,6 +345,33 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 showSchoolErrorDlg();
             }
         });
+    }
+
+    protected void getCourseSetting() {
+        HttpUtils.getInstance()
+                .baseOnApi()
+                .createApi(CommonApi.class)
+                .getCourseSet()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseSetting>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseSetting courseSetting) {
+                        if (courseSetting != null) {
+                            app.courseSetting = courseSetting;
+                        }
+                    }
+                });
     }
 
     protected void startApp() {

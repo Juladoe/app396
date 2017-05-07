@@ -30,13 +30,14 @@ public class HttpUtils {
         return mInstance;
     }
 
-    public static HttpUtils baseOnMapiV2() {
+    public HttpUtils baseOnMapiV2() {
         mHeaderMaps.clear();
         mBaseUrl = EdusohoApp.app.host + "/mapi_v2/";
         return mInstance;
     }
 
-    public static HttpUtils baseOnApi() {
+    public HttpUtils baseOnApi() {
+        mHeaderMaps.clear();
         mBaseUrl = EdusohoApp.app.host + "/api/";
         return mInstance;
     }

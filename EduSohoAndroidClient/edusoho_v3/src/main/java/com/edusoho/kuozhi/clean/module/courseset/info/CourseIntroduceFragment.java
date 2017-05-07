@@ -114,7 +114,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment<CourseIntroduceCon
         mTitle.setText(mCourseSet.title);
         mReviewStar.setRating((int) mCourseSet.rating);
         int studentNum = mCourseSet.studentNum;
-        mTitleStudentNum.setText(EdusohoApp.app.isShowStudent != null && "1".equals(EdusohoApp.app.isShowStudent) ?
+        mTitleStudentNum.setText(EdusohoApp.app.courseSetting.showStudentNumEnabled != null && "1".equals(EdusohoApp.app.courseSetting.showStudentNumEnabled) ?
                 String.format(getContext().getString(R.string.course_student_count), studentNum) : "");
         showCourseNowPrice();
     }

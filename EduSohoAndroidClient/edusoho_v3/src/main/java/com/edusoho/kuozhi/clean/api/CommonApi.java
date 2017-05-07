@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.api;
 
+import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.google.gson.JsonObject;
 
 import retrofit2.http.GET;
@@ -12,5 +13,5 @@ import rx.Observable;
 public interface CommonApi {
 
     @GET("setting/course")
-    Observable<JsonObject> getCourseSet();
+    Observable<CourseSetting> getCourseSet();
 }

@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CommonApi;
+import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -299,35 +300,6 @@ public class LoginActivity extends BaseNoTitleActivity {
                 CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
             }
         });
-        getCourseSetting();
-    }
-
-    private void getCourseSetting() {
-        HttpUtils.getInstance()
-                .baseOnApi()
-                .addHeader(new TreeMap<String, String>())
-                .createApi(CommonApi.class)
-                .getCourseSet()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<JsonObject>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(JsonObject jsonObject) {
-                        if (jsonObject != null) {
-                            app.isShowStudent = jsonObject.get("show_student_num_enabled").getAsString();
-                        }
-                    }
-                });
     }
 
     private View.OnClickListener mLoginClickListener = new View.OnClickListener() {
