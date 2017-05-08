@@ -99,7 +99,9 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
         mCourseSetId = getIntent().getIntExtra(COURSE_SET_ID, 0);
-        isJoin();
+        initView();
+        mPresenter = new CourseUnLearnPresenter(mCourseSetId, this);
+        mPresenter.subscribe();
     }
 
     @Override
@@ -120,12 +122,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         if (mTimer != null) {
             mTimer.cancel();
         }
-    }
-
-    private void isJoin() {
-        initView();
-        mPresenter = new CourseUnLearnPresenter(mCourseSetId, this);
-        mPresenter.subscribe();
     }
 
     private void initView() {
@@ -224,6 +220,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     @Override
     public void setCourseSet(CourseSet courseSet) {
         mCourseSet = courseSet;
+        showBackGround();
     }
 
     @Override
@@ -265,8 +262,11 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         }
     }
 
-    @Override
-    public void showBackGround(String img) {
+    public void showBackGround() {
+        String img = "";
+        if (mCourseSet.cover != null && mCourseSet.cover.middle != null) {
+            img = mCourseSet.cover.middle;
+        }
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
                 .showImageOnFail(R.drawable.default_course)

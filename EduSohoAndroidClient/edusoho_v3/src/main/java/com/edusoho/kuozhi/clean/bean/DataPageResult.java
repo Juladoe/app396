@@ -11,7 +11,6 @@ public class DataPageResult<T> implements Serializable {
     public List<T> data;
     public Page paging;
 
-
     public static class Page implements Serializable {
         public int total;
         public int offset;
