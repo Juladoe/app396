@@ -235,7 +235,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 .showImageOnLoading(R.drawable.default_course)
                 .build();
         ImageLoader.getInstance().displayImage(
-                mCourseDetail.getCourse().largePicture,
+                mCourseDetail.getCourse().getLargePicture(),
                 mIvMediaBackground, imageOptions);
         Member member = mCourseDetail.getMember();
         if (member == null) {
@@ -547,7 +547,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
         LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
+        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().getLargePicture());
         bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         fragment.setArguments(bundle);
