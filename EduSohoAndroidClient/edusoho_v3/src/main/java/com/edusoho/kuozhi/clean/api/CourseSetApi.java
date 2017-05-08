@@ -4,7 +4,6 @@ import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.DataPageResult;
 
 import java.util.List;
 
@@ -28,8 +27,8 @@ public interface CourseSetApi {
     @GET("course_sets/{courseSetId}/latest_members")
     Observable<List<CourseMember>> getCourseSetMembers(@Path("courseSetId") int courseSetId, @Query("offset") int offset, @Query("limit") int limit);
 
-    @GET("course_sets/{courseSetId}/members")
-    Observable<DataPageResult<CourseMember>> getCourseSetMember(@Path("courseSetId") int courseSetId, @Query("userId") int userId);
+    @GET("me/course_sets/{courseSetId}/course_members")
+    Observable<List<CourseMember>> getMeCourseSetProject(@Path("courseSetId") int courseSetId);
 
     @GET("course_sets/{id}/courses")
     Observable<List<CourseProject>> getCourseProjects(@Path("id") int courseSetId);

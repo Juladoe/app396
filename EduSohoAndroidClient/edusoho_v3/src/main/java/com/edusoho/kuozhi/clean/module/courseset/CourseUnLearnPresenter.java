@@ -10,7 +10,6 @@ import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
@@ -67,11 +66,12 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     public void isJoinCourseSet() {
         if (EdusohoApp.app.loginUser != null) {
             HttpUtils.getInstance()
+                    .addTokenHeader(EdusohoApp.app.token)
                     .createApi(CourseSetApi.class)
-                    .getCourseSetMember(mCourseSetId, EdusohoApp.app.loginUser.id)
+                    .getMeCourseSetProject(mCourseSetId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
+                    .subscribe(new Subscriber<List<CourseMember>>() {
                         @Override
                         public void onCompleted() {
 
@@ -83,10 +83,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         }
 
                         @Override
-                        public void onNext(DataPageResult<CourseMember> courseSetMembers) {
+                        public void onNext(List<CourseMember> courseMembers) {
                             mView.showProcessDialog(false);
-                            if (courseSetMembers.paging.total > 0) {
-                                queryMeLastRecord(courseSetMembers);
+                            if (courseMembers != null && courseMembers.size() > 0) {
+                                queryMeLastRecord(courseMembers);
                             } else {
                                 acquireCourseProjects();
                             }
@@ -98,11 +98,12 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     private void isJoin() {
         if (EdusohoApp.app.loginUser != null) {
             HttpUtils.getInstance()
+                    .addTokenHeader(EdusohoApp.app.token)
                     .createApi(CourseSetApi.class)
-                    .getCourseSetMember(mCourseSetId, EdusohoApp.app.loginUser.id)
+                    .getMeCourseSetProject(mCourseSetId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
+                    .subscribe(new Subscriber<List<CourseMember>>() {
                         @Override
                         public void onCompleted() {
 
@@ -115,9 +116,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         }
 
                         @Override
-                        public void onNext(DataPageResult<CourseMember> courseSetMembers) {
-                            if (courseSetMembers.paging.total > 0) {
-                                queryMeLastRecord(courseSetMembers);
+                        public void onNext(List<CourseMember> courseMembers) {
+                            if (courseMembers != null && courseMembers.size() > 0) {
+                                queryMeLastRecord(courseMembers);
                             } else {
                                 acquireCourseSet();
                                 acquireFavoriteInfo();
@@ -405,15 +406,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void queryMeLastRecord(DataPageResult<CourseMember> courseMemberDataPageResult) {
-        List<CourseMember> list = courseMemberDataPageResult.data;
-        if (list != null) {
-            mView.goToCourseProjectActivity(getLastCourseId(list));
-            mView.newFinish();
-        } else {
-            mView.showToast(R.string.lesson_unexit);
-            mView.newFinish();
-        }
+    private void queryMeLastRecord(List<CourseMember> courseProjects) {
+        mView.goToCourseProjectActivity(getLastCourseId(courseProjects));
+        mView.newFinish();
     }
 
     private int getLastCourseId(List<CourseMember> courseMembers) {
@@ -422,8 +417,8 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             return courseId;
         }
         for (int i = 0; i < courseMembers.size(); i++) {
-            if (i != 0 && TimeUtils.getMillisecond(courseMembers.get(i - 1).lastLearnTime)
-                    < TimeUtils.getMillisecond(courseMembers.get(i).lastLearnTime)) {
+            if (i != 0 && TimeUtils.getMillisecond(courseMembers.get(i - 1).lastViewTime)
+                    < TimeUtils.getMillisecond(courseMembers.get(i).lastViewTime)) {
                 courseId = courseMembers.get(i).courseId;
             }
         }
