@@ -385,6 +385,8 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseSetApi.class)
                 .getCourseProjects(mCourseSetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<CourseProject>>() {
                     @Override
                     public void onCompleted() {

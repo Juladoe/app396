@@ -33,6 +33,10 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
         this.mList = courseProjects;
     }
 
+    public void reFreshData(List<CourseProject> courseProjects){
+        mList = courseProjects;
+    }
+
     @Override
     public void subscribe() {
     }

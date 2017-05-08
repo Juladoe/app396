@@ -80,6 +80,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     private long mEndTime;
     private boolean mIsFavorite = false;
     private Timer mTimer;
+    private List<CourseProject> mCourseProjects;
     private CourseSet mCourseSet;
     private CourseUnLearnContract.Presenter mPresenter;
 
@@ -347,9 +348,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
 
     @Override
     public void setDialogData(List<CourseProject> list) {
-        if (mSelectDialog != null) {
-            mSelectDialog.setData(list, null);
-        }
+        mCourseProjects = list;
     }
 
     @Override
@@ -362,6 +361,9 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         if (mSelectDialog == null) {
             mSelectDialog = new SelectProjectDialog();
             mSelectDialog.setData(list, vipInfo);
+        }
+        if (mCourseProjects != null) {
+            mSelectDialog.reFreshData(mCourseProjects);
         }
         mSelectDialog.show(getSupportFragmentManager(), "SelectProjectDialog");
     }
