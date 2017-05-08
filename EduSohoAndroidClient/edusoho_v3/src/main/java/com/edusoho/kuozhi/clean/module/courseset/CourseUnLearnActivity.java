@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
@@ -40,6 +42,10 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 import java.util.Timer;
@@ -448,5 +454,14 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         public CharSequence getPageTitle(int position) {
             return mTitleArray[position];
         }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLoginSuccess(Integer type) {
+        if (type == MessageEvent.LOGIN) {
+            finish();
+            EventBus.getDefault().removeStickyEvent(MessageEvent.LOGIN);
+        }
+        Log.d("Subscribe", "onLoginSuccess: ");
     }
 }

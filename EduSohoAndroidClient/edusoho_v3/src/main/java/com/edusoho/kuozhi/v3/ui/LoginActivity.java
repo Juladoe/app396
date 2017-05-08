@@ -20,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CommonApi;
 import com.edusoho.kuozhi.clean.bean.CourseSetting;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -46,6 +47,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -277,6 +279,7 @@ public class LoginActivity extends BaseNoTitleActivity {
                     new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
                     MessageEngine.getInstance().sendMsg(Const.LOGIN_SUCCESS, null);
                     MessageEngine.getInstance().sendMsg(Const.REFRESH_MY_FRAGMENT, null);
+                    EventBus.getDefault().postSticky(MessageEvent.LOGIN);
                     mTvLogin.postDelayed(new Runnable() {
                         @Override
                         public void run() {

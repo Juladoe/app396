@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -48,6 +49,10 @@ import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -82,7 +87,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private ESIconView mShare;
     private ESIconView mCache;
     private View mPlayLayout;
-    private TextView mLatestLearnedTitle;
     private TextView mLatestTaskTitle;
     private TextView mImmediateLearn;
     private TextView mFinishTask;
@@ -174,7 +178,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             }
         });
         mPlayLayout = findViewById(R.id.rl_play_layout);
-        mLatestLearnedTitle = (TextView) findViewById(R.id.tv_latest_learned_title);
         mLatestTaskTitle = (TextView) findViewById(R.id.tv_latest_task_title);
         mImmediateLearn = (TextView) findViewById(R.id.tv_immediate_learn);
         mImmediateLearn.setOnClickListener(new View.OnClickListener() {
@@ -219,7 +222,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     @Override
     public void initTrailTask(CourseTask trialTask) {
         setPlayLayoutVisible(true);
-        mLatestLearnedTitle.setVisibility(View.GONE);
         mLatestTaskTitle.setText(trialTask.title);
         mImmediateLearn.setText(R.string.start_learn_trial_task);
     }
@@ -228,7 +230,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     public void initNextTask(CourseTask nextTask, boolean isFirstTask) {
         setPlayLayoutVisible(true);
         mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
-        mLatestLearnedTitle.setVisibility(isFirstTask && nextTask.result == null ? View.GONE : View.VISIBLE);
         mImmediateLearn.setText(isFirstTask && nextTask.result == null ? R.string.start_learn_first_task : R.string.start_learn_next_task);
     }
 
@@ -245,10 +246,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     @Override
     public void showFragments(List<CourseProjectEnum> courseProjectModules, CourseProject courseProject) {
-        mAdapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjectModules, courseProject);
-        mViewPager.setAdapter(mAdapter);
-        mViewPager.setOffscreenPageLimit(courseProjectModules.size());
-        mTabLayout.setupWithViewPager(mViewPager);
+        if (mViewPager.getAdapter() == null) {
+            mAdapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjectModules, courseProject);
+            mViewPager.setAdapter(mAdapter);
+            mViewPager.setOffscreenPageLimit(courseProjectModules.size());
+            mTabLayout.setupWithViewPager(mViewPager);
+        } else {
+            initJoinCourseLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
+        }
     }
 
     @Override
@@ -387,6 +392,15 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             SparseArray<Object> nextTaskInfo = (SparseArray<Object>) messageEvent.getMessageBody();
             initNextTask((CourseTask) nextTaskInfo.get(0), (boolean) nextTaskInfo.get(1));
         }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLoginSuccess(Integer type) {
+        if (type == MessageEvent.LOGIN) {
+            mPresenter.subscribe();
+        }
+
+        Log.d("Subscribe", "onLoginSuccess: ");
     }
 
     private void learnTask(CourseTask task) {

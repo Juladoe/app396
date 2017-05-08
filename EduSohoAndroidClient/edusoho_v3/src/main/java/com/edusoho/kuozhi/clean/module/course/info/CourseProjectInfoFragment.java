@@ -268,10 +268,6 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
                     lp.rightMargin = CommonUtil.dip2px(getActivity(), 24);
                 }
                 memberView.setLayoutParams(lp);
-//                CircularImageView memberAvatar = new CircularImageView(getActivity());
-//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
-
-                //memberAvatar.setLayoutParams(lp);
                 mCourseMembers.addView(memberView);
 
             }

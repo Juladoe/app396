@@ -37,6 +37,8 @@ import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.google.gson.internal.LinkedHashTreeMap;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -245,4 +247,12 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                 break;
         }
     }
+
+//    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+//    public void onLoginSuccess(MessageEvent messageEvent) {
+//        if (messageEvent.getType() == MessageEvent.LOGIN) {
+//            mPresenter.subscribe();
+//            EventBus.getDefault().removeStickyEvent(MessageEvent.LOGIN);
+//        }
+//    }
 }
