@@ -41,7 +41,6 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     private static final String IS_FAVORITE = "isFavorite";
     private static final String SUCCESS = "success";
-    private static final String STATUS_RUNNING = "running";
 
     private CourseUnLearnContract.View mView;
     private int mCourseSetId;
@@ -87,7 +86,9 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         public void onNext(DataPageResult<CourseMember> courseSetMembers) {
                             mView.showProcessDialog(false);
                             if (courseSetMembers.paging.total > 0) {
-                                getMeLastRecord(courseSetMembers);
+                                queryMeLastRecord(courseSetMembers);
+                            } else {
+                                acquireCourseProjects();
                             }
                         }
                     });
@@ -116,19 +117,19 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         @Override
                         public void onNext(DataPageResult<CourseMember> courseSetMembers) {
                             if (courseSetMembers.paging.total > 0) {
-                                getMeLastRecord(courseSetMembers);
+                                queryMeLastRecord(courseSetMembers);
                             } else {
-                                getCourseSet();
-                                getFavoriteInfo();
+                                acquireCourseSet();
+                                acquireFavoriteInfo();
                             }
                         }
                     });
         } else {
-            getCourseSet();
+            acquireCourseSet();
         }
     }
 
-    private void getCourseSet() {
+    private void acquireCourseSet() {
         HttpUtils.getInstance()
                 .createApi(CourseSetApi.class)
                 .getCourseSet(mCourseSetId)
@@ -141,9 +142,8 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                             mCourseSet = courseSet;
                             mView.showFragments(getTitleArray(), getFragmentArray());
                             mView.setCourseSet(courseSet);
-                            mView.showBackGround(courseSet.cover.middle);
                             if (mCourseSet.discountId != 0) {
-                                getDiscountInfo(mCourseSet.discountId);
+                                acquireDiscountInfo(mCourseSet.discountId);
                             }
                         }
                     }
@@ -154,6 +154,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     public Observable<List<CourseProject>> call(CourseSet courseSet) {
                         return HttpUtils
                                 .getInstance()
+                                .addTokenHeader(EdusohoApp.app.token)
                                 .createApi(CourseSetApi.class)
                                 .getCourseProjects(mCourseSetId);
                     }
@@ -195,7 +196,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void getFavoriteInfo() {
+    private void acquireFavoriteInfo() {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(UserApi.class)
@@ -224,7 +225,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void getDiscountInfo(int discountId) {
+    private void acquireDiscountInfo(int discountId) {
         HttpUtils.getInstance()
                 .createApi(PluginsApi.class)
                 .getDiscountInfo(discountId)
@@ -243,7 +244,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
                     @Override
                     public void onNext(Discount discount) {
-                        if (discount != null && STATUS_RUNNING.equals(discount.status)) {
+                        if (discount != null && Discount.STATUS_RUNNING.equals(discount.status)) {
                             long time = TimeUtils.getMillisecond(discount.endTime) / 1000
                                     - System.currentTimeMillis() / 1000;
                             if (time > 0) {
@@ -282,11 +283,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             if (mCourseProjects != null) {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
-                    int result = CourseHelper.getCourseErrorRes(courseProject.access.code);
-                    if (0 == result) {
+                    if (SUCCESS.equals(courseProject.access.code)) {
                         joinFreeOrVipCourse();
                     } else {
-                        mView.showToast(result);
+                        mView.showToast(CourseHelper.getCourseErrorRes(courseProject.access.code));
                     }
                     return;
                 }
@@ -378,8 +378,35 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void getMeLastRecord(DataPageResult<CourseMember> courseSetMembers) {
-        List<CourseMember> list = courseSetMembers.data;
+    private void acquireCourseProjects() {
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseSetApi.class)
+                .getCourseProjects(mCourseSetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<CourseProject>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<CourseProject> courseProjects) {
+                        if (courseProjects != null) {
+                            mView.setDialogData(courseProjects);
+                        }
+                    }
+                });
+    }
+
+    private void queryMeLastRecord(DataPageResult<CourseMember> courseMemberDataPageResult) {
+        List<CourseMember> list = courseMemberDataPageResult.data;
         if (list != null) {
             mView.goToCourseProjectActivity(getLastCourseId(list));
             mView.newFinish();

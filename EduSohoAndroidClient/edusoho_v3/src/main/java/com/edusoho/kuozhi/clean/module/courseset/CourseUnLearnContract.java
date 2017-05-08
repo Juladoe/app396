@@ -21,8 +21,6 @@ interface CourseUnLearnContract {
 
         void showFragments(String[] titleArray, String[] fragmentArray);
 
-        void showBackGround(String img);
-
         void showDiscountInfo(String name, long time);
 
         void showFavorite(boolean isFavorite);
@@ -32,6 +30,8 @@ interface CourseUnLearnContract {
         void newFinish();
 
         void showProcessDialog(boolean isShow);
+
+        void setDialogData(List<CourseProject> list);
 
         void showLoadView(boolean isShow);
 

@@ -32,13 +32,11 @@ public class HttpUtils {
     }
 
     public HttpUtils baseOnMapiV2() {
-        mHeaderMaps.clear();
         mBaseUrl = EdusohoApp.app.host + "/mapi_v2/";
         return mInstance;
     }
 
     public HttpUtils baseOnApi() {
-        mHeaderMaps.clear();
         mBaseUrl = EdusohoApp.app.host + "/api/";
         return mInstance;
     }
@@ -52,7 +50,6 @@ public class HttpUtils {
     }
 
     public HttpUtils addTokenHeader(String token) {
-        mHeaderMaps.clear();
         if (!StringUtils.isEmpty(token)) {
             mHeaderMaps.put(TOKEN_KEY, token);
         }
@@ -60,7 +57,6 @@ public class HttpUtils {
     }
 
     public HttpUtils addMapiV2TokenHeader(String token) {
-        mHeaderMaps.clear();
         if (!StringUtils.isEmpty(token)) {
             mHeaderMaps.put(MAPI_V2_TOKEN_KEY, token);
         }
@@ -68,7 +64,6 @@ public class HttpUtils {
     }
 
     public HttpUtils addHeader(Map<String, String> headerMaps) {
-        mHeaderMaps.clear();
         mHeaderMaps.putAll(headerMaps);
         return mInstance;
     }

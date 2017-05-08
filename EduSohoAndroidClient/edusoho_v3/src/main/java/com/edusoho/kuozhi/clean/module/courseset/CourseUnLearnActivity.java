@@ -86,6 +86,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     private long mEndTime;
     private boolean mIsFavorite = false;
     private Timer mTimer;
+    private List<CourseProject> mCourseProjects;
     private CourseSet mCourseSet;
     private CourseUnLearnContract.Presenter mPresenter;
 
@@ -104,7 +105,9 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
         mCourseSetId = getIntent().getIntExtra(COURSE_SET_ID, 0);
-        isJoin();
+        initView();
+        mPresenter = new CourseUnLearnPresenter(mCourseSetId, this);
+        mPresenter.subscribe();
     }
 
     @Override
@@ -125,12 +128,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         if (mTimer != null) {
             mTimer.cancel();
         }
-    }
-
-    private void isJoin() {
-        initView();
-        mPresenter = new CourseUnLearnPresenter(mCourseSetId, this);
-        mPresenter.subscribe();
     }
 
     private void initView() {
@@ -229,6 +226,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     @Override
     public void setCourseSet(CourseSet courseSet) {
         mCourseSet = courseSet;
+        showBackGround();
     }
 
     @Override
@@ -270,8 +268,11 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         }
     }
 
-    @Override
-    public void showBackGround(String img) {
+    public void showBackGround() {
+        String img = "";
+        if (mCourseSet.cover != null && mCourseSet.cover.middle != null) {
+            img = mCourseSet.cover.middle;
+        }
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
                 .showImageOnFail(R.drawable.default_course)
@@ -352,6 +353,11 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     }
 
     @Override
+    public void setDialogData(List<CourseProject> list) {
+        mCourseProjects = list;
+    }
+
+    @Override
     public void showLoadView(boolean isShow) {
         mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
@@ -361,6 +367,9 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         if (mSelectDialog == null) {
             mSelectDialog = new SelectProjectDialog();
             mSelectDialog.setData(list, vipInfo);
+        }
+        if (mCourseProjects != null) {
+            mSelectDialog.reFreshData(mCourseProjects);
         }
         mSelectDialog.show(getSupportFragmentManager(), "SelectProjectDialog");
     }

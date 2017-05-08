@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 
 public class Discount implements Serializable {
+    public static final String STATUS_RUNNING = "running";
 
     public int id;
     public String name;
