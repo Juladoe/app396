@@ -136,7 +136,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         if (mIsJoin) {
                             mView.showFragments(initCourseModules(true), courseProject);
                             mView.initLearnLayout(CourseProject.LearnMode.getMode(courseProject.learnMode));
-                            //setCourseLearningProgress(courseProject.id);
                             if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
                                 mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_DIALOG)
                                         .showErrorMsgResId(R.string.course_expired_dialog)
