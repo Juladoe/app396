@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.http;
 
+import com.edusoho.kuozhi.clean.utils.StringUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.Map;
@@ -30,13 +31,14 @@ public class HttpUtils {
         return mInstance;
     }
 
-    public static HttpUtils baseOnMapiV2() {
+    public HttpUtils baseOnMapiV2() {
         mHeaderMaps.clear();
         mBaseUrl = EdusohoApp.app.host + "/mapi_v2/";
         return mInstance;
     }
 
-    public static HttpUtils baseOnApi() {
+    public HttpUtils baseOnApi() {
+        mHeaderMaps.clear();
         mBaseUrl = EdusohoApp.app.host + "/api/";
         return mInstance;
     }
@@ -51,12 +53,17 @@ public class HttpUtils {
 
     public HttpUtils addTokenHeader(String token) {
         mHeaderMaps.clear();
-        mHeaderMaps.put(TOKEN_KEY, token == null ? "" : token);
+        if (!StringUtils.isEmpty(token)) {
+            mHeaderMaps.put(TOKEN_KEY, token);
+        }
         return mInstance;
     }
 
     public HttpUtils addMapiV2TokenHeader(String token) {
-        mHeaderMaps.put(MAPI_V2_TOKEN_KEY, token == null ? "" : token);
+        mHeaderMaps.clear();
+        if (!StringUtils.isEmpty(token)) {
+            mHeaderMaps.put(MAPI_V2_TOKEN_KEY, token);
+        }
         return mInstance;
     }
 

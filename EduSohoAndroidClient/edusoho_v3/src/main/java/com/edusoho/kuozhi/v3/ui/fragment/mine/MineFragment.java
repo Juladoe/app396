@@ -217,7 +217,6 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
                         startIntent.putExtra(Const.WEB_URL, url);
                     }
                 });
-                mActivity.app.mEngine.runNormalPlugin("CourseProjectActivity", mContext, null);
             }
         };
     }

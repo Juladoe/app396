@@ -488,8 +488,8 @@
     <string name="course_project_promise_service">承诺服务</string>
     <string name="relative_course_project">相关学习计划</string>
     <string name="course_task_num">学习任务：%1$d个</string>
-    <string name="course_project_chapter">第%1$d章 %2$s</string>
-    <string name="course_project_unit">第%1$d节 %2$s</string>
+    <string name="course_project_chapter">第%1$d%2$s %3$s</string>
+    <string name="course_project_unit">第%1$d%2$s %3$s</string>
     <string name="course_project_task_item_name">任务%1$s %2$s</string>
     <string name="cancel_favorite">取消收藏成功</string>
     <string name="favorite_success">收藏成功</string>

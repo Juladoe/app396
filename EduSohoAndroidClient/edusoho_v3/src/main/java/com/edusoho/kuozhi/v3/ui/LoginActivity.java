@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CommonApi;
+import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -248,15 +249,13 @@ public class LoginActivity extends BaseNoTitleActivity {
     }
 
     private void login() {
-        RequestUrl requestUrl = mActivity.app.bindNewUrl(Const.LOGIN, false);
-        requestUrl.heads.put("Accept", "application/vnd.edusoho.v2+json");
+        RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
         Map<String, String> params = requestUrl.getParams();
-        params.put("username", etUsername.getText().toString().trim());
+        params.put("_username", etUsername.getText().toString().trim());
         if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-            params.put("password", XXTEA.encryptToBase64String(etPassword.getText().toString(), "edusoho"));
-            params.put("encryptionType", "XXTEA");
+            params.put("encrypt_password", XXTEA.encryptToBase64String(etPassword.getText().toString(), app.domain));
         } else {
-            params.put("password", etPassword.getText().toString());
+            params.put("_password", etPassword.getText().toString());
         }
 
         final LoadDialog loadDialog = LoadDialog.create(this);
@@ -299,35 +298,6 @@ public class LoginActivity extends BaseNoTitleActivity {
                 CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
             }
         });
-        getCourseSetting();
-    }
-
-    private void getCourseSetting() {
-        HttpUtils.getInstance()
-                .baseOnApi()
-                .addHeader(new TreeMap<String, String>())
-                .createApi(CommonApi.class)
-                .getCourseSet()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<JsonObject>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(JsonObject jsonObject) {
-                        if (jsonObject != null) {
-                            app.isShowStudent = jsonObject.get("show_student_num_enabled").getAsString();
-                        }
-                    }
-                });
     }
 
     private View.OnClickListener mLoginClickListener = new View.OnClickListener() {

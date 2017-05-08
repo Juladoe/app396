@@ -127,7 +127,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
                     @Override
                     public void onNext(CourseSet courseSet) {
-                        if (StringUtils.isEmpty(mCourseProject.summary)) {
+                        if (!StringUtils.isEmpty(mCourseProject.summary)) {
                             mView.showIntroduce(mCourseProject.summary);
                         } else {
                             mView.showIntroduce(courseSet.summary);
