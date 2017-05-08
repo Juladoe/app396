@@ -57,7 +57,9 @@ public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContr
 
     public void setData(List<CourseProject> courseStudyPlans, List<VipInfo> vipInfos) {
         this.mCourseProjects = courseStudyPlans;
-        this.mVipInfos = vipInfos;
+        if (vipInfos != null) {
+            this.mVipInfos = vipInfos;
+        }
     }
 
     @Override

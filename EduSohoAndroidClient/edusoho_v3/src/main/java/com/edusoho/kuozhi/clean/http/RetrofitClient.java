@@ -23,7 +23,7 @@ public class RetrofitClient {
         if (retrofitBuilder == null) {
             synchronized (RetrofitClient.class){
                 if (retrofitBuilder == null) {
-                    retrofitBuilder = new Retrofit.Builder().addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    retrofitBuilder = new Retrofit.Builder()
                             .addConverterFactory(GsonConverterFactory.create())
                             .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
                 }
@@ -37,7 +37,7 @@ public class RetrofitClient {
 
     public static Retrofit getInstance(String baseUrl, Map<String, String> headerMaps) {
         if (retrofitBuilder == null) {
-            retrofitBuilder = new Retrofit.Builder().addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+            retrofitBuilder = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
         }

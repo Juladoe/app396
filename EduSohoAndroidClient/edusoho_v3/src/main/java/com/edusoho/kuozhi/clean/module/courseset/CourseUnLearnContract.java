@@ -33,6 +33,8 @@ interface CourseUnLearnContract {
 
         void showProcessDialog(boolean isShow);
 
+        void setDialogData(List<CourseProject> list);
+
         void showLoadView(boolean isShow);
 
         void showPlanDialog(List<CourseProject> list, List<VipInfo> vipInfo, CourseSet courseSet);

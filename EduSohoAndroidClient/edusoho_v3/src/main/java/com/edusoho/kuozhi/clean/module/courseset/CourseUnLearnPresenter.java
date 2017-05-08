@@ -88,6 +88,8 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                             mView.showProcessDialog(false);
                             if (courseSetMembers.paging.total > 0) {
                                 getMeLastRecord(courseSetMembers);
+                            } else {
+                                getCourseProjects();
                             }
                         }
                     });
@@ -154,6 +156,7 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     public Observable<List<CourseProject>> call(CourseSet courseSet) {
                         return HttpUtils
                                 .getInstance()
+                                .addTokenHeader(EdusohoApp.app.token)
                                 .createApi(CourseSetApi.class)
                                 .getCourseProjects(mCourseSetId);
                     }
@@ -282,11 +285,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             if (mCourseProjects != null) {
                 if (mCourseProjects.size() == 1) {
                     CourseProject courseProject = mCourseProjects.get(0);
-                    int result = CourseHelper.getCourseErrorRes(courseProject.access.code);
-                    if (0 == result) {
+                    if ("success".equals(courseProject.access.code)) {
                         joinFreeOrVipCourse();
                     } else {
-                        mView.showToast(result);
+                        mView.showToast(CourseHelper.getCourseErrorRes(courseProject.access.code));
                     }
                     return;
                 }
@@ -373,6 +375,31 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject != null && jsonObject.get(SUCCESS).getAsBoolean()) {
                             mView.showFavoriteCourseSet(false);
+                        }
+                    }
+                });
+    }
+
+    private void getCourseProjects() {
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseSetApi.class)
+                .getCourseProjects(mCourseSetId)
+                .subscribe(new Subscriber<List<CourseProject>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<CourseProject> courseProjects) {
+                        if (courseProjects != null) {
+                            mView.setDialogData(courseProjects);
                         }
                     }
                 });

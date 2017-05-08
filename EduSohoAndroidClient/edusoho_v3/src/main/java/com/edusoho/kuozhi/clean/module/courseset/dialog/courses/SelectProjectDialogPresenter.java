@@ -58,11 +58,10 @@ class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presen
 
     @Override
     public void confirm() {
-        int result = CourseHelper.getCourseErrorRes(mCourseProject.access.code);
-        if (0 == result) {
+        if ("success".equals(mCourseProject.access.code)) {
             joinFreeOrVipCourse(mCourseProject.id);
         } else {
-            mView.showToast(result);
+            mView.showToast(CourseHelper.getCourseErrorRes(mCourseProject.access.code));
         }
     }
 

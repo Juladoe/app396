@@ -346,6 +346,13 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     }
 
     @Override
+    public void setDialogData(List<CourseProject> list) {
+        if (mSelectDialog != null) {
+            mSelectDialog.setData(list, null);
+        }
+    }
+
+    @Override
     public void showLoadView(boolean isShow) {
         mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
