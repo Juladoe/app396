@@ -19,8 +19,6 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.trinea.android.common.util.ToastUtils;
-
 /**
  * Created by JesseHuang on 2017/2/7.
  */
@@ -81,7 +79,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
                     @Override
                     public void onFailure(String code, String message) {
                         disabledLoadingView();
-                        ToastUtils.show(mContext, message);
                     }
                 });
             }
@@ -89,7 +86,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
             @Override
             public void onFailure(String code, String message) {
                 disabledLoadingView();
-                ToastUtils.show(mContext, message);
             }
         });
     }

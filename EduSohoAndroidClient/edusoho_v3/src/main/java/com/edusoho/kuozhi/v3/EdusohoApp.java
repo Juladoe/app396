@@ -29,7 +29,6 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -79,6 +78,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.trinea.android.common.util.ToastUtils;
+
 public class EdusohoApp extends MultiDexApplication {
 
     public AppConfig config;
@@ -88,7 +89,6 @@ public class EdusohoApp extends MultiDexApplication {
     public School defaultSchool;
     public User loginUser;
     public String apiVersion;
-    public CourseSetting courseSetting;
     public String schoolVersion;
     public String schoolHost = "";
     public CoreEngine mEngine;
@@ -184,6 +184,7 @@ public class EdusohoApp extends MultiDexApplication {
             public void onErrorResponse(VolleyError error) {
                 if (error instanceof NoConnectionError) {
                     errorListener.onErrorResponse(error);
+                    ToastUtils.show(getApplicationContext(), getString(R.string.network_does_not_work));
                     return;
                 }
                 if (error instanceof TimeoutError) {
