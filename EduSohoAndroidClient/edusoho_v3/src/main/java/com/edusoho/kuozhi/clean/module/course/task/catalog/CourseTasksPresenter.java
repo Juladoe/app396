@@ -52,7 +52,12 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
                 .flatMap(new Func1<List<CourseItem>, Observable<CourseItem>>() {
                     @Override
                     public Observable<CourseItem> call(List<CourseItem> courseItems) {
-                        return courseItems == null ? null : Observable.just(courseItems.get(0));
+                        for (CourseItem courseItem : courseItems) {
+                            if (CourseItemEnum.TASK.toString().equals(courseItem.type)) {
+                                return Observable.just(courseItem);
+                            }
+                        }
+                        return null;
                     }
                 })
                 .subscribe(new Subscriber<CourseItem>() {

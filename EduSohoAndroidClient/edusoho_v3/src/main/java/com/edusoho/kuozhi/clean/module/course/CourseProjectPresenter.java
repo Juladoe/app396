@@ -151,7 +151,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                             int errRes = CourseHelper.getCourseMemberErrorRes(member.access.code);
                             if (member.access.code.equals(CourseHelper.MEMBER_SUCCESS)) {
-
+                                mView.setShowError(null);
                             } else if (member.access.code.equals(CourseHelper.MEMBER_EXPIRED)) {
                                 mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_DIALOG)
                                         .showErrorMsgResId(R.string.course_member_expired_dialog)

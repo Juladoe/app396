@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -42,6 +43,7 @@ import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,7 +83,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private View vSao;
     private View mParent;
 
-    private boolean isClick;
+    private boolean mIsClick;
     private LoadDialog mLoadDialog;
 
     @Override
@@ -271,6 +273,7 @@ public class LoginActivity extends BaseNoTitleActivity {
                     new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
                     MessageEngine.getInstance().sendMsg(Const.LOGIN_SUCCESS, null);
                     MessageEngine.getInstance().sendMsg(Const.REFRESH_MY_FRAGMENT, null);
+                    EventBus.getDefault().postSticky(MessageEvent.LOGIN);
                     mTvLogin.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -314,17 +317,17 @@ public class LoginActivity extends BaseNoTitleActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        isClick = false;
+        mIsClick = false;
         if (mLoadDialog != null) {
             mLoadDialog.cancel();
         }
     }
 
     private void loginByPlatform(String type) {
-        if (isClick) {
+        if (mIsClick) {
             return;
         }
-        isClick = true;
+        mIsClick = true;
         mLoadDialog = LoadDialog.create(this);
         mLoadDialog.show();
         final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);

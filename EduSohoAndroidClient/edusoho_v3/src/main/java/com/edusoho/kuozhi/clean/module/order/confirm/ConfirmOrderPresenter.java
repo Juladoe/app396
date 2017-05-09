@@ -8,8 +8,11 @@ import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -31,10 +34,26 @@ class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
     @Override
     public void subscribe() {
         HttpUtils.getInstance()
-                .addTokenHeader(EdusohoApp.app.token)
-                .createApi(OrderApi.class)
-                .postOrderInfo("course", mCourseId)
+                .createApi(CourseSetApi.class)
+                .getCourseSet(mCourseSetId)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<CourseSet>() {
+                    @Override
+                    public void call(CourseSet courseSet) {
+                        mView.showTopView(courseSet);
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<CourseSet, Observable<OrderInfo>>() {
+                    @Override
+                    public Observable<OrderInfo> call(CourseSet courseSet) {
+                        return HttpUtils.getInstance()
+                                .addTokenHeader(EdusohoApp.app.token)
+                                .createApi(OrderApi.class)
+                                .postOrderInfo("course", mCourseId);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<OrderInfo>() {
                     @Override
@@ -54,27 +73,6 @@ class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
                         if (orderInfo != null) {
                             mView.showPriceView(orderInfo);
                         }
-                    }
-                });
-        HttpUtils.getInstance()
-                .createApi(CourseSetApi.class)
-                .getCourseSet(mCourseSetId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseSet>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(CourseSet courseSet) {
-                        mView.showTopView(courseSet);
                     }
                 });
     }
