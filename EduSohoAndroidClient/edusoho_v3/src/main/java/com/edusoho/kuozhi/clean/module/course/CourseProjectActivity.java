@@ -148,7 +148,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLearnTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mShowDialogHelper != null) {
+                if (mShowDialogHelper != null && !mShowDialogHelper.isLearnClick()) {
                     mShowDialogHelper.doAction();
                 } else {
                     mPresenter.joinCourseProject();
@@ -224,6 +224,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         setPlayLayoutVisible(true);
         mLatestTaskTitle.setText(trialTask.title);
         mImmediateLearn.setText(R.string.start_learn_trial_task);
+        mImmediateLearn.setBackgroundResource(R.drawable.bg_trial_learned);
     }
 
     @Override
@@ -231,6 +232,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         setPlayLayoutVisible(true);
         mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
         mImmediateLearn.setText(isFirstTask && nextTask.result == null ? R.string.start_learn_first_task : R.string.start_learn_next_task);
+        mImmediateLearn.setBackgroundResource(R.drawable.bg_latest_learned);
     }
 
     @Override
