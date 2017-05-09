@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CommonApi;
 import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.utils.SharedPreferencesHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -36,6 +38,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+import com.mob.tools.utils.SharePrefrenceHelper;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -368,7 +371,13 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                     @Override
                     public void onNext(CourseSetting courseSetting) {
                         if (courseSetting != null) {
-                            app.courseSetting = courseSetting;
+                            mContext.getSharedPreferences(CourseSetting.COURSE_SETTING, 0)
+                                    .edit()
+                                    .putString(CourseSetting.SHOW_STUDENT_NUM_ENABLED_KEY, courseSetting.showStudentNumEnabled)
+                                    .putString(CourseSetting.CHAPTER_NAME_KEY, courseSetting.chapterName)
+                                    .putString(CourseSetting.PART_NAME_KEY, courseSetting.partName)
+                                    .apply();
+
                         }
                     }
                 });
