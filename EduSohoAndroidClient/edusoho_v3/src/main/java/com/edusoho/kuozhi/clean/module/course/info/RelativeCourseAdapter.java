@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.utils.StringUtils;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 
 import java.util.List;
@@ -24,10 +26,12 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<RelativeCourseAd
     private static final int FREE = 1;
     private Context mContext;
     private List<CourseProject> mCourseProjects;
+    private List<VipInfo> mVips;
 
-    public RelativeCourseAdapter(Context context, List<CourseProject> courseProjects) {
+    public RelativeCourseAdapter(Context context, List<CourseProject> courseProjects, List<VipInfo> vips) {
         this.mContext = context;
         this.mCourseProjects = courseProjects;
+        this.mVips = vips;
     }
 
     @Override
@@ -65,6 +69,25 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<RelativeCourseAd
                 holder.promiseServiceLayout.addView(serviceTextView);
             }
         }
+        String vipName = getVipName(courseProject.vipLevelId);
+        if (StringUtils.isEmpty(vipName)) {
+            holder.courseVipAd.setVisibility(View.GONE);
+        } else {
+            holder.courseVipAd.setVisibility(View.VISIBLE);
+            holder.courseVipAd.setText(String.format(mContext.getString(R.string.vip_member_free_to_learn), vipName));
+        }
+    }
+
+    public String getVipName(int vipId) {
+        if (mVips == null) {
+            return "";
+        }
+        for (VipInfo info : mVips) {
+            if (vipId == info.id) {
+                return info.name;
+            }
+        }
+        return "";
     }
 
     public CourseProject getItem(int position) {
@@ -81,6 +104,7 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<RelativeCourseAd
         public TextView coursePrice;
         public TextView courseTasks;
         public LinearLayout promiseServiceLayout;
+        public TextView courseVipAd;
 
         public ViewHolder(View view) {
             super(view);
@@ -88,6 +112,7 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<RelativeCourseAd
             coursePrice = (TextView) view.findViewById(R.id.tv_course_project_price);
             courseTasks = (TextView) view.findViewById(R.id.tv_course_tasks);
             promiseServiceLayout = (LinearLayout) view.findViewById(R.id.ll_promise_layout);
+            courseVipAd = (TextView) view.findViewById(R.id.tv_vip_ad);
         }
     }
 }

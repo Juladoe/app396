@@ -570,5 +570,6 @@
     <string name="course_exit_confirm">确定</string>
     <string name="course_exit_cancel">取消</string>
     <string name="course_task_free">免费</string>
+    <string name="vip_member_free_to_learn">%1$s会员免费加入学习</string>
 
 </resources>
