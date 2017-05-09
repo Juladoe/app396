@@ -12,7 +12,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -60,8 +60,7 @@ public class ScrollableAppBarLayout extends AppBarLayout {
                 int top = AppUtil.dp2px(getContext(), 25);
                 view.setPadding(0, top, 0, 0);
                 ViewGroup.LayoutParams lp = view.getLayoutParams();
-                int actionHeight = TypedValue.complexToDimensionPixelSize(new TypedValue().data, getResources().getDisplayMetrics());
-                lp.height = actionHeight + top;
+                lp.height = AppUtil.dp2px(getContext(), 48) + top;
                 view.setLayoutParams(lp);
             }
         }
