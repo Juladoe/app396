@@ -168,7 +168,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         } else {
                             mView.showFragments(initCourseModules(false), courseProject);
                             initTrialFirstTask(mCourseProjectId);
-                            if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)
+                            if (CourseHelper.COURSE_SUCCESS.equals(courseProject.access.code)) {
+                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
+                                        .showErrorMsgResId(R.string.join_course_first).setLearnClick(true));
+                            } else if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)
                                     || CourseHelper.COURSE_CLOSED.equals(courseProject.access.code)
                                     || CourseHelper.COURSE_NOT_BUYABLE.equals(courseProject.access.code)
                                     || CourseHelper.COURSE_BUY_EXPIRED.equals(courseProject.access.code)) {
@@ -363,6 +366,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         private int mShowType;
         private int mMsgResId;
         private int mActionType;
+        private boolean isLearnClick = false;
 
         ShowActionHelper doAction() {
             if (mShowType == TYPE_TOAST) {
@@ -399,6 +403,15 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         public ShowActionHelper setAction(int action) {
             mActionType = action;
             return this;
+        }
+
+        public ShowActionHelper setLearnClick(boolean isClick) {
+            isLearnClick = isClick;
+            return this;
+        }
+
+        public boolean isLearnClick() {
+            return isLearnClick;
         }
 
         public int getErrorType() {
