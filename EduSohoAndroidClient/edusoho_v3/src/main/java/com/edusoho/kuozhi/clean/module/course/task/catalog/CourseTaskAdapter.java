@@ -34,7 +34,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean mIsJoin;
     private Context mContext;
     private CourseTaskViewHolder mLastCourseTaskViewHolder;
-    private CourseItem mCurrentCourseItem;
+    private CourseTask mCurrentCourseTask;
 
     public CourseTaskAdapter(Context context, List<CourseItem> taskItems, CourseProject.LearnMode mode, boolean isJoin) {
         this.mTaskItems = taskItems;
@@ -103,7 +103,11 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void setTaskLockLayout(CourseTaskViewHolder holder, CourseProject.LearnMode mode, CourseItem taskItem) {
         if (mode == CourseProject.LearnMode.FREEMODE) {
             holder.taskLock.setVisibility(View.GONE);
-            if (mCurrentCourseItem != null && taskItem.id == mCurrentCourseItem.id) {
+            if (mCurrentCourseTask != null && taskItem.task.id == mCurrentCourseTask.id) {
+                holder.taskType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                holder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            } else {
                 holder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
                 holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
                 holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
@@ -149,7 +153,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         taskViewHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         taskViewHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         mLastCourseTaskViewHolder = taskViewHolder;
-        mCurrentCourseItem = courseItem;
+        mCurrentCourseTask = courseItem.task;
     }
 
     @Override
