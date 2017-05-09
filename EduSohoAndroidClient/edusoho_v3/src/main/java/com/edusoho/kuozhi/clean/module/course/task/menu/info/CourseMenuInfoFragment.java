@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -18,7 +20,9 @@ import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoFragment;
+import com.edusoho.kuozhi.clean.utils.AppUtils;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 
 /**
  * Created by JesseHuang on 2017/4/24.
@@ -37,6 +41,7 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
     private TextView mDeadline;
     private ProgressBar mMyCourseProgressRate;
     private ProgressBar mCourseProgressRate;
+    private ImageView mCourseScheduleBackground;
 
     private CourseProject mCourseProject;
     private CourseLearningProgress mCourseLearningProgress;
@@ -72,6 +77,16 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
         mCourseProgress = (TextView) view.findViewById(R.id.tv_course_progress);
         mMyCourseProgressRate = (ProgressBar) view.findViewById(R.id.my_course_progress_rate);
         mCourseProgressRate = (ProgressBar) view.findViewById(R.id.course_progress_rate);
+        mCourseScheduleBackground = (ImageView) view.findViewById(R.id.tv_course_schedule_bg);
+
+        if (CourseProject.ExpiryMode.DATE.toString().equals(mCourseProject.learningExpiryDate.expiryMode)) {
+            mCourseProgress.setVisibility(View.VISIBLE);
+            mCourseProgressRate.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                    , AppUtil.dp2px(getActivity(), 260));
+            lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            mCourseScheduleBackground.setLayoutParams(lp);
+        }
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
