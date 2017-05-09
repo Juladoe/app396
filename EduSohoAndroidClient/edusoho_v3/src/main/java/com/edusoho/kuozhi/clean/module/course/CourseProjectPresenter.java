@@ -93,19 +93,12 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                                 break;
                             case CourseHelper.COURSE_EXPIRED:
                             case CourseHelper.COURSE_CLOSED:
+                            case CourseHelper.COURSE_NOT_BUYABLE:
+                            case CourseHelper.COURSE_BUY_EXPIRED:
                                 initLoginCourseMemberStatus(courseProject);
                                 mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(errorRes));
                                 break;
-                            case CourseHelper.COURSE_NOT_BUYABLE:
-                            case CourseHelper.COURSE_BUY_EXPIRED:
-                                initLogoutCourseMemberStatus(courseProject);
-                                initTrialFirstTask(mCourseProjectId);
-                                mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
-                                        .showErrorMsgResId(errorRes)
-                                        .doAction());
-                                break;
-
                         }
                     }
                 });
@@ -142,9 +135,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                                         .setAction(ShowActionHelper.POSITIVE_ACTION_EXIT_COURSE)
                                         .doAction());
                                 return;
-                            }
-                            if (CourseHelper.COURSE_CLOSED.equals(courseProject.access.code)) {
-                                //如果计划关闭，而且已经加入，可学
+                            } else if (CourseHelper.COURSE_CLOSED.equals(courseProject.access.code)
+                                    || CourseHelper.COURSE_NOT_BUYABLE.equals(courseProject.access.code)
+                                    || CourseHelper.COURSE_BUY_EXPIRED.equals(courseProject.access.code)) {
+                                //用户已经加入，仍可学
                                 mView.setShowError(null);
                                 return;
                             }
@@ -174,7 +168,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         } else {
                             mView.showFragments(initCourseModules(false), courseProject);
                             initTrialFirstTask(mCourseProjectId);
-                            if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)) {
+                            if (CourseHelper.COURSE_EXPIRED.equals(courseProject.access.code)
+                                    || CourseHelper.COURSE_CLOSED.equals(courseProject.access.code)
+                                    || CourseHelper.COURSE_NOT_BUYABLE.equals(courseProject.access.code)
+                                    || CourseHelper.COURSE_BUY_EXPIRED.equals(courseProject.access.code)) {
                                 mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
                                         .showErrorMsgResId(CourseHelper.getCourseErrorRes(courseProject.access.code))
                                         .doAction());
