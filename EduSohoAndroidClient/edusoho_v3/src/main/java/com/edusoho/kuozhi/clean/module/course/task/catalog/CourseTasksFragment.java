@@ -198,7 +198,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                         showToast(getString(R.string.flash_task_not_support));
                         break;
                     default:
-                        adapter.switchClickPosition(v);
+                        adapter.switchClickPosition(v, item);
                         EventBus.getDefault().post(new MessageEvent<>(item.task
                                 , MessageEvent.LEARN_TASK));
                 }
@@ -247,12 +247,4 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                 break;
         }
     }
-
-//    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-//    public void onLoginSuccess(MessageEvent messageEvent) {
-//        if (messageEvent.getType() == MessageEvent.LOGIN) {
-//            mPresenter.subscribe();
-//            EventBus.getDefault().removeStickyEvent(MessageEvent.LOGIN);
-//        }
-//    }
 }

@@ -373,7 +373,7 @@ public class CourseDetailModel implements Serializable {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //callbackListener.onFailure("Error", error.getMessage());
+                callbackListener.onFailure("Error", error.getMessage());
             }
         });
     }
