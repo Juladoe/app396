@@ -8,9 +8,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+
 import com.edusoho.kuozhi.v3.core.CoreEngine;
-import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+
 import java.io.File;
 
 /**
@@ -18,7 +19,7 @@ import java.io.File;
  */
 public class GenseeLivePlayerAction {
 
-    private final static int VERSION = 2;
+    private final static int VERSION = 3;
 
     private Activity mActivity;
 
