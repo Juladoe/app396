@@ -18,9 +18,6 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.api.CommonApi;
-import com.edusoho.kuozhi.clean.bean.CourseSetting;
-import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -42,7 +39,6 @@ import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
@@ -57,11 +53,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 import static com.edusoho.kuozhi.v3.ui.QrSchoolActivity.REQUEST_QR;
 
@@ -89,6 +80,9 @@ public class LoginActivity extends BaseNoTitleActivity {
     private String mAuthCancel;
     private View vSao;
     private View mParent;
+
+    private boolean isClick;
+    private LoadDialog mLoadDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -317,7 +311,22 @@ public class LoginActivity extends BaseNoTitleActivity {
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isClick = false;
+        if (mLoadDialog != null) {
+            mLoadDialog.cancel();
+        }
+    }
+
     private void loginByPlatform(String type) {
+        if (isClick) {
+            return;
+        }
+        isClick = true;
+        mLoadDialog = LoadDialog.create(this);
+        mLoadDialog.show();
         final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
         openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
             @Override
