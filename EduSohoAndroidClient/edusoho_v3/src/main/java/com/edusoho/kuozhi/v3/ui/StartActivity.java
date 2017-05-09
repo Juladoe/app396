@@ -233,7 +233,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             @Override
             public void onResponse(String response) {
                 hideLoading();
-                SchoolResult schoolResult = parseJsonValue(response.toString(), new TypeToken<SchoolResult>() {
+                SchoolResult schoolResult = parseJsonValue(response, new TypeToken<SchoolResult>() {
                 });
 
                 if (schoolResult == null || schoolResult.site == null) {
