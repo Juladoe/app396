@@ -154,7 +154,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
     protected void initApp() {
         if (!AppUtil.isNetConnect(mContext)) {
-            CommonUtil.longToast(this, "没有网络服务！请检查网络设置。");
+            CommonUtil.longToast(this, getString(R.string.network_does_not_work));
             startApp();
             return;
         }

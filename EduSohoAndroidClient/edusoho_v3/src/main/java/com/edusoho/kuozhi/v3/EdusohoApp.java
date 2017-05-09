@@ -79,6 +79,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.trinea.android.common.util.ToastUtils;
+
 public class EdusohoApp extends Application {
 
     public AppConfig config;
@@ -184,6 +186,7 @@ public class EdusohoApp extends Application {
             public void onErrorResponse(VolleyError error) {
                 if (error instanceof NoConnectionError) {
                     errorListener.onErrorResponse(error);
+                    ToastUtils.show(getApplicationContext(), getString(R.string.network_does_not_work));
                     return;
                 }
                 if (error instanceof TimeoutError) {
