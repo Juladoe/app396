@@ -12,9 +12,12 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Result;
+import com.edusoho.kuozhi.clean.utils.SharedPreferencesHelper;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
@@ -68,11 +71,17 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         CourseItem taskItem = mTaskItems.get(position);
         if (holder instanceof CourseTaskChapterViewHolder) {
             CourseTaskChapterViewHolder chapterHolder = (CourseTaskChapterViewHolder) holder;
+            String chapterName = SharedPreferencesHelper.getInstance(mContext)
+                    .open(CourseSetting.COURSE_SETTING)
+                    .getString(CourseSetting.CHAPTER_NAME_KEY);
             chapterHolder.chapterTitle.setText(String.format(mContext.getString(R.string.course_project_chapter)
-                    , taskItem.number, EdusohoApp.app.courseSetting.chapterName, taskItem.title));
+                    , taskItem.number, chapterName, taskItem.title));
         } else if (holder instanceof CourseTaskUnitViewHolder) {
             CourseTaskUnitViewHolder unitHolder = (CourseTaskUnitViewHolder) holder;
-            unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, EdusohoApp.app.courseSetting.partName, taskItem.title));
+            String partName = SharedPreferencesHelper.getInstance(mContext)
+                    .open(CourseSetting.COURSE_SETTING)
+                    .getString(CourseSetting.PART_NAME_KEY);
+            unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, partName, taskItem.title));
         } else {
             CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
             setTaskLockLayout(taskHolder, mLearnMode, taskItem);

@@ -15,8 +15,10 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity;
+import com.edusoho.kuozhi.clean.utils.SharedPreferencesHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -114,7 +116,10 @@ public class CourseIntroduceFragment extends BaseLazyFragment<CourseIntroduceCon
         mTitle.setText(mCourseSet.title);
         mReviewStar.setRating((int) mCourseSet.rating);
         int studentNum = mCourseSet.studentNum;
-        mTitleStudentNum.setText(EdusohoApp.app.courseSetting.showStudentNumEnabled != null && "1".equals(EdusohoApp.app.courseSetting.showStudentNumEnabled) ?
+        String showStudentNumEnabled = SharedPreferencesHelper.getInstance(getActivity())
+                .open(CourseSetting.COURSE_SETTING)
+                .getString(CourseSetting.SHOW_STUDENT_NUM_ENABLED_KEY);
+        mTitleStudentNum.setText(showStudentNumEnabled != null && "1".equals(showStudentNumEnabled) ?
                 String.format(getContext().getString(R.string.course_student_count), studentNum) : "");
         showCourseNowPrice();
     }
