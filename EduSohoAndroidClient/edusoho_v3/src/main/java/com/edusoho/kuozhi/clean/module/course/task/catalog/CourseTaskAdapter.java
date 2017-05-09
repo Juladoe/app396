@@ -28,11 +28,13 @@ import java.util.List;
  */
 
 public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String CLICKED = "clicked";
     private List<CourseItem> mTaskItems;
     private CourseProject.LearnMode mLearnMode;
     private boolean mIsJoin;
     private Context mContext;
     private CourseTaskViewHolder mLastCourseTaskViewHolder;
+    private CourseItem mCurrentCourseItem;
 
     public CourseTaskAdapter(Context context, List<CourseItem> taskItems, CourseProject.LearnMode mode, boolean isJoin) {
         this.mTaskItems = taskItems;
@@ -101,6 +103,11 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void setTaskLockLayout(CourseTaskViewHolder holder, CourseProject.LearnMode mode, CourseItem taskItem) {
         if (mode == CourseProject.LearnMode.FREEMODE) {
             holder.taskLock.setVisibility(View.GONE);
+            if (mCurrentCourseItem != null && taskItem.id == mCurrentCourseItem.id) {
+                holder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
+                holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+                holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+            }
         } else {
             holder.taskLock.setVisibility(View.VISIBLE);
             if (taskItem.task.lock) {
@@ -129,7 +136,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    void switchClickPosition(View currentClickView) {
+    void switchClickPosition(View currentClickView, CourseItem courseItem) {
         CourseTaskViewHolder taskViewHolder = new CourseTaskViewHolder(currentClickView);
         if (mLastCourseTaskViewHolder != null) {
             taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
@@ -142,6 +149,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         taskViewHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         taskViewHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         mLastCourseTaskViewHolder = taskViewHolder;
+        mCurrentCourseItem = courseItem;
     }
 
     @Override
