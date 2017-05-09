@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.gensee.common.ServiceType;
 import com.gensee.entity.ChatMsg;
 import com.gensee.entity.DocInfo;
@@ -32,6 +34,7 @@ import com.gensee.pdu.GSDocView;
 import com.gensee.taskret.OnTaskRet;
 import com.gensee.view.GSVideoView;
 import com.gensee.vod.VodSite;
+
 import java.util.List;
 
 
@@ -108,7 +111,7 @@ public class GenseeVodPlayerActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vod_layout);
         mContext = getBaseContext();
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mFragmentManager = getSupportFragmentManager();
         VodSite.init(this, new OnTaskRet() {
             @Override
