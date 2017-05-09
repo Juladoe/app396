@@ -63,6 +63,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.trinea.android.common.util.ToastUtils;
+
 /**
  * Created by JesseHuang on 15/5/6.
  * 扫描网校界面
@@ -553,13 +555,11 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         app.getUrl(schoolApiUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                SchoolResult schoolResult = app.gson.fromJson(
-                        response, new TypeToken<SchoolResult>() {
-                        }.getType());
+                SchoolResult schoolResult = parseJsonValue(response, new TypeToken<SchoolResult>() {
+                });
 
-                if (schoolResult == null
-                        || schoolResult.site == null) {
-                    handlerError(response);
+                if (schoolResult == null || schoolResult.site == null) {
+                    CommonUtil.shortToast(mContext, "网校客户端未开启");
                     mLoading.dismiss();
                     return;
                 }
