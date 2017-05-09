@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.clean.bean.CourseMemberRoleEnum;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.course.task.menu.info.CourseMenuInfoPresenter;
@@ -23,6 +24,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 
@@ -57,7 +59,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         }
         showMemberNum(mCourseProject.studentNum);
         showMembers(mCourseProject.id, CourseMemberRoleEnum.STUDENT.toString());
-        showRelativeCourseProjects(mCourseProject.courseSet.id, mCourseProject.id);
+        showRelativeCourseProjects1(mCourseProject.courseSet.id, mCourseProject.id);
     }
 
     private void showPrice() {
@@ -194,9 +196,65 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
                     @Override
                     public void onNext(List<CourseProject> courseProjects) {
-                        mView.showRelativeCourseProjects(courseProjects);
+                        //mView.showRelativeCourseProjects(courseProjects);
                     }
                 });
+    }
+
+    private void showRelativeCourseProjects1(int courseSetId, final int currentCourseProjectId) {
+        Observable
+                .combineLatest(getRelativeCourseProjects(courseSetId, currentCourseProjectId), getVipInfos(), new Func2<List<CourseProject>, List<VipInfo>, Object>() {
+                    @Override
+                    public Object call(List<CourseProject> courseProjects, List<VipInfo> vipInfos) {
+                        mView.showRelativeCourseProjects(courseProjects, vipInfos);
+                        return null;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        
+                    }
+                });
+    }
+
+    private Observable<List<CourseProject>> getRelativeCourseProjects(int courseSetId, final int currentCourseProjectId) {
+        return HttpUtils.getInstance().createApi(CourseSetApi.class)
+                .getCourseProjects(courseSetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<CourseProject>, Observable<CourseProject>>() {
+                    @Override
+                    public Observable<CourseProject> call(List<CourseProject> courseProjects) {
+                        return Observable.from(courseProjects);
+                    }
+                })
+                .filter(new Func1<CourseProject, Boolean>() {
+                    @Override
+                    public Boolean call(CourseProject courseProject) {
+                        return courseProject.id != currentCourseProjectId;
+                    }
+                })
+                .toList();
+    }
+
+    private Observable<List<VipInfo>> getVipInfos() {
+        return HttpUtils
+                .getInstance()
+                .createApi(PluginsApi.class)
+                .getVipInfo();
     }
 
     @Override

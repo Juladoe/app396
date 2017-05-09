@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
@@ -275,12 +276,12 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
     }
 
     @Override
-    public void showRelativeCourseProjects(List<CourseProject> courseList) {
+    public void showRelativeCourseProjects(List<CourseProject> courseList, List<VipInfo> vipInfos) {
         mRelativeCourses.setHasFixedSize(true);
         mRelativeCourses.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRelativeCourses.setItemAnimator(new DefaultItemAnimator());
         mRelativeCourses.setNestedScrollingEnabled(false);
-        final RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseList);
+        final RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseList, vipInfos);
         mRelativeCourses.setAdapter(relativeCourseAdapter);
         ItemClickSupport.addTo(mRelativeCourses).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
