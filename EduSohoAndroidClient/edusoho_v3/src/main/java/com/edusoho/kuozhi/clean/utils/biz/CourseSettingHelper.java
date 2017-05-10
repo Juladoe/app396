@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.utils.biz;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.edusoho.kuozhi.clean.api.CommonApi;
 import com.edusoho.kuozhi.clean.bean.CourseSetting;
@@ -43,6 +44,7 @@ public class CourseSettingHelper {
 
                     @Override
                     public void onNext(CourseSetting courseSetting) {
+                        Log.d("Helpersync", "onNext: " + courseSetting.chapterName);
                         context.getApplicationContext()
                                 .getSharedPreferences(CourseSetting.COURSE_SETTING, 0)
                                 .edit()
