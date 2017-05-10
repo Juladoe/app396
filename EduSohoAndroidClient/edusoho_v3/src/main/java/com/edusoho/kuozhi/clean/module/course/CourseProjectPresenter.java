@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.api.UserApi;
-import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
@@ -14,7 +13,7 @@ import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
-import com.edusoho.kuozhi.clean.utils.CourseHelper;
+import com.edusoho.kuozhi.clean.utils.biz.CourseHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.JsonObject;
 

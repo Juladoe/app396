@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.clean.api.CommonApi;
 import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.SharedPreferencesHelper;
+import com.edusoho.kuozhi.clean.utils.biz.CourseSettingHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -46,6 +47,7 @@ import java.util.TreeMap;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -167,7 +169,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         }
 
         checkSchoolApiVersion();
-        getCourseSetting();
     }
 
     @Override
@@ -247,6 +248,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
                 getAppSettingProvider().setCurrentSchool(site);
                 app.setCurrentSchool(site);
+                CourseSettingHelper.sync(mContext);
                 startApp();
             }
         }, new Response.ErrorListener() {
@@ -348,39 +350,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 showSchoolErrorDlg();
             }
         });
-    }
-
-    protected void getCourseSetting() {
-        HttpUtils.getInstance()
-                .baseOnApi()
-                .createApi(CommonApi.class)
-                .getCourseSet()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseSetting>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(CourseSetting courseSetting) {
-                        if (courseSetting != null) {
-                            mContext.getSharedPreferences(CourseSetting.COURSE_SETTING, 0)
-                                    .edit()
-                                    .putString(CourseSetting.SHOW_STUDENT_NUM_ENABLED_KEY, courseSetting.showStudentNumEnabled)
-                                    .putString(CourseSetting.CHAPTER_NAME_KEY, courseSetting.chapterName)
-                                    .putString(CourseSetting.PART_NAME_KEY, courseSetting.partName)
-                                    .apply();
-
-                        }
-                    }
-                });
     }
 
     protected void startApp() {
