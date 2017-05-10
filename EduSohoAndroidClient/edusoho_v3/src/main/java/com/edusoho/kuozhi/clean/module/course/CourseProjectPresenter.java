@@ -15,6 +15,11 @@ import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.biz.CourseHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
+import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -294,6 +299,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             mView.showToast(R.string.exit_course_success);
                             initTrialFirstTask(mCourseProjectId);
                             mView.exitCourseLayout();
+                            mView.clearCoursesCache(mCourseProjectId);
                         } else {
                             mView.showToast(R.string.exit_course_failure);
                         }
@@ -420,4 +426,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
             return mShowType;
         }
     }
+
+
 }

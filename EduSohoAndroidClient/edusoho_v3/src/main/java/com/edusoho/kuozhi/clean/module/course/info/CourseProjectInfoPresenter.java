@@ -59,7 +59,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         }
         showMemberNum(mCourseProject.studentNum);
         showMembers(mCourseProject.id, CourseMemberRoleEnum.STUDENT.toString());
-        showRelativeCourseProjects1(mCourseProject.courseSet.id, mCourseProject.id);
+        showRelativeCourseProjects(mCourseProject.courseSet.id, mCourseProject.id);
     }
 
     private void showPrice() {
@@ -166,42 +166,6 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showRelativeCourseProjects(int courseSetId, final int currentCourseProjectId) {
-        HttpUtils.getInstance().createApi(CourseSetApi.class)
-                .getCourseProjects(courseSetId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<List<CourseProject>, Observable<CourseProject>>() {
-                    @Override
-                    public Observable<CourseProject> call(List<CourseProject> courseProjects) {
-                        return Observable.from(courseProjects);
-                    }
-                })
-                .filter(new Func1<CourseProject, Boolean>() {
-                    @Override
-                    public Boolean call(CourseProject courseProject) {
-                        return courseProject.id != currentCourseProjectId;
-                    }
-                })
-                .toList()
-                .subscribe(new Subscriber<List<CourseProject>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("RelativeCourse", "onError: " + e.toString());
-                    }
-
-                    @Override
-                    public void onNext(List<CourseProject> courseProjects) {
-                        //mView.showRelativeCourseProjects(courseProjects);
-                    }
-                });
-    }
-
-    private void showRelativeCourseProjects1(int courseSetId, final int currentCourseProjectId) {
         Observable
                 .combineLatest(getRelativeCourseProjects(courseSetId, currentCourseProjectId), getVipInfos(), new Func2<List<CourseProject>, List<VipInfo>, Object>() {
                     @Override

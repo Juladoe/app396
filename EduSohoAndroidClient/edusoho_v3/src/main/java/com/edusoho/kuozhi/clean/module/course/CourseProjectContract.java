@@ -58,6 +58,8 @@ public interface CourseProjectContract {
         void setCurrentTaskStatus(TaskResultEnum status);
 
         void launchLoginActivity();
+
+        void clearCoursesCache(int... courseIds);
     }
 
     interface Presenter extends BasePresenter {
