@@ -186,7 +186,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 if (mShowDialogHelper != null) {
                     mShowDialogHelper.doAction();
                 } else {
-                    // TODO: 2017/4/28 继续学习&试学
+                    CourseTask task = (CourseTask) v.getTag();
+                    learnTask(task);
                 }
             }
         });
@@ -225,6 +226,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLatestTaskTitle.setText(trialTask.title);
         mImmediateLearn.setText(R.string.start_learn_trial_task);
         mImmediateLearn.setBackgroundResource(R.drawable.bg_trial_learned);
+        mImmediateLearn.setTag(trialTask);
     }
 
     @Override
@@ -233,6 +235,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
         mImmediateLearn.setText(isFirstTask && nextTask.result == null ? R.string.start_learn_first_task : R.string.start_learn_next_task);
         mImmediateLearn.setBackgroundResource(R.drawable.bg_latest_learned);
+        mImmediateLearn.setTag(nextTask);
     }
 
     @Override
@@ -401,8 +404,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         if (type == MessageEvent.LOGIN) {
             mPresenter.subscribe();
         }
-
-        Log.d("Subscribe", "onLoginSuccess: ");
     }
 
     private void learnTask(CourseTask task) {

@@ -49,8 +49,8 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         mView.initCourseProjectInfo(mCourseProject);
         if (this instanceof CourseMenuInfoPresenter) {
             showPrice();
-            showVip(mCourseProject.vipLevelId);
         }
+        showVip(mCourseProject.vipLevelId);
         showServices(mCourseProject.services);
         showIntroduce();
         showAudiences(mCourseProject.audiences);
@@ -225,7 +225,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
                     @Override
                     public void onNext(Object o) {
-                        
+
                     }
                 });
     }

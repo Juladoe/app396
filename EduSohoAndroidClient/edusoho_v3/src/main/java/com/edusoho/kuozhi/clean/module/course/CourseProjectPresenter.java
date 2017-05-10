@@ -288,6 +288,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                            mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
+                                    .showErrorMsgResId(R.string.join_course_first).setLearnClick(true));
                             EventBus.getDefault().post(new MessageEvent(MessageEvent.COURSE_EXIT));
                             mIsJoin = false;
                             mView.showToast(R.string.exit_course_success);
@@ -322,6 +324,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseMember courseMember) {
                         if (courseMember != null) {
                             mIsJoin = true;
+                            mView.setShowError(null);
                             mView.showToast(R.string.join_course_success);
                             mView.initJoinCourseLayout(CourseProject.LearnMode.getMode(mCourseProject.learnMode));
                         }
