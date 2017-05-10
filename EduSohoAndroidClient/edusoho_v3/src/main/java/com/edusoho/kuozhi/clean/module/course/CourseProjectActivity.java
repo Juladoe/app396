@@ -38,7 +38,11 @@ import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
@@ -47,6 +51,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.greenrobot.eventbus.EventBus;
@@ -512,6 +517,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         if (task != null) {
             task.result.status = TaskResultEnum.FINISH.toString();
         }
+    }
+
+    @Override
+    public void clearCoursesCache(int... courseIds) {
+        AppSettingProvider appSettingProvider = FactoryManager.getInstance().create(AppSettingProvider.class);
+        School school = appSettingProvider.getCurrentSchool();
+        User user = appSettingProvider.getCurrentUser();
+        new CourseCacheHelper(getApplicationContext(), school.getDomain(), user.id).clearLocalCacheByCourseId(courseIds);
     }
 
     @Override
