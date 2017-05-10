@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.utils;
+package com.edusoho.kuozhi.clean.utils.biz;
 
 import com.edusoho.kuozhi.R;
 

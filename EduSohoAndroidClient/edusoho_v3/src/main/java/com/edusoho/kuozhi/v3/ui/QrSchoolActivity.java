@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.utils.biz.CourseSettingHelper;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -571,6 +572,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                     return;
                 }
                 bindApiToken(site);
+                CourseSettingHelper.sync(mContext);
             }
         }, this);
     }
