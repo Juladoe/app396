@@ -466,8 +466,8 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoginSuccess(Integer type) {
-        if (type == MessageEvent.LOGIN) {
+    public void onLoginSuccess(MessageEvent messageEvent) {
+        if (messageEvent.getType() == MessageEvent.LOGIN) {
             finish();
             EventBus.getDefault().removeStickyEvent(MessageEvent.LOGIN);
         }

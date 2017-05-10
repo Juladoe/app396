@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -54,7 +52,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -179,6 +176,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                     }
                     startActivity(new Intent(CourseProjectActivity.this, LessonDownloadingActivity.class)
                             .putExtra(Const.COURSE_ID, mCourseProjectId));
+                    stopAudio();
                 }
             }
         });
@@ -405,8 +403,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoginSuccess(Integer type) {
-        if (type == MessageEvent.LOGIN) {
+    public void onLoginSuccess(MessageEvent messageEvent) {
+        if (messageEvent.getType() == MessageEvent.LOGIN) {
             mPresenter.subscribe();
         }
     }
@@ -418,7 +416,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         TaskIconEnum taskType = TaskIconEnum.fromString(task.type);
         switch (taskType) {
             case LIVE:
-                // TODO: 2017/4/28 course2.0以前代码
                 final String url = String.format(EdusohoApp.app.host + Const.WEB_LESSON, mCourseProjectId, task.id);
                 CoreEngine.create(getApplicationContext()).runNormalPlugin("WebViewActivity", getApplicationContext(), new PluginRunCallback() {
                     @Override
@@ -484,6 +481,13 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         audioFragment.setArguments(bundle);
         transaction.replace(R.id.task_container, audioFragment, FRAGMENT_AUDIO_TAG);
         transaction.commitAllowingStateLoss();
+    }
+
+    public void stopAudio() {
+        LessonAudioPlayerFragment fragment = (LessonAudioPlayerFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_AUDIO_TAG);
+        if (fragment != null) {
+            fragment.pause();
+        }
     }
 
     private void clearTaskFragment() {

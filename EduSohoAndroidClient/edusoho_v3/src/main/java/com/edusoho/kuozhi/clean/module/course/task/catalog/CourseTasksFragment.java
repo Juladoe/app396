@@ -34,21 +34,17 @@ import com.edusoho.kuozhi.clean.widget.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
-import com.google.gson.internal.LinkedHashTreeMap;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Created by JesseHuang on 2017/3/26.
  */
 
 public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presenter> implements
-        CourseTasksContract.View, CourseProjectFragmentListener {
+        CourseTasksContract.View, CourseProjectFragmentListener, View.OnClickListener {
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private CourseTasksContract.Presenter mPresenter;
@@ -106,27 +102,12 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
 
         mPresenter = new CourseTasksPresenter(this, mCourseProject, isJoin());
         mPresenter.subscribe();
-        view.findViewById(R.id.btn_course_menu_question).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                QuestionActivity.launch(getContext(), mCourseProject.id);
-            }
-        });
-        view.findViewById(R.id.btn_course_menu_rate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RatesActivity.launch(getContext(), mCourseProject);
-            }
-        });
-        view.findViewById(R.id.btn_course_menu_discuss).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goDiscuss();
-            }
-        });
+        view.findViewById(R.id.btn_course_menu_question).setOnClickListener(this);
+        view.findViewById(R.id.btn_course_menu_rate).setOnClickListener(this);
+        view.findViewById(R.id.btn_course_menu_discuss).setOnClickListener(this);
     }
 
-    protected void goDiscuss() {
+    protected void launchDiscussActivity() {
         CoreEngine.create(getContext()).runNormalPlugin("NewsCourseActivity", getContext(), new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
@@ -207,6 +188,18 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     }
 
     @Override
+    public void onClick(View v) {
+        ((CourseProjectActivity) getActivity()).stopAudio();
+        if (v.getId() == R.id.btn_course_menu_discuss) {
+            launchDiscussActivity();
+        } else if (v.getId() == R.id.btn_course_menu_rate) {
+            RatesActivity.launch(getContext(), mCourseProject);
+        } else if (v.getId() == R.id.btn_course_menu_question) {
+            QuestionActivity.launch(getContext(), mCourseProject.id);
+        }
+    }
+
+    @Override
     public void showNextTaskOnCover(CourseTask task, boolean isFirstTask) {
         SparseArray<Object> data = new SparseArray<>();
         data.put(0, task);
@@ -231,6 +224,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         mCourseInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((CourseProjectActivity) getActivity()).stopAudio();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROJECT_MODEL, mCourseProject);
                 bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROGRESS, progress);
