@@ -7,26 +7,26 @@ import java.util.Map;
  * Created by JesseHuang on 2017/4/7.
  */
 
-public enum TaskIconEnum {
+public enum TaskTypeEnum {
     TEXT("text"), VIDEO("video"), AUDIO("audio"), LIVE("live"), DISCUSS("discuss"),
     FLASH("flash"), DOC("doc"), PPT("ppt"), TESTPAPER("testpaper"), HOMEWORK("homework"),
     EXERCISE("exercise"), DOWNLOAD("download");
 
     private String mName;
 
-    TaskIconEnum(String name) {
+    TaskTypeEnum(String name) {
         this.mName = name;
     }
 
-    private static final Map<String, TaskIconEnum> stringToEnum = new HashMap<>();
+    private static final Map<String, TaskTypeEnum> stringToEnum = new HashMap<>();
 
     static {
-        for (TaskIconEnum taskIconEnum : values()) {
-            stringToEnum.put(taskIconEnum.toString(), taskIconEnum);
+        for (TaskTypeEnum taskTypeEnum : values()) {
+            stringToEnum.put(taskTypeEnum.toString(), taskTypeEnum);
         }
     }
 
-    public static TaskIconEnum fromString(String name) {
+    public static TaskTypeEnum fromString(String name) {
         return stringToEnum.get(name);
     }
 

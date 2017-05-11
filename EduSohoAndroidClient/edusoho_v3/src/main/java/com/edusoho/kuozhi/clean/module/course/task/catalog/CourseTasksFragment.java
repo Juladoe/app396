@@ -167,7 +167,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                 if (item.task.lock) {
                     return;
                 }
-                TaskIconEnum type = TaskIconEnum.fromString(item.task.type);
+                TaskTypeEnum type = TaskTypeEnum.fromString(item.task.type);
                 switch (type) {
                     case DOWNLOAD:
                         showToast(getString(R.string.donwload_task_not_support));

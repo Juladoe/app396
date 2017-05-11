@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.clean.module.course.task.catalog;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,7 +155,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private int getTaskIconResId(String type) {
-        TaskIconEnum icon = TaskIconEnum.fromString(type);
+        TaskTypeEnum icon = TaskTypeEnum.fromString(type);
         switch (icon) {
             case TEXT:
                 return R.string.task_text;

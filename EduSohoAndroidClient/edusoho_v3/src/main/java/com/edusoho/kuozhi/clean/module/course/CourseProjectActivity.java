@@ -28,7 +28,7 @@ import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
-import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskIconEnum;
+import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.utils.AppUtils;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
@@ -413,7 +413,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         setPlayLayoutVisible(false);
         mFinishTask.setVisibility(View.GONE);
         clearTaskFragment();
-        TaskIconEnum taskType = TaskIconEnum.fromString(task.type);
+        TaskTypeEnum taskType = TaskTypeEnum.fromString(task.type);
         switch (taskType) {
             case LIVE:
                 final String url = String.format(EdusohoApp.app.host + Const.WEB_LESSON, mCourseProjectId, task.id);

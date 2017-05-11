@@ -1,27 +1,20 @@
 package com.edusoho.kuozhi.v3.util.helper;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
+import com.edusoho.kuozhi.clean.utils.biz.TaskFinishHelper;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
-import com.edusoho.kuozhi.v3.entity.lesson.PluginViewItem;
-import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.MenuPop;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.umeng.analytics.MobclickAgent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by suju on 16/12/21.
@@ -31,14 +24,16 @@ public class LessonMenuHelper {
 
     private int mLessonId;
     private int mCourseId;
+    private TaskTypeEnum mTaskType;
     private String mCurrentLearnState;
     private Context mContext;
     private MenuPop mMenuPop;
 
-    public LessonMenuHelper(Context context, int lessonId, int courseId) {
+    public LessonMenuHelper(Context context, int lessonId, int courseId, TaskTypeEnum type) {
         this.mContext = context;
         this.mLessonId = lessonId;
         this.mCourseId = courseId;
+        this.mTaskType = type;
     }
 
     public MenuPop getMenuPop() {
@@ -66,6 +61,12 @@ public class LessonMenuHelper {
      * 获取课时是否已学状态
      */
     private void loadLessonStatus() {
+//        TaskFinishHelper.Builder builder = new TaskFinishHelper.Builder()
+//                .setCourseId(mCourseId)
+//                .setTaskId(mLessonId)
+//                .setTaskType(mTaskType)
+
+
         new LessonProvider(mContext).getLearnState(mLessonId, mCourseId)
                 .success(new NormalCallback<LessonStatus>() {
                     @Override
