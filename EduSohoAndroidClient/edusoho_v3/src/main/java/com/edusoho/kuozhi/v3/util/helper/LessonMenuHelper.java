@@ -58,7 +58,7 @@ public class LessonMenuHelper {
     }
 
     public LessonMenuHelper initTaskHelper() {
-        builder = new TaskFinishHelper.Builder().setCourseTask(mCourseTask).setEnableFinish(mCourseProject.enableFinish);
+        builder = new TaskFinishHelper.Builder().setCourseId(mCourseId).setCourseTask(mCourseTask).setEnableFinish(mCourseProject.enableFinish);
         mTaskFinishHelper = new TaskFinishHelper(builder, mContext);
         mTaskFinishHelper.setActionListener(new TaskFinishHelper.ActionListener() {
             @Override

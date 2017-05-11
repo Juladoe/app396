@@ -451,7 +451,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 bundle.putSerializable(LessonActivity.COURSE_TASK, task);
                 bundle.putSerializable(LessonActivity.COURSE, courseProject);
                 bundle.putInt(LessonActivity.MEMBER_STATE
-                        , courseMember == null ? CourseMember.MEMBER : CourseMember.NONE);
+                        , courseMember != null ? CourseMember.MEMBER : CourseMember.NONE);
                 CoreEngine.create(getApplicationContext()).runNormalPluginWithBundleForResult(
                         "LessonActivity", this, bundle, LessonActivity.REQUEST_LEARN);
                 break;

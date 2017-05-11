@@ -384,7 +384,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private void loadLessonFromNet() {
         setLoadViewState(true);
-        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.LESSON, mLessonId), true);
+        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.LESSON, mCourseTask.id), true);
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

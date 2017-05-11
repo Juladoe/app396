@@ -11,7 +11,6 @@ import java.io.Serializable;
 
 public class CourseTask implements Serializable {
     public int id;
-    public int courseId;
     public int seq;
     public String categoryId;
     public String activityId;

@@ -22,6 +22,7 @@ import rx.schedulers.Schedulers;
 public class TaskFinishHelper {
     public static final int CYCLE_TIME = 1000 * 60;
     private static TaskFinishHelper instance;
+    private int mCourseId;
     private CourseTask mCourseTask;
     private TaskFinishType mFinishType = TaskFinishType.TIME;
     public TaskResultEnum mTaskStatus = TaskResultEnum.START;
@@ -36,6 +37,11 @@ public class TaskFinishHelper {
             }
         }
         return instance;
+    }
+
+    public TaskFinishHelper setCourseId(int courseId) {
+        this.mCourseId = courseId;
+        return this;
     }
 
     public TaskFinishHelper addTask(CourseTask task) {
@@ -71,7 +77,7 @@ public class TaskFinishHelper {
     private void submitTaskStatus() {
         HttpUtils.getInstance()
                 .createApi(CourseApi.class)
-                .setCourseTaskStatus(mCourseTask.courseId, mCourseTask.id, mTaskStatus.toString())
+                .setCourseTaskStatus(mCourseId, mCourseTask.id, mTaskStatus.toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<TaskEvent>() {

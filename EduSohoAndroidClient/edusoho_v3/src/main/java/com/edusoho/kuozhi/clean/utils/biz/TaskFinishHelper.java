@@ -31,12 +31,14 @@ public class TaskFinishHelper {
     public static final String FINISH = "finish";
 
     private int mEnableFinish;
+    private int mCourseId;
     private CourseTask mCourseTask;
     private ActionListener mActionListener;
     private Context mContext;
 
     public TaskFinishHelper(Builder builder, Context context) {
         this.mEnableFinish = builder.mEnableFinish;
+        this.mCourseId = builder.mCourseId;
         this.mCourseTask = builder.mCourseTask;
         this.mContext = context;
     }
@@ -89,7 +91,7 @@ public class TaskFinishHelper {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
-                .setCourseTaskStatus(mCourseTask.courseId, mCourseTask.id, status)
+                .setCourseTaskStatus(mCourseId, mCourseTask.id, status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<TaskEvent>() {
@@ -120,7 +122,13 @@ public class TaskFinishHelper {
 
     public static class Builder {
         private int mEnableFinish;
+        private int mCourseId;
         private CourseTask mCourseTask;
+
+        public Builder setCourseId(int courseId) {
+            this.mCourseId = courseId;
+            return this;
+        }
 
         public Builder setCourseTask(CourseTask courseTask) {
             this.mCourseTask = courseTask;
