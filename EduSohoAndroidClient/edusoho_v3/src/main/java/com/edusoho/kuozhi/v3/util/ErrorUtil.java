@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.util;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
@@ -14,9 +15,9 @@ import java.util.regex.Pattern;
 public class ErrorUtil {
 
     public static void showErrorMessage(Context context, String errorStr) {
-        LinkedHashMap errorResult = null;
+        LinkedTreeMap errorResult = null;
         try {
-            errorResult = new Gson().fromJson(errorStr, LinkedHashMap.class);
+            errorResult = new Gson().fromJson(errorStr, LinkedTreeMap.class);
         } catch (Exception e) {
         }
         if (errorResult == null) {
@@ -24,7 +25,7 @@ public class ErrorUtil {
         }
 
         if (errorResult.containsKey("error")) {
-            LinkedHashMap<String, String> errorMap = (LinkedHashMap<String, String>) errorResult.get("error");
+            LinkedTreeMap<String, String> errorMap = (LinkedTreeMap<String, String>) errorResult.get("error");
             if (errorMap != null && errorMap.containsKey("message")) {
                 CommonUtil.longToast(context, errorMap.get("message"));
             }

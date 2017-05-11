@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -42,6 +43,7 @@ import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +83,9 @@ public class LoginActivity extends BaseNoTitleActivity {
     private View vSao;
     private View mParent;
 
+    private boolean mIsClick;
+    private LoadDialog mLoadDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +102,12 @@ public class LoginActivity extends BaseNoTitleActivity {
             etPassword.requestFocus();
             InputUtils.showKeyBoard(etPassword, mContext);
         }
+    }
+
+    public static void launch(Context context) {
+        Intent intent = new Intent();
+        intent.setClass(context, LoginActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
@@ -234,15 +245,13 @@ public class LoginActivity extends BaseNoTitleActivity {
     }
 
     private void login() {
-        RequestUrl requestUrl = mActivity.app.bindNewUrl(Const.LOGIN, false);
-        requestUrl.heads.put("Accept", "application/vnd.edusoho.v2+json");
+        RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
         Map<String, String> params = requestUrl.getParams();
-        params.put("username", etUsername.getText().toString().trim());
+        params.put("_username", etUsername.getText().toString().trim());
         if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-            params.put("password", XXTEA.encryptToBase64String(etPassword.getText().toString(), "edusoho"));
-            params.put("encryptionType", "XXTEA");
+            params.put("encrypt_password", XXTEA.encryptToBase64String(etPassword.getText().toString(), app.domain));
         } else {
-            params.put("password", etPassword.getText().toString());
+            params.put("_password", etPassword.getText().toString());
         }
 
         final LoadDialog loadDialog = LoadDialog.create(this);
@@ -264,6 +273,7 @@ public class LoginActivity extends BaseNoTitleActivity {
                     new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
                     MessageEngine.getInstance().sendMsg(Const.LOGIN_SUCCESS, null);
                     MessageEngine.getInstance().sendMsg(Const.REFRESH_MY_FRAGMENT, null);
+                    EventBus.getDefault().postSticky(new MessageEvent(MessageEvent.LOGIN));
                     mTvLogin.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -304,7 +314,22 @@ public class LoginActivity extends BaseNoTitleActivity {
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsClick = false;
+        if (mLoadDialog != null) {
+            mLoadDialog.cancel();
+        }
+    }
+
     private void loginByPlatform(String type) {
+        if (mIsClick) {
+            return;
+        }
+        mIsClick = true;
+        mLoadDialog = LoadDialog.create(this);
+        mLoadDialog.show();
         final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
         openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
             @Override

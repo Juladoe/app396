@@ -4,18 +4,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -24,6 +20,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.utils.biz.CourseSettingHelper;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.site.Site;
@@ -40,7 +37,6 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
@@ -51,7 +47,6 @@ import com.google.gson.reflect.TypeToken;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -332,6 +327,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                     return;
                 }
                 bindApiToken(site);
+                //CourseSettingHelper.sync(mContext);
             }
         }, this);
     }
@@ -369,6 +365,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -380,6 +377,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         });
     }

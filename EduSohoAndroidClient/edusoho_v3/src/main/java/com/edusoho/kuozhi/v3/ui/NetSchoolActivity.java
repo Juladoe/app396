@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseSetting;
+import com.edusoho.kuozhi.clean.utils.biz.CourseSettingHelper;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;

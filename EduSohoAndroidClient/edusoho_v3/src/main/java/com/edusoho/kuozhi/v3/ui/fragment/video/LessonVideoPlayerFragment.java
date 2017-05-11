@@ -112,8 +112,9 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                             ((ViewGroup) getView()).removeAllViews();
                             return;
                         }
-                        Uri mediaUri = Uri.parse(lessonItem.mediaUri);
-                        playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
+                        //Uri mediaUri = Uri.parse(lessonItem.mediaUri);
+                        //playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
+                        playVideo(lessonItem.mediaUri);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override

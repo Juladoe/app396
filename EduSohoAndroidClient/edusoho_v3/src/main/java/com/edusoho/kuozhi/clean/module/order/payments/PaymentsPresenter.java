@@ -100,6 +100,7 @@ class PaymentsPresenter implements Presenter {
     private void responseDeal(JsonObject jsonObject, String payment) {
         mView.showLoadDialog(false);
         if (STATUS_PAID.equals(jsonObject.get(STATUS).getAsString())) {
+            mView.showToast(R.string.join_success);
             mView.sendBroad();
             return;
         }

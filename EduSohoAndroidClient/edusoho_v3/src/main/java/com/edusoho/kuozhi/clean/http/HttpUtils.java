@@ -1,8 +1,7 @@
 package com.edusoho.kuozhi.clean.http;
 
+import com.edusoho.kuozhi.clean.utils.StringUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,10 +16,11 @@ public class HttpUtils {
     private static final String MAPI_V2_TOKEN_KEY = "token";
     private static HttpUtils mInstance;
     private static String mBaseUrl;
-    private Map<String, String> mHeaderMaps = new TreeMap<>();
+    private static Map<String, String> mHeaderMaps = new TreeMap<>();
 
     public static HttpUtils getInstance() {
         mBaseUrl = "";
+        mHeaderMaps.clear();
         if (mInstance == null) {
             synchronized (HttpUtils.class) {
                 if (mInstance == null) {
@@ -31,8 +31,13 @@ public class HttpUtils {
         return mInstance;
     }
 
-    public static HttpUtils baseOnMapiV2() {
+    public HttpUtils baseOnMapiV2() {
         mBaseUrl = EdusohoApp.app.host + "/mapi_v2/";
+        return mInstance;
+    }
+
+    public HttpUtils baseOnApi() {
+        mBaseUrl = EdusohoApp.app.host + "/api/";
         return mInstance;
     }
 
@@ -45,12 +50,16 @@ public class HttpUtils {
     }
 
     public HttpUtils addTokenHeader(String token) {
-        mHeaderMaps.put(TOKEN_KEY, token);
+        if (!StringUtils.isEmpty(token)) {
+            mHeaderMaps.put(TOKEN_KEY, token);
+        }
         return mInstance;
     }
 
     public HttpUtils addMapiV2TokenHeader(String token) {
-        mHeaderMaps.put(MAPI_V2_TOKEN_KEY, token);
+        if (!StringUtils.isEmpty(token)) {
+            mHeaderMaps.put(MAPI_V2_TOKEN_KEY, token);
+        }
         return mInstance;
     }
 

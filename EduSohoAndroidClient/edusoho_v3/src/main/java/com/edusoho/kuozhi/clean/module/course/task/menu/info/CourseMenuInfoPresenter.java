@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course.task.menu.info;
 
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
+import com.edusoho.kuozhi.clean.bean.CourseMemberRoleEnum;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoPresenter;
 
@@ -27,5 +28,6 @@ public class CourseMenuInfoPresenter extends CourseProjectInfoPresenter
     @Override
     public void subscribe() {
         mView.showCourseProjectInfo(false);
+        mView.initCourseProjectInfo(mCourseProject);
     }
 }

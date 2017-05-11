@@ -60,6 +60,13 @@ public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContr
         this.mVipInfos = vipInfos;
     }
 
+    public void reFreshData(List<CourseProject> courseProjects){
+        this.mCourseProjects = courseProjects;
+        if (mPresenter != null) {
+            mPresenter.reFreshData(courseProjects);
+        }
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

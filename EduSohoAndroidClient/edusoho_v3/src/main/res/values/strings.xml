@@ -448,6 +448,7 @@
     <string name="course_project_favorite">收藏</string>
     <string name="course_project_consult">咨询</string>
     <string name="learn_course_project">加入学习</string>
+    <string name="learn_course_project_free_to_learn">会员免费加入</string>
     <string name="study_progress">学习进度</string>
     <string name="pay_way">支付方式</string>
     <string name="zhifubao">支付宝</string>
@@ -487,8 +488,8 @@
     <string name="course_project_promise_service">承诺服务</string>
     <string name="relative_course_project">相关学习计划</string>
     <string name="course_task_num">学习任务：%1$d个</string>
-    <string name="course_project_chapter">第%1$d章 %2$s</string>
-    <string name="course_project_unit">第%1$d节 %2$s</string>
+    <string name="course_project_chapter">第%1$d%2$s %3$s</string>
+    <string name="course_project_unit">第%1$d%2$s %3$s</string>
     <string name="course_project_task_item_name">任务%1$s %2$s</string>
     <string name="cancel_favorite">取消收藏成功</string>
     <string name="favorite_success">收藏成功</string>
@@ -500,6 +501,10 @@
     <string name="course_not_buy">课程已被设置不可购买，无法加入学习</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
     <string name="course_date_limit">课程已过有效截止日期，无法加入学习</string>
+    <string name="course_expired_dialog">课程已到期，无法继续学习，是否退出</string>
+    <string name="course_member_expired_dialog">课程已到期，无法继续学习，是否重新加入</string>
+    <string name="course_member_vip_expired_dialog">会员已到期，无法继续学习，是否续费会员</string>
+    <string name="course_not_start">课程还未到开课时间，暂时无法学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
     <string name="double_price_format">￥&#160;%1$.2f-%2$.2f</string>
@@ -524,7 +529,7 @@
     <string name="go_pay">去支付</string>
     <string name="available_balance">%1$s余额:&#160;&#160;&#160;</string>
     <string name="insufficient_balance">余额不足</string>
-    <string name="course_finish_progress">已经完成计划：%1$d/%2$d</string>
+    <string name="task_finish_progress">已经完成任务：%1$d/%2$d</string>
     <string name="course_plan_progress">计划完成任务：%1$d/%2$d</string>
     <string name="course_progress_deadline">课程有效期至：%1$s</string>
     <string name="selector_payments">选择支付方式</string>
@@ -532,7 +537,6 @@
     <string name="course_project_expire_hint">课程已过购买截止日期，无法加入学习</string>
     <string name="unset_pw_hint">请按提示设置密码</string>
     <string name="pw_long_wrong_hint">密码长度有误</string>
-    <string name="course_expired_dialog">课程已过购买截止日期，无法加入学习</string>
     <string name="confirm_order_error_hint">该教学计划不可购买，如有需要，请联系客服</string>
     <string name="course_exit">退出课程</string>
     <string name="close">关闭</string>
@@ -542,6 +546,7 @@
     <string name="latest_task_title">上次学到:</string>
     <string name="start_learn_trial_task">开始试学</string>
     <string name="start_learn_next_task">继续学习</string>
+    <string name="start_learn_first_task">开始学习</string>
     <string name="course_menu_info">简介</string>
     <string name="course_menu_question">问答</string>
     <string name="course_menu_share">分享</string>
@@ -561,5 +566,15 @@
     <string name="congratulation_finish_task">恭喜完成！</string>
     <string name="task_finish">学习完成</string>
     <string name="next_task">下一课</string>
+    <string name="member_expired">学员有效期已到</string>
+    <string name="member_vip_expired">vip过期</string>
+    <string name="member_vip_not_exist">vip等级不存在</string>
+    <string name="member_level_low">VIP等级过低</string>
+    <string name="unknow_error">未知错误</string>
+    <string name="course_exit_confirm">确定</string>
+    <string name="course_exit_cancel">取消</string>
+    <string name="course_task_free">免费</string>
+    <string name="vip_member_free_to_learn">%1$s会员免费加入学习</string>
+    <string name="join_course_first">请先加入课程</string>
 
 </resources>

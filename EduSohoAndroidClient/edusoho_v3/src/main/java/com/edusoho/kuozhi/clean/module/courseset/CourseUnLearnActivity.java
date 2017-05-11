@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
@@ -40,6 +42,10 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 import java.util.Timer;
@@ -80,6 +86,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     private long mEndTime;
     private boolean mIsFavorite = false;
     private Timer mTimer;
+    private List<CourseProject> mCourseProjects;
     private CourseSet mCourseSet;
     private CourseUnLearnContract.Presenter mPresenter;
 
@@ -98,7 +105,9 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
         mCourseSetId = getIntent().getIntExtra(COURSE_SET_ID, 0);
-        isJoin();
+        initView();
+        mPresenter = new CourseUnLearnPresenter(mCourseSetId, this);
+        mPresenter.subscribe();
     }
 
     @Override
@@ -119,12 +128,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         if (mTimer != null) {
             mTimer.cancel();
         }
-    }
-
-    private void isJoin() {
-        initView();
-        mPresenter = new CourseUnLearnPresenter(mCourseSetId, this);
-        mPresenter.subscribe();
     }
 
     private void initView() {
@@ -223,6 +226,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     @Override
     public void setCourseSet(CourseSet courseSet) {
         mCourseSet = courseSet;
+        showBackGround();
     }
 
     @Override
@@ -264,8 +268,11 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         }
     }
 
-    @Override
-    public void showBackGround(String img) {
+    public void showBackGround() {
+        String img = "";
+        if (mCourseSet.cover != null && mCourseSet.cover.middle != null) {
+            img = mCourseSet.cover.middle;
+        }
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
                 .showImageOnFail(R.drawable.default_course)
@@ -346,6 +353,11 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
     }
 
     @Override
+    public void setDialogData(List<CourseProject> list) {
+        mCourseProjects = list;
+    }
+
+    @Override
     public void showLoadView(boolean isShow) {
         mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
@@ -355,6 +367,9 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         if (mSelectDialog == null) {
             mSelectDialog = new SelectProjectDialog();
             mSelectDialog.setData(list, vipInfo);
+        }
+        if (mCourseProjects != null) {
+            mSelectDialog.reFreshData(mCourseProjects);
         }
         mSelectDialog.show(getSupportFragmentManager(), "SelectProjectDialog");
     }
@@ -448,5 +463,14 @@ public class CourseUnLearnActivity extends BaseFinishActivity<CourseUnLearnContr
         public CharSequence getPageTitle(int position) {
             return mTitleArray[position];
         }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLoginSuccess(MessageEvent messageEvent) {
+        if (messageEvent.getType() == MessageEvent.LOGIN) {
+            finish();
+            EventBus.getDefault().removeStickyEvent(MessageEvent.LOGIN);
+        }
+        Log.d("Subscribe", "onLoginSuccess: ");
     }
 }

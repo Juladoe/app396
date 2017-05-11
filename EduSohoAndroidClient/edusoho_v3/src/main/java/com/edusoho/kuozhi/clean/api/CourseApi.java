@@ -27,7 +27,7 @@ import rx.Observable;
 public interface CourseApi {
 
     @GET("courses/{id}/items")
-    Observable<List<CourseItem>> getCourseItems(@Path("id") int courseId);
+    Observable<List<CourseItem>> getCourseItems(@Path("id") int courseId, @Query("onlyPublished") int status);
 
     @GET("courses/{courseId}/tasks/{taskId}")
     Observable<CourseTask> getCourseTask(@Path("courseId") int courseId, @Path("taskId") int taskId);
@@ -50,7 +50,7 @@ public interface CourseApi {
     Observable<CourseMember> joinFreeOrVipCourse(@Path("id") int courseId);
 
     @GET("courses/{courseId}/threads?limit=15&simplify=0&sort=posted")
-    Observable<DiscussDetail> getCourseDiscuss(@Header("X-Auth-Token") String token, @Path("courseId") int courseId, @Query("courseId") int courseid, @Query("start") int start);
+    Observable<DiscussDetail> getCourseDiscuss(@Header("X-Auth-Token") String token, @Path("courseId") int courseId, @Query("courseId") int coursed, @Query("start") int start);
 
     @PATCH("courses/{courseId}/tasks/{taskId}/events/{status}")
     Observable<TaskEvent> setCourseTaskStatus(@Path("courseId") int courseId

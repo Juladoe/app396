@@ -21,9 +21,13 @@ public class RetrofitClient {
 
     public static Retrofit getInstance(Map<String, String> headerMaps) {
         if (retrofitBuilder == null) {
-            retrofitBuilder = new Retrofit.Builder().addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+            synchronized (RetrofitClient.class){
+                if (retrofitBuilder == null) {
+                    retrofitBuilder = new Retrofit.Builder()
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+                }
+            }
         }
         headerMaps.put("Accept", "application/vnd.edusoho.v2+json");
         mRequestInterceptor = new RequestInterceptor(headerMaps);
@@ -33,7 +37,7 @@ public class RetrofitClient {
 
     public static Retrofit getInstance(String baseUrl, Map<String, String> headerMaps) {
         if (retrofitBuilder == null) {
-            retrofitBuilder = new Retrofit.Builder().addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+            retrofitBuilder = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
         }

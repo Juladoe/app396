@@ -4,6 +4,8 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
+import java.util.List;
+
 /**
  * Created by DF on 2017/4/13.
  */
@@ -41,6 +43,8 @@ class SelectProjectDialogContract {
         void confirm();
 
         void setData(int positon);
+
+        void reFreshData(List<CourseProject> courseProjects);
 
     }
 

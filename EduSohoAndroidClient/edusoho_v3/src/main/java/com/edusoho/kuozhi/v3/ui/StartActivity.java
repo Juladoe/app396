@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,11 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.api.CommonApi;
+import com.edusoho.kuozhi.clean.bean.CourseSetting;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.utils.SharedPreferencesHelper;
+import com.edusoho.kuozhi.clean.utils.biz.CourseSettingHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -33,9 +39,16 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+import com.mob.tools.utils.SharePrefrenceHelper;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
+import java.util.TreeMap;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 public class StartActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
@@ -146,7 +159,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
     protected void initApp() {
         if (!AppUtil.isNetConnect(mContext)) {
-            CommonUtil.longToast(this, "没有网络服务！请检查网络设置。");
+            CommonUtil.longToast(this, getString(R.string.network_does_not_work));
             startApp();
             return;
         }
@@ -221,7 +234,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             @Override
             public void onResponse(String response) {
                 hideLoading();
-                SchoolResult schoolResult = parseJsonValue(response.toString(), new TypeToken<SchoolResult>() {
+                SchoolResult schoolResult = parseJsonValue(response, new TypeToken<SchoolResult>() {
                 });
 
                 if (schoolResult == null || schoolResult.site == null) {
@@ -235,6 +248,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
                 getAppSettingProvider().setCurrentSchool(site);
                 app.setCurrentSchool(site);
+                CourseSettingHelper.sync(mContext);
                 startApp();
             }
         }, new Response.ErrorListener() {

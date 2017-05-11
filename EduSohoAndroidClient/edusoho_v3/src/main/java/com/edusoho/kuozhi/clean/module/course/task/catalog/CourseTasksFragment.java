@@ -7,6 +7,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
@@ -43,7 +45,7 @@ import java.util.List;
  */
 
 public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presenter> implements
-        CourseTasksContract.View, CourseProjectFragmentListener {
+        CourseTasksContract.View, CourseProjectFragmentListener, View.OnClickListener {
 
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private CourseTasksContract.Presenter mPresenter;
@@ -55,7 +57,6 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     private CourseMenuButton mCourseInfo;
     private ESProgressBar mLearnProgressRate;
     private ESIconView mCourseProgressInfo;
-    private CourseLearningProgress mCourseLearningProgress;
 
     private CourseProject mCourseProject;
 
@@ -81,13 +82,6 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         mCourseProgressBar = view.findViewById(R.id.layout_progress);
         mCourseProgressInfo = (ESIconView) view.findViewById(R.id.icon_progress_info);
 
-        mCourseProgressInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LearnCourseProgressDialog.newInstance(mCourseLearningProgress)
-                        .show(getActivity().getSupportFragmentManager(), "LearnCourseProgressDialog");
-            }
-        });
         mMenuClose = (TextView) view.findViewById(R.id.tv_close_menu);
         mCourseMenuLayout = view.findViewById(R.id.bottom_menu_layout);
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(mCourseMenuLayout);
@@ -108,39 +102,14 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
             }
         });
 
-        mCourseInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROJECT_MODEL, mCourseProject);
-                bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROGRESS, mCourseLearningProgress);
-                FragmentPageActivity.launchFragmentPageActivity(getActivity(), CourseMenuInfoFragment.class.getName(), bundle);
-            }
-        });
-
         mPresenter = new CourseTasksPresenter(this, mCourseProject, isJoin());
         mPresenter.subscribe();
-        view.findViewById(R.id.btn_course_menu_question).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                QuestionActivity.launch(getContext(), mCourseProject.id);
-            }
-        });
-        view.findViewById(R.id.btn_course_menu_rate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RatesActivity.launch(getContext(), mCourseProject);
-            }
-        });
-        view.findViewById(R.id.btn_course_menu_discuss).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goDiscuss();
-            }
-        });
+        view.findViewById(R.id.btn_course_menu_question).setOnClickListener(this);
+        view.findViewById(R.id.btn_course_menu_rate).setOnClickListener(this);
+        view.findViewById(R.id.btn_course_menu_discuss).setOnClickListener(this);
     }
 
-    protected void goDiscuss() {
+    protected void launchDiscussActivity() {
         CoreEngine.create(getContext()).runNormalPlugin("NewsCourseActivity", getContext(), new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
@@ -184,9 +153,9 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     }
 
     @Override
-    public void showCourseTasks(List<CourseItem> taskItems) {
+    public void showCourseTasks(List<CourseItem> taskItems, boolean isJoin) {
         final CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems,
-                CourseProject.LearnMode.getMode(mCourseProject.learnMode));
+                CourseProject.LearnMode.getMode(mCourseProject.learnMode), isJoin);
         mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTaskRecyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(mTaskRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
@@ -212,11 +181,56 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                         showToast(getString(R.string.flash_task_not_support));
                         break;
                     default:
-                        adapter.switchClickPosition(v);
+                        adapter.switchClickPosition(v, item);
                         EventBus.getDefault().post(new MessageEvent<>(item.task
                                 , MessageEvent.LEARN_TASK));
                 }
+            }
+        });
+    }
 
+    @Override
+    public void onClick(View v) {
+        ((CourseProjectActivity) getActivity()).stopAudio();
+        if (v.getId() == R.id.btn_course_menu_discuss) {
+            launchDiscussActivity();
+        } else if (v.getId() == R.id.btn_course_menu_rate) {
+            RatesActivity.launch(getContext(), mCourseProject);
+        } else if (v.getId() == R.id.btn_course_menu_question) {
+            QuestionActivity.launch(getContext(), mCourseProject.id);
+        }
+    }
+
+    @Override
+    public void showNextTaskOnCover(CourseTask task, boolean isFirstTask) {
+        SparseArray<Object> data = new SparseArray<>();
+        data.put(0, task);
+        data.put(1, isFirstTask);
+        MessageEvent<SparseArray<Object>> progressMsg = new MessageEvent<>(data, MessageEvent.SHOW_NEXT_TASK);
+        EventBus.getDefault().post(progressMsg);
+    }
+
+    @Override
+    public void showLearnProgress(final CourseLearningProgress progress) {
+        mCourseProgressBar.setVisibility(View.VISIBLE);
+        mLearnProgressRate.setProgress(Math.round(progress.progress));
+
+        mCourseProgressInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LearnCourseProgressDialog.newInstance(progress, mCourseProject)
+                        .show(getActivity().getSupportFragmentManager(), "LearnCourseProgressDialog");
+            }
+        });
+
+        mCourseInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((CourseProjectActivity) getActivity()).stopAudio();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROJECT_MODEL, mCourseProject);
+                bundle.putSerializable(CourseMenuInfoFragment.COURSE_PROGRESS, progress);
+                FragmentPageActivity.launchFragmentPageActivity(getActivity(), CourseMenuInfoFragment.class.getName(), bundle);
             }
         });
     }
@@ -226,11 +240,6 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         switch (messageEvent.getType()) {
             case MessageEvent.COURSE_EXIT:
                 mCourseProgressBar.setVisibility(View.GONE);
-                break;
-            case MessageEvent.COURSE_JOIN:
-                mCourseProgressBar.setVisibility(View.VISIBLE);
-                mCourseLearningProgress = (CourseLearningProgress) messageEvent.getMessageBody();
-                mLearnProgressRate.setProgress(mCourseLearningProgress.progress);
                 break;
         }
     }

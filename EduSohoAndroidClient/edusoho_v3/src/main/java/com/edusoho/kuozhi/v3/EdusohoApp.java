@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.multidex.MultiDexApplication;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -78,7 +78,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EdusohoApp extends Application {
+import cn.trinea.android.common.util.ToastUtils;
+
+public class EdusohoApp extends MultiDexApplication {
 
     public AppConfig config;
     public String host;
@@ -182,6 +184,7 @@ public class EdusohoApp extends Application {
             public void onErrorResponse(VolleyError error) {
                 if (error instanceof NoConnectionError) {
                     errorListener.onErrorResponse(error);
+                    ToastUtils.show(getApplicationContext(), getString(R.string.network_does_not_work));
                     return;
                 }
                 if (error instanceof TimeoutError) {

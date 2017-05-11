@@ -6,11 +6,12 @@
     android:background="@color/disabled2_hint_color">
 
     <ImageView
+        android:id="@+id/tv_course_schedule_bg"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="210dp"
         android:layout_alignParentTop="true"
         android:scaleType="fitXY"
-        android:src="@drawable/menu_course_info_bg" />
+        android:src="@drawable/menu_course_info_with_schedule_bg" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -97,7 +98,8 @@
         android:layout_marginTop="20dp"
         android:text="@string/course_progress"
         android:textColor="@color/disabled2_hint_color"
-        android:textSize="@dimen/font_s" />
+        android:textSize="@dimen/font_s"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/course_progress_rate"
@@ -110,7 +112,8 @@
         android:isIndicator="true"
         android:max="100"
         android:progress="0"
-        android:progressDrawable="@drawable/bg_menu_course_progress" />
+        android:progressDrawable="@drawable/bg_menu_course_progress"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_deadline"
@@ -119,7 +122,7 @@
         android:layout_below="@+id/course_progress_rate"
         android:layout_marginTop="25dp"
         android:gravity="center"
-        android:text="学习有效期：2017.12.7"
+        android:text=""
         android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/font_s" />
 

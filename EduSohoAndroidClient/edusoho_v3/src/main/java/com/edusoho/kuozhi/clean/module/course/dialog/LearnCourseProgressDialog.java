@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 
 /**
@@ -25,15 +26,18 @@ import com.edusoho.kuozhi.clean.utils.TimeUtils;
 public class LearnCourseProgressDialog extends DialogFragment {
 
     private static final String PROGRESS_INFO = "progress_info";
+    private static final String COURSE_INFO = "course_info";
     private CourseLearningProgress mProgress;
+    private CourseProject mCourseProject;
     private TextView mFinishProgress;
     private TextView mPlanProgress;
     private TextView mPlanDeadline;
     private View mCloseDialog;
 
-    public static LearnCourseProgressDialog newInstance(CourseLearningProgress progress) {
+    public static LearnCourseProgressDialog newInstance(CourseLearningProgress progress, CourseProject courseProject) {
         Bundle args = new Bundle();
         args.putSerializable(PROGRESS_INFO, progress);
+        args.putSerializable(COURSE_INFO, courseProject);
         LearnCourseProgressDialog fragment = new LearnCourseProgressDialog();
         fragment.setArguments(args);
         return fragment;
@@ -66,9 +70,15 @@ public class LearnCourseProgressDialog extends DialogFragment {
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             mProgress = (CourseLearningProgress) bundle.getSerializable(PROGRESS_INFO);
+            mCourseProject = (CourseProject) bundle.getSerializable(COURSE_INFO);
         }
-        mFinishProgress.setText(String.format(getString(R.string.course_finish_progress), mProgress.taskResultCount, mProgress.taskCount));
-        mPlanProgress.setText(String.format(getString(R.string.course_plan_progress), mProgress.planStudyTaskCount, mProgress.taskCount));
+        mFinishProgress.setText(String.format(getString(R.string.task_finish_progress), mProgress.taskResultCount, mProgress.taskCount));
+        if (CourseProject.ExpiryMode.DATE.toString().equals(mCourseProject.learningExpiryDate.expiryMode)) {
+            mPlanProgress.setVisibility(View.VISIBLE);
+            mPlanProgress.setText(String.format(getString(R.string.course_plan_progress), mProgress.planStudyTaskCount, mProgress.taskCount));
+        } else {
+            mPlanProgress.setVisibility(View.GONE);
+        }
         mPlanDeadline.setText(String.format(getString(R.string.course_progress_deadline),
                 "0".equals(mProgress.member.deadline) ? getString(R.string.permnent_expired) : TimeUtils.getStringTime(mProgress.member.deadline, "yyyy.MM.dd")));
     }

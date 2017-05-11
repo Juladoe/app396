@@ -44,4 +44,7 @@ public interface UserApi {
     @DELETE("me/course_members/{courseId}")
     Observable<JsonObject> exitCourse(@Path("courseId") int courseId);
 
+    @GET("me/vip_levels/{levelId}")
+    Observable<JsonObject> isVip(@Path("levelId") int levelId);
+
 }

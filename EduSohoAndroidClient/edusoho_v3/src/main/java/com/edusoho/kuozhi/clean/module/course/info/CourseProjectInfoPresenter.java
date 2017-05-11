@@ -10,8 +10,11 @@ import com.edusoho.kuozhi.clean.bean.CourseMemberRoleEnum;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.module.course.task.menu.info.CourseMenuInfoPresenter;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.util.List;
@@ -21,6 +24,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 
@@ -43,7 +47,9 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     @Override
     public void subscribe() {
         mView.initCourseProjectInfo(mCourseProject);
-        showPrice();
+        if (this instanceof CourseMenuInfoPresenter) {
+            showPrice();
+        }
         showVip(mCourseProject.vipLevelId);
         showServices(mCourseProject.services);
         showIntroduce();
@@ -123,7 +129,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
                     @Override
                     public void onNext(CourseSet courseSet) {
-                        if (StringUtils.isEmpty(mCourseProject.summary)) {
+                        if (!StringUtils.isEmpty(mCourseProject.summary)) {
                             mView.showIntroduce(mCourseProject.summary);
                         } else {
                             mView.showIntroduce(courseSet.summary);
@@ -160,7 +166,36 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showRelativeCourseProjects(int courseSetId, final int currentCourseProjectId) {
-        HttpUtils.getInstance().createApi(CourseSetApi.class)
+        Observable
+                .combineLatest(getRelativeCourseProjects(courseSetId, currentCourseProjectId), getVipInfos(), new Func2<List<CourseProject>, List<VipInfo>, Object>() {
+                    @Override
+                    public Object call(List<CourseProject> courseProjects, List<VipInfo> vipInfos) {
+                        mView.showRelativeCourseProjects(courseProjects, vipInfos);
+                        return null;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
+    }
+
+    private Observable<List<CourseProject>> getRelativeCourseProjects(int courseSetId, final int currentCourseProjectId) {
+        return HttpUtils.getInstance().createApi(CourseSetApi.class)
                 .getCourseProjects(courseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -176,23 +211,14 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
                         return courseProject.id != currentCourseProjectId;
                     }
                 })
-                .toList()
-                .subscribe(new Subscriber<List<CourseProject>>() {
-                    @Override
-                    public void onCompleted() {
+                .toList();
+    }
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("RelativeCourse", "onError: " + e.toString());
-                    }
-
-                    @Override
-                    public void onNext(List<CourseProject> courseProjects) {
-                        mView.showRelativeCourseProjects(courseProjects);
-                    }
-                });
+    private Observable<List<VipInfo>> getVipInfos() {
+        return HttpUtils
+                .getInstance()
+                .createApi(PluginsApi.class)
+                .getVipInfo();
     }
 
     @Override

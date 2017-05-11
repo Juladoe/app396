@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.utils.biz.CourseSettingHelper;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -62,6 +63,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -553,13 +556,11 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         app.getUrl(schoolApiUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                SchoolResult schoolResult = app.gson.fromJson(
-                        response, new TypeToken<SchoolResult>() {
-                        }.getType());
+                SchoolResult schoolResult = parseJsonValue(response, new TypeToken<SchoolResult>() {
+                });
 
-                if (schoolResult == null
-                        || schoolResult.site == null) {
-                    handlerError(response);
+                if (schoolResult == null || schoolResult.site == null) {
+                    CommonUtil.shortToast(mContext, "网校客户端未开启");
                     mLoading.dismiss();
                     return;
                 }
@@ -571,6 +572,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                     return;
                 }
                 bindApiToken(site);
+                //CourseSettingHelper.sync(mContext);
             }
         }, this);
     }
@@ -609,6 +611,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -620,6 +623,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         });
     }

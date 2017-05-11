@@ -1,14 +1,14 @@
 package com.edusoho.kuozhi.clean.module.course;
 
-import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
-import android.support.v4.app.Fragment;
+import android.content.DialogInterface;
 
 import java.util.List;
 
@@ -37,15 +37,17 @@ public interface CourseProjectContract {
 
         void initTrailTask(CourseTask trialTask);
 
-        void initNextTask(CourseTask nextTask);
+        void initNextTask(CourseTask nextTask, boolean isFirstTask);
 
         void initLearnLayout(CourseProject.LearnMode mode);
 
-        void setJoinButton(boolean isCourseStarted);
+        void setJoinButton(CourseProjectActivity.JoinButtonStatusEnum statusEnum);
 
         void launchConfirmOrderActivity(int courseSetId, int courseId);
 
-        void showExitDialog(CourseProjectActivity.DialogType type);
+        void showExitDialog(int msgRes, DialogInterface.OnClickListener onClickListener);
+
+        void setShowError(CourseProjectPresenter.ShowActionHelper helper);
 
         void setPlayLayoutVisible(boolean visible);
 
@@ -53,7 +55,11 @@ public interface CourseProjectContract {
 
         void setTaskFinishButtonBackground(boolean learned);
 
-        void setCurrentTaskStatus(CourseTask.CourseTaskStatusEnum status);
+        void setCurrentTaskStatus(TaskResultEnum status);
+
+        void launchLoginActivity();
+
+        void clearCoursesCache(int... courseIds);
     }
 
     interface Presenter extends BasePresenter {

@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.module.course.info;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
@@ -24,13 +26,18 @@ import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.module.course.dialog.ServicesDialog;
 import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
 import cn.trinea.android.common.util.StringUtils;
 
@@ -71,13 +78,14 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
     private LinearLayout mCourseMembers;
     private View mCourseMembersLine;
     private RecyclerView mRelativeCourses;
+    private CourseProject mCourseProject;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
-        mPresenter = new CourseProjectInfoPresenter(courseProject, this);
+        mCourseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
+        mPresenter = new CourseProjectInfoPresenter(mCourseProject, this);
     }
 
     @Nullable
@@ -114,6 +122,42 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
         mCourseMembers = (LinearLayout) view.findViewById(R.id.ll_course_members);
         mCourseMembersLine = view.findViewById(R.id.v_course_members_line);
         mRelativeCourses = (RecyclerView) view.findViewById(R.id.rv_relative_courses);
+
+        mVipText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        Const.VIP_LIST
+                );
+                CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
+                        , getContext(), new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
+            }
+        });
+
+        mCourseMemberCountLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.COURSE_MEMBER_LIST, mCourseProject.id)
+                );
+                CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
+                        , getContext(), new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
+            }
+        });
     }
 
     @Override
@@ -236,25 +280,45 @@ public class CourseProjectInfoFragment extends BaseFragment<CourseProjectInfoCon
             showMemberCount = (screenWidth + avatarMargin - 2 * viewMargin) / (memberAvatarWidth + avatarMargin);
             int size = (showMemberCount < members.size() ? showMemberCount : members.size());
             for (int i = 0; i < size; i++) {
-                CircularImageView memberAvatar = new CircularImageView(getActivity());
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
+                LinearLayout memberView = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.item_course_member, null);
+                ImageLoader.getInstance().displayImage(members.get(i).user.getMediumAvatar(), (CircularImageView) memberView.findViewById(R.id.avatar_course_member), EdusohoApp.app.mAvatarOptions);
+                ((TextView) memberView.findViewById(R.id.tv_member_name)).setText(members.get(i).user.nickname);
+
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 if (i != size - 1) {
                     lp.rightMargin = CommonUtil.dip2px(getActivity(), 24);
                 }
-                memberAvatar.setLayoutParams(lp);
-                ImageLoader.getInstance().displayImage(members.get(i).user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
-                mCourseMembers.addView(memberAvatar);
+                memberView.setLayoutParams(lp);
+                mCourseMembers.addView(memberView);
+                final int userId = members.get(i).user.id;
+                memberView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String url = String.format(
+                                Const.MOBILE_APP_URL,
+                                EdusohoApp.app.schoolHost,
+                                String.format(Const.USER_PROFILE, userId));
+                        CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
+                                , getContext(), new PluginRunCallback() {
+                                    @Override
+                                    public void setIntentDate(Intent startIntent) {
+                                        startIntent.putExtra(Const.WEB_URL, url);
+                                    }
+                                });
+                    }
+                });
+
             }
         }
     }
 
     @Override
-    public void showRelativeCourseProjects(List<CourseProject> courseList) {
+    public void showRelativeCourseProjects(List<CourseProject> courseList, List<VipInfo> vipInfos) {
         mRelativeCourses.setHasFixedSize(true);
         mRelativeCourses.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRelativeCourses.setItemAnimator(new DefaultItemAnimator());
         mRelativeCourses.setNestedScrollingEnabled(false);
-        final RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseList);
+        final RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseList, vipInfos);
         mRelativeCourses.setAdapter(relativeCourseAdapter);
         ItemClickSupport.addTo(mRelativeCourses).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override

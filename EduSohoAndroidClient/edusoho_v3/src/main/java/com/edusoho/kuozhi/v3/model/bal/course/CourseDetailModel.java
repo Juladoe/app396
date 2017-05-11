@@ -98,7 +98,7 @@ public class CourseDetailModel implements Serializable {
                             });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse);
-                    } else  {
+                    } else {
                         callbackListener.onFailure("Error", response);
                     }
                 } catch (Exception e) {
@@ -126,7 +126,7 @@ public class CourseDetailModel implements Serializable {
                             });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse);
-                    } else  {
+                    } else {
                         callbackListener.onFailure("Error", response);
                     }
                 } catch (Exception e) {
@@ -155,7 +155,7 @@ public class CourseDetailModel implements Serializable {
                                     });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse.resources);
-                    } else  {
+                    } else {
                         callbackListener.onFailure("Error", response);
                     }
                 } catch (Exception e) {
@@ -184,7 +184,7 @@ public class CourseDetailModel implements Serializable {
                                     });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse.resources);
-                    } else  {
+                    } else {
                         callbackListener.onFailure("Error", response);
                     }
                 } catch (Exception e) {
@@ -212,7 +212,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else  {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -236,7 +236,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else  {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -260,7 +260,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else  {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -403,10 +403,11 @@ public class CourseDetailModel implements Serializable {
             @Override
             public void onResponse(String response) {
                 Teacher[] apiResponse = ModelDecor.getInstance().
-                        decor(response, new TypeToken<Teacher[]>() {});
+                        decor(response, new TypeToken<Teacher[]>() {
+                        });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else  {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -438,7 +439,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getTeach(final ResponseCallbackListener<TeachLesson> callbackListener){
+    public static void getTeach(final ResponseCallbackListener<TeachLesson> callbackListener) {
         RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.TEACHER_TEACH, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
@@ -448,7 +449,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null && apiResponse.getResources().size() != 0) {
                     callbackListener.onSuccess(apiResponse);
-                }else {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }

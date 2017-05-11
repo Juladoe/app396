@@ -29,21 +29,10 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/tv_latest_learned_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="15dp"
-            android:text="@string/latest_task_title"
-            android:textColor="@color/disabled2_hint_color"
-            android:textSize="@dimen/font_s" />
-
-        <TextView
             android:id="@+id/tv_latest_task_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_latest_learned_title"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:textColor="@color/disabled2_hint_color"
             android:textSize="@dimen/font_l" />
