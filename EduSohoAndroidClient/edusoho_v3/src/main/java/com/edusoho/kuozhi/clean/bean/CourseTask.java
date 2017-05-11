@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.clean.bean;
 
-import com.edusoho.kuozhi.clean.bean.innerbean.Result;
+import com.edusoho.kuozhi.clean.bean.innerbean.TaskResult;
 
 import java.io.Serializable;
 
@@ -34,7 +34,7 @@ public class CourseTask implements Serializable {
     public String createdTime;
     public String updatedTime;
     public Activity activity;
-    public Result result;
+    public TaskResult result;
 
     public static class Activity implements Serializable {
         public String id;
@@ -52,6 +52,11 @@ public class CourseTask implements Serializable {
         public String endTime;
         public String createdTime;
         public String updatedTime;
+        /**
+         * finish, end
+         */
+        public String finishType;
+        public int finishDetail;
     }
 
     public String toTaskItemSequence() {

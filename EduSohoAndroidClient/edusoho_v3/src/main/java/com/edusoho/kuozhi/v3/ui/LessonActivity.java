@@ -28,6 +28,10 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
+import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
@@ -79,10 +83,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String LESSON_IDS = "lesson_ids";
     public static final String RESULT_ID = "resultId";
     public static final String MEMBER_STATE = "member_state";
-
-    private String mCurrentFragmentName;
-    private Class mCurrentFragmentClass;
-    private Fragment mCurrentFragment;
+    public static final String COURSE_TASK = "course_task";
+    public static final String COURSE = "course";
     public static final int SHOW_TOOLS = 0001;
     public static final int HIDE_TOOLS = 0002;
 
@@ -91,6 +93,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private int mCourseId;
     private int mLessonId;
     private int mIsMember;
+    private CourseTask mCourseTask;
+    private CourseProject mCourseProject;
     private String mLessonType;
     private Bundle fragmentData;
     private boolean mFromCache;
@@ -179,6 +183,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
                 mIsMember = data.getIntExtra(LessonActivity.MEMBER_STATE, CourseMember.NONE);
+                mCourseTask = (CourseTask) data.getSerializableExtra(COURSE_TASK);
+                mCourseProject = (CourseProject) data.getSerializableExtra(COURSE);
             }
 
             if (mLessonId == 0) {
@@ -289,8 +295,17 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 invalidateOptionsMenu();
             }
         });
-        mLessonMenuHelper = new LessonMenuHelper(getBaseContext(), mLessonId, mCourseId);
-        mLessonMenuHelper.initMenu(menuPop);
+
+        mLessonMenuHelper = new LessonMenuHelper(getBaseContext(), mLessonId, mCourseId)
+                .addCourseProject(mCourseProject)
+                .setCourseTask(mCourseTask)
+                .initTaskHelper()
+                .addMenuHelperListener(new LessonMenuHelper.MenuHelperFinishListener() {
+                    @Override
+                    public void showFinishTaskDialog(TaskEvent taskEvent) {
+                        TaskFinishDialog.newInstance(taskEvent, mCourseTask).show(getSupportFragmentManager(), "mTaskFinishDialog");
+                    }
+                }).initMenu(menuPop);
     }
 
     @Override
@@ -592,10 +607,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         fragmentTransaction.setCustomAnimations(
                 FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         fragmentTransaction.commitAllowingStateLoss();
-
-        mCurrentFragment = fragment;
-        mCurrentFragmentName = fragmentName;
-        mCurrentFragmentClass = fragment.getClass();
     }
 
     @Override
@@ -621,7 +632,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onResume() {
         super.onResume();
-        //mLessonMenuHelper.updatePluginItemState();
         invalidateOptionsMenu();
         CacheServerFactory.getInstance().resume();
     }

@@ -60,6 +60,8 @@ public interface CourseProjectContract {
         void launchLoginActivity();
 
         void clearCoursesCache(int... courseIds);
+
+        void learnTask(CourseTask task, CourseProject courseProject, CourseMember courseMember);
     }
 
     interface Presenter extends BasePresenter {
@@ -70,10 +72,12 @@ public interface CourseProjectContract {
 
         void exitCourse();
 
+        CourseProject getCourseProject();
+
+        void learnTask(int taskId);
+
         boolean isJoin();
 
         void finishTask(CourseTask task);
-
-        CourseMember getCourseMember();
     }
 }

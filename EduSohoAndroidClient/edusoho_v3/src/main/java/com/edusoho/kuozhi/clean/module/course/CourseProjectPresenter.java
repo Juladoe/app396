@@ -14,13 +14,7 @@ import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.biz.CourseHelper;
-import com.edusoho.kuozhi.clean.utils.biz.TaskFinishHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.factory.FactoryManager;
-import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
-import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,7 +38,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private CourseProjectContract.View mView;
     private int mCourseProjectId;
     private Teacher mTeacher;
-    private CourseMember mMember;
+    private CourseMember mCourseMember;
     private CourseProject mCourseProject;
     private boolean mIsJoin = false;
 
@@ -129,7 +123,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(CourseMember member) {
-                        mMember = member;
+                        mCourseMember = member;
                         mIsJoin = member.user != null;
                         if (mIsJoin) {
                             mView.showFragments(initCourseModules(true), courseProject);
@@ -308,6 +302,37 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 });
     }
 
+    @Override
+    public CourseProject getCourseProject() {
+        return mCourseProject;
+    }
+
+    @Override
+    public void learnTask(int taskId) {
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(CourseApi.class)
+                .getCourseTask(mCourseProjectId, taskId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseTask>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseTask courseTask) {
+                        mView.learnTask(courseTask, mCourseProject, mCourseMember);
+                    }
+                });
+    }
+
     private void joinFreeOrVipCourse(final int courseId) {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
@@ -353,11 +378,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public boolean isJoin() {
         return mIsJoin;
-    }
-
-    @Override
-    public CourseMember getCourseMember() {
-        return mMember;
     }
 
     @Override

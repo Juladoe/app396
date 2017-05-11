@@ -190,7 +190,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                     mShowDialogHelper.doAction();
                 } else {
                     CourseTask task = (CourseTask) v.getTag();
-                    learnTask(task);
+                    mPresenter.learnTask(task.id);
                 }
             }
         });
@@ -392,7 +392,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                     if (mShowDialogHelper != null) {
                         mShowDialogHelper.doAction();
                     } else {
-                        learnTask(task);
+                        mPresenter.learnTask(task.id);
                     }
                     break;
             }
@@ -409,7 +409,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         }
     }
 
-    private void learnTask(CourseTask task) {
+    @Override
+    public void learnTask(CourseTask task, CourseProject courseProject, CourseMember courseMember) {
         setPlayLayoutVisible(false);
         mFinishTask.setVisibility(View.GONE);
         clearTaskFragment();
@@ -447,8 +448,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.LESSON_ID, task.id);
                 bundle.putInt(Const.COURSE_ID, mCourseProjectId);
+                bundle.putSerializable(LessonActivity.COURSE_TASK, task);
+                bundle.putSerializable(LessonActivity.COURSE, courseProject);
                 bundle.putInt(LessonActivity.MEMBER_STATE
-                        , mPresenter.getCourseMember() != null ? CourseMember.MEMBER : CourseMember.NONE);
+                        , courseMember == null ? CourseMember.MEMBER : CourseMember.NONE);
                 CoreEngine.create(getApplicationContext()).runNormalPluginWithBundleForResult(
                         "LessonActivity", this, bundle, LessonActivity.REQUEST_LEARN);
                 break;

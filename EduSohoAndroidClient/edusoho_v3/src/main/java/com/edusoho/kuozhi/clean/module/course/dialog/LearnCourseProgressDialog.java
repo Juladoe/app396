@@ -93,6 +93,4 @@ public class LearnCourseProgressDialog extends DialogFragment {
         window.setAttributes(params);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
-
-
 }

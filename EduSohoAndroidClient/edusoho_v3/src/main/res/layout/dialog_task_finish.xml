@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/bg_dialog_progress"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.edusoho.kuozhi.clean.widget.ESProgressBar
+            android:id="@+id/pb_progress"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="50dp"
+            android:max="100"
+            android:progress="50"
+            android:progressDrawable="@drawable/bg_course_progress"
+            app:percent_size="@dimen/font_s" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/congratulation_finish_task"
+            android:textColor="@color/secondary_font_color"
+            android:textSize="@dimen/font_s" />
+
+        <TextView
+            android:id="@+id/tv_course_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_l" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="20dp">
+
+            <com.edusoho.kuozhi.clean.widget.ESIconView
+                android:id="@+id/icon_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_next_task"
+                android:layout_alignParentLeft="true"
+                android:text="@string/new_font_share"
+                android:textSize="@dimen/font_l" />
+
+            <TextView
+                android:id="@+id/tv_share_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_next_task"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/icon_share"
+                android:text="@string/course_menu_share"
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/font_s" />
+
+            <TextView
+                android:id="@+id/tv_next_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/course_progress"
+                android:paddingBottom="5dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="5dp"
+                android:text="@string/next_task"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_s" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="85dp"
+        android:background="@drawable/bg_dialog_task_finish_close"
+        android:baseline="20dp"
+        android:padding="8dp"
+        android:src="@drawable/close_black" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/iv_close"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/icon_task_finish"
+        android:gravity="center"
+        android:text="@string/task_finish"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_l" />
+
+</RelativeLayout>

@@ -4,11 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.utils.biz.TaskFinishHelper;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
@@ -24,25 +26,64 @@ public class LessonMenuHelper {
 
     private int mLessonId;
     private int mCourseId;
-    private TaskTypeEnum mTaskType;
     private String mCurrentLearnState;
     private Context mContext;
     private MenuPop mMenuPop;
+    private MenuHelperFinishListener mMenuHelperFinishListener;
+    private CourseTask mCourseTask;
+    private CourseProject mCourseProject;
+    TaskFinishHelper.Builder builder;
+    TaskFinishHelper mTaskFinishHelper;
 
-    public LessonMenuHelper(Context context, int lessonId, int courseId, TaskTypeEnum type) {
+
+    public LessonMenuHelper(Context context, int lessonId, int courseId) {
         this.mContext = context;
         this.mLessonId = lessonId;
         this.mCourseId = courseId;
-        this.mTaskType = type;
+    }
+
+    public LessonMenuHelper addMenuHelperListener(MenuHelperFinishListener listener) {
+        mMenuHelperFinishListener = listener;
+        return this;
+    }
+
+    public LessonMenuHelper addCourseProject(CourseProject courseProject) {
+        this.mCourseProject = courseProject;
+        return this;
+    }
+
+    public LessonMenuHelper setCourseTask(CourseTask courseTask) {
+        this.mCourseTask = courseTask;
+        return this;
+    }
+
+    public LessonMenuHelper initTaskHelper() {
+        builder = new TaskFinishHelper.Builder().setCourseTask(mCourseTask).setEnableFinish(mCourseProject.enableFinish);
+        mTaskFinishHelper = new TaskFinishHelper(builder, mContext);
+        mTaskFinishHelper.setActionListener(new TaskFinishHelper.ActionListener() {
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void doAction(TaskEvent taskEvent) {
+                mCurrentLearnState = taskEvent.result.status;
+                setLearnBtnState(true);
+                if (mMenuHelperFinishListener != null) {
+                    mMenuHelperFinishListener.showFinishTaskDialog(taskEvent);
+                }
+            }
+        }).invoke();
+        return this;
     }
 
     public MenuPop getMenuPop() {
         return mMenuPop;
     }
 
-    public void initMenu(MenuPop menuPop) {
+    public LessonMenuHelper initMenu(MenuPop menuPop) {
         if (menuPop == null) {
-            return;
+            throw new RuntimeException("Menupop is not null");
         }
         this.mMenuPop = menuPop;
         mMenuPop.removeAll();
@@ -51,6 +92,7 @@ public class LessonMenuHelper {
         mMenuPop.setVisibility(true);
         mMenuPop.setOnMenuClickListener(getMenuClickListener());
         loadLessonStatus();
+        return this;
     }
 
     public void show(View view, int x, int y) {
@@ -61,12 +103,6 @@ public class LessonMenuHelper {
      * 获取课时是否已学状态
      */
     private void loadLessonStatus() {
-//        TaskFinishHelper.Builder builder = new TaskFinishHelper.Builder()
-//                .setCourseId(mCourseId)
-//                .setTaskId(mLessonId)
-//                .setTaskType(mTaskType)
-
-
         new LessonProvider(mContext).getLearnState(mLessonId, mCourseId)
                 .success(new NormalCallback<LessonStatus>() {
                     @Override
@@ -76,6 +112,12 @@ public class LessonMenuHelper {
                         }
                         mCurrentLearnState = state.learnStatus.status;
                         setLearnBtnState("finish".equals(state.learnStatus.status));
+                    }
+                })
+                .fail(new NormalCallback<VolleyError>() {
+                    @Override
+                    public void success(VolleyError obj) {
+
                     }
                 });
     }
@@ -107,19 +149,7 @@ public class LessonMenuHelper {
         if ("finish".equals(mCurrentLearnState)) {
             return;
         }
-        view.setEnabled(false);
-        new LessonProvider(mContext).startLearnLesson(mLessonId, mCourseId)
-                .success(new NormalCallback<String>() {
-                    @Override
-                    public void success(String state) {
-                        view.setEnabled(true);
-                        if (state != null && "finished".equals(state)) {
-                            MessageEngine.getInstance().sendMsg(Const.LESSON_STATUS_REFRESH, null);
-                        }
-                        mCurrentLearnState = "finish";
-                        setLearnBtnState("finished".equals(state));
-                    }
-                });
+        mTaskFinishHelper.finish();
     }
 
     private void setLearnBtnState(boolean isLearn) {
@@ -137,5 +167,9 @@ public class LessonMenuHelper {
         bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, mLessonId);
         CoreEngine.create(mContext).runNormalPluginWithBundle("NoteActivity", mContext, bundle);
+    }
+
+    public interface MenuHelperFinishListener {
+        void showFinishTaskDialog(TaskEvent taskEvent);
     }
 }

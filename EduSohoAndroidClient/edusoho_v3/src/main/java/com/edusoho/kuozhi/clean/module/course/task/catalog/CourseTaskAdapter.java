@@ -14,7 +14,7 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
-import com.edusoho.kuozhi.clean.bean.innerbean.Result;
+import com.edusoho.kuozhi.clean.bean.innerbean.TaskResult;
 import com.edusoho.kuozhi.clean.utils.SharedPreferencesHelper;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 
@@ -25,7 +25,6 @@ import java.util.List;
  */
 
 public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String CLICKED = "clicked";
     private List<CourseItem> mTaskItems;
     private CourseProject.LearnMode mLearnMode;
     private boolean mIsJoin;
@@ -123,7 +122,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    private void setTaskResult(CourseTaskViewHolder holder, Result result) {
+    private void setTaskResult(CourseTaskViewHolder holder, TaskResult result) {
         if (result == null) {
             holder.taskStatus.setImageResource(R.drawable.lesson_status);
         } else if (TaskResultEnum.FINISH.toString().equals(result.status)) {

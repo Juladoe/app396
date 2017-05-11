@@ -1,11 +1,17 @@
 package com.edusoho.kuozhi.clean.utils.biz;
 
+import android.content.Context;
+
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.util.ToastUtil;
 
+import cn.trinea.android.common.util.ToastUtils;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -24,22 +30,49 @@ public class TaskFinishHelper {
     public static final String DOING = "doing";
     public static final String FINISH = "finish";
 
-    private String mFinishType;
-    private int mCourseId;
-    private int mTaskId;
-    private TaskTypeEnum mTaskType;
+    private int mEnableFinish;
+    private CourseTask mCourseTask;
     private ActionListener mActionListener;
+    private Context mContext;
 
-    public TaskFinishHelper(Builder builder) {
-        this.mFinishType = builder.mFinishType;
-        this.mCourseId = builder.mCourseId;
-        this.mTaskId = builder.mTaskId;
-        this.mTaskType = builder.mTaskType;
-        this.mActionListener = builder.mActionListener;
+    public TaskFinishHelper(Builder builder, Context context) {
+        this.mEnableFinish = builder.mEnableFinish;
+        this.mCourseTask = builder.mCourseTask;
+        this.mContext = context;
+    }
+
+    public TaskFinishHelper setActionListener(ActionListener actionListener) {
+        this.mActionListener = actionListener;
+        return this;
     }
 
     public void finish() {
-        onRecord(FINISH);
+        if (mEnableFinish == 1 || (mEnableFinish == 0 && END.equals(mCourseTask.activity.finishType))) {
+            onRecord(FINISH);
+        } else {
+            TaskTypeEnum taskType = TaskTypeEnum.fromString(mCourseTask.type);
+            switch (taskType) {
+                case VIDEO:
+                    String videoLimit = TaskFinishHelper.TIME.equals(mCourseTask.activity.finishType)
+                            ? mContext.getString(R.string.task_finish_limit, mCourseTask.activity.finishDetail)
+                            : mContext.getString(R.string.video_task_finish_limit);
+                    ToastUtils.show(mContext, videoLimit);
+                    break;
+                case AUDIO:
+                    ToastUtils.show(mContext, R.string.audio_task_finish_limit);
+                    break;
+                case TEXT:
+                case DOC:
+                    ToastUtils.show(mContext, mContext.getString(R.string.task_finish_limit, mCourseTask.activity.finishDetail));
+                    break;
+                case PPT:
+                    String pptLimit = TaskFinishHelper.TIME.equals(mCourseTask.activity.finishType)
+                            ? mContext.getString(R.string.task_finish_limit, mCourseTask.activity.finishDetail)
+                            : mContext.getString(R.string.ppt_task_finish_limit);
+                    ToastUtils.show(mContext, pptLimit);
+                    break;
+            }
+        }
     }
 
     public void doing() {
@@ -47,11 +80,8 @@ public class TaskFinishHelper {
     }
 
     private void onRecord(String status) {
-        if (mCourseId == 0) {
-            throw new RuntimeException("CourseId is 0!");
-        }
-        if (mTaskId == 0) {
-            throw new RuntimeException("TaskId is 0!");
+        if (mCourseTask == null) {
+            throw new RuntimeException("CourseTask is null");
         }
         if (mActionListener == null) {
             throw new RuntimeException("actionListener cannot be null!");
@@ -59,7 +89,7 @@ public class TaskFinishHelper {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
-                .setCourseTaskStatus(mCourseId, mTaskId, status)
+                .setCourseTaskStatus(mCourseTask.courseId, mCourseTask.id, status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<TaskEvent>() {
@@ -83,54 +113,33 @@ public class TaskFinishHelper {
     }
 
     public void invoke() {
-
+        if (mEnableFinish == 0 && TIME.equals(mCourseTask.activity.finishType)) {
+            ToastUtils.show(mContext, "doing invoke");
+        }
     }
 
-
     public static class Builder {
-        private String mFinishType;
-        private int mCourseId;
-        private int mTaskId;
-        private TaskTypeEnum mTaskType;
-        private int mFinishLimitTime;
-        private ActionListener mActionListener;
+        private int mEnableFinish;
+        private CourseTask mCourseTask;
 
-        public Builder setCourseId(int courseId) {
-            mCourseId = courseId;
+        public Builder setCourseTask(CourseTask courseTask) {
+            this.mCourseTask = courseTask;
             return this;
         }
 
-        public Builder setTaskId(int taskId) {
-            mTaskId = taskId;
+        public Builder setEnableFinish(int enableFinish) {
+            mEnableFinish = enableFinish;
             return this;
         }
 
-        public Builder setFinishType(String finishType) {
-            mFinishType = finishType;
-            return this;
-        }
-
-        public Builder setTaskType(TaskTypeEnum taskType) {
-            mTaskType = taskType;
-            return this;
-        }
-
-        public Builder setFinishLimitTime(int finishLimitTime) {
-            mFinishLimitTime = finishLimitTime;
-            return this;
-        }
-
-        public Builder actionListener(ActionListener actionListener) {
-            mActionListener = actionListener;
-            return this;
-        }
-
-        public TaskFinishHelper build() {
-            return new TaskFinishHelper(this);
+        public TaskFinishHelper build(Context context) {
+            return new TaskFinishHelper(this, context);
         }
     }
 
     public interface ActionListener {
         void doAction(TaskEvent taskEvent);
+
+        void onError(Throwable e);
     }
 }

@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.clean.module.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.module.course.dialog.LearnCourseProgressDialog;
+import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
 import com.edusoho.kuozhi.clean.module.course.task.menu.question.QuestionActivity;
 import com.edusoho.kuozhi.clean.module.course.task.menu.info.CourseMenuInfoFragment;
 import com.edusoho.kuozhi.clean.module.course.task.menu.rate.RatesActivity;
@@ -90,6 +91,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
             @Override
             public void onClick(View v) {
                 showBottomMenu(behavior);
+                //TaskFinishDialog.newInstance().show(getActivity().getSupportFragmentManager(), "TaskFinishDialog");
             }
         });
 
