@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -10,7 +12,6 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -33,6 +34,9 @@ public interface UserApi {
 
     @GET("me/course_members/{courseId}")
     Observable<CourseMember> getCourseMember(@Path("courseId") int courseId);
+
+    @GET("me/favorite_course_sets")
+    Observable<DataPageResult<CourseSet>> getFavoriteCourseSet(@Query("offset") int offset, @Query("limit") int limit);
 
     @FormUrlEncoded
     @POST("me/favorite_course_sets")

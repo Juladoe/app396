@@ -1,33 +1,32 @@
-package com.edusoho.kuozhi.v3.ui.fragment.mine;
+package com.edusoho.kuozhi.clean.module.mine.favorite;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.MyFavoriteAdapter;
-import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
-import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyFavoriteFragment extends BaseFragment implements MineFragment.RefreshFragment {
+public class MyFavoriteFragment extends BaseFragment implements MineFragment.RefreshFragment, MyFavoriteContract.View {
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
     private MyFavoriteAdapter myFavoriteAdapter;
+
+    private MyFavoritePresenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,11 +46,11 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
         viewBreakline.setVisibility(View.GONE);
 
         initData();
-        loadData();
+        mPresenter.subscribe();
         srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadData();
+                mPresenter.subscribe();
             }
         });
     }
@@ -60,44 +59,18 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
         showLoadingView();
         myFavoriteAdapter = new MyFavoriteAdapter(getActivity());
         rvContent.setAdapter(myFavoriteAdapter);
-    }
-
-    private void loadData() {
-        final List<Course> loadCourseList = new ArrayList<>();
-        CourseDetailModel.getNormalCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
-            @Override
-            public void onSuccess(final LearningCourse liveCourseList) {
-                loadCourseList.addAll(liveCourseList.data);
-                CourseDetailModel.getLiveCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
-                    @Override
-                    public void onSuccess(LearningCourse courseList) {
-                        disabledLoadingView();
-                        loadCourseList.addAll(courseList.data);
-                        myFavoriteAdapter.setData(loadCourseList);
-                    }
-
-                    @Override
-                    public void onFailure(String code, String message) {
-                        disabledLoadingView();
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(String code, String message) {
-                disabledLoadingView();
-            }
-        });
+        mPresenter = new MyFavoritePresenter(this);
     }
 
     @Override
     public void refreshData() {
-        loadData();
+        mPresenter.subscribe();
     }
 
     @Override
     public void setSwipeEnabled(int i) {
-        srlContent.setEnabled(i == 0);
+//        srlContent.setEnabled(i == 0);
+        Log.d("test", "setSwipeEnabled: " + i);
     }
 
     private void showLoadingView() {
@@ -113,18 +86,39 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
         srlContent.setRefreshing(false);
     }
 
-    public static class FavoriteViewHolder extends RecyclerView.ViewHolder {
-        public View recyclerViewItem;
-        public ImageView ivPic;
-        public TextView tvAddNum;
-        public TextView tvTitle;
-        public TextView tvMore;
-        public View layoutLive;
-        public TextView tvLiveIcon;
-        public TextView tvLive;
-        public View vLine;
+    @Override
+    public void showComplete(List<CourseSet> courseSets) {
+        myFavoriteAdapter.setData(courseSets);
+        disabledLoadingView();
+    }
 
-        public FavoriteViewHolder(View view) {
+    @Override
+    public void setSwpFreshing(boolean isRefreshing) {
+        srlContent.setRefreshing(isRefreshing);
+    }
+
+    @Override
+    public void showToast(int resId) {
+
+    }
+
+    @Override
+    public void showToast(String msg) {
+
+    }
+
+    public static class FavoriteViewHolder extends RecyclerView.ViewHolder {
+        View recyclerViewItem;
+        ImageView ivPic;
+        TextView tvAddNum;
+        TextView tvTitle;
+        TextView tvMore;
+        View layoutLive;
+        TextView tvLiveIcon;
+        TextView tvLive;
+        View vLine;
+
+        FavoriteViewHolder(View view) {
             super(view);
             recyclerViewItem = view.findViewById(R.id.llayout_favorite_content);
             ivPic = (ImageView) view.findViewById(R.id.iv_pic);

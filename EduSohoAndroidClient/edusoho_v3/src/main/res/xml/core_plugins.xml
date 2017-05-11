@@ -162,7 +162,7 @@
 
     <plugin
         name="MyFavoriteFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyFavoriteFragment"
+        package="com.edusoho.kuozhi.clean.module.mine.favorite.MyFavoriteFragment"
         version="1.0" />
 
     <plugin

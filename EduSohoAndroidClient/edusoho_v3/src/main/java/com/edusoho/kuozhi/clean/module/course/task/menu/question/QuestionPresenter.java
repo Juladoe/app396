@@ -1,10 +1,8 @@
 package com.edusoho.kuozhi.clean.module.course.task.menu.question;
 
 import com.edusoho.kuozhi.clean.api.CourseApi;
-import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -35,7 +33,7 @@ public class QuestionPresenter implements QuestionContract.Presenter {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(EdusohoApp.app.host + "/api/")
                 .build().create(CourseApi.class)
-                .getCourseDiscuss(EdusohoApp.app.token, mCourseProjectId, mCourseProjectId, 0)
+                .getCourseDiscuss(EdusohoApp.app.token, mCourseProjectId, 0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DiscussDetail>() {
@@ -73,7 +71,7 @@ public class QuestionPresenter implements QuestionContract.Presenter {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(EdusohoApp.app.host + "/api/")
                 .build().create(CourseApi.class)
-                .getCourseDiscuss(EdusohoApp.app.token, mCourseProjectId, mCourseProjectId, mStart)
+                .getCourseDiscuss(EdusohoApp.app.token, mCourseProjectId, mStart)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DiscussDetail>() {

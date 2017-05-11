@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +13,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.Study;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -27,7 +25,6 @@ import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
@@ -44,7 +41,6 @@ import java.util.List;
 public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private int mCourseType = 1;
-    public static final int COURSE_TYPE_LATEST = 1;
     public static final int COURSE_TYPE_NORMAL = 2;
     public static final int COURSE_TYPE_LIVE = 3;
 
@@ -62,15 +58,6 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
         mLatestCourses = new ArrayList<>();
         mNormalCourses = new ArrayList<>();
         mLiveCourses = new ArrayList<>();
-    }
-
-    public void setLatestCourses(List<Study.Resource> list) {
-        mCourseType = COURSE_TYPE_LATEST;
-        mLatestCourses = list;
-    }
-
-    public List<Study.Resource> getLatestCourses() {
-        return mLatestCourses;
     }
 
     public void setNormalCourses(List<Course> list) {
@@ -121,45 +108,6 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
             courseStudyViewHolder.layoutLive.setVisibility(View.GONE);
             courseStudyViewHolder.tvStudyState.setText("");
             switch (mCourseType) {
-                case COURSE_TYPE_LATEST:
-                    final Study.Resource latestCourse = mLatestCourses.get(position);
-                    switch (latestCourse.getJoinedType()) {
-                        case "classroom":
-                            if (latestCourse.getClassroomTitle() != null &&
-                                    latestCourse.getClassroomTitle().length() > 0) {
-                                courseStudyViewHolder.layoutClass.setVisibility(View.VISIBLE);
-                                courseStudyViewHolder.tvClassName.setText(latestCourse.getClassroomTitle());
-                            }
-                            courseStudyViewHolder.tvMore.setVisibility(View.GONE);
-                            break;
-                        case "course":
-                            if (latestCourse.getClassroomTitle() != null &&
-                                    latestCourse.getClassroomTitle().length() > 0) {
-                                courseStudyViewHolder.layoutClass.setVisibility(View.VISIBLE);
-                                courseStudyViewHolder.tvClassName.setText(latestCourse.getClassroomTitle());
-                            }
-                            courseStudyViewHolder.tvMore.setVisibility(View.VISIBLE);
-                            break;
-                    }
-                    ImageLoader.getInstance().displayImage(latestCourse.getLargePicture()
-                            , courseStudyViewHolder.ivPic, EdusohoApp.app.mOptions);
-                    courseStudyViewHolder.tvTitle.setText(String.valueOf(latestCourse.getTitle()));
-                    if (latestCourse.getType().equals("live")) {
-                        courseStudyViewHolder.layoutLive.setVisibility(View.VISIBLE);
-                        if (latestCourse.liveState == 1) {
-                            courseStudyViewHolder.tvLive.setText(R.string.lesson_living);
-                            courseStudyViewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
-                        } else {
-                            courseStudyViewHolder.tvLive.setText("直播");
-                            courseStudyViewHolder.tvLiveIcon.setVisibility(View.GONE);
-                        }
-                    }
-                    setProgressStr(latestCourse.getLearnedNum(), latestCourse.getTotalLesson(), courseStudyViewHolder.tvStudyState);
-                    courseStudyViewHolder.rLayoutItem.setTag(latestCourse);
-                    courseStudyViewHolder.rLayoutItem.setOnClickListener(getLatestCourseViewClickListener());
-                    courseStudyViewHolder.tvMore.setTag(latestCourse);
-                    courseStudyViewHolder.tvMore.setOnClickListener(getMoreClickListener());
-                    break;
                 case COURSE_TYPE_NORMAL:
                     final Course normalCourse = mNormalCourses.get(position);
                     ImageLoader.getInstance().displayImage(normalCourse.getLargePicture(), courseStudyViewHolder.ivPic,
@@ -200,12 +148,6 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemCount() {
         switch (mCourseType) {
-            case COURSE_TYPE_LATEST:
-                if (mLatestCourses != null && mLatestCourses.size() != 0) {
-                    mCurrentDataStatus = NOT_EMPTY;
-                    return mLatestCourses.size();
-                }
-                break;
             case COURSE_TYPE_NORMAL:
                 if (mNormalCourses != null && mNormalCourses.size() != 0) {
                     mCurrentDataStatus = NOT_EMPTY;
@@ -223,36 +165,12 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
         return 1;
     }
 
-    private View.OnClickListener getLatestCourseViewClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Study.Resource study = (Study.Resource) v.getTag();
-                CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
-                        , mContext, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.COURSE_ID, study.getId());
-                                startIntent.putExtra(Const.SOURCE, study.getTitle());
-                            }
-                        });
-            }
-        };
-    }
-
     private View.OnClickListener getCourseViewClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Course course = (Course) v.getTag();
-                CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
-                        , mContext, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.COURSE_ID, course.id);
-                                startIntent.putExtra(Const.SOURCE, course.title);
-                            }
-                        });
+                CourseProjectActivity.launch(mContext, course.id);
             }
         };
     }
