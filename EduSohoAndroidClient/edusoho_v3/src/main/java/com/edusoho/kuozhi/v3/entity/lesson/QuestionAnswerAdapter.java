@@ -50,7 +50,6 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         mMessageList.addAll(messageBodyList);
         mMessageList.add(0, new QuestionHeaderMessageEntity());
         notifyDataSetChanged();
-
     }
 
     @Override
@@ -114,7 +113,6 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
     public View createHeadView(){
         return VIEW_HEADER;
     }
-
 
     @Override
     public void onBindViewHolder(MessageViewHolder viewHolder, int position) {
@@ -216,7 +214,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
 
     private void initHeadInfo(final Bundle bundle) {
         final LinkedHashMap info = (LinkedHashMap<String, String>) bundle.getSerializable("info");
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(info.get("createdTime").toString()) + 28800000).substring(2, 16));
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(info.get("createdTime").toString())).substring(2, 16));
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(Html.fromHtml(info.get("title").toString()));
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(Html.fromHtml(info.get("content").toString()));
         ImageLoader.getInstance().displayImage(((LinkedTreeMap<String, String>) info.get("user")).get("avatar"), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);

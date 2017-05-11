@@ -1,7 +1,8 @@
-package com.edusoho.kuozhi.v3.adapter;
+package com.edusoho.kuozhi.clean.module.mine.question;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -14,7 +15,6 @@ import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MyQuestionFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/9.
  */
 
-public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int EMPTY = 0;
     private static final int NOT_EMPTY = 1;
@@ -33,7 +33,7 @@ public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Context mContext;
     private List<MyThreadEntity> mMyThreadEntities;
 
-    public MyAskQuestionAdapter(Context context) {
+    MyAskQuestionAdapter(Context context) {
         mContext = context;
         mMyThreadEntities = new ArrayList<>();
     }
@@ -67,11 +67,11 @@ public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.View
             MyQuestionFragment.ViewHolderAsk viewHolderAsk = (MyQuestionFragment.ViewHolderAsk) viewHolder;
             if ("question".equals(entity.getType())) {
                 viewHolderAsk.tvType.setText("问题");
-                viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                viewHolderAsk.tvType.setTextColor(ContextCompat.getColor(mContext, R.color.primary_color));
                 viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_blue);
             } else {
                 viewHolderAsk.tvType.setText("话题");
-                viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
+                viewHolderAsk.tvType.setTextColor(ContextCompat.getColor(mContext, R.color.secondary2_color));
                 viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_red);
             }
             viewHolderAsk.tvContent.setText(Html.fromHtml("<html><body>&nbsp;&nbsp;&nbsp;" +

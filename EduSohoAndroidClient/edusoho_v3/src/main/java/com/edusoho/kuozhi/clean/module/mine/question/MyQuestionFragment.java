@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.ui.fragment.mine;
+package com.edusoho.kuozhi.clean.module.mine.question;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -7,17 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.adapter.MyAnswerQuestionAdapter;
-import com.edusoho.kuozhi.v3.adapter.MyAskQuestionAdapter;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
-import com.edusoho.kuozhi.v3.model.provider.MyThreadProvider;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.umeng.analytics.MobclickAgent;
 
@@ -27,7 +20,7 @@ import java.util.Arrays;
  * Created by JesseHuang on 2017/2/8.
  */
 
-public class MyQuestionFragment extends BaseFragment implements MineFragment.RefreshFragment {
+public class MyQuestionFragment extends BaseFragment implements MineFragment.RefreshFragment,MyQuestionContract.View{
 
     private static int ASK = 1;
     private static int ANSWER = 2;
@@ -42,9 +35,10 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
     private TextView tvAsk;
     private TextView tvAnswer;
 
-    private MyThreadProvider mMyThreadProvider;
     private MyAskQuestionAdapter mMyAskQuestionAdapter;
     private MyAnswerQuestionAdapter mMyAnswerQuestionAdapter;
+
+    private MyQuestionPresenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,11 +82,11 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
     }
 
     private void initData() {
-        mMyThreadProvider = new MyThreadProvider(mContext);
-        switchFilterType(ASK);
         mMyAskQuestionAdapter = new MyAskQuestionAdapter(mContext);
         mMyAnswerQuestionAdapter = new MyAnswerQuestionAdapter(mContext);
         rvContent.setAdapter(mMyAskQuestionAdapter);
+        mPresenter = new MyQuestionPresenter(this);
+        switchFilterType(ASK);
     }
 
     private void switchFilterType(int type) {
@@ -114,38 +108,12 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
 
     private void loadAskedQuestionData() {
         showLoadingView();
-        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_CREATED_THREADS + "?start=0&limit=10000", true);
-        mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
-            @Override
-            public void success(MyThreadEntity[] entities) {
-                disabledLoadingView();
-                mMyAskQuestionAdapter.setData(Arrays.asList(entities));
-                rvContent.setAdapter(mMyAskQuestionAdapter);
-            }
-        }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError error) {
-                disabledLoadingView();
-            }
-        });
+        mPresenter.requestAskData();
     }
 
     private void loadAnsweredQuestionData() {
         showLoadingView();
-        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_POSTED_THREADS + "?start=0&limit=10000", true);
-        mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
-            @Override
-            public void success(MyThreadEntity[] entities) {
-                disabledLoadingView();
-                mMyAnswerQuestionAdapter.setData(Arrays.asList(entities));
-                rvContent.setAdapter(mMyAnswerQuestionAdapter);
-            }
-        }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError error) {
-                disabledLoadingView();
-            }
-        });
+        mPresenter.requestAnswerData();
     }
 
     private int getCurrentType() {
@@ -217,20 +185,45 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
         });
     }
 
-    private void disabledLoadingView() {
+    @Override
+    public void showToast(int resId) {
+
+    }
+
+    @Override
+    public void showToast(String msg) {
+
+    }
+
+    @Override
+    public void showAskComplete(MyThreadEntity[] myThreadEntities) {
+        hideSwp();
+        mMyAskQuestionAdapter.setData(Arrays.asList(myThreadEntities));
+        rvContent.setAdapter(mMyAskQuestionAdapter);
+    }
+
+    @Override
+    public void showAnswerComplete(MyThreadEntity[] entities) {
+        hideSwp();
+        mMyAnswerQuestionAdapter.setData(Arrays.asList(entities));
+        rvContent.setAdapter(mMyAnswerQuestionAdapter);
+    }
+
+    @Override
+    public void hideSwp() {
         srlContent.setRefreshing(false);
     }
 
     public static class ViewHolderAsk extends RecyclerView.ViewHolder {
-        public TextView tvType;
-        public TextView tvContent;
-        public TextView tvTime;
-        public TextView tvReviewNum;
-        public TextView tvOrder;
+        TextView tvType;
+        TextView tvContent;
+        TextView tvTime;
+        TextView tvReviewNum;
+        TextView tvOrder;
         public View layout;
         View vLine;
 
-        public ViewHolderAsk(View view) {
+        ViewHolderAsk(View view) {
             super(view);
             tvType = (TextView) view.findViewById(R.id.tv_type);
             tvContent = (TextView) view.findViewById(R.id.tv_content);
@@ -243,11 +236,11 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
     }
 
     public static class ViewHolderAnswer extends RecyclerView.ViewHolder {
+        View vLine;
         public TextView tvTime;
         public TextView tvContentAnswer;
         public TextView tvContentAsk;
         public TextView tvOrder;
-        public View vLine;
         public View layout;
 
         public ViewHolderAnswer(View view) {

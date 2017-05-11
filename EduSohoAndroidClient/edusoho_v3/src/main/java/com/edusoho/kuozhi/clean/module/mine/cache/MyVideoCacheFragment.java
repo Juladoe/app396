@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.ui.fragment.mine;
+package com.edusoho.kuozhi.clean.module.mine.cache;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,12 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.MyVideoCacheAdapter;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 

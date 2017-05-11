@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.module.mine.favorite;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<CourseSet> courseList;
     private Context mContext;
 
-    public MyFavoriteAdapter(Context context) {
+    MyFavoriteAdapter(Context context) {
         courseList = new ArrayList<>();
         mContext = context;
     }
@@ -89,14 +90,6 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             favoriteViewHolder.tvMore.setOnClickListener(mMoreClickListener);
             if (courseSet.type.equals("live")) {
                 favoriteViewHolder.layoutLive.setVisibility(View.VISIBLE);
-                // TODO: 2017/5/10 处理直播状态 
-//                if (courseSet.liveState == 1) {
-//                    favoriteViewHolder.tvLive.setText(R.string.lesson_living);
-//                    favoriteViewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
-//                } else {
-//                    favoriteViewHolder.tvLive.setText("直播");
-//                    favoriteViewHolder.tvLiveIcon.setVisibility(View.GONE);
-//                }
             } else {
                 favoriteViewHolder.layoutLive.setVisibility(View.GONE);
             }
@@ -118,10 +111,10 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void onClick(View v) {
             final CourseSet courseSet = (CourseSet) v.getTag();
             MoreDialog dialog = new MoreDialog(mContext);
-            dialog.init("取消收藏", new MoreDialog.MoreCallBack() {
+            dialog.init(mContext.getString(R.string.cancel_favorite_text), new MoreDialog.MoreCallBack() {
                 @Override
                 public void onMoveClick(View v, final Dialog dialog) {
-                    new SureDialog(mContext).init("是否确定取消收藏！", new SureDialog.CallBack() {
+                    new SureDialog(mContext).init(mContext.getString(R.string.cancel_favorite_hint), new SureDialog.CallBack() {
                         @Override
                         public void onSureClick(View v, final Dialog dialog2) {
                             HttpUtils.getInstance()
@@ -143,7 +136,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                         @Override
                                         public void onNext(JsonObject jsonObject) {
                                             if (jsonObject != null && jsonObject.get("success").getAsBoolean()) {
-                                                CommonUtil.shortToast(mContext, "取消收藏成功");
+                                                CommonUtil.shortToast(mContext, mContext.getString(R.string.cancel_favorite));
                                                 courseList.remove(courseSet);
                                                 notifyDataSetChanged();
                                                 dialog.dismiss();
@@ -162,20 +155,21 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 @Override
                 public void onShareClick(View v, Dialog dialog) {
+                    // TODO: 2017/5/11 分享
 //                    final ShareTool shareTool =
 //                            new ShareTool(mContext
 //                                    , EdusohoApp.app.host + "/courseSet/" + courseSet.id
 //                                    , courseSet.title
 //                                    , courseSet.about.length() > 20 ?
-//                                    courseSet.about.substring(0, 20)
+//                                      courseSet.about.substring(0, 20)
 //                                    : courseSet.about
-//                                    , courseSet.middlePicture);
-//                    new Handler((mContext.getMainLooper())).post(new Runnable() {
-//                        @Override
-//                        public void run() {
+//                                    , courseSet.cover.middle);
+                    new Handler((mContext.getMainLooper())).post(new Runnable() {
+                        @Override
+                        public void run() {
 //                            shareTool.shardCourse();
-//                        }
-//                    });
+                        }
+                    });
                     dialog.dismiss();
                 }
 

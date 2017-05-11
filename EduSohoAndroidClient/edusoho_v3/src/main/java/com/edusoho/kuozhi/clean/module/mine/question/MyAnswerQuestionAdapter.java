@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.adapter;
+package com.edusoho.kuozhi.clean.module.mine.question;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,10 +14,8 @@ import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MyQuestionFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
-
 
 import java.util.ArrayList;
 import java.util.List;

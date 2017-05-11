@@ -16,8 +16,7 @@ public class MyThreadProvider extends ModelProvider {
     }
 
     public ProviderListener getMyCreatedThread(RequestUrl requestUrl) {
-        ProviderListener<MyThreadEntity[]> providerListener = new ProviderListener() {
-        };
+        ProviderListener<MyThreadEntity[]> providerListener = new ProviderListener() {};
         addRequest(requestUrl, new TypeToken<MyThreadEntity[]>() {
         }, providerListener, providerListener);
         return providerListener;

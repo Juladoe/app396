@@ -20,7 +20,6 @@ interface MyFavoriteContract {
 
     }
 
-
     interface Presenter extends BasePresenter{
 
     }

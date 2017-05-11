@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,10 +55,10 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
     }
 
     private void initData() {
-        showLoadingView();
         myFavoriteAdapter = new MyFavoriteAdapter(getActivity());
         rvContent.setAdapter(myFavoriteAdapter);
         mPresenter = new MyFavoritePresenter(this);
+        showLoadingView();
     }
 
     @Override
@@ -69,8 +68,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
 
     @Override
     public void setSwipeEnabled(int i) {
-//        srlContent.setEnabled(i == 0);
-        Log.d("test", "setSwipeEnabled: " + i);
     }
 
     private void showLoadingView() {
@@ -82,14 +79,10 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
         });
     }
 
-    private void disabledLoadingView() {
-        srlContent.setRefreshing(false);
-    }
-
     @Override
     public void showComplete(List<CourseSet> courseSets) {
         myFavoriteAdapter.setData(courseSets);
-        disabledLoadingView();
+        setSwpFreshing(false);
     }
 
     @Override
@@ -114,8 +107,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
         TextView tvTitle;
         TextView tvMore;
         View layoutLive;
-        TextView tvLiveIcon;
-        TextView tvLive;
         View vLine;
 
         FavoriteViewHolder(View view) {
@@ -127,8 +118,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
             tvTitle = (TextView) view.findViewById(R.id.tv_title);
             vLine = view.findViewById(R.id.v_line);
             layoutLive = view.findViewById(R.id.layout_live);
-            tvLiveIcon = (TextView) view.findViewById(R.id.tv_live_icon);
-            tvLive = (TextView) view.findViewById(R.id.tv_live);
         }
     }
 }

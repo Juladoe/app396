@@ -4,6 +4,7 @@ import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -50,5 +51,11 @@ public interface UserApi {
 
     @GET("me/vip_levels/{levelId}")
     Observable<JsonObject> isVip(@Path("levelId") int levelId);
+
+    @GET("chaos_threads/getThreads")
+    Observable<MyThreadEntity[]> getMyAskThread(@Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("chaos_threads_posts/getThreadPosts")
+    Observable<MyThreadEntity[]> getMyAnswerThread(@Query("offser") int offset, @Query("limit") int limit);
 
 }
