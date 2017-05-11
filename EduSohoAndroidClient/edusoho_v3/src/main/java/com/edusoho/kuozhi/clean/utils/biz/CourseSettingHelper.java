@@ -6,6 +6,8 @@ import android.util.Log;
 import com.edusoho.kuozhi.clean.api.CommonApi;
 import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.utils.StringUtils;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -19,6 +21,9 @@ import rx.schedulers.Schedulers;
 public class CourseSettingHelper {
 
     public static void sync(final Context context) {
+        if (StringUtils.isEmpty(EdusohoApp.app.host)) {
+            return;
+        }
         HttpUtils.getInstance()
                 .baseOnApi()
                 .createApi(CommonApi.class)

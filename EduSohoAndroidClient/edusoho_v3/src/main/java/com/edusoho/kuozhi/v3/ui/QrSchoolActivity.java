@@ -572,7 +572,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                     return;
                 }
                 bindApiToken(site);
-                CourseSettingHelper.sync(mContext);
+                //CourseSettingHelper.sync(mContext);
             }
         }, this);
     }
@@ -611,6 +611,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -622,6 +623,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         });
     }

@@ -419,7 +419,6 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                     return;
                 }
                 bindApiToken(site);
-                CourseSettingHelper.sync(mContext);
             }
         }, this);
     }

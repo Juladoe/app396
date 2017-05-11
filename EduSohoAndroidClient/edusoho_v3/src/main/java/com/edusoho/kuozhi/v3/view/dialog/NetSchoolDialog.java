@@ -327,7 +327,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                     return;
                 }
                 bindApiToken(site);
-                CourseSettingHelper.sync(mContext);
+                //CourseSettingHelper.sync(mContext);
             }
         }, this);
     }
@@ -365,6 +365,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -376,6 +377,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         });
     }
