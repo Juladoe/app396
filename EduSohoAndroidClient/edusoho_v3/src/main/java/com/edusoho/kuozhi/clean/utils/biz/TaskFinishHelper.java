@@ -9,7 +9,6 @@ import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.util.ToastUtil;
 
 import cn.trinea.android.common.util.ToastUtils;
 import rx.Subscriber;
@@ -108,7 +107,7 @@ public class TaskFinishHelper {
                     @Override
                     public void onNext(TaskEvent taskEvent) {
                         if (FINISH.equals(taskEvent.result.status)) {
-                            mActionListener.doAction(taskEvent);
+                            mActionListener.onFinish(taskEvent);
                         }
                     }
                 });
@@ -146,7 +145,7 @@ public class TaskFinishHelper {
     }
 
     public interface ActionListener {
-        void doAction(TaskEvent taskEvent);
+        void onFinish(TaskEvent taskEvent);
 
         void onError(Throwable e);
     }

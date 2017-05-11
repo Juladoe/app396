@@ -37,6 +37,8 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -240,6 +242,18 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         switch (messageEvent.getType()) {
             case MessageEvent.COURSE_EXIT:
                 mCourseProgressBar.setVisibility(View.GONE);
+                break;
+            case MessageEvent.FINISH_TASK:
+                ((CourseTaskAdapter) mTaskRecyclerView.getAdapter()).finishTask((int) messageEvent.getMessageBody());
+                break;
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onFinishTask(MessageEvent messageEvent) {
+        switch (messageEvent.getType()) {
+            case MessageEvent.FINISH_TASK:
+                ((CourseTaskAdapter) mTaskRecyclerView.getAdapter()).finishTask((int) messageEvent.getMessageBody());
                 break;
         }
     }

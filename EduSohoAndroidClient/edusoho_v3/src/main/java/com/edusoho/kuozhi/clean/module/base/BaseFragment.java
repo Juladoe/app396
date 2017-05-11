@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.module.base;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
@@ -15,6 +17,12 @@ import org.greenrobot.eventbus.Subscribe;
 public class BaseFragment<T extends BasePresenter> extends Fragment implements BaseView<T> {
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().removeAllStickyEvents();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
@@ -22,8 +30,8 @@ public class BaseFragment<T extends BasePresenter> extends Fragment implements B
 
     @Override
     public void onStop() {
-        super.onStop();
         EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Subscribe

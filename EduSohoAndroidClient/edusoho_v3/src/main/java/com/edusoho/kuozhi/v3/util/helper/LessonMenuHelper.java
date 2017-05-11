@@ -8,6 +8,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.utils.biz.TaskFinishHelper;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -17,6 +18,8 @@ import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.MenuPop;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by suju on 16/12/21.
@@ -66,8 +69,9 @@ public class LessonMenuHelper {
             }
 
             @Override
-            public void doAction(TaskEvent taskEvent) {
+            public void onFinish(TaskEvent taskEvent) {
                 mCurrentLearnState = taskEvent.result.status;
+                EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK));
                 setLearnBtnState(true);
                 if (mMenuHelperFinishListener != null) {
                     mMenuHelperFinishListener.showFinishTaskDialog(taskEvent);

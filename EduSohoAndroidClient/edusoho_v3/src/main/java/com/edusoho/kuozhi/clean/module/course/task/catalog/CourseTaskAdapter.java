@@ -39,6 +39,19 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.mIsJoin = isJoin;
     }
 
+    public void finishTask(int taskId) {
+        for (int i = 0; i < mTaskItems.size(); i++) {
+            if (mTaskItems.get(i).task.id == taskId) {
+                if (mTaskItems.get(i).task.result == null) {
+                    mTaskItems.get(i).task.result = new TaskResult();
+                }
+                mTaskItems.get(i).task.result.status = TaskResultEnum.FINISH.toString();
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (CourseItemEnum.CHAPTER.toString().equals(mTaskItems.get(position).type)) {

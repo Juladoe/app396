@@ -11,6 +11,7 @@ public class MessageEvent<T> {
     public static final int LEARN_TASK = 1;
     public static final int SHOW_NEXT_TASK = 2;
     public static final int LOGIN = 3;
+    public static final int FINISH_TASK = 4;
 
     private T mMessage;
     private int mCode;
