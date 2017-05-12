@@ -74,7 +74,7 @@ public interface CourseProjectContract {
 
         CourseProject getCourseProject();
 
-        void learnTask(int taskId);
+        void learnTask(CourseTask courseTask);
 
         boolean isJoin();
 

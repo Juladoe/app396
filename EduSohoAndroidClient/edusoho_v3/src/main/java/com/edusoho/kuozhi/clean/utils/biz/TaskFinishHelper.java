@@ -48,7 +48,7 @@ public class TaskFinishHelper {
     }
 
     public void finish() {
-        if (mEnableFinish == 1 || (mEnableFinish == 0 && END.equals(mCourseTask.activity.finishType))) {
+        if (mEnableFinish == 1) {
             onRecord(FINISH);
         } else {
             TaskTypeEnum taskType = TaskTypeEnum.fromString(mCourseTask.type);

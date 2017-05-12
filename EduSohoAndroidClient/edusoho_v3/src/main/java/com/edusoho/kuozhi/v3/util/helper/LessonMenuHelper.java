@@ -35,9 +35,8 @@ public class LessonMenuHelper {
     private MenuHelperFinishListener mMenuHelperFinishListener;
     private CourseTask mCourseTask;
     private CourseProject mCourseProject;
-    TaskFinishHelper.Builder builder;
-    TaskFinishHelper mTaskFinishHelper;
-
+    private TaskFinishHelper.Builder builder;
+    private TaskFinishHelper mTaskFinishHelper;
 
     public LessonMenuHelper(Context context, int lessonId, int courseId) {
         this.mContext = context;
@@ -46,7 +45,7 @@ public class LessonMenuHelper {
     }
 
     public LessonMenuHelper addMenuHelperListener(MenuHelperFinishListener listener) {
-        mMenuHelperFinishListener = listener;
+        this.mMenuHelperFinishListener = listener;
         return this;
     }
 
@@ -71,7 +70,7 @@ public class LessonMenuHelper {
             @Override
             public void onFinish(TaskEvent taskEvent) {
                 mCurrentLearnState = taskEvent.result.status;
-                EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK));
+                EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK_SUCCESS));
                 setLearnBtnState(true);
                 if (mMenuHelperFinishListener != null) {
                     mMenuHelperFinishListener.showFinishTaskDialog(taskEvent);
@@ -144,16 +143,22 @@ public class LessonMenuHelper {
                 break;
             case 1:
                 MobclickAgent.onEvent(mContext, "timeToLearn_topThreePoints_finished");
-                changeLessonLearnState(v);
+                taskFinish();
                 break;
         }
     }
 
-    private synchronized void changeLessonLearnState(final View view) {
+    private synchronized void taskFinish() {
         if ("finish".equals(mCurrentLearnState)) {
             return;
         }
         mTaskFinishHelper.finish();
+    }
+
+    public void menuClickTaskFinish() {
+        if (mTaskFinishHelper != null) {
+            mTaskFinishHelper.finish();
+        }
     }
 
     private void setLearnBtnState(boolean isLearn) {

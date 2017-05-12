@@ -300,12 +300,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 .addCourseProject(mCourseProject)
                 .setCourseTask(mCourseTask)
                 .initTaskHelper()
+                .initMenu(menuPop)
                 .addMenuHelperListener(new LessonMenuHelper.MenuHelperFinishListener() {
                     @Override
                     public void showFinishTaskDialog(TaskEvent taskEvent) {
                         TaskFinishDialog.newInstance(taskEvent, mCourseTask).show(getSupportFragmentManager(), "mTaskFinishDialog");
                     }
-                }).initMenu(menuPop);
+                });
     }
 
     @Override

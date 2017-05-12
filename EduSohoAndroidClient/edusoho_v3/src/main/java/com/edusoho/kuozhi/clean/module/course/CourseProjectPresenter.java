@@ -308,29 +308,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     @Override
-    public void learnTask(int taskId) {
-        HttpUtils.getInstance()
-                .addTokenHeader(EdusohoApp.app.token)
-                .createApi(CourseApi.class)
-                .getCourseTask(mCourseProjectId, taskId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseTask>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(CourseTask courseTask) {
-                        mView.learnTask(courseTask, mCourseProject, mCourseMember);
-                    }
-                });
+    public void learnTask(CourseTask courseTask) {
+        mView.learnTask(courseTask, mCourseProject, mCourseMember);
     }
 
     private void joinFreeOrVipCourse(final int courseId) {
