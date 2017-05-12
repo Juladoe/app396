@@ -13,7 +13,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 

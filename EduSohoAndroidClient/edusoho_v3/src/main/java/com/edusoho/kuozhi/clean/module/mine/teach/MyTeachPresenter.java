@@ -1,24 +1,24 @@
-package com.edusoho.kuozhi.clean.module.mine.favorite;
+package com.edusoho.kuozhi.clean.module.mine.teach;
+
 
 import com.edusoho.kuozhi.clean.api.UserApi;
-import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by DF on 2017/5/10.
+ * Created by DF on 2017/5/12.
  */
 
-public class MyFavoritePresenter implements MyFavoriteContract.Presenter {
+public class MyTeachPresenter implements MyTeachContract.Presenter {
 
-    private MyFavoriteContract.View mView;
+    private MyTeachContract.View mView;
 
-    MyFavoritePresenter(MyFavoriteContract.View mView) {
+    public MyTeachPresenter(MyTeachContract.View mView) {
         this.mView = mView;
     }
 
@@ -26,11 +26,12 @@ public class MyFavoritePresenter implements MyFavoriteContract.Presenter {
     public void subscribe() {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
+                .baseOnApi()
                 .createApi(UserApi.class)
-                .getMyFavoriteCourseSet(0, 1000)
+                .getMyTeachCourse(0, 1000)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DataPageResult<CourseSet>>() {
+                .subscribe(new Subscriber<TeachLesson>() {
                     @Override
                     public void onCompleted() {
 
@@ -38,14 +39,14 @@ public class MyFavoritePresenter implements MyFavoriteContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.setSwpFreshing(false);
+                        mView.hideSwpView();
                     }
 
                     @Override
-                    public void onNext(DataPageResult<CourseSet> courseProjectDataPageResult) {
-                        mView.setSwpFreshing(false);
-                        if (courseProjectDataPageResult != null && courseProjectDataPageResult.data != null && courseProjectDataPageResult.data.size() > 0) {
-                            mView.showComplete(courseProjectDataPageResult.data);
+                    public void onNext(TeachLesson teachLesson) {
+                        mView.hideSwpView();
+                        if (teachLesson != null && teachLesson.getResources() != null && teachLesson.getResources().size() != 0) {
+                            mView.showRequestComplete(teachLesson);
                         }
                     }
                 });

@@ -44,6 +44,7 @@ class MyQuestionPresenter implements MyQuestionContract.Presenter {
 
                     @Override
                     public void onNext(MyThreadEntity[] myThreadEntities) {
+                        mView.hideSwp();
                         if (myThreadEntities != null) {
                             mView.showAskComplete(myThreadEntities);
                         }
@@ -74,6 +75,7 @@ class MyQuestionPresenter implements MyQuestionContract.Presenter {
 
                     @Override
                     public void onNext(MyThreadEntity[] myThreadEntities) {
+                        mView.hideSwp();
                         if (myThreadEntities != null) {
                             mView.showAnswerComplete(myThreadEntities);
                         }

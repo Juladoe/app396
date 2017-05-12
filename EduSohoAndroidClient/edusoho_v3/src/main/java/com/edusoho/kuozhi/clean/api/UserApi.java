@@ -4,6 +4,9 @@ import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.StudyCourse;
+import com.edusoho.kuozhi.clean.bean.innerbean.Study;
+import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.google.gson.JsonObject;
 
@@ -36,9 +39,6 @@ public interface UserApi {
     @GET("me/course_members/{courseId}")
     Observable<CourseMember> getCourseMember(@Path("courseId") int courseId);
 
-    @GET("me/favorite_course_sets")
-    Observable<DataPageResult<CourseSet>> getFavoriteCourseSet(@Query("offset") int offset, @Query("limit") int limit);
-
     @FormUrlEncoded
     @POST("me/favorite_course_sets")
     Observable<JsonObject> favoriteCourseSet(@Field("courseSetId") int courseSetId);
@@ -51,6 +51,21 @@ public interface UserApi {
 
     @GET("me/vip_levels/{levelId}")
     Observable<JsonObject> isVip(@Path("levelId") int levelId);
+
+    @GET("me/courses?relation=teaching")
+    Observable<TeachLesson> getMyTeachCourse(@Query("start") int start, @Query("limit") int limit);
+
+    @GET("me/courses")
+    Observable<DataPageResult<StudyCourse>> getMyStudyCourse(@Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("me/live_course_sets")
+    Observable<List<Study>> getMyStudyLiveCourseSet(@Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("me/classrooms")
+    Observable<List<Study>> getMyStudyClassRoom(@Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("me/favorite_course_sets")
+    Observable<DataPageResult<CourseSet>> getMyFavoriteCourseSet(@Query("offset") int offset, @Query("limit") int limit);
 
     @GET("chaos_threads/getThreads")
     Observable<MyThreadEntity[]> getMyAskThread(@Query("offset") int offset, @Query("limit") int limit);

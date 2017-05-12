@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.adapter;
+package com.edusoho.kuozhi.clean.module.mine.teach;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +12,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MyTeachFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;

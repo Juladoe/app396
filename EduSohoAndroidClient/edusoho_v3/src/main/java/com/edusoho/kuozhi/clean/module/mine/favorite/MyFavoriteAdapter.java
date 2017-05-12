@@ -14,7 +14,7 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.edusoho.kuozhi.v3.view.dialog.SureDialog;

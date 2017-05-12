@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.umeng.analytics.MobclickAgent;
 
@@ -38,7 +38,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
     private MyAskQuestionAdapter mMyAskQuestionAdapter;
     private MyAnswerQuestionAdapter mMyAnswerQuestionAdapter;
 
-    private MyQuestionPresenter mPresenter;
+    private MyQuestionContract.Presenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,12 +107,12 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
     }
 
     private void loadAskedQuestionData() {
-        showLoadingView();
+        srlContent.setRefreshing(true);
         mPresenter.requestAskData();
     }
 
     private void loadAnsweredQuestionData() {
-        showLoadingView();
+        srlContent.setRefreshing(true);
         mPresenter.requestAnswerData();
     }
 
@@ -172,20 +172,6 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
     }
 
     @Override
-    public void setSwipeEnabled(int i) {
-        srlContent.setEnabled(i == 0);
-    }
-
-    private void showLoadingView() {
-        srlContent.post(new Runnable() {
-            @Override
-            public void run() {
-                srlContent.setRefreshing(true);
-            }
-        });
-    }
-
-    @Override
     public void showToast(int resId) {
 
     }
@@ -197,14 +183,12 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
 
     @Override
     public void showAskComplete(MyThreadEntity[] myThreadEntities) {
-        hideSwp();
         mMyAskQuestionAdapter.setData(Arrays.asList(myThreadEntities));
         rvContent.setAdapter(mMyAskQuestionAdapter);
     }
 
     @Override
     public void showAnswerComplete(MyThreadEntity[] entities) {
-        hideSwp();
         mMyAnswerQuestionAdapter.setData(Arrays.asList(entities));
         rvContent.setAdapter(mMyAnswerQuestionAdapter);
     }
@@ -237,13 +221,13 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
 
     public static class ViewHolderAnswer extends RecyclerView.ViewHolder {
         View vLine;
-        public TextView tvTime;
-        public TextView tvContentAnswer;
-        public TextView tvContentAsk;
-        public TextView tvOrder;
-        public View layout;
+        TextView tvTime;
+        TextView tvContentAnswer;
+        TextView tvContentAsk;
+        TextView tvOrder;
+        View layout;
 
-        public ViewHolderAnswer(View view) {
+        ViewHolderAnswer(View view) {
             super(view);
             tvTime = (TextView) view.findViewById(R.id.tv_time);
             tvContentAnswer = (TextView) view.findViewById(R.id.tv_content_answer);

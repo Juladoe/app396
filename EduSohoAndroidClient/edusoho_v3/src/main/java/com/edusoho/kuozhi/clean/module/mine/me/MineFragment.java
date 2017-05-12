@@ -1,8 +1,7 @@
-package com.edusoho.kuozhi.v3.ui.fragment.mine;
+package com.edusoho.kuozhi.clean.module.mine.me;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,10 +28,9 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/6.
  */
 
-public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetChangedListener {
+public class MineFragment extends BaseFragment {
 
     private View rlayoutUserInfo;
-    private AppBarLayout appBarLayout;
     private TextView tvName;
     private CircleImageView ivAvatar;
     private TextView tvUserType;
@@ -61,7 +59,6 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
     protected void initView(View view) {
         rlayoutUserInfo = view.findViewById(R.id.rlayout_user_info);
         rlayoutUserInfo.setOnClickListener(getUserViewClickListener());
-        appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar);
         tvName = (TextView) view.findViewById(R.id.tv_name);
         ivAvatar = (CircleImageView) view.findViewById(R.id.iv_avatar);
         tvUserType = (TextView) view.findViewById(R.id.tv_avatar_type);
@@ -70,14 +67,6 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
         vpContent.setOffscreenPageLimit(4);
         initUserInfo();
         initViewPager();
-        appBarLayout.addOnOffsetChangedListener(this);
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-        for (RefreshFragment refreshFragment : mRefreshFragmentList) {
-            refreshFragment.setSwipeEnabled(i);
-        }
     }
 
     private void initUserInfo() {
@@ -201,8 +190,6 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
 
     public interface RefreshFragment {
         void refreshData();
-
-        void setSwipeEnabled(int i);
     }
 
     private View.OnClickListener getUserViewClickListener() {

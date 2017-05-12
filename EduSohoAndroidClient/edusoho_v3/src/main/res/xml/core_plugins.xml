@@ -152,12 +152,12 @@
 
     <plugin
         name="MineFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment"
+        package="com.edusoho.kuozhi.clean.module.mine.me.MineFragment"
         version="1.0" />
 
     <plugin
         name="MyStudyFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment"
+        package="com.edusoho.kuozhi.clean.module.mine.study.MyStudyFragment"
         version="1.0" />
 
     <plugin
@@ -257,7 +257,7 @@
 
     <plugin
         name="MyTeachFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyTeachFragment"
+        package="com.edusoho.kuozhi.clean.module.mine.teach.MyTeachFragment"
         version="1.0" />
 
     <plugin

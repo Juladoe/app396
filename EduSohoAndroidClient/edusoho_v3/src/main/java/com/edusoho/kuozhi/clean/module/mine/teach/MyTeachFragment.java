@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.ui.fragment.mine;
+package com.edusoho.kuozhi.clean.module.mine.teach;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,21 +9,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.MyTeachAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
-import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 
 /**
  * Created by DF on 2017/2/28.
  */
 
-public class MyTeachFragment extends BaseFragment implements MineFragment.RefreshFragment {
+public class MyTeachFragment extends BaseFragment implements MineFragment.RefreshFragment,MyTeachContract.View{
 
     private SwipeRefreshLayout mSrlContent;
     private RecyclerView mRvContent;
     private MyTeachAdapter mMyTeachAdapter;
+
+    private MyTeachContract.Presenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,37 +54,14 @@ public class MyTeachFragment extends BaseFragment implements MineFragment.Refres
     }
 
     private void initData() {
-        showLoadingView();
         mMyTeachAdapter = new MyTeachAdapter(getActivity());
         mRvContent.setAdapter(mMyTeachAdapter);
+        mPresenter = new MyTeachPresenter(this);
     }
 
     private void loadData() {
-        CourseDetailModel.getTeach(new ResponseCallbackListener<TeachLesson>() {
-            @Override
-            public void onSuccess(TeachLesson data) {
-                disabledLoadingView();
-                mMyTeachAdapter.setData(data.getResources());
-            }
-
-            @Override
-            public void onFailure(String code, String message) {
-                disabledLoadingView();
-            }
-        });
-    }
-
-    private void showLoadingView() {
-        mSrlContent.post(new Runnable() {
-            @Override
-            public void run() {
-                mSrlContent.setRefreshing(true);
-            }
-        });
-    }
-
-    private void disabledLoadingView() {
-        mSrlContent.setRefreshing(false);
+        mSrlContent.setRefreshing(true);
+        mPresenter.subscribe();
     }
 
     @Override
@@ -93,23 +70,37 @@ public class MyTeachFragment extends BaseFragment implements MineFragment.Refres
     }
 
     @Override
-    public void setSwipeEnabled(int i) {
-        mSrlContent.setEnabled(i == 0);
+    public void hideSwpView() {
+        mSrlContent.setRefreshing(false);
     }
 
+    @Override
+    public void showRequestComplete(TeachLesson teachLesson) {
+        mMyTeachAdapter.setData(teachLesson.getResources());
+    }
+
+    @Override
+    public void showToast(int resId) {
+
+    }
+
+    @Override
+    public void showToast(String msg) {
+
+    }
 
     public static class CourseTeachViewHolder extends RecyclerView.ViewHolder {
-        public ImageView ivPic;
-        public View layoutLive;
-        public TextView tvLiveIcon;
-        public TextView tvLive;
-        public TextView tvTitle;
-        public TextView tvStudyState;
-        public TextView tvMore;
-        public View layoutClass;
-        public View rLayoutItem;
+        ImageView ivPic;
+        View layoutLive;
+        TextView tvLiveIcon;
+        TextView tvLive;
+        TextView tvTitle;
+        TextView tvStudyState;
+        TextView tvMore;
+        View layoutClass;
+        View rLayoutItem;
 
-        public CourseTeachViewHolder(View view) {
+        CourseTeachViewHolder(View view) {
             super(view);
             ivPic = (ImageView) view.findViewById(R.id.iv_pic);
             layoutLive = view.findViewById(R.id.layout_live);

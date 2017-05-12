@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
     private RecyclerView rvContent;
     private MyFavoriteAdapter myFavoriteAdapter;
 
-    private MyFavoritePresenter mPresenter;
+    private MyFavoriteContract.Presenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,10 +41,10 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        View viewBreakline = view.findViewById(R.id.v_breakline);
-        viewBreakline.setVisibility(View.GONE);
+        view.findViewById(R.id.v_breakline).setVisibility(View.GONE);
 
         initData();
+        srlContent.setRefreshing(true);
         mPresenter.subscribe();
         srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -58,31 +58,17 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
         myFavoriteAdapter = new MyFavoriteAdapter(getActivity());
         rvContent.setAdapter(myFavoriteAdapter);
         mPresenter = new MyFavoritePresenter(this);
-        showLoadingView();
     }
 
     @Override
     public void refreshData() {
+        srlContent.setRefreshing(true);
         mPresenter.subscribe();
-    }
-
-    @Override
-    public void setSwipeEnabled(int i) {
-    }
-
-    private void showLoadingView() {
-        srlContent.post(new Runnable() {
-            @Override
-            public void run() {
-                srlContent.setRefreshing(true);
-            }
-        });
     }
 
     @Override
     public void showComplete(List<CourseSet> courseSets) {
         myFavoriteAdapter.setData(courseSets);
-        setSwpFreshing(false);
     }
 
     @Override
