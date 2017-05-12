@@ -650,8 +650,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             initNextTask((CourseTask) nextTaskInfo.get(0), (boolean) nextTaskInfo.get(1));
         } else if (messageEvent.getType() == MessageEvent.FULL_SCREEN) {
             fullScreen();
-        } else if (messageEvent.getType() == MessageEvent.FINISH_TASK_SUCCESS) {
-            setTaskFinishButtonBackground(true);
         }
     }
 
@@ -659,6 +657,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     public void onLoginSuccess(MessageEvent messageEvent) {
         if (messageEvent.getType() == MessageEvent.LOGIN) {
             mPresenter.subscribe();
+        } else if (messageEvent.getType() == MessageEvent.FINISH_TASK_SUCCESS) {
+            setTaskFinishButtonBackground(true);
         }
     }
 

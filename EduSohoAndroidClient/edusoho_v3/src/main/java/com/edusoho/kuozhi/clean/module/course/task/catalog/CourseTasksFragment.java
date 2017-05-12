@@ -242,9 +242,6 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
             case MessageEvent.COURSE_EXIT:
                 mCourseProgressBar.setVisibility(View.GONE);
                 break;
-            case MessageEvent.FINISH_TASK_SUCCESS:
-                ((CourseTaskAdapter) mTaskRecyclerView.getAdapter()).finishTask((int) messageEvent.getMessageBody());
-                break;
         }
     }
 
