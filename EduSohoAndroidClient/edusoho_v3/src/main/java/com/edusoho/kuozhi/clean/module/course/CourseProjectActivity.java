@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -456,18 +455,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     private void playVideo(CourseTask task) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        LessonVideoPlayerFragment videoFragment = LessonVideoPlayerFragment.newInstance(task, mCourseProjectId, mPresenter.getCourseProject());
+        LessonVideoPlayerFragment videoFragment = LessonVideoPlayerFragment.newInstance(task, mPresenter.getCourseProject());
         transaction.replace(R.id.task_container, videoFragment, FRAGMENT_VIDEO_TAG);
         transaction.commitAllowingStateLoss();
     }
 
     private void playAudio(CourseTask task) {
+        LessonAudioPlayerFragment audioFragment = LessonAudioPlayerFragment.newInstance(mCourseCoverImageUrl, task, mPresenter.getCourseProject());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        LessonAudioPlayerFragment audioFragment = new LessonAudioPlayerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseCoverImageUrl);
-        bundle.putInt(Const.LESSON_ID, task.id);
-        audioFragment.setArguments(bundle);
         transaction.replace(R.id.task_container, audioFragment, FRAGMENT_AUDIO_TAG);
         transaction.commitAllowingStateLoss();
     }

@@ -59,7 +59,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
 
     private static final String COURSE_PROJECT = "course_project";
     private static final String COURSE_TASK = "course_task";
-    private static final String COURSE_ID = "course_id";
 
     private int mPlayTime;
     private int mTotalTime;
@@ -73,14 +72,12 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     private String mRemainTime;
     private CourseTask mCourseTask;
     private CourseProject mCourseProject;
-    private int mCourseId;
     private TaskFinishHelper mTaskFinishHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        mCourseId = bundle.getInt(COURSE_ID);
         mCourseTask = (CourseTask) bundle.getSerializable(COURSE_TASK);
         mCourseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT);
         if (mCourseTask == null) {
@@ -89,7 +86,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         mRemainTime = mCourseTask.length;
 
         mSeekPositionSetting = getContext().getSharedPreferences(SEEK_POSITION, Context.MODE_PRIVATE);
-        mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseId, mCourseTask.id), 0);
+        mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseProject.id, mCourseTask.id), 0);
 
         setSeekPosition(mSaveSeekTime);
         if (mRemainTime != null) {
@@ -98,11 +95,10 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         }
     }
 
-    public static LessonVideoPlayerFragment newInstance(CourseTask courseTask, int courseId, CourseProject courseProject) {
+    public static LessonVideoPlayerFragment newInstance(CourseTask courseTask, CourseProject courseProject) {
         Bundle args = new Bundle();
         args.putSerializable(COURSE_TASK, courseTask);
         args.putSerializable(COURSE_PROJECT, courseProject);
-        args.putSerializable(COURSE_ID, courseId);
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
         fragment.setArguments(args);
         return fragment;
@@ -139,8 +135,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                             ((ViewGroup) getView()).removeAllViews();
                             return;
                         }
-                        //Uri mediaUri = Uri.parse(lessonItem.mediaUri);
-                        //playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
                         playVideo(lessonItem.mediaUri);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
@@ -184,7 +178,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         TaskFinishHelper.Builder builder = new TaskFinishHelper.Builder()
-                .setCourseId(mCourseId)
+                .setCourseId(mCourseProject.id)
                 .setCourseTask(mCourseTask)
                 .setEnableFinish(mCourseProject.enableFinish);
 
@@ -204,22 +198,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                 });
 
         mTaskFinishHelper.invoke();
-
-//        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
-//            mLessonMenuHelper = new LessonMenuHelper(getContext(), mCourseTask.id, mCourseId);
-//            mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
-//            mLessonMenuHelper = new LessonMenuHelper(getActivity(), mCourseTask.id, mCourseId)
-//                    .addCourseProject(mCourseProject)
-//                    .setCourseTask(mCourseTask)
-//                    .initTaskHelper()
-//                    .initMenu(mMenuCallback.getMenu())
-//                    .addMenuHelperListener(new LessonMenuHelper.MenuHelperFinishListener() {
-//                        @Override
-//                        public void showFinishTaskDialog(TaskEvent taskEvent) {
-//                            TaskFinishDialog.newInstance(taskEvent, mCourseTask).show(getActivity().getSupportFragmentManager(), "mTaskFinishDialog");
-//                        }
-//                    });
-//        }
         loadPlayUrl();
     }
 
@@ -299,7 +277,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     protected void savePosition(long seekTime) {
         super.savePosition(seekTime);
         SharedPreferences.Editor editor = mSeekPositionSetting.edit();
-        editor.putLong(String.format("%d-%d", mCourseId, mCourseTask.id), seekTime);
+        editor.putLong(String.format("%d-%d", mCourseProject.id, mCourseTask.id), seekTime);
         editor.commit();
     }
 
