@@ -65,7 +65,6 @@ public class MyTeachAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (mCurrentDataStatus == NOT_EMPTY) {
             MyTeachFragment.CourseTeachViewHolder courseTeachViewHolder = (MyTeachFragment.CourseTeachViewHolder) holder;
-            courseTeachViewHolder.layoutClass.setVisibility(View.GONE);
             courseTeachViewHolder.layoutLive.setVisibility(View.GONE);
             courseTeachViewHolder.tvMore.setVisibility(View.GONE);
             courseTeachViewHolder.tvStudyState.setText("");

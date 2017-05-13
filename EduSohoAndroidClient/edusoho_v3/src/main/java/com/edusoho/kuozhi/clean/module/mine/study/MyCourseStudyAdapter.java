@@ -6,32 +6,38 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.StudyCourse;
 import com.edusoho.kuozhi.clean.bean.innerbean.Study;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
-import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
+import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by JesseHuang on 2017/2/10.
@@ -92,7 +98,6 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (mCurrentDataStatus == NOT_EMPTY) {
             MyStudyFragment.CourseStudyViewHolder courseStudyViewHolder = (MyStudyFragment.CourseStudyViewHolder) viewHolder;
-            courseStudyViewHolder.layoutClass.setVisibility(View.GONE);
             courseStudyViewHolder.layoutLive.setVisibility(View.GONE);
             courseStudyViewHolder.tvStudyState.setText("");
             switch (mCourseType) {
@@ -112,20 +117,9 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
                     ImageLoader.getInstance().displayImage(study.cover.large, courseStudyViewHolder.ivPic,
                             EdusohoApp.app.mOptions);
                     courseStudyViewHolder.tvTitle.setText(String.valueOf(study.title));
-//                    setProgressStr(study.learnedNum, liveCourse.totalLesson, courseStudyViewHolder.tvStudyState);
                     courseStudyViewHolder.rLayoutItem.setTag(study);
                     courseStudyViewHolder.rLayoutItem.setOnClickListener(getCourseViewClickListener());
-                    if (study.type.equals("live")) {
-                        courseStudyViewHolder.layoutLive.setVisibility(View.VISIBLE);
-//                        courseStudyViewHolder.tvMore.setVisibility(study.parentId == 0 ? View.VISIBLE : View.GONE);
-//                        if (liveCourse.liveState == 1) {
-//                            courseStudyViewHolder.tvLive.setText(R.string.lesson_living);
-//                            courseStudyViewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
-//                        } else {
-//                            courseStudyViewHolder.tvLive.setText("直播");
-//                            courseStudyViewHolder.tvLiveIcon.setVisibility(View.GONE);
-//                        }
-                    }
+                    courseStudyViewHolder.layoutLive.setVisibility(View.VISIBLE);
                     courseStudyViewHolder.tvMore.setTag(study);
                     courseStudyViewHolder.tvMore.setOnClickListener(getMoreClickListener());
                     break;
@@ -157,8 +151,13 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final StudyCourse studyCourse = (StudyCourse) v.getTag();
-                CourseProjectActivity.launch(mContext, studyCourse.courseSet.id);
+                if (v.getTag() instanceof StudyCourse) {
+                    StudyCourse studyCourse = (StudyCourse) v.getTag();
+                    CourseProjectActivity.launch(mContext, studyCourse.id);
+                } else {
+                    Study study = (Study) v.getTag();
+                    CourseProjectActivity.launch(mContext, study.id);
+                }
             }
         };
     }
@@ -173,94 +172,52 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
                 dialog.init("退出课程", new MoreDialog.MoreCallBack() {
                     @Override
                     public void onMoveClick(View v, final Dialog dialog) {
-                        AlertDialog.Builder latestCoursebuilder = new AlertDialog.Builder(mContext);
-                        if (data instanceof Study) {
-                            final Study study = (Study) data;
-                            latestCoursebuilder.setTitle("确认退出课程")
-                                    .setMessage(R.string.delete_course)
-                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(final DialogInterface dlg, int which) {
-                                            CourseUtil.deleteCourse(study.id, new CourseUtil.CallBack() {
-                                                @Override
-                                                public void onSuccess(String response) {
-                                                    CommonUtil.shortToast(mContext, "退出成功");
-                                                    dialog.dismiss();
-                                                    clearCoursesCache(study.id);
-                                                    notifyDataSetChanged();
-                                                }
-
-                                                @Override
-                                                public void onError(String response) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
-                                        }
-                                    })
-                                    .setNegativeButton("取消", null)
-                                    .create()
-                                    .show();
-                        } else if (data instanceof Course) {
-                            final Course course = (Course) data;
-                            AlertDialog.Builder normalCourseBuilder = new AlertDialog.Builder(mContext);
-                            normalCourseBuilder.setTitle("确认退出课程")
-                                    .setMessage(R.string.delete_course)
-                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(final DialogInterface dlg, int which) {
-                                            CourseUtil.deleteCourse(course.id, new CourseUtil.CallBack() {
-                                                @Override
-                                                public void onSuccess(String response) {
-                                                    CommonUtil.shortToast(mContext, "退出成功");
-                                                    if (mNormalCourses.contains(course)) {
-                                                        mNormalCourses.remove(course);
-                                                        clearCoursesCache(course.id);
-                                                    } else if (mLiveCourses.contains(course)) {
-                                                        mLiveCourses.remove(course);
-                                                    }
-                                                    dialog.dismiss();
-                                                    notifyDataSetChanged();
-                                                }
-
-                                                @Override
-                                                public void onError(String response) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
-                                        }
-                                    })
-                                    .setNegativeButton("取消", null)
-                                    .create()
-                                    .show();
-                        }
+                        final int id = data instanceof StudyCourse ? ((StudyCourse)data).id : ((Study)data).id;
+                        AlertDialog.Builder dialogBuild = new AlertDialog.Builder(mContext, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+                        dialogBuild.setTitle("确认退出课程")
+                                .setMessage(R.string.delete_course)
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(final DialogInterface dlg, int which) {
+                                        exitCourse(id, dialog, data);
+                                    }
+                                })
+                                .setNegativeButton("取消", null)
+                                .create()
+                                .show();
                     }
 
                     @Override
                     public void onShareClick(View v, Dialog dialog) {
                         final ShareTool shareTool;
-                        if (data instanceof Course) {
-                            Course course = (Course) data;
-                            shareTool = new ShareTool(mContext
-                                    , EdusohoApp.app.host + "/course/" + course.id
-                                    , course.title
-                                    , course.about.length() > 20 ? course.about.substring(0, 20) : course.about
-                                    , course.middlePicture);
-                        } else {
-//                            Study study = (Study) data;
-//                            String about = Html.fromHtml(study.getAbout()).toString();
-//                            shareTool = new ShareTool(mContext
-//                                    , EdusohoApp.app.host + "/course/" + study.getId()
-//                                    , study.getTitle()
-//                                    , about.length() > 20 ? about.substring(0, 20) : about
-//                                    , study.getMiddlePicture());
-                        }
-                        new Handler((mContext.getMainLooper())).post(new Runnable() {
-                            @Override
-                            public void run() {
-//                                shareTool.shardCourse();
+                        try {
+                            if (data instanceof StudyCourse) {
+                                StudyCourse studyCourse = (StudyCourse) data;
+                                shareTool = new ShareTool(mContext
+                                        , EdusohoApp.app.host + "/course/" + studyCourse.id
+                                        , studyCourse.title
+                                        , studyCourse.courseSet.summary.length() > 20 ? studyCourse.courseSet.summary.substring(0, 20) : studyCourse.courseSet.summary
+                                        , studyCourse.courseSet.cover.middle);
+                            } else {
+                                Study study = (Study) data;
+                                String about = Html.fromHtml(study.summary).toString();
+                                shareTool = new ShareTool(mContext
+                                        , EdusohoApp.app.host + "/course/" + study.id
+                                        , study.title
+                                        , about.length() > 20 ? about.substring(0, 20) : about
+                                        , study.cover.middle);
                             }
-                        });
-                        dialog.dismiss();
+                            new Handler((mContext.getMainLooper())).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    shareTool.shardCourse();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            dialog.dismiss();
+                        }
                     }
 
                     @Override
@@ -271,6 +228,50 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         };
     }
+
+    private void exitCourse(int id, final Dialog dialog, final Object data) {
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .exitCourse(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        if (jsonObject.get("success").getAsBoolean()) {
+                            CommonUtil.shortToast(mContext, "退出成功");
+                            if (data instanceof StudyCourse) {
+                                StudyCourse studyCourse = (StudyCourse) data;
+                                if (mNormalCourses.contains(studyCourse)) {
+                                    mNormalCourses.remove(studyCourse);
+                                    clearCoursesCache(studyCourse.id);
+                                }
+                            } else {
+                                Study study = (Study) data;
+                                if (mLiveCourses.contains(study)) {
+                                    mLiveCourses.remove(study);
+                                }
+                            }
+                            dialog.dismiss();
+                            notifyDataSetChanged();
+                        } else {
+                            CommonUtil.shortToast(mContext, "退出失败");
+                        }
+                    }
+                });
+    }
+
 
     private void clearCoursesCache(int... courseIds) {
         School school = getAppSettingProvider().getCurrentSchool();

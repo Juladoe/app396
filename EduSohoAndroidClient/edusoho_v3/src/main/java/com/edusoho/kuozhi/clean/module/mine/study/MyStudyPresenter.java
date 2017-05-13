@@ -49,9 +49,7 @@ public class MyStudyPresenter implements MyStudyContract.Presenter {
                     public void onNext(DataPageResult<StudyCourse> studyCourseDataPageResult) {
                         mView.hideSwp();
                         if (studyCourseDataPageResult != null && studyCourseDataPageResult.data != null) {
-                            mView.showStudyCourseComplete(studyCourseDataPageResult.data);
-
-                            List<StudyCourse> list = getNormalCourse(studyCourseDataPageResult);
+                            mView.showStudyCourseComplete(getNormalCourse(studyCourseDataPageResult));
                         }
                     }
                 });

@@ -13,8 +13,9 @@ import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.edusoho.kuozhi.v3.view.dialog.SureDialog;
@@ -156,18 +157,18 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onShareClick(View v, Dialog dialog) {
                     // TODO: 2017/5/11 分享
-//                    final ShareTool shareTool =
-//                            new ShareTool(mContext
-//                                    , EdusohoApp.app.host + "/courseSet/" + courseSet.id
-//                                    , courseSet.title
-//                                    , courseSet.about.length() > 20 ?
-//                                      courseSet.about.substring(0, 20)
-//                                    : courseSet.about
-//                                    , courseSet.cover.middle);
+                    final ShareTool shareTool =
+                            new ShareTool(mContext
+                                    , EdusohoApp.app.host + "/courseSet/" + courseSet.id
+                                    , courseSet.title
+                                    , courseSet.summary.length() > 20 ?
+                                      courseSet.summary.substring(0, 20)
+                                    : courseSet.summary
+                                    , courseSet.cover.middle);
                     new Handler((mContext.getMainLooper())).post(new Runnable() {
                         @Override
                         public void run() {
-//                            shareTool.shardCourse();
+                            shareTool.shardCourse();
                         }
                     });
                     dialog.dismiss();

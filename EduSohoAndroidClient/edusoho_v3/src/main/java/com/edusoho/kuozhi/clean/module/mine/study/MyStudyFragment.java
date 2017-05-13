@@ -156,7 +156,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment.Refres
         TextView tvTitle;
         TextView tvStudyState;
         TextView tvMore;
-        View layoutClass;
         TextView tvClassName;
         View rLayoutItem;
 
@@ -169,7 +168,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment.Refres
             tvTitle = (TextView) view.findViewById(R.id.tv_title);
             tvStudyState = (TextView) view.findViewById(R.id.tv_study_state);
             tvMore = (TextView) view.findViewById(R.id.tv_more);
-            layoutClass = view.findViewById(R.id.layout_class);
             tvClassName = (TextView) view.findViewById(R.id.tv_class_name);
             rLayoutItem = view.findViewById(R.id.rlayout_item);
         }

@@ -97,7 +97,6 @@ public class MyTeachFragment extends BaseFragment implements MineFragment.Refres
         TextView tvTitle;
         TextView tvStudyState;
         TextView tvMore;
-        View layoutClass;
         View rLayoutItem;
 
         CourseTeachViewHolder(View view) {
@@ -109,7 +108,6 @@ public class MyTeachFragment extends BaseFragment implements MineFragment.Refres
             tvTitle = (TextView) view.findViewById(R.id.tv_title);
             tvStudyState = (TextView) view.findViewById(R.id.tv_study_state);
             tvMore = (TextView) view.findViewById(R.id.tv_more);
-            layoutClass = view.findViewById(R.id.layout_class);
             rLayoutItem = view.findViewById(R.id.rlayout_item);
         }
     }

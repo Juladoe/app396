@@ -8,6 +8,7 @@ public class Study {
     public int id;
     public String type;
     public String title;
+    public String summary;
     public Cover cover;
     public int studentNum;
 }
