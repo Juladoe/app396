@@ -12,14 +12,12 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseSetting;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Result;
 import com.edusoho.kuozhi.clean.utils.SharedPreferencesHelper;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.List;
 
@@ -86,12 +84,11 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, partName, taskItem.title));
         } else {
             CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
-            setTaskLockLayout(taskHolder, mLearnMode, taskItem);
             if (mIsJoin) {
-                setTaskResult(taskHolder, taskItem.task.result);
-                taskHolder.taskResult.setVisibility(View.VISIBLE);
+                setTaskStatusIcon(taskHolder, mLearnMode, taskItem);
             } else {
-                taskHolder.taskResult.setVisibility(View.GONE);
+                taskHolder.taskStatus.setImageResource(
+                        mLearnMode == CourseProject.LearnMode.FREEMODE ? R.drawable.lesson_status : R.drawable.lesson_status_lock);
             }
             taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskItemSequence(), taskItem.title));
             taskHolder.taskDuration.setText(taskItem.task.length);
@@ -100,9 +97,8 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    private void setTaskLockLayout(CourseTaskViewHolder holder, CourseProject.LearnMode mode, CourseItem taskItem) {
+    private void setTaskStatusIcon(CourseTaskViewHolder holder, CourseProject.LearnMode mode, CourseItem taskItem) {
         if (mode == CourseProject.LearnMode.FREEMODE) {
-            holder.taskLock.setVisibility(View.GONE);
             if (mCurrentCourseTask != null && taskItem.task.id == mCurrentCourseTask.id) {
                 holder.taskType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
                 holder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
@@ -112,17 +108,15 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
                 holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
             }
+            setTaskResult(holder, taskItem.task.result);
         } else {
-            holder.taskLock.setVisibility(View.VISIBLE);
             if (taskItem.task.lock) {
-                holder.taskLock.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.font_l));
-                holder.taskLock.setText(R.string.course_task_lock);
+                holder.taskStatus.setImageResource(R.drawable.lesson_status_lock);
                 holder.taskType.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
                 holder.taskName.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
                 holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
             } else {
-                holder.taskLock.setText(R.string.course_task_unlock);
-                holder.taskLock.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.font_m));
+                setTaskResult(holder, taskItem.task.result);
                 holder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
                 holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
                 holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
@@ -132,23 +126,23 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private void setTaskResult(CourseTaskViewHolder holder, Result result) {
         if (result == null) {
-            holder.taskResult.setImageResource(R.drawable.lesson_status);
+            holder.taskStatus.setImageResource(R.drawable.lesson_status);
         } else if (TaskResultEnum.FINISH.toString().equals(result.status)) {
-            holder.taskResult.setImageResource(R.drawable.lesson_status_finish);
+            holder.taskStatus.setImageResource(R.drawable.lesson_status_finish);
         } else if (TaskResultEnum.START.toString().equals(result.status)) {
-            holder.taskResult.setImageResource(R.drawable.lesson_status_learning);
+            holder.taskStatus.setImageResource(R.drawable.lesson_status_learning);
         }
     }
 
     void switchClickPosition(View currentClickView, CourseItem courseItem) {
         CourseTaskViewHolder taskViewHolder = new CourseTaskViewHolder(currentClickView);
         if (mLastCourseTaskViewHolder != null) {
-            taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
+            //taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
             mLastCourseTaskViewHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
             mLastCourseTaskViewHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
             mLastCourseTaskViewHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
         }
-        taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        //taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         taskViewHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         taskViewHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         taskViewHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.primary_color));
@@ -198,21 +192,21 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
-        ESIconView taskLock;
+        //ESIconView taskLock;
         ESIconView taskType;
         TextView taskName;
         TextView taskDuration;
         TextView taskIsFree;
-        ImageView taskResult;
+        ImageView taskStatus;
 
         CourseTaskViewHolder(View view) {
             super(view);
-            taskLock = (ESIconView) view.findViewById(R.id.ev_task_lock);
+            //taskLock = (ESIconView) view.findViewById(R.id.ev_task_lock);
             taskType = (ESIconView) view.findViewById(R.id.ev_task_type);
             taskName = (TextView) view.findViewById(R.id.tv_task_name);
             taskDuration = (TextView) view.findViewById(R.id.tv_task_duration);
             taskIsFree = (TextView) view.findViewById(R.id.tv_task_is_free);
-            taskResult = (ImageView) view.findViewById(R.id.iv_task_result);
+            taskStatus = (ImageView) view.findViewById(R.id.iv_task_status);
         }
     }
 

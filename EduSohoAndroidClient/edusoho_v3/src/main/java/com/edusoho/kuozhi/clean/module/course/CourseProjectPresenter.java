@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.api.UserApi;
-import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
@@ -14,8 +13,13 @@ import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
-import com.edusoho.kuozhi.clean.utils.CourseHelper;
+import com.edusoho.kuozhi.clean.utils.biz.CourseHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
+import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -288,11 +292,14 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     @Override
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                            mView.setShowError(new ShowActionHelper().showErrorType(ShowActionHelper.TYPE_TOAST)
+                                    .showErrorMsgResId(R.string.join_course_first).setLearnClick(true));
                             EventBus.getDefault().post(new MessageEvent(MessageEvent.COURSE_EXIT));
                             mIsJoin = false;
                             mView.showToast(R.string.exit_course_success);
                             initTrialFirstTask(mCourseProjectId);
                             mView.exitCourseLayout();
+                            mView.clearCoursesCache(mCourseProjectId);
                         } else {
                             mView.showToast(R.string.exit_course_failure);
                         }
@@ -322,6 +329,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     public void onNext(CourseMember courseMember) {
                         if (courseMember != null) {
                             mIsJoin = true;
+                            mView.setShowError(null);
                             mView.showToast(R.string.join_course_success);
                             mView.initJoinCourseLayout(CourseProject.LearnMode.getMode(mCourseProject.learnMode));
                         }
@@ -418,4 +426,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
             return mShowType;
         }
     }
+
+
 }

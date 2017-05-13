@@ -88,9 +88,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+    public void pause() {
         if (mService.isPlaying()) {
             mService.pause();
         }

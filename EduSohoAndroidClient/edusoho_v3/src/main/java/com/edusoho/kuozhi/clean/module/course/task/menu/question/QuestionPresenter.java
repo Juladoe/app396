@@ -1,13 +1,11 @@
 package com.edusoho.kuozhi.clean.module.course.task.menu.question;
 
 import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -28,15 +26,14 @@ public class QuestionPresenter implements QuestionContract.Presenter {
 
     @Override
     public void subscribe() {
-        new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(EdusohoApp.app.host + "/api/")
-                .build().create(CourseApi.class)
-                .getCourseDiscuss(EdusohoApp.app.token, mCourseProjectId, 0)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .baseOnApi()
+                .createApi(CourseApi.class)
+                .getCourseDiscuss(mCourseProjectId, 0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DiscussDetail>() {
+                .subscribe(new Subscriber<DiscussDetail>() {
                     @Override
                     public void onCompleted() {
 
@@ -66,15 +63,14 @@ public class QuestionPresenter implements QuestionContract.Presenter {
 
     @Override
     public void reFreshData() {
-        new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(EdusohoApp.app.host + "/api/")
-                .build().create(CourseApi.class)
-                .getCourseDiscuss(EdusohoApp.app.token, mCourseProjectId, mStart)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .baseOnApi()
+                .createApi(CourseApi.class)
+                .getCourseDiscuss(mCourseProjectId, mStart)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DiscussDetail>() {
+                .subscribe(new Subscriber<DiscussDetail>() {
                     @Override
                     public void onCompleted() {
 

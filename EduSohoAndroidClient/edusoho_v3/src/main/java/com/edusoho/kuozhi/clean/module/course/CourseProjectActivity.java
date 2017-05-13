@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -38,7 +36,11 @@ import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
@@ -47,9 +49,9 @@ import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -174,6 +176,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                     }
                     startActivity(new Intent(CourseProjectActivity.this, LessonDownloadingActivity.class)
                             .putExtra(Const.COURSE_ID, mCourseProjectId));
+                    stopAudio();
                 }
             }
         });
@@ -186,7 +189,8 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 if (mShowDialogHelper != null) {
                     mShowDialogHelper.doAction();
                 } else {
-                    // TODO: 2017/4/28 继续学习&试学
+                    CourseTask task = (CourseTask) v.getTag();
+                    learnTask(task);
                 }
             }
         });
@@ -225,6 +229,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLatestTaskTitle.setText(trialTask.title);
         mImmediateLearn.setText(R.string.start_learn_trial_task);
         mImmediateLearn.setBackgroundResource(R.drawable.bg_trial_learned);
+        mImmediateLearn.setTag(trialTask);
     }
 
     @Override
@@ -233,6 +238,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mLatestTaskTitle.setText(String.format("%s %s", nextTask.toTaskItemSequence(), nextTask.title));
         mImmediateLearn.setText(isFirstTask && nextTask.result == null ? R.string.start_learn_first_task : R.string.start_learn_next_task);
         mImmediateLearn.setBackgroundResource(R.drawable.bg_latest_learned);
+        mImmediateLearn.setTag(nextTask);
     }
 
     @Override
@@ -397,12 +403,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoginSuccess(Integer type) {
-        if (type == MessageEvent.LOGIN) {
+    public void onLoginSuccess(MessageEvent messageEvent) {
+        if (messageEvent.getType() == MessageEvent.LOGIN) {
             mPresenter.subscribe();
         }
-
-        Log.d("Subscribe", "onLoginSuccess: ");
     }
 
     private void learnTask(CourseTask task) {
@@ -412,7 +416,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         TaskIconEnum taskType = TaskIconEnum.fromString(task.type);
         switch (taskType) {
             case LIVE:
-                // TODO: 2017/4/28 course2.0以前代码
                 final String url = String.format(EdusohoApp.app.host + Const.WEB_LESSON, mCourseProjectId, task.id);
                 CoreEngine.create(getApplicationContext()).runNormalPlugin("WebViewActivity", getApplicationContext(), new PluginRunCallback() {
                     @Override
@@ -480,6 +483,13 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         transaction.commitAllowingStateLoss();
     }
 
+    public void stopAudio() {
+        LessonAudioPlayerFragment fragment = (LessonAudioPlayerFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_AUDIO_TAG);
+        if (fragment != null) {
+            fragment.pause();
+        }
+    }
+
     private void clearTaskFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.task_container);
@@ -511,6 +521,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         if (task != null) {
             task.result.status = TaskResultEnum.FINISH.toString();
         }
+    }
+
+    @Override
+    public void clearCoursesCache(int... courseIds) {
+        AppSettingProvider appSettingProvider = FactoryManager.getInstance().create(AppSettingProvider.class);
+        School school = appSettingProvider.getCurrentSchool();
+        User user = appSettingProvider.getCurrentUser();
+        new CourseCacheHelper(getApplicationContext(), school.getDomain(), user.id).clearLocalCacheByCourseId(courseIds);
     }
 
     @Override

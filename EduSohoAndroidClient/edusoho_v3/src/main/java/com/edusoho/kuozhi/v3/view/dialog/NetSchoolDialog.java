@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.utils.biz.CourseSettingHelper;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.site.Site;
@@ -326,6 +327,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                     return;
                 }
                 bindApiToken(site);
+                //CourseSettingHelper.sync(mContext);
             }
         }, this);
     }
@@ -363,6 +365,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -374,6 +377,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 getAppSettingProvider().setUser(null);
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
+                CourseSettingHelper.sync(mContext);
             }
         });
     }

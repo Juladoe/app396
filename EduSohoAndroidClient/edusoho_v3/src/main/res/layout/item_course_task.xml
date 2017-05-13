@@ -10,12 +10,11 @@
     android:paddingTop="20dp">
 
     <ImageView
-        android:id="@+id/iv_task_result"
+        android:id="@+id/iv_task_status"
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_marginRight="15dp"
-        android:src="@drawable/lesson_status"
-        android:visibility="visible" />
+        android:src="@drawable/lesson_status" />
 
     <com.edusoho.kuozhi.clean.widget.ESIconView
         android:id="@+id/ev_task_lock"
@@ -24,7 +23,8 @@
         android:layout_marginRight="15dp"
         android:text="@string/catalog_lesson_audio"
         android:textColor="@color/disabled_hint_color"
-        android:textSize="@dimen/font_l" />
+        android:textSize="@dimen/font_l"
+        android:visibility="gone" />
 
     <com.edusoho.kuozhi.clean.widget.ESIconView
         android:id="@+id/ev_task_type"
