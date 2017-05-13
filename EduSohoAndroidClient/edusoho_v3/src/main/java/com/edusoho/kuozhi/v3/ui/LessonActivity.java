@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
+import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
@@ -85,10 +86,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String MEMBER_STATE = "member_state";
     public static final String COURSE_TASK = "course_task";
     public static final String COURSE = "course";
-    public static final int SHOW_TOOLS = 0001;
-    public static final int HIDE_TOOLS = 0002;
+    public static final int SHOW_TOOLS = 1;
+    public static final int HIDE_TOOLS = 2;
 
-    public static final int REQUEST_LEARN = 0011;
+    public static final int REQUEST_LEARN = 9;
 
     private int mCourseId;
     private int mLessonId;
@@ -103,7 +104,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private Toolbar mToolBar;
     private TextView mToolBarTitle;
     private View mLoadView;
-    private LessonMenuHelper mLessonMenuHelper;
+    private ESIconView mBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +113,67 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.primary_color));
         fragmentData = new Bundle();
         initView();
-        initMenuPop();
         startCacheServer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateOptionsMenu();
+        CacheServerFactory.getInstance().resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        CacheServerFactory.getInstance().pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("event", "lessonStatusRefresh");
+        MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, bundle);
+    }
+
+    private void initView() {
+        try {
+            Intent data = getIntent();
+            mToolBar = (Toolbar) findViewById(R.id.toolbar);
+            mBack = (ESIconView) findViewById(R.id.iv_back);
+            mLoadView = findViewById(R.id.load_layout);
+            mToolBarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
+
+
+            setSupportActionBar(mToolBar);
+            if (data != null) {
+                mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
+                mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
+                mIsMember = data.getIntExtra(LessonActivity.MEMBER_STATE, CourseMember.NONE);
+                mCourseTask = (CourseTask) data.getSerializableExtra(COURSE_TASK);
+                mCourseProject = (CourseProject) data.getSerializableExtra(COURSE);
+            }
+
+            mToolBarTitle.setText(mCourseTask.title);
+
+            loadLesson();
+
+            mBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    } else {
+                        finish();
+                    }
+                }
+            });
+
+        } catch (Exception ex) {
+            Log.e("lessonActivity", ex.toString());
+        }
     }
 
     private void startCacheServer() {
@@ -155,55 +215,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         });
     }
 
-    public int getCourseId() {
-        return mCourseId;
-    }
-
-    public LessonItem getLessonItem() {
-        return mLessonItem;
-    }
-
-    public int getLessonId() {
-        return mLessonId;
-    }
-
     private void setLoadViewState(boolean isShow) {
         mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
-    private void initView() {
-        try {
-            Intent data = getIntent();
-            mToolBar = (Toolbar) findViewById(R.id.toolbar);
-            mLoadView = findViewById(R.id.load_layout);
-            mToolBarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
-
-            setSupportActionBar(mToolBar);
-            if (data != null) {
-                mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
-                mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-                mIsMember = data.getIntExtra(LessonActivity.MEMBER_STATE, CourseMember.NONE);
-                mCourseTask = (CourseTask) data.getSerializableExtra(COURSE_TASK);
-                mCourseProject = (CourseProject) data.getSerializableExtra(COURSE);
-            }
-
-            if (mLessonId == 0) {
-                CommonUtil.longToast(mContext, "课程数据错误！");
-                setBackMode(BACK, getString(R.string.lesson_default_title));
-                return;
-            }
-
-            loadLesson();
-
-        } catch (Exception ex) {
-            Log.e("lessonActivity", ex.toString());
-        }
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 return true;
@@ -224,13 +243,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.primary_color));
             mToolBar.setBackgroundColor(getResources().getColor(R.color.textIcons));
-            mToolBar.setNavigationIcon(R.drawable.action_icon_back);
+            mBack.setTextColor(getResources().getColor(R.color.primary_font_color));
             mToolBarTitle.setTextColor(getResources().getColor(R.color.textSecondary));
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.transparent));
             mToolBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-            mToolBar.setNavigationIcon(R.drawable.icon_actionbar_back);
+            mBack.setTextColor(getResources().getColor(R.color.disabled2_hint_color));
             mToolBarTitle.setTextColor(getResources().getColor(R.color.textIcons));
             mToolBar.setTitle("");
         }
@@ -246,125 +265,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         getSupportActionBar().hide();
     }
 
-    private void bindListener() {
-    }
-
-    private void initRedirectBtn() {
-    }
-
-    @Override
-    public void setBackMode(String backTitle, String title) {
-        super.setBackMode(backTitle, title);
-        mToolBarTitle.setText(title);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_more) {
-            mLessonMenuHelper.show(mToolBar, mToolBar.getWidth() - 96, 0);
-            return true;
-        }
-        if (item.getItemId() == R.id.menu_share) {
-            share();
-            return true;
-        }
-        if (item.getItemId() == android.R.id.home) {
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.lesson_activity_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.menu_more);
-        if (menuItem != null) {
-            menuItem.setEnabled(mLessonItem != null);
-        }
-        return true;
-    }
-
-    private void initMenuPop() {
-        MenuPop menuPop = new MenuPop(getBaseContext(), null);
-        menuPop.setMenuNoticeChangeListener(new MenuPop.IMenuNoticeChangeListener() {
-            @Override
-            public void onChange(boolean hasNotice) {
-                invalidateOptionsMenu();
-            }
-        });
-
-        mLessonMenuHelper = new LessonMenuHelper(getBaseContext(), mLessonId, mCourseId)
-                .addCourseProject(mCourseProject)
-                .setCourseTask(mCourseTask)
-                .initTaskHelper()
-                .initMenu(menuPop)
-                .addMenuHelperListener(new LessonMenuHelper.MenuHelperFinishListener() {
-                    @Override
-                    public void showFinishTaskDialog(TaskEvent taskEvent) {
-                        TaskFinishDialog.newInstance(taskEvent, mCourseTask).show(getSupportFragmentManager(), "mTaskFinishDialog");
-                    }
-                });
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem menuItem = menu.findItem(R.id.menu_share);
-        if (menuItem != null) {
-            int orientation = getResources().getConfiguration().orientation;
-            int icon = orientation == Configuration.ORIENTATION_LANDSCAPE ?
-                    R.drawable.icon_menu_white_share : R.drawable.ic_menu_share;
-            menuItem.setIcon(icon);
-            menuItem.setEnabled(mLessonItem != null);
-        }
-        if (mIsMember != CourseMember.NONE && !"testpaper".equals(mLessonType)) {
-            MenuItem moreItem = menu.findItem(R.id.menu_more);
-            if (moreItem != null) {
-                moreItem.setVisible(true);
-                MenuPop menuPop = mLessonMenuHelper.getMenuPop();
-                if (menuPop != null) {
-                    int orientation = getResources().getConfiguration().orientation;
-                    int icon = orientation == Configuration.ORIENTATION_LANDSCAPE ?
-                            R.drawable.icon_menu_white_more : R.drawable.icon_menu_more;
-                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), icon)
-                            .copy(Bitmap.Config.ARGB_8888, true);
-                    Drawable drawable = menuPop.isHasNotice() ?
-                            new BitmapDrawable(createNoticeBitmap(bitmap)) : new BitmapDrawable(bitmap);
-                    moreItem.setIcon(drawable);
-                }
-            }
-        }
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    private Bitmap createNoticeBitmap(Bitmap bitmap) {
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
-        if (w <= 0 || h <= 0) {
-            return null;
-        }
-
-        Bitmap iconBm = Bitmap.createBitmap(AppUtil.dp2px(mContext, 56), AppUtil.dp2px(mContext, 44), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(iconBm);
-        canvas.drawBitmap(bitmap, 0, 0, new Paint());
-        RectF rectF = new RectF(iconBm.getWidth() - AppUtil.dp2px(mContext, 12),
-                0,
-                iconBm.getWidth(),
-                AppUtil.dp2px(mContext, 12)
-        );
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setColor(Color.RED);
-        canvas.drawOval(rectF, paint);
-
-        return iconBm;
-    }
-
     private void loadLesson() {
-        initLessonIds();
-        initRedirectBtn();
         int userId = app.loginUser == null ? 0 : app.loginUser.id;
         M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                 mContext, userId, mLessonId, app.domain, M3U8Util.FINISH);
@@ -378,9 +279,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             return;
         }
         loadLessonFromNet();
-    }
-
-    private void initLessonIds() {
     }
 
     private void loadLessonFromNet() {
@@ -400,12 +298,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     return;
                 }
                 mCourseId = mLessonItem.courseId;
-                invalidateOptionsMenu();
                 mLessonType = mLessonItem.type;
-                setBackMode(BACK, mLessonItem.title);
-                if (!mLessonType.equals("testpaper")) {
-                    bindListener();
-                }
                 switchLoadLessonContent(mLessonItem);
             }
         }, new Response.ErrorListener() {
@@ -437,29 +330,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mLessonItem = lessonItem;
         mLessonType = mLessonItem.type;
         setBackMode(BACK, mLessonItem.title);
-        if (!mLessonType.equals("testpaper")) {
-            bindListener();
-        }
         switchLoadLessonContent(mLessonItem);
-    }
-
-    private String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface
-                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                        return inetAddress.getHostAddress().toString();
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            ex.printStackTrace();
-        }
-        return "localhost";
     }
 
     private LessonItem getLessonResultType(String object) {
@@ -554,27 +425,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
     }
 
-    /**
-     * 获取本地视频列表
-     *
-     * @param lessonId
-     * @return
-     */
-    private File getLocalLesson(int lessonId) {
-        File workSpace = EdusohoApp.getWorkSpace();
-        if (workSpace == null) {
-            return null;
-        }
-
-        StringBuffer dirBuilder = new StringBuffer(workSpace.getAbsolutePath());
-        dirBuilder.append("/videos/")
-                .append(app.domain)
-                .append("/")
-                .append(lessonId);
-
-        return new File(dirBuilder.toString(), "play.m3u8");
-    }
-
     private void switchLoadLessonContent(LessonItem lessonItem) {
         CourseLessonType lessonType = CourseLessonType.value(lessonItem.type);
 
@@ -611,15 +461,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        Bundle bundle = new Bundle();
-        bundle.putString("event", "lessonStatusRefresh");
-        MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, bundle);
-    }
-
-    @Override
     public void finish() {
         super.finish();
         Fragment fragment = mFragmentManager.findFragmentById(R.id.lesson_content);
@@ -630,16 +471,4 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         CacheServerFactory.getInstance().stop();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        invalidateOptionsMenu();
-        CacheServerFactory.getInstance().resume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        CacheServerFactory.getInstance().pause();
-    }
 }
