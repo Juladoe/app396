@@ -94,6 +94,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private View mLoadView;
     private ESIconView mBack;
     private TextView mTaskFinish;
+    private TaskFinishHelper mTaskFinishHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,12 +111,19 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         super.onResume();
         invalidateOptionsMenu();
         CacheServerFactory.getInstance().resume();
+        mTaskFinishHelper.onInvoke();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         CacheServerFactory.getInstance().pause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mTaskFinishHelper.onDestroyTimer();
     }
 
     @Override
@@ -170,7 +178,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     .setCourseTask(mCourseTask)
                     .setEnableFinish(mCourseProject.enableFinish);
 
-            final TaskFinishHelper mTaskFinishHelper = new TaskFinishHelper(builder, this)
+            mTaskFinishHelper = new TaskFinishHelper(builder, this)
                     .setActionListener(new TaskFinishHelper.ActionListener() {
                         @Override
                         public void onFinish(TaskEvent taskEvent) {
@@ -187,7 +195,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                         }
                     });
 
-            mTaskFinishHelper.onInvoke();
+            //mTaskFinishHelper.onInvoke();
 
             mTaskFinish.setOnClickListener(new View.OnClickListener() {
                 @Override

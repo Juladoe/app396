@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.utils.biz;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
@@ -46,7 +47,7 @@ public class TaskFinishHelper {
     private int mCourseId;
     private CourseTask mCourseTask;
     private ActionListener mActionListener;
-    private Timer mTimer = new Timer();
+    private Timer mTimer;
     private String mLastTime = "";
     private Map<String, String> mFieldMaps = new HashMap<>();
     ;
@@ -132,6 +133,7 @@ public class TaskFinishHelper {
     }
 
     public void onInvoke() {
+        Log.d("taskFinish", "onInvoke: ");
         if (mEnableFinish == 0) {
             TaskTypeEnum taskType = TaskTypeEnum.fromString(mCourseTask.type);
             if ((taskType == VIDEO && TIME == TaskFinishType.fromString(mCourseTask.activity.finishType))
@@ -140,6 +142,9 @@ public class TaskFinishHelper {
                     || (taskType == TEXT && null == TaskFinishType.fromString(mCourseTask.activity.finishType))
                     || (taskType == PPT && TIME == TaskFinishType.fromString(mCourseTask.activity.finishType))) {
                 ToastUtils.show(mContext, "doing onInvoke");
+                if (mTimer == null) {
+                    mTimer = new Timer();
+                }
                 mTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -169,8 +174,11 @@ public class TaskFinishHelper {
     }
 
     public void onDestroyTimer() {
-        mTimer.cancel();
-        mTimer = null;
+        Log.d("taskFinish", "onDestroyTimer: ");
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
     }
 
     public static class Builder {
