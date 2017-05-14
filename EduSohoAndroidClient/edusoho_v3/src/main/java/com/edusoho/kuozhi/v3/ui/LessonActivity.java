@@ -3,14 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,8 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -30,8 +20,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
-import com.edusoho.kuozhi.clean.bean.TaskEvent;
-import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
+import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -42,7 +31,6 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -56,19 +44,13 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
-import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.server.CacheServerFactory;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
@@ -93,7 +75,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private int mCourseId;
     private int mLessonId;
-    private int mIsMember;
+    private boolean mIsMember;
     private CourseTask mCourseTask;
     private CourseProject mCourseProject;
     private String mLessonType;
@@ -105,6 +87,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private TextView mToolBarTitle;
     private View mLoadView;
     private ESIconView mBack;
+    private TextView mTaskFinish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,18 +128,24 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             mBack = (ESIconView) findViewById(R.id.iv_back);
             mLoadView = findViewById(R.id.load_layout);
             mToolBarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
-
+            mTaskFinish = (TextView) findViewById(R.id.tv_finish_task);
 
             setSupportActionBar(mToolBar);
             if (data != null) {
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-                mIsMember = data.getIntExtra(LessonActivity.MEMBER_STATE, CourseMember.NONE);
+                mIsMember = data.getBooleanExtra(LessonActivity.MEMBER_STATE, false);
                 mCourseTask = (CourseTask) data.getSerializableExtra(COURSE_TASK);
                 mCourseProject = (CourseProject) data.getSerializableExtra(COURSE);
             }
 
             mToolBarTitle.setText(mCourseTask.title);
+            if (mIsMember) {
+                mTaskFinish.setVisibility(View.VISIBLE);
+                setTaskFinishButtonBackground(mCourseTask);
+            } else {
+                mTaskFinish.setVisibility(View.GONE);
+            }
 
             loadLesson();
 
@@ -173,6 +162,23 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
+        }
+    }
+
+    private void setTaskFinishButtonBackground(CourseTask courseTask) {
+        if (courseTask.result != null && TaskResultEnum.FINISH.toString().equals(courseTask.result.status)) {
+            mTaskFinish.setCompoundDrawablesWithIntrinsicBounds(R.drawable.task_finish_left_icon, 0, 0, 0);
+            mTaskFinish.setBackground(getResources().getDrawable(R.drawable.task_finish_button_bg));
+        } else {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                mTaskFinish.setTextColor(mContext.getResources().getColor(R.color.disabled2_hint_color));
+                mTaskFinish.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                mTaskFinish.setBackground(getResources().getDrawable(R.drawable.task_unfinish_button_bg));
+            } else {
+                mTaskFinish.setTextColor(mContext.getResources().getColor(R.color.primary_font_color));
+                mTaskFinish.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                mTaskFinish.setBackground(getResources().getDrawable(R.drawable.task_unfinish_button_grey_bg));
+            }
         }
     }
 
@@ -233,12 +239,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        changeScreenOrientaion(newConfig.orientation);
+        changeScreenOrientation(newConfig.orientation);
         super.onConfigurationChanged(newConfig);
     }
 
-    private void changeScreenOrientaion(int orientation) {
+    private void changeScreenOrientation(int orientation) {
         invalidateOptionsMenu();
+        setTaskFinishButtonBackground(mCourseTask);
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.primary_color));
@@ -251,7 +258,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             mToolBar.setBackgroundColor(getResources().getColor(R.color.transparent));
             mBack.setTextColor(getResources().getColor(R.color.disabled2_hint_color));
             mToolBarTitle.setTextColor(getResources().getColor(R.color.textIcons));
-            mToolBar.setTitle("");
         }
     }
 

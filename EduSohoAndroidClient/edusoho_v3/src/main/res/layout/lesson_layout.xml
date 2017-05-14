@@ -42,7 +42,7 @@
                 android:gravity="center"
                 android:lines="1"
                 android:maxLength="10"
-                android:textColor="@color/textSecondary"
+                android:textColor="@color/primary_font_color"
                 android:textSize="@dimen/base_large_size" />
 
             <TextView
@@ -51,7 +51,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/task_finish_button_bg"
+                android:drawablePadding="5dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp"
                 android:text="@string/task_finished_button"
                 android:textColor="@color/disabled2_hint_color"
                 android:textSize="@dimen/font_s" />
