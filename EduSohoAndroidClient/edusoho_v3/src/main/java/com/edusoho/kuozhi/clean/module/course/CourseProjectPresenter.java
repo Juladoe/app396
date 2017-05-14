@@ -243,7 +243,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
-                .setCourseTaskStatus(mCourseProjectId, task.id, TaskResultEnum.FINISH.toString())
+                .setCourseTaskFinish(mCourseProjectId, task.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<TaskEvent>() {

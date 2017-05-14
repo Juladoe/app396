@@ -76,7 +76,7 @@ public class LessonMenuHelper {
                     mMenuHelperFinishListener.showFinishTaskDialog(taskEvent);
                 }
             }
-        }).invoke();
+        }).onInvoke();
         return this;
     }
 

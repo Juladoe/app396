@@ -1,14 +1,12 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +27,8 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
-import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.ImageUtil;
-import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.videoplayer.ui.AudioPlayerFragment;
 import com.edusoho.videoplayer.util.ControllerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -112,7 +108,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment implements Co
                     }
                 });
 
-        mTaskFinishHelper.invoke();
+        mTaskFinishHelper.onInvoke();
 
         loadPlayUrl();
     }

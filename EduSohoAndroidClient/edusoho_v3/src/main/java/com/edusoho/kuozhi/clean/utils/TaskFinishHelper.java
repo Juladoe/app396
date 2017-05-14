@@ -77,7 +77,7 @@ public class TaskFinishHelper {
     private void submitTaskStatus() {
         HttpUtils.getInstance()
                 .createApi(CourseApi.class)
-                .setCourseTaskStatus(mCourseId, mCourseTask.id, mTaskStatus.toString())
+                .setCourseTaskFinish(mCourseId, mCourseTask.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<TaskEvent>() {

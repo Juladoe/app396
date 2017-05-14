@@ -6,16 +6,29 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
-import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
-import com.edusoho.kuozhi.clean.bean.innerbean.TaskResult;
+import com.edusoho.kuozhi.clean.bean.TaskFinishType;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
+import com.edusoho.kuozhi.clean.utils.StringUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import cn.trinea.android.common.util.ToastUtils;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.edusoho.kuozhi.clean.bean.TaskFinishType.TIME;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.AUDIO;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.DOC;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.PPT;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.TEXT;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.VIDEO;
 
 /**
  * Created by JesseHuang on 2017/5/11.
@@ -25,8 +38,6 @@ public class TaskFinishHelper {
 
     private static final int INTERVAL_TIME = 60 * 1000;
     public static final String DEFAULT = null;
-    public static final String END = "end";
-    public static final String TIME = "time";
 
     public static final String DOING = "doing";
     public static final String FINISH = "finish";
@@ -35,6 +46,10 @@ public class TaskFinishHelper {
     private int mCourseId;
     private CourseTask mCourseTask;
     private ActionListener mActionListener;
+    private Timer mTimer = new Timer();
+    private String mLastTime = "";
+    private Map<String, String> mFieldMaps = new HashMap<>();
+    ;
     private Context mContext;
 
     public TaskFinishHelper(Builder builder, Context context) {
@@ -56,7 +71,7 @@ public class TaskFinishHelper {
             TaskTypeEnum taskType = TaskTypeEnum.fromString(mCourseTask.type);
             switch (taskType) {
                 case VIDEO:
-                    String videoLimit = TaskFinishHelper.TIME.equals(mCourseTask.activity.finishType)
+                    String videoLimit = TIME.toString().equalsIgnoreCase(mCourseTask.activity.finishType)
                             ? mContext.getString(R.string.task_finish_limit, mCourseTask.activity.finishDetail)
                             : mContext.getString(R.string.video_task_finish_limit);
                     ToastUtils.show(mContext, videoLimit);
@@ -69,7 +84,7 @@ public class TaskFinishHelper {
                     ToastUtils.show(mContext, mContext.getString(R.string.task_finish_limit, mCourseTask.activity.finishDetail));
                     break;
                 case PPT:
-                    String pptLimit = TaskFinishHelper.TIME.equals(mCourseTask.activity.finishType)
+                    String pptLimit = TIME.toString().equalsIgnoreCase(mCourseTask.activity.finishType)
                             ? mContext.getString(R.string.task_finish_limit, mCourseTask.activity.finishDetail)
                             : mContext.getString(R.string.ppt_task_finish_limit);
                     ToastUtils.show(mContext, pptLimit);
@@ -89,10 +104,7 @@ public class TaskFinishHelper {
         if (mActionListener == null) {
             throw new RuntimeException("actionListener cannot be null!");
         }
-        HttpUtils.getInstance()
-                .addTokenHeader(EdusohoApp.app.token)
-                .createApi(CourseApi.class)
-                .setCourseTaskStatus(mCourseId, mCourseTask.id, status)
+        getTaskResult(status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<TaskEvent>() {
@@ -108,18 +120,57 @@ public class TaskFinishHelper {
 
                     @Override
                     public void onNext(TaskEvent taskEvent) {
+                        mCourseTask.result = taskEvent.result;
+                        mLastTime = taskEvent.lastTime;
                         if (FINISH.equals(taskEvent.result.status)) {
                             mActionListener.onFinish(taskEvent);
                             mCourseTask.result = taskEvent.result;
+                            onDestroyTimer();
                         }
                     }
                 });
     }
 
-    public void invoke() {
-        if (mEnableFinish == 0 && TIME.equals(mCourseTask.activity.finishType)) {
-            ToastUtils.show(mContext, "doing invoke");
+    public void onInvoke() {
+        if (mEnableFinish == 0) {
+            TaskTypeEnum taskType = TaskTypeEnum.fromString(mCourseTask.type);
+            if ((taskType == VIDEO && TIME == TaskFinishType.fromString(mCourseTask.activity.finishType))
+                    || (taskType == AUDIO && null == TaskFinishType.fromString(mCourseTask.activity.finishType))
+                    || (taskType == DOC && null == TaskFinishType.fromString(mCourseTask.activity.finishType))
+                    || (taskType == TEXT && null == TaskFinishType.fromString(mCourseTask.activity.finishType))
+                    || (taskType == PPT && TIME == TaskFinishType.fromString(mCourseTask.activity.finishType))) {
+                ToastUtils.show(mContext, "doing onInvoke");
+                mTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        doing();
+                    }
+                }, 0, INTERVAL_TIME);
+            }
         }
+    }
+
+    private Observable<TaskEvent> getTaskResult(String status) {
+        if (DOING.equals(status)) {
+            mFieldMaps.clear();
+            if (!StringUtils.isEmpty(mLastTime)) {
+                mFieldMaps.put("lastTime", mLastTime);
+            }
+            return HttpUtils.getInstance()
+                    .addTokenHeader(EdusohoApp.app.token)
+                    .createApi(CourseApi.class)
+                    .setCourseTaskDoing(mCourseId, mCourseTask.id, mFieldMaps);
+        } else {
+            return HttpUtils.getInstance()
+                    .addTokenHeader(EdusohoApp.app.token)
+                    .createApi(CourseApi.class)
+                    .setCourseTaskFinish(mCourseId, mCourseTask.id);
+        }
+    }
+
+    public void onDestroyTimer() {
+        mTimer.cancel();
+        mTimer = null;
     }
 
     public static class Builder {

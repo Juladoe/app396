@@ -187,7 +187,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                         }
                     });
 
-            mTaskFinishHelper.invoke();
+            mTaskFinishHelper.onInvoke();
 
             mTaskFinish.setOnClickListener(new View.OnClickListener() {
                 @Override

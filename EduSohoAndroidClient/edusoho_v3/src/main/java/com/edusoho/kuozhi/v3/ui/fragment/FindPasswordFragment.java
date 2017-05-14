@@ -284,7 +284,7 @@ public class FindPasswordFragment extends BaseFragment {
             ivImgCode.setImageBitmap(ImageUtil.decodeBase64(smsCode.img_code));
             etImgCode.setText("");
             rlImgCode.setVisibility(View.VISIBLE);
-            Log.d("FindPasswordSmsCode", "invoke: FindPasswordSmsCode");
+            Log.d("FindPasswordSmsCode", "onInvoke: FindPasswordSmsCode");
         }
     }
 

@@ -197,7 +197,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                     }
                 });
 
-        mTaskFinishHelper.invoke();
+        mTaskFinishHelper.onInvoke();
         loadPlayUrl();
     }
 
