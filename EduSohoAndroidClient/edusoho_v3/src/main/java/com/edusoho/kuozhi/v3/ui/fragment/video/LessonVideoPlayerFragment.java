@@ -4,18 +4,23 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.WindowManager;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
+import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
+import com.edusoho.kuozhi.clean.utils.biz.TaskFinishHelper;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -32,7 +37,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.MediaUtil;
-import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.videoplayer.media.listener.SimpleVideoControllerListener;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
@@ -40,19 +44,23 @@ import com.edusoho.videoplayer.util.VLCOptions;
 import com.edusoho.videoplayer.view.VideoControllerView;
 import com.google.gson.reflect.TypeToken;
 
+import org.greenrobot.eventbus.EventBus;
 import org.videolan.libvlc.util.AndroidUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.trinea.android.common.util.ToastUtils;
+
 /**
  * Created by suju on 16/12/16.
  */
 
-public class LessonVideoPlayerFragment extends VideoPlayerFragment implements View.OnFocusChangeListener {
+public class LessonVideoPlayerFragment extends VideoPlayerFragment implements View.OnFocusChangeListener, CourseProjectActivity.TaskFinishListener {
 
-    private int mLessonId;
-    private int mCourseId;
+    private static final String COURSE_PROJECT = "course_project";
+    private static final String COURSE_TASK = "course_task";
+
     private int mPlayTime;
     private int mTotalTime;
     private long mSaveSeekTime;
@@ -60,25 +68,41 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     private boolean mIsPlay;
     private Timer mTimer;
     private BaseStudyDetailActivity mMenuCallback;
-    private LessonMenuHelper mLessonMenuHelper;
     private SharedPreferences mSeekPositionSetting;
     private static final String SEEK_POSITION = "seek_position";
     private String mRemainTime;
+    private CourseTask mCourseTask;
+    private CourseProject mCourseProject;
+    private TaskFinishHelper mTaskFinishHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLessonId = getArguments().getInt(Const.LESSON_ID);
-        mCourseId = getArguments().getInt(Const.COURSE_ID);
-        mRemainTime = getArguments().getString(Const.REMAINT_TIME);
+        Bundle bundle = getArguments();
+        mCourseTask = (CourseTask) bundle.getSerializable(COURSE_TASK);
+        mCourseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT);
+        if (mCourseTask == null) {
+            ToastUtils.show(getActivity(), "CourseTask is null");
+        }
+        mRemainTime = mCourseTask.length;
+
         mSeekPositionSetting = getContext().getSharedPreferences(SEEK_POSITION, Context.MODE_PRIVATE);
-        mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseId, mLessonId), 0);
+        mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseProject.id, mCourseTask.id), 0);
 
         setSeekPosition(mSaveSeekTime);
         if (mRemainTime != null) {
             startReturnData();
             startTiming();
         }
+    }
+
+    public static LessonVideoPlayerFragment newInstance(CourseTask courseTask, CourseProject courseProject) {
+        Bundle args = new Bundle();
+        args.putSerializable(COURSE_TASK, courseTask);
+        args.putSerializable(COURSE_PROJECT, courseProject);
+        LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -98,11 +122,11 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     private void loadPlayUrl() {
         LessonItem cachedLesson = getCachedLesson();
         if (cachedLesson != null) {
-            cachedLesson.mediaUri = String.format("http://%s:8800/playlist/%d.m3u8", "localhost", mLessonId);
+            cachedLesson.mediaUri = String.format("http://%s:8800/playlist/%d.m3u8", "localhost", mCourseTask.id);
             playVideo(cachedLesson.mediaUri);
             return;
         }
-        new LessonProvider(getContext()).getLesson(mLessonId)
+        new LessonProvider(getContext()).getLesson(mCourseTask.id)
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
@@ -112,8 +136,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                             ((ViewGroup) getView()).removeAllViews();
                             return;
                         }
-                        //Uri mediaUri = Uri.parse(lessonItem.mediaUri);
-                        //playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
                         playVideo(lessonItem.mediaUri);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
@@ -130,7 +152,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
             return null;
         }
         M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
-                getContext(), user.id, mLessonId, school.getDomain(), M3U8Util.FINISH);
+                getContext(), user.id, mCourseTask.id, school.getDomain(), M3U8Util.FINISH);
         if (m3U8DbModel == null) {
             return null;
         }
@@ -140,7 +162,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                 },
                 "where type=? and key=?",
                 Const.CACHE_LESSON_TYPE,
-                "lesson-" + mLessonId
+                "lesson-" + mCourseTask.id
         );
     }
 
@@ -156,11 +178,33 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
-            mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
-            mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
-        }
+        TaskFinishHelper.Builder builder = new TaskFinishHelper.Builder()
+                .setCourseId(mCourseProject.id)
+                .setCourseTask(mCourseTask)
+                .setEnableFinish(mCourseProject.enableFinish);
+
+        mTaskFinishHelper = new TaskFinishHelper(builder, getActivity())
+                .setActionListener(new TaskFinishHelper.ActionListener() {
+                    @Override
+                    public void onFinish(TaskEvent taskEvent) {
+                        EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK_SUCCESS));
+                        TaskFinishDialog.newInstance(taskEvent, mCourseTask).show(getActivity()
+                                .getSupportFragmentManager(), "mTaskFinishDialog");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+
+        mTaskFinishHelper.onInvoke();
         loadPlayUrl();
+    }
+
+    @Override
+    public void doFinish() {
+        mTaskFinishHelper.finish();
     }
 
     @Override
@@ -183,6 +227,24 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                 super.onChangeOverlay(isShow);
                 changeHeaderViewStatus(isShow);
             }
+
+            @Override
+            public void onSeek(int position) {
+                super.onSeek(position);
+                if (position == Integer.parseInt(mRemainTime)) {
+                    Log.d("player", "onSeek: success");
+                }
+            }
+
+            @Override
+            public void onChangeRate(float rate) {
+                super.onChangeRate(rate);
+            }
+
+            @Override
+            public void onChangePlaySource(String url) {
+                super.onChangePlaySource(url);
+            }
         };
     }
 
@@ -196,15 +258,8 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         if (viewParent == null) {
             return;
         }
-        ViewGroup parent = (ViewGroup) viewParent.getParent();
-        MessageEngine.getInstance().sendMsg(Const.FULL_SCREEN, null);
+        EventBus.getDefault().post(new MessageEvent<>(MessageEvent.FULL_SCREEN));
 
-        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        ViewGroup.LayoutParams lp = parent.getLayoutParams();
-        lp.height = orientation == Configuration.ORIENTATION_LANDSCAPE ?
-                wm.getDefaultDisplay().getHeight() : getContext().getResources().getDimensionPixelOffset(com.edusoho.videoplayer.R.dimen.video_height);
-        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        parent.setLayoutParams(lp);
     }
 
     @Override
@@ -230,7 +285,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         }
         if (mTimer != null) {
             if (mIsContinue) {
-                CourseDetailModel.sendTime(mLessonId, mPlayTime, null);
+                CourseDetailModel.sendTime(mCourseTask.id, mPlayTime, null);
             }
             mTimer.cancel();
             mIsContinue = false;
@@ -241,7 +296,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     protected void savePosition(long seekTime) {
         super.savePosition(seekTime);
         SharedPreferences.Editor editor = mSeekPositionSetting.edit();
-        editor.putLong(String.format("%d-%d", mCourseId, mLessonId), seekTime);
+        editor.putLong(String.format("%d-%d", mCourseProject.id, mCourseTask.id), seekTime);
         editor.commit();
     }
 
@@ -274,7 +329,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                                         public void run() {
                                             mTimer.cancel();
                                             //pause();
-                                            CourseDetailModel.sendTime(mLessonId, mPlayTime, null);
+                                            CourseDetailModel.sendTime(mCourseTask.id, mPlayTime, null);
                                             if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
                                                 return;
                                             }
@@ -297,7 +352,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                CourseDetailModel.sendTime(mLessonId, mPlayTime, new ResponseCallbackListener<String>() {
+                CourseDetailModel.sendTime(mCourseTask.id, mPlayTime, new ResponseCallbackListener<String>() {
                     @Override
                     public void onSuccess(String data) {
                         mPlayTime = 0;

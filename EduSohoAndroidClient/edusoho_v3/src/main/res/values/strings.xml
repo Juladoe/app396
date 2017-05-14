@@ -565,6 +565,13 @@
     <string name="discuss_task_not_support">移动端暂不支持讨论任务</string>
     <string name="flash_task_not_support">移动端暂不支持Flash任务</string>
     <string name="task_finished_button">学过了</string>
+    <string name="task_finish_limit">限制任务：必须观看%1$d分钟才能完成</string>
+    <string name="ppt_task_finish_limit">限制任务：必须观看最后一页才能完成</string>
+    <string name="video_task_finish_limit">限制任务：必须观看到最后才能完成</string>
+    <string name="audio_task_finish_limit">限制任务：必须全部听完音频</string>
+    <string name="congratulation_finish_task">恭喜完成！</string>
+    <string name="task_finish">学习完成</string>
+    <string name="next_task">下一课</string>
     <string name="member_expired">学员有效期已到</string>
     <string name="member_vip_expired">vip过期</string>
     <string name="member_vip_not_exist">vip等级不存在</string>

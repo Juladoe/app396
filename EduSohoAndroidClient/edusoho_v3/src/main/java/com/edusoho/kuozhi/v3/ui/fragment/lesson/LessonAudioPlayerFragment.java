@@ -1,14 +1,12 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,50 +16,67 @@ import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
+import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
+import com.edusoho.kuozhi.clean.utils.biz.TaskFinishHelper;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
-import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.ImageUtil;
-import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.videoplayer.ui.AudioPlayerFragment;
 import com.edusoho.videoplayer.util.ControllerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import org.greenrobot.eventbus.EventBus;
+import org.videolan.libvlc.MediaPlayer;
+
+import cn.trinea.android.common.util.ToastUtils;
+
 /**
  * Created by suju on 16/12/18.
  */
 
-public class LessonAudioPlayerFragment extends AudioPlayerFragment {
+public class LessonAudioPlayerFragment extends AudioPlayerFragment implements CourseProjectActivity.TaskFinishListener {
 
     public static final String COVER = "cover";
+    private static final String COURSE_PROJECT = "course_project";
+    private static final String COURSE_TASK = "course_task";
 
-    private int mLessonId;
-    private int mCourseId;
     protected String mCoverUrl;
     protected float mAudioCoverAnimOffset;
     protected ObjectAnimator mAudioCoverAnim;
     private ImageView mCoverImageView;
-    private BaseStudyDetailActivity mMenuCallback;
-    private LessonMenuHelper mLessonMenuHelper;
+    private CourseTask mCourseTask;
+    private CourseProject mCourseProject;
+    private TaskFinishHelper mTaskFinishHelper;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof BaseStudyDetailActivity) {
-            mMenuCallback = (BaseStudyDetailActivity) activity;
-        }
+    public static LessonAudioPlayerFragment newInstance(String cover, CourseTask courseTask, CourseProject courseProject) {
+        Bundle args = new Bundle();
+        args.putString(COVER, cover);
+        args.putSerializable(COURSE_TASK, courseTask);
+        args.putSerializable(COURSE_PROJECT, courseProject);
+        LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoverUrl = getArguments().getString(COVER);
-        mLessonId = getArguments().getInt(Const.LESSON_ID);
-        mCourseId = getArguments().getInt(Const.COURSE_ID);
+        Bundle bundle = getArguments();
+        mCoverUrl = bundle.getString(COVER);
+        mCourseTask = (CourseTask) bundle.getSerializable(COURSE_TASK);
+        mCourseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT);
+        if (mCourseTask == null) {
+            ToastUtils.show(getActivity(), "CourseTask is null");
+        }
     }
 
     @Override
@@ -73,19 +88,35 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                 .build();
         mVideoControllerView.setControllerOptions(options);
         initPlayContainer();
-        if (mMenuCallback != null) {
-            mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
-            mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
-        }
+
+        TaskFinishHelper.Builder builder = new TaskFinishHelper.Builder()
+                .setCourseId(mCourseProject.id)
+                .setCourseTask(mCourseTask)
+                .setEnableFinish(mCourseProject.enableFinish);
+
+        mTaskFinishHelper = new TaskFinishHelper(builder, getActivity())
+                .setActionListener(new TaskFinishHelper.ActionListener() {
+                    @Override
+                    public void onFinish(TaskEvent taskEvent) {
+                        EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK_SUCCESS));
+                        TaskFinishDialog.newInstance(taskEvent, mCourseTask).show(getActivity()
+                                .getSupportFragmentManager(), "mTaskFinishDialog");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+
+        mTaskFinishHelper.onInvoke();
+
         loadPlayUrl();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
-            mMenuCallback.getMenu().dismiss();
-        }
+    public void doFinish() {
+        mTaskFinishHelper.finish();
     }
 
     public void pause() {
@@ -101,8 +132,13 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
             mAudioCoverAnim.cancel();
             mAudioCoverAnim = null;
         }
-        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
-            mMenuCallback.getMenu().setVisibility(false);
+    }
+
+    @Override
+    public void onMediaPlayerEvent(MediaPlayer.Event event) {
+        super.onMediaPlayerEvent(event);
+        if (mCourseProject.enableFinish == 0 && !mCourseTask.isFinish() && event.type == 265) {
+            mTaskFinishHelper.stickyFinish();
         }
     }
 
@@ -111,7 +147,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     }
 
     private void loadPlayUrl() {
-        new LessonProvider(getContext()).getLesson(mLessonId)
+        new LessonProvider(getContext()).getLesson(mCourseTask.id)
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {

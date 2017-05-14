@@ -21,7 +21,7 @@ public class CourseHelper {
     public static final String COURSE_NOT_BUYABLE = "course.not_buyable";
     public static final String COURSE_EXPIRED = "course.expired";
     public static final String COURSE_BUY_EXPIRED = "course.buy_expired";
-        public static final String COURSE_SUCCESS = "success";
+    public static final String COURSE_SUCCESS = "success";
 
     public static final String MEMBER_EXPIRED = "member.expired";
     public static final String MEMBER_VIP_EXPIRED = "vip.member_expired";

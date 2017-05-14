@@ -13,7 +13,6 @@ public class LessonItem<T> implements Serializable {
 
     public int id;
     public int courseId;
-    public int chapterId;
     public int number;
     public int seq;
     public int free;
@@ -23,18 +22,11 @@ public class LessonItem<T> implements Serializable {
     public String tag;
     public String type;
     public T content;
-    private int giveCredit;
-    private int requireCredit;
     public int mediaId;
     public String mediaSource;
-    public String mediaName;
     public String mediaUri;
     public String headUrl;
     public String length;
-    public int materialNum;
-    public int quizNum;
-    public int learnedNum;
-    public int viewedNum;
     public int userId;
     public String remainTime;
     public String createdTime;

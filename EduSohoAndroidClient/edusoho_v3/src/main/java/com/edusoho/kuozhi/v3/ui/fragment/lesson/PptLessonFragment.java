@@ -242,6 +242,9 @@ public class PptLessonFragment extends BaseFragment {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (position == mImages.size() - 1 && getActivity() != null) {
+                ((LessonActivity) getActivity()).stickyFinish();
+            }
         }
 
         @Override

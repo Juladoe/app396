@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -16,8 +17,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -28,7 +32,7 @@ import com.edusoho.kuozhi.clean.bean.MessageEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
-import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskIconEnum;
+import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.utils.AppUtils;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
@@ -48,9 +52,11 @@ import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -79,6 +85,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     private CourseProjectViewPagerAdapter mAdapter;
     private Toolbar mToolbar;
     private ImageView mCourseCover;
+    private View mFragmentsLayout;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private View mBottomView;
@@ -131,6 +138,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             }
         });
         mProgressBar = (ESProgressBar) findViewById(R.id.pb_learn_progress);
+        mFragmentsLayout = findViewById(R.id.layout_fragments);
         mTabLayout = (TabLayout) findViewById(R.id.tl_task);
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
         mBottomView = findViewById(R.id.tl_bottom);
@@ -190,7 +198,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                     mShowDialogHelper.doAction();
                 } else {
                     CourseTask task = (CourseTask) v.getTag();
-                    learnTask(task);
+                    mPresenter.learnTask(task);
                 }
             }
         });
@@ -200,8 +208,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             @Override
             public void onClick(View v) {
                 CourseTask task = (CourseTask) v.getTag();
-                if (task.result != null && !TaskResultEnum.FINISH.toString().equals(task.result.status)) {
-                    mPresenter.finishTask(task);
+                if (!task.isFinish()) {
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.task_container);
+                    if (fragment instanceof TaskFinishListener) {
+                        ((TaskFinishListener) fragment).doFinish();
+                    }
                 }
             }
         });
@@ -209,7 +220,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    fullScreen();
+                } else {
+                    finish();
+                }
             }
         });
 
@@ -383,37 +398,11 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     }
 
     @Override
-    public void onReceiveMessage(MessageEvent messageEvent) {
-        if (messageEvent.getType() == MessageEvent.LEARN_TASK) {
-            CourseTask task = (CourseTask) messageEvent.getMessageBody();
-            mFinishTask.setTag(task);
-            switch (messageEvent.getType()) {
-                case MessageEvent.LEARN_TASK:
-                    if (mShowDialogHelper != null) {
-                        mShowDialogHelper.doAction();
-                    } else {
-                        learnTask(task);
-                    }
-                    break;
-            }
-        } else if (messageEvent.getType() == MessageEvent.SHOW_NEXT_TASK) {
-            SparseArray<Object> nextTaskInfo = (SparseArray<Object>) messageEvent.getMessageBody();
-            initNextTask((CourseTask) nextTaskInfo.get(0), (boolean) nextTaskInfo.get(1));
-        }
-    }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoginSuccess(MessageEvent messageEvent) {
-        if (messageEvent.getType() == MessageEvent.LOGIN) {
-            mPresenter.subscribe();
-        }
-    }
-
-    private void learnTask(CourseTask task) {
+    public void learnTask(CourseTask task, CourseProject courseProject, CourseMember courseMember) {
         setPlayLayoutVisible(false);
         mFinishTask.setVisibility(View.GONE);
         clearTaskFragment();
-        TaskIconEnum taskType = TaskIconEnum.fromString(task.type);
+        TaskTypeEnum taskType = TaskTypeEnum.fromString(task.type);
         switch (taskType) {
             case LIVE:
                 final String url = String.format(EdusohoApp.app.host + Const.WEB_LESSON, mCourseProjectId, task.id);
@@ -447,8 +436,9 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.LESSON_ID, task.id);
                 bundle.putInt(Const.COURSE_ID, mCourseProjectId);
-                bundle.putInt(LessonActivity.MEMBER_STATE
-                        , mPresenter.getCourseMember() != null ? CourseMember.MEMBER : CourseMember.NONE);
+                bundle.putSerializable(LessonActivity.COURSE_TASK, task);
+                bundle.putSerializable(LessonActivity.COURSE, courseProject);
+                bundle.putBoolean(LessonActivity.MEMBER_STATE, courseMember != null);
                 CoreEngine.create(getApplicationContext()).runNormalPluginWithBundleForResult(
                         "LessonActivity", this, bundle, LessonActivity.REQUEST_LEARN);
                 break;
@@ -463,22 +453,14 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
 
     private void playVideo(CourseTask task) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        LessonVideoPlayerFragment videoFragment = new LessonVideoPlayerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(Const.LESSON_ID, task.id);
-        bundle.putString(Const.REMAINT_TIME, task.length);
-        videoFragment.setArguments(bundle);
+        LessonVideoPlayerFragment videoFragment = LessonVideoPlayerFragment.newInstance(task, mPresenter.getCourseProject());
         transaction.replace(R.id.task_container, videoFragment, FRAGMENT_VIDEO_TAG);
         transaction.commitAllowingStateLoss();
     }
 
     private void playAudio(CourseTask task) {
+        LessonAudioPlayerFragment audioFragment = LessonAudioPlayerFragment.newInstance(mCourseCoverImageUrl, task, mPresenter.getCourseProject());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        LessonAudioPlayerFragment audioFragment = new LessonAudioPlayerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseCoverImageUrl);
-        bundle.putInt(Const.LESSON_ID, task.id);
-        audioFragment.setArguments(bundle);
         transaction.replace(R.id.task_container, audioFragment, FRAGMENT_AUDIO_TAG);
         transaction.commitAllowingStateLoss();
     }
@@ -614,5 +596,66 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
     @Override
     public void setShowError(CourseProjectPresenter.ShowActionHelper helper) {
         mShowDialogHelper = helper;
+    }
+
+    private boolean mIsFullScreen;
+
+    private void fullScreen() {
+        ViewGroup.LayoutParams params = mTaskPlayContainer.getLayoutParams();
+        if (!mIsFullScreen) {
+            MobclickAgent.onEvent(this, "videoClassroom_fullScreen");
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            mIsFullScreen = true;
+            params.height = AppUtil.getWidthPx(this);
+            params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            mTaskPlayContainer.setLayoutParams(params);
+            mFragmentsLayout.setVisibility(View.GONE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            mCache.setVisibility(View.GONE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            mIsFullScreen = false;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = AppUtil.dp2px(this, 222);
+            mTaskPlayContainer.setLayoutParams(params);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            mFragmentsLayout.setVisibility(View.VISIBLE);
+            mCache.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onReceiveMessage(MessageEvent messageEvent) {
+        if (messageEvent.getType() == MessageEvent.LEARN_TASK) {
+            CourseTask task = (CourseTask) messageEvent.getMessageBody();
+            mFinishTask.setTag(task);
+            switch (messageEvent.getType()) {
+                case MessageEvent.LEARN_TASK:
+                    if (mShowDialogHelper != null) {
+                        mShowDialogHelper.doAction();
+                    } else {
+                        mPresenter.learnTask(task);
+                    }
+                    break;
+            }
+        } else if (messageEvent.getType() == MessageEvent.SHOW_NEXT_TASK) {
+            SparseArray<Object> nextTaskInfo = (SparseArray<Object>) messageEvent.getMessageBody();
+            initNextTask((CourseTask) nextTaskInfo.get(0), (boolean) nextTaskInfo.get(1));
+        } else if (messageEvent.getType() == MessageEvent.FULL_SCREEN) {
+            fullScreen();
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLoginSuccess(MessageEvent messageEvent) {
+        if (messageEvent.getType() == MessageEvent.LOGIN) {
+            mPresenter.subscribe();
+        } else if (messageEvent.getType() == MessageEvent.FINISH_TASK_SUCCESS) {
+            setTaskFinishButtonBackground(true);
+        }
+    }
+
+    public interface TaskFinishListener {
+        void doFinish();
     }
 }

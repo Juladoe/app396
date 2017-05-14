@@ -36,6 +36,8 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -90,6 +92,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
             @Override
             public void onClick(View v) {
                 showBottomMenu(behavior);
+                //TaskFinishDialog.newInstance().show(getActivity().getSupportFragmentManager(), "TaskFinishDialog");
             }
         });
 
@@ -167,7 +170,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                 if (item.task.lock) {
                     return;
                 }
-                TaskIconEnum type = TaskIconEnum.fromString(item.task.type);
+                TaskTypeEnum type = TaskTypeEnum.fromString(item.task.type);
                 switch (type) {
                     case DOWNLOAD:
                         showToast(getString(R.string.donwload_task_not_support));
@@ -238,6 +241,15 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         switch (messageEvent.getType()) {
             case MessageEvent.COURSE_EXIT:
                 mCourseProgressBar.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onFinishTask(MessageEvent messageEvent) {
+        switch (messageEvent.getType()) {
+            case MessageEvent.FINISH_TASK_SUCCESS:
+                ((CourseTaskAdapter) mTaskRecyclerView.getAdapter()).finishTask((int) messageEvent.getMessageBody());
                 break;
         }
     }

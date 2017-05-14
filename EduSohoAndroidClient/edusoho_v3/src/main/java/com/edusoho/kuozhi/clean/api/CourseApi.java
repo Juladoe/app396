@@ -11,7 +11,11 @@ import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 
 import java.util.List;
+import java.util.Map;
 
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -27,6 +31,9 @@ public interface CourseApi {
 
     @GET("courses/{id}/items")
     Observable<List<CourseItem>> getCourseItems(@Path("id") int courseId, @Query("onlyPublished") int status);
+
+    @GET("courses/{courseId}/tasks/{taskId}")
+    Observable<CourseTask> getCourseTask(@Path("courseId") int courseId, @Path("taskId") int taskId);
 
     @GET("courses/{id}")
     Observable<CourseProject> getCourseProject(@Path("id") int courseId);
@@ -48,7 +55,10 @@ public interface CourseApi {
     @GET("courses/{courseId}/threads?limit=15&simplify=0&sort=posted")
     Observable<DiscussDetail> getCourseDiscuss(@Path("courseId") int courseId, @Query("start") int start);
 
-    @PATCH("courses/{courseId}/tasks/{taskId}/events/{status}")
-    Observable<TaskEvent> setCourseTaskStatus(@Path("courseId") int courseId
-            , @Path("taskId") int taskId, @Path("status") String status);
+    @PATCH("courses/{courseId}/tasks/{taskId}/events/finish")
+    Observable<TaskEvent> setCourseTaskFinish(@Path("courseId") int courseId, @Path("taskId") int taskId);
+
+    @FormUrlEncoded
+    @PATCH("courses/{courseId}/tasks/{taskId}/events/doing")
+    Observable<TaskEvent> setCourseTaskDoing(@Path("courseId") int courseId, @Path("taskId") int taskId, @FieldMap Map<String, String> fieldMaps);
 }
