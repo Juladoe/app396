@@ -208,7 +208,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             @Override
             public void onClick(View v) {
                 CourseTask task = (CourseTask) v.getTag();
-                if ((task.result != null && TaskResultEnum.START.toString().equals(task.result.status)) || task.result == null) {
+                if (!task.isFinish()) {
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.task_container);
                     if (fragment instanceof TaskFinishListener) {
                         ((TaskFinishListener) fragment).doFinish();

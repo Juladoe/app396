@@ -195,13 +195,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                         }
                     });
 
-            //mTaskFinishHelper.onInvoke();
-
             mTaskFinish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mCourseTask.result == null || TaskResultEnum.START.toString().equals(mCourseTask.result.status)) {
-                        mTaskFinishHelper.finish();
+                    if (mIsMember && (mCourseTask.result == null || TaskResultEnum.START.toString().equals(mCourseTask.result.status))) {
+                        finishTask();
                     }
                 }
             });
@@ -227,6 +225,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mTaskFinish.setBackground(getResources().getDrawable(R.drawable.task_unfinish_button_grey_bg));
             }
         }
+    }
+
+    public void finishTask() {
+        mTaskFinishHelper.finish();
+    }
+
+    public void stickyFinish() {
+        mTaskFinishHelper.stickyFinish();
     }
 
     private void startCacheServer() {

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -225,6 +226,24 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
             public void onChangeOverlay(boolean isShow) {
                 super.onChangeOverlay(isShow);
                 changeHeaderViewStatus(isShow);
+            }
+
+            @Override
+            public void onSeek(int position) {
+                super.onSeek(position);
+                if (position == Integer.parseInt(mRemainTime)) {
+                    Log.d("player", "onSeek: success");
+                }
+            }
+
+            @Override
+            public void onChangeRate(float rate) {
+                super.onChangeRate(rate);
+            }
+
+            @Override
+            public void onChangePlaySource(String url) {
+                super.onChangePlaySource(url);
             }
         };
     }

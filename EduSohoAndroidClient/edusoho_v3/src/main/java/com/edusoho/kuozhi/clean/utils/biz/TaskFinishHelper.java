@@ -94,6 +94,10 @@ public class TaskFinishHelper {
         }
     }
 
+    public void stickyFinish() {
+        onRecord(FINISH);
+    }
+
     public void doing() {
         onRecord(DOING);
     }
@@ -104,6 +108,9 @@ public class TaskFinishHelper {
         }
         if (mActionListener == null) {
             throw new RuntimeException("actionListener cannot be null!");
+        }
+        if (mCourseTask.isFinish()) {
+            return;
         }
         getTaskResult(status)
                 .subscribeOn(Schedulers.io())
@@ -134,7 +141,7 @@ public class TaskFinishHelper {
 
     public void onInvoke() {
         Log.d("taskFinish", "onInvoke: ");
-        if (mEnableFinish == 0) {
+        if (mEnableFinish == 0 && mCourseTask.isFinish()) {
             TaskTypeEnum taskType = TaskTypeEnum.fromString(mCourseTask.type);
             if ((taskType == VIDEO && TIME == TaskFinishType.fromString(mCourseTask.activity.finishType))
                     || (taskType == AUDIO && null == TaskFinishType.fromString(mCourseTask.activity.finishType))

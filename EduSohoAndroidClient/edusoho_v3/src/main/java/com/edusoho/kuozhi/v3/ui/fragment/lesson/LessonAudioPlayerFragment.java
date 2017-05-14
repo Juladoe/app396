@@ -35,6 +35,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.greenrobot.eventbus.EventBus;
+import org.videolan.libvlc.MediaPlayer;
 
 import cn.trinea.android.common.util.ToastUtils;
 
@@ -130,6 +131,14 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment implements Co
         if (mAudioCoverAnim != null) {
             mAudioCoverAnim.cancel();
             mAudioCoverAnim = null;
+        }
+    }
+
+    @Override
+    public void onMediaPlayerEvent(MediaPlayer.Event event) {
+        super.onMediaPlayerEvent(event);
+        if (mCourseProject.enableFinish == 0 && !mCourseTask.isFinish() && event.type == 265) {
+            mTaskFinishHelper.stickyFinish();
         }
     }
 

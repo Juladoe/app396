@@ -65,4 +65,8 @@ public class CourseTask implements Serializable {
             return number + "";
         }
     }
+
+    public boolean isFinish() {
+        return result != null && TaskResultEnum.FINISH.toString().equals(result.status);
+    }
 }
