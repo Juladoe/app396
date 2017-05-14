@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.ui.fragment.mine;
+package com.edusoho.kuozhi.clean.module.mine.cache;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,12 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.MyVideoCacheAdapter;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 
@@ -82,21 +82,16 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment.R
         loadData();
     }
 
-    @Override
-    public void setSwipeEnabled(int i) {
-        srlContent.setEnabled(i == 0);
-    }
-
     public static class VideoCacheViewHolder extends RecyclerView.ViewHolder {
-        public ImageView ivCover;
-        public TextView tvCourseTitle;
-        public TextView tvSource;
-        public TextView ivVideoSum;
-        public TextView ivVideoSizes;
-        public TextView tvExpiredView;
-        public View rlayoutContent;
+        ImageView ivCover;
+        TextView tvCourseTitle;
+        TextView tvSource;
+        TextView ivVideoSum;
+        TextView ivVideoSizes;
+        TextView tvExpiredView;
+        View rlayoutContent;
 
-        public VideoCacheViewHolder(View view) {
+        VideoCacheViewHolder(View view) {
             super(view);
             ivCover = (ImageView) view.findViewById(R.id.iv_avatar);
             tvCourseTitle = (TextView) view.findViewById(R.id.tv_course_title);

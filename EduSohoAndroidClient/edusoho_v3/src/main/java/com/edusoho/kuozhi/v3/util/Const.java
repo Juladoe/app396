@@ -623,8 +623,4 @@ public class Const {
 
     public static String REMAINT_TIME = "remain_time";
 
-    /**
-     * 获取老师教学
-     */
-    public static final String TEACHER_TEACH = "/api/me/courses?relation=teaching&start=0&limit=1000";
 }

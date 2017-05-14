@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.adapter;
+package com.edusoho.kuozhi.clean.module.mine.question;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,9 +13,9 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MyQuestionFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,18 +24,23 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/9.
  */
 
-public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MyAnswerQuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private Context mContext;
+    private List<MyThreadEntity> mMyThreadEntities;
 
     private static final int EMPTY = 0;
     private static final int NOT_EMPTY = 1;
     private int mCurrentDataStatus;
 
-    private Context mContext;
-    private List<MyThreadEntity> mMyThreadEntities;
-
-    public MyAskQuestionAdapter(Context context) {
+    public MyAnswerQuestionAdapter(Context context) {
         mContext = context;
         mMyThreadEntities = new ArrayList<>();
+        mCurrentDataStatus = EMPTY;
+    }
+
+    public MyAnswerQuestionAdapter(Context context, List<MyThreadEntity> list) {
+        mContext = context;
+        mMyThreadEntities = list;
     }
 
     public void setData(List<MyThreadEntity> list) {
@@ -49,11 +54,10 @@ public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     @Override
-
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mCurrentDataStatus == NOT_EMPTY) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_ask_question, parent, false);
-            return new MyQuestionFragment.ViewHolderAsk(view);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_answer_question, parent, false);
+            return new MyQuestionFragment.ViewHolderAnswer(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
             return new MineFragment.EmptyViewHolder(view);
@@ -63,25 +67,14 @@ public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (mCurrentDataStatus == NOT_EMPTY) {
+            MyQuestionFragment.ViewHolderAnswer viewHolderAnswer = (MyQuestionFragment.ViewHolderAnswer) viewHolder;
             final MyThreadEntity entity = mMyThreadEntities.get(position);
-            MyQuestionFragment.ViewHolderAsk viewHolderAsk = (MyQuestionFragment.ViewHolderAsk) viewHolder;
-            if ("question".equals(entity.getType())) {
-                viewHolderAsk.tvType.setText("问题");
-                viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-                viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_blue);
-            } else {
-                viewHolderAsk.tvType.setText("话题");
-                viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
-                viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_red);
-            }
-            viewHolderAsk.tvContent.setText(Html.fromHtml("<html><body>&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                    + entity.getTitle() + "</body></html>"));
-            viewHolderAsk.tvOrder.setText(entity.getCourse().title);
-            viewHolderAsk.tvTime.setText(CommonUtil.convertMills2Date(Long.parseLong(entity.getCreatedTime()) * 1000));
-            viewHolderAsk.tvReviewNum.setText(entity.getPostNum());
-            viewHolderAsk.layout.setTag(mMyThreadEntities.get(position));
-            viewHolderAsk.layout.setOnClickListener(getQuestionClickListener());
+            viewHolderAnswer.tvOrder.setText(entity.getCourse().title);
+            viewHolderAnswer.tvTime.setText(CommonUtil.convertMills2Date(Long.parseLong(entity.getCreatedTime()) * 1000));
+            viewHolderAnswer.tvContentAsk.setText(entity.getTitle());
+            viewHolderAnswer.tvContentAnswer.setText(Html.fromHtml(entity.getContent(), new EduHtmlHttpImageGetter(viewHolderAnswer.tvContentAnswer, null, true), null));
+            viewHolderAnswer.layout.setTag(entity);
+            viewHolderAnswer.layout.setOnClickListener(getAnswerClickListener());
         }
     }
 
@@ -95,7 +88,7 @@ public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.View
         return 1;
     }
 
-    private View.OnClickListener getQuestionClickListener() {
+    private View.OnClickListener getAnswerClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +96,7 @@ public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.View
                 Bundle bundle = new Bundle();
                 bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, "course");
                 bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, entity.getCourse().id);
-                bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(entity.getId()));
+                bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(entity.getThreadId()));
                 bundle.putString(AbstractIMChatActivity.TARGET_TYPE, entity.getType());
                 EdusohoApp.app.mEngine.runNormalPluginWithBundle("DiscussDetailActivity", mContext, bundle);
             }

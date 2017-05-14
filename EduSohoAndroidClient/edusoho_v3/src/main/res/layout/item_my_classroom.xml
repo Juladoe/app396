@@ -29,12 +29,10 @@
 
     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
         android:id="@+id/tv_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/common_40"
+        android:layout_height="@dimen/common_40"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/iv_pic"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="-5dp"
         android:text="@string/new_font_more_oper"
         android:textColor="@color/secondary2_font_color"
         android:textSize="20dp" />

@@ -1,10 +1,9 @@
-package com.edusoho.kuozhi.v3.adapter;
+package com.edusoho.kuozhi.clean.module.mine.study;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,18 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.innerbean.Study;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
+import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -45,14 +42,14 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int NOT_EMPTY = 1;
     private int mCurrentDataStatus;
     private Context mContext;
-    private List<Classroom> mClassroomList;
+    private List<Study> mClassroomList;
 
     public MyClassroomAdapter(Context context) {
         this.mContext = context;
         mClassroomList = new ArrayList<>();
     }
 
-    public void setClassrooms(List<Classroom> list) {
+    public void setClassrooms(List<Study> list) {
         mClassroomList = list;
         notifyDataSetChanged();
     }
@@ -81,12 +78,12 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (mCurrentDataStatus == NOT_EMPTY) {
             MyStudyFragment.ClassroomViewHolder classroomViewHolder = (MyStudyFragment.ClassroomViewHolder) viewHolder;
-            final Classroom classroom = mClassroomList.get(position);
-            classroomViewHolder.tvTitle.setText(String.valueOf(classroom.title));
-            ImageLoader.getInstance().displayImage(classroom.getLargePicture(), classroomViewHolder.ivPic, EdusohoApp.app.mOptions);
-            classroomViewHolder.rLayoutItem.setTag(classroom.id);
+            final Study study = mClassroomList.get(position);
+            classroomViewHolder.tvTitle.setText(String.valueOf(study.title));
+            ImageLoader.getInstance().displayImage(study.cover.large, classroomViewHolder.ivPic, EdusohoApp.app.mOptions);
+            classroomViewHolder.rLayoutItem.setTag(study.id);
             classroomViewHolder.rLayoutItem.setOnClickListener(getClassroomViewClickListener());
-            classroomViewHolder.tvMore.setTag(classroom);
+            classroomViewHolder.tvMore.setTag(study);
             classroomViewHolder.tvMore.setOnClickListener(getMoreClickListener());
         }
     }
@@ -120,7 +117,7 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Classroom classroom = (Classroom) v.getTag();
+                final Study study = (Study) v.getTag();
                 final MoreDialog dialog = new MoreDialog(mContext);
                 dialog.init("退出班级", new MoreDialog.MoreCallBack() {
                     @Override
@@ -131,15 +128,15 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(final DialogInterface dlg, int which) {
-                                        CourseUtil.deleteClassroom(classroom.id, new CourseUtil.CallBack() {
+                                        CourseUtil.deleteClassroom(study.id, new CourseUtil.CallBack() {
                                             @Override
                                             public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
-                                                mClassroomList.remove(classroom);
+                                                mClassroomList.remove(study);
                                                 notifyDataSetChanged();
                                                 dlg.dismiss();
                                                 dialog.dismiss();
-                                                clearClassRoomCoursesCache(classroom.id);
+                                                clearClassRoomCoursesCache(study.id);
                                             }
 
                                             @Override
@@ -149,25 +146,26 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                         });
                                     }
                                 })
-                                .setNegativeButton("取消", null)
+                                .setNegativeButton(mContext.getString(R.string.cancel), null)
                                 .create()
                                 .show();
                     }
 
                     @Override
                     public void onShareClick(View v, Dialog dialog) {
-                        final ShareTool shareTool = new ShareTool(mContext
-                                , EdusohoApp.app.host + "/classroom/" + classroom.id
-                                , classroom.title
-                                , classroom.about.length() > 20 ? classroom.about.substring(0, 20) : classroom.about
-                                , classroom.largePicture);
-                        new Handler((mContext.getMainLooper())).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                shareTool.shardCourse();
-                            }
-                        });
-                        dialog.dismiss();
+                        // TODO: 2017/5/11 分享
+//                        final ShareTool shareTool = new ShareTool(mContext
+//                                , EdusohoApp.app.host + "/classroom/" + classroom.id
+//                                , classroom.title
+//                                , classroom.about.length() > 20 ? classroom.about.substring(0, 20) : classroom.about
+//                                , classroom.largePicture);
+//                        new Handler((mContext.getMainLooper())).post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                shareTool.shardCourse();
+//                            }
+//                        });
+//                        dialog.dismiss();
                     }
 
                     @Override
@@ -180,6 +178,7 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         };
     }
 
+    // TODO: 2017/5/11 删除缓存文件
     private void clearClassRoomCoursesCache(int classRoomId) {
         Cache cache = SqliteUtil.getUtil(mContext).query(
                 "select * from data_cache where key=? and type=?",

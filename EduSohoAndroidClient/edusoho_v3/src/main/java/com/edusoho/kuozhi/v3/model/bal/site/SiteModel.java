@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.model.bal.site;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.entity.site.Site;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
@@ -12,6 +11,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.Api;
 import com.google.gson.reflect.TypeToken;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -24,6 +24,7 @@ public class SiteModel {
             "https://open.qiqiuyun.net";
 
     public static void getSite(String searchKey, final ResponseCallbackListener<List<Site>> callbackListener) {
+        searchKey = URLEncoder.encode(searchKey);
         RequestUrl requestUrl = EdusohoApp.app.bindNewHostUrl(HOST + Api.SCHOOLS
                 + "?keyword=" + searchKey, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {

@@ -45,7 +45,7 @@
         android:id="@+id/llayout_filter_question_type_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/v_breakline"
+        android:layout_below="@id/v_breakline"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -91,7 +91,7 @@
         android:id="@+id/srl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/v_breakline">
+        android:layout_below="@id/v_breakline">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_content"

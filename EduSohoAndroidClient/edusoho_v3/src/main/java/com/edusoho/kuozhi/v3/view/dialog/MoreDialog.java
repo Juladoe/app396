@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.Classroom;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 
 /**
  * Created by remilia on 2017/1/9.
