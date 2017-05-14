@@ -20,7 +20,11 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.MessageEvent;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
+import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
+import com.edusoho.kuozhi.clean.utils.biz.TaskFinishHelper;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -49,6 +53,8 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -115,7 +121,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         Bundle bundle = new Bundle();
         bundle.putString("event", "lessonStatusRefresh");
         MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, bundle);
@@ -160,6 +165,39 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 }
             });
 
+            TaskFinishHelper.Builder builder = new TaskFinishHelper.Builder()
+                    .setCourseId(mCourseProject.id)
+                    .setCourseTask(mCourseTask)
+                    .setEnableFinish(mCourseProject.enableFinish);
+
+            final TaskFinishHelper mTaskFinishHelper = new TaskFinishHelper(builder, this)
+                    .setActionListener(new TaskFinishHelper.ActionListener() {
+                        @Override
+                        public void onFinish(TaskEvent taskEvent) {
+                            EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK_SUCCESS));
+                            mCourseTask.result = taskEvent.result;
+                            setTaskFinishButtonBackground(mCourseTask);
+                            TaskFinishDialog.newInstance(taskEvent, mCourseTask)
+                                    .show(getSupportFragmentManager(), "mTaskFinishDialog");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+                    });
+
+            mTaskFinishHelper.invoke();
+
+            mTaskFinish.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mCourseTask.result == null || TaskResultEnum.START.toString().equals(mCourseTask.result.status)) {
+                        mTaskFinishHelper.finish();
+                    }
+                }
+            });
+
         } catch (Exception ex) {
             Log.e("lessonActivity", ex.toString());
         }
@@ -167,6 +205,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private void setTaskFinishButtonBackground(CourseTask courseTask) {
         if (courseTask.result != null && TaskResultEnum.FINISH.toString().equals(courseTask.result.status)) {
+            mTaskFinish.setTextColor(mContext.getResources().getColor(R.color.disabled2_hint_color));
             mTaskFinish.setCompoundDrawablesWithIntrinsicBounds(R.drawable.task_finish_left_icon, 0, 0, 0);
             mTaskFinish.setBackground(getResources().getDrawable(R.drawable.task_finish_button_bg));
         } else {
@@ -224,7 +263,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void setLoadViewState(boolean isShow) {
         mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

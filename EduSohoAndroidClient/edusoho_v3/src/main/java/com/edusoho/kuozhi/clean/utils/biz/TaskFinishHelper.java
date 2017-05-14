@@ -6,6 +6,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
+import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
+import com.edusoho.kuozhi.clean.bean.innerbean.TaskResult;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -108,6 +110,7 @@ public class TaskFinishHelper {
                     public void onNext(TaskEvent taskEvent) {
                         if (FINISH.equals(taskEvent.result.status)) {
                             mActionListener.onFinish(taskEvent);
+                            mCourseTask.result = taskEvent.result;
                         }
                     }
                 });
