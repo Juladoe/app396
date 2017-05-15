@@ -18,7 +18,7 @@ import com.edusoho.kuozhi.clean.bean.StudyCourse;
 import com.edusoho.kuozhi.clean.bean.innerbean.Study;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
-import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
+import com.edusoho.kuozhi.clean.module.mine.MineFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
@@ -99,6 +99,7 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (mCurrentDataStatus == NOT_EMPTY) {
             MyStudyFragment.CourseStudyViewHolder courseStudyViewHolder = (MyStudyFragment.CourseStudyViewHolder) viewHolder;
             courseStudyViewHolder.layoutLive.setVisibility(View.GONE);
+            courseStudyViewHolder.layoutFrom.setVisibility(View.GONE);
             courseStudyViewHolder.tvStudyState.setText("");
             switch (mCourseType) {
                 case COURSE_TYPE_NORMAL:
@@ -111,6 +112,8 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
                     courseStudyViewHolder.rLayoutItem.setOnClickListener(getCourseViewClickListener());
                     courseStudyViewHolder.tvMore.setTag(studyCourse);
                     courseStudyViewHolder.tvMore.setOnClickListener(getMoreClickListener());
+                    courseStudyViewHolder.layoutFrom.setVisibility(View.VISIBLE);
+                    courseStudyViewHolder.tvFrom.setText(studyCourse.courseSet.title);
                     break;
                 case COURSE_TYPE_LIVE:
                     final Study study = mLiveCourses.get(position);
