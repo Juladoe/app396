@@ -190,7 +190,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                 .setActionListener(new TaskFinishHelper.ActionListener() {
                     @Override
                     public void onFinish(TaskEvent taskEvent) {
-                        EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK_SUCCESS));
+                        EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask, MessageEvent.FINISH_TASK_SUCCESS));
                         TaskFinishDialog.newInstance(taskEvent, mCourseTask).show(getActivity()
                                 .getSupportFragmentManager(), "mTaskFinishDialog");
                     }

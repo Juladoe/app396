@@ -50,7 +50,7 @@ public class TaskFinishHelper {
     private Timer mTimer;
     private String mLastTime = "";
     private Map<String, String> mFieldMaps = new HashMap<>();
-    ;
+
     private Context mContext;
 
     public TaskFinishHelper(Builder builder, Context context) {
@@ -140,7 +140,6 @@ public class TaskFinishHelper {
     }
 
     public void onInvoke() {
-        Log.d("taskFinish", "onInvoke: ");
         if (mEnableFinish == 0 && mCourseTask.isFinish()) {
             TaskTypeEnum taskType = TaskTypeEnum.fromString(mCourseTask.type);
             if ((taskType == VIDEO && TIME == TaskFinishType.fromString(mCourseTask.activity.finishType))
@@ -148,7 +147,6 @@ public class TaskFinishHelper {
                     || (taskType == DOC && null == TaskFinishType.fromString(mCourseTask.activity.finishType))
                     || (taskType == TEXT && null == TaskFinishType.fromString(mCourseTask.activity.finishType))
                     || (taskType == PPT && TIME == TaskFinishType.fromString(mCourseTask.activity.finishType))) {
-                ToastUtils.show(mContext, "doing onInvoke");
                 if (mTimer == null) {
                     mTimer = new Timer();
                 }
@@ -181,7 +179,6 @@ public class TaskFinishHelper {
     }
 
     public void onDestroyTimer() {
-        Log.d("taskFinish", "onDestroyTimer: ");
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;

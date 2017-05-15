@@ -564,7 +564,12 @@
     <string name="donwload_task_not_support">移动端暂不支持下载资料任务</string>
     <string name="discuss_task_not_support">移动端暂不支持讨论任务</string>
     <string name="flash_task_not_support">移动端暂不支持Flash任务</string>
+    <string name="task_not_support">移动端暂不支持该类型任务</string>
+    <string name="task_lock">需要解锁上一个任务</string>
+    <string name="finish_not_support_task">手机端暂不支持该类型任务，是否手动完成任务</string>
     <string name="task_finished_button">学过了</string>
+    <string name="task_finish_cancel">取消</string>
+    <string name="task_finish_confirm">完成任务</string>
     <string name="task_finish_limit">限制任务：必须观看%1$d分钟才能完成</string>
     <string name="ppt_task_finish_limit">限制任务：必须观看最后一页才能完成</string>
     <string name="video_task_finish_limit">限制任务：必须观看到最后才能完成</string>
