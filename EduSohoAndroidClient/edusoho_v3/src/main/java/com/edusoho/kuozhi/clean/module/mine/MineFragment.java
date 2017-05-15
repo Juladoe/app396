@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.mine.me;
+package com.edusoho.kuozhi.clean.module.mine;
 
 import android.content.Intent;
 import android.os.Bundle;

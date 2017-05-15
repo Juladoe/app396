@@ -55,8 +55,6 @@ public interface CourseProjectContract {
 
         void setTaskFinishButtonBackground(boolean learned);
 
-        void setCurrentTaskStatus(TaskResultEnum status);
-
         void launchLoginActivity();
 
         void clearCoursesCache(int... courseIds);
@@ -77,7 +75,5 @@ public interface CourseProjectContract {
         void learnTask(CourseTask courseTask);
 
         boolean isJoin();
-
-        void finishTask(CourseTask task);
     }
 }

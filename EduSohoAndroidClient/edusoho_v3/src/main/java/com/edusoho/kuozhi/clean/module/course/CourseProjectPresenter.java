@@ -239,33 +239,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     @Override
-    public void finishTask(CourseTask task) {
-        HttpUtils.getInstance()
-                .addTokenHeader(EdusohoApp.app.token)
-                .createApi(CourseApi.class)
-                .setCourseTaskFinish(mCourseProjectId, task.id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<TaskEvent>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(TaskEvent taskEvent) {
-                        mView.setTaskFinishButtonBackground(true);
-                        mView.setCurrentTaskStatus(TaskResultEnum.FINISH);
-                    }
-                });
-    }
-
-    @Override
     public void exitCourse() {
         HttpUtils.getInstance()
                 .addTokenHeader(EdusohoApp.app.token)

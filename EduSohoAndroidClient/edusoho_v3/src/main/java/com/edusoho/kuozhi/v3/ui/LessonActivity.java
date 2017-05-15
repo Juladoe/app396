@@ -182,7 +182,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     .setActionListener(new TaskFinishHelper.ActionListener() {
                         @Override
                         public void onFinish(TaskEvent taskEvent) {
-                            EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK_SUCCESS));
+                            EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask, MessageEvent.FINISH_TASK_SUCCESS));
                             mCourseTask.result = taskEvent.result;
                             setTaskFinishButtonBackground(mCourseTask);
                             TaskFinishDialog.newInstance(taskEvent, mCourseTask)

@@ -168,24 +168,25 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                 }
                 CourseItem item = adapter.getItem(position);
                 if (item.task.lock) {
+                    showToast(getString(R.string.task_lock));
                     return;
                 }
-                TaskTypeEnum type = TaskTypeEnum.fromString(item.task.type);
-                switch (type) {
-                    case DOWNLOAD:
-                        showToast(getString(R.string.donwload_task_not_support));
-                        break;
-                    case DISCUSS:
-                        showToast(getString(R.string.discuss_task_not_support));
-                        break;
-                    case FLASH:
-                        showToast(getString(R.string.flash_task_not_support));
-                        break;
-                    default:
-                        adapter.setCurrentClickItem(position);
-                        EventBus.getDefault().post(new MessageEvent<>(item.task
-                                , MessageEvent.LEARN_TASK));
-                }
+//                TaskTypeEnum type = TaskTypeEnum.fromString(item.task.type);
+//                switch (type) {
+//                    case DOWNLOAD:
+//                        //showToast(getString(R.string.donwload_task_not_support));
+//                    case DISCUSS:
+//                        //showToast(getString(R.string.discuss_task_not_support));
+//                    case FLASH:
+//                        showToast(getString(R.string.task_not_support));
+//                        break;
+//                    default:
+//                        break;
+//                }
+
+                adapter.setCurrentClickItem(position);
+                EventBus.getDefault().post(new MessageEvent<>(item.task
+                        , MessageEvent.LEARN_TASK));
             }
         });
     }
@@ -253,7 +254,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
     public void onFinishTask(MessageEvent messageEvent) {
         switch (messageEvent.getType()) {
             case MessageEvent.FINISH_TASK_SUCCESS:
-                ((CourseTaskAdapter) mTaskRecyclerView.getAdapter()).finishTask((int) messageEvent.getMessageBody());
+                ((CourseTaskAdapter) mTaskRecyclerView.getAdapter()).finishTask(((CourseTask) messageEvent.getMessageBody()).id);
                 break;
         }
     }

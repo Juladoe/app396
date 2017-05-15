@@ -70,7 +70,7 @@ public class LessonMenuHelper {
             @Override
             public void onFinish(TaskEvent taskEvent) {
                 mCurrentLearnState = taskEvent.result.status;
-                EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask.id, MessageEvent.FINISH_TASK_SUCCESS));
+                EventBus.getDefault().postSticky(new MessageEvent<>(mCourseTask, MessageEvent.FINISH_TASK_SUCCESS));
                 setLearnBtnState(true);
                 if (mMenuHelperFinishListener != null) {
                     mMenuHelperFinishListener.showFinishTaskDialog(taskEvent);

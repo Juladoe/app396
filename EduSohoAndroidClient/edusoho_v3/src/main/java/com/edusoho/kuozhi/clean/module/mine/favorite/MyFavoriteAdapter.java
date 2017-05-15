@@ -13,7 +13,7 @@ import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity;
-import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
+import com.edusoho.kuozhi.clean.module.mine.MineFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
