@@ -182,7 +182,7 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
                         showToast(getString(R.string.flash_task_not_support));
                         break;
                     default:
-                        adapter.switchClickPosition(v, item);
+                        adapter.setCurrentClickItem(position);
                         EventBus.getDefault().post(new MessageEvent<>(item.task
                                 , MessageEvent.LEARN_TASK));
                 }
@@ -241,6 +241,10 @@ public class CourseTasksFragment extends BaseFragment<CourseTasksContract.Presen
         switch (messageEvent.getType()) {
             case MessageEvent.COURSE_EXIT:
                 mCourseProgressBar.setVisibility(View.GONE);
+                break;
+            case MessageEvent.COURSE_TASK_ITEM_UPDATE:
+                ((CourseTaskAdapter) mTaskRecyclerView.getAdapter())
+                        .setCurrentClickItem((CourseTask) messageEvent.getMessageBody());
                 break;
         }
     }

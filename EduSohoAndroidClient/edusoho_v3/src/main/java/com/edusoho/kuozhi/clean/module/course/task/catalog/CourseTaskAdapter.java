@@ -29,8 +29,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private CourseProject.LearnMode mLearnMode;
     private boolean mIsJoin;
     private Context mContext;
-    private CourseTaskViewHolder mLastCourseTaskViewHolder;
-    private CourseTask mCurrentCourseTask;
+    private Integer mCurrentClickPosition = null;
 
     public CourseTaskAdapter(Context context, List<CourseItem> taskItems, CourseProject.LearnMode mode, boolean isJoin) {
         this.mTaskItems = taskItems;
@@ -105,32 +104,26 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             taskHolder.taskDuration.setText(taskItem.task.length);
             taskHolder.taskIsFree.setVisibility(taskItem.task.isFree == 1 ? View.VISIBLE : View.GONE);
             taskHolder.taskType.setText(getTaskIconResId(taskItem.task.type));
+            if (mCurrentClickPosition != null && position == mCurrentClickPosition) {
+                taskHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                taskHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                taskHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            } else {
+                taskHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
+                taskHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+                taskHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+            }
         }
     }
 
     private void setTaskStatusIcon(CourseTaskViewHolder holder, CourseProject.LearnMode mode, CourseItem taskItem) {
         if (mode == CourseProject.LearnMode.FREEMODE) {
-            if (mCurrentCourseTask != null && taskItem.task.id == mCurrentCourseTask.id) {
-                holder.taskType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-                holder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-                holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            } else {
-                holder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
-                holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
-                holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
-            }
             setTaskResult(holder, taskItem.task.result);
         } else {
             if (taskItem.task.lock) {
                 holder.taskStatus.setImageResource(R.drawable.lesson_status_lock);
-                holder.taskType.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
-                holder.taskName.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
-                holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
             } else {
                 setTaskResult(holder, taskItem.task.result);
-                holder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
-                holder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
-                holder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
             }
         }
     }
@@ -145,20 +138,19 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    void switchClickPosition(View currentClickView, CourseItem courseItem) {
-        CourseTaskViewHolder taskViewHolder = new CourseTaskViewHolder(currentClickView);
-        if (mLastCourseTaskViewHolder != null) {
-            //taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.disabled_hint_color));
-            mLastCourseTaskViewHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
-            mLastCourseTaskViewHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
-            mLastCourseTaskViewHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+    void setCurrentClickItem(CourseTask courseTask) {
+        for (int i = 0; i < mTaskItems.size(); i++) {
+            if (mTaskItems.get(i).task.id == courseTask.id) {
+                mCurrentClickPosition = i;
+                break;
+            }
         }
-        //taskViewHolder.taskLock.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-        taskViewHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-        taskViewHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-        taskViewHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-        mLastCourseTaskViewHolder = taskViewHolder;
-        mCurrentCourseTask = courseItem.task;
+        notifyDataSetChanged();
+    }
+
+    void setCurrentClickItem(int position) {
+        mCurrentClickPosition = position;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -203,7 +195,6 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
-        //ESIconView taskLock;
         ESIconView taskType;
         TextView taskName;
         TextView taskDuration;
@@ -212,7 +203,6 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         CourseTaskViewHolder(View view) {
             super(view);
-            //taskLock = (ESIconView) view.findViewById(R.id.ev_task_lock);
             taskType = (ESIconView) view.findViewById(R.id.ev_task_type);
             taskName = (TextView) view.findViewById(R.id.tv_task_name);
             taskDuration = (TextView) view.findViewById(R.id.tv_task_duration);
