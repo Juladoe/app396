@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -133,6 +134,8 @@ public class SelectProjectDialog extends ESBottomDialog<SelectProjectDialogContr
             mRb.setGravity(Gravity.CENTER);
             RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mp.setMargins(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 5));
+            mRb.setLines(1);
+            mRb.setEllipsize(TextUtils.TruncateAt.END);
             mRb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
             mRb.setTextColor(getContext().getResources().getColorStateList(R.color.teach_type_text_selector));
             mRb.setButtonDrawable(new ColorDrawable(Color.TRANSPARENT));
