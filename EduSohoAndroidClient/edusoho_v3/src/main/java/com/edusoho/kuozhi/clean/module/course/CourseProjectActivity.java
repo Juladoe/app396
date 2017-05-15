@@ -58,6 +58,7 @@ import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -199,6 +200,7 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 } else {
                     CourseTask task = (CourseTask) v.getTag();
                     mPresenter.learnTask(task);
+                    EventBus.getDefault().post(new MessageEvent<>(task, MessageEvent.COURSE_TASK_ITEM_UPDATE));
                 }
             }
         });

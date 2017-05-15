@@ -13,6 +13,7 @@ public class MessageEvent<T> {
     public static final int LOGIN = 3;
     public static final int FINISH_TASK_SUCCESS = 4;
     public static final int FULL_SCREEN = 5;
+    public static final int COURSE_TASK_ITEM_UPDATE = 6;
 
     private T mMessage;
     private int mCode;
