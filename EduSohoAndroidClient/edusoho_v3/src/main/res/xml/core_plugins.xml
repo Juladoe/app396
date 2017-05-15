@@ -152,7 +152,7 @@
 
     <plugin
         name="MineFragment"
-        package="com.edusoho.kuozhi.clean.module.mine.me.MineFragment"
+        package="com.edusoho.kuozhi.clean.module.mine.MineFragment"
         version="1.0" />
 
     <plugin

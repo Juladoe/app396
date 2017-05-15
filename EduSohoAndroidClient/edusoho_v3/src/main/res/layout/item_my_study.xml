@@ -87,6 +87,44 @@
             android:textColor="@color/secondary2_font_color"
             android:textSize="20dp" />
 
+        <RelativeLayout
+            android:id="@+id/layout_course_set"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_pic"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/iv_pic"
+            android:visibility="visible">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/disabled_hint_color" />
+
+            <TextView
+                android:id="@+id/tv_course_set"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="来自课程 | "
+                android:textColor="@color/secondary2_color"
+                android:textSize="@dimen/font_s" />
+
+            <TextView
+                android:id="@+id/tv_course_set_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_course_set"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/tv_course_set"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/font_xs" />
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <View

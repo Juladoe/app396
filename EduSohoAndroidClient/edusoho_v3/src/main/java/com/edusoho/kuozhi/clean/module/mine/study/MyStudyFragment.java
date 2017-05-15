@@ -13,7 +13,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.StudyCourse;
 import com.edusoho.kuozhi.clean.bean.innerbean.Study;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.clean.module.mine.me.MineFragment;
+import com.edusoho.kuozhi.clean.module.mine.MineFragment;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
@@ -151,6 +151,8 @@ public class MyStudyFragment extends BaseFragment implements MineFragment.Refres
     public static class CourseStudyViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPic;
         View layoutLive;
+        View layoutFrom;
+        TextView tvFrom;
         TextView tvLiveIcon;
         TextView tvLive;
         TextView tvTitle;
@@ -163,6 +165,8 @@ public class MyStudyFragment extends BaseFragment implements MineFragment.Refres
             super(view);
             ivPic = (ImageView) view.findViewById(R.id.iv_pic);
             layoutLive = view.findViewById(R.id.layout_live);
+            layoutFrom = view.findViewById(R.id.layout_course_set);
+            tvFrom = (TextView) view.findViewById(R.id.tv_course_set_name);
             tvLiveIcon = (TextView) view.findViewById(R.id.tv_live_icon);
             tvLive = (TextView) view.findViewById(R.id.tv_live);
             tvTitle = (TextView) view.findViewById(R.id.tv_title);
