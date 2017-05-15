@@ -128,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/course_progress_rate"
-                android:layout_marginBottom="44dp"
+                android:layout_marginBottom="50dp"
                 android:layout_marginTop="25dp"
                 android:gravity="center"
                 android:text=""

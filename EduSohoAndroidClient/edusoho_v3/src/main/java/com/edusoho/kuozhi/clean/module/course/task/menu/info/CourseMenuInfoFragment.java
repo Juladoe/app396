@@ -58,10 +58,6 @@ public class CourseMenuInfoFragment extends CourseProjectInfoFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container
             , @Nullable Bundle savedInstanceState) {
-//        View view = super.onCreateView(inflater, container, savedInstanceState);
-//        FrameLayout mHeader = (FrameLayout) view.findViewById(R.id.course_progress_layout);
-//        View header = inflater.inflate(R.layout.menu_course_info_layout, null);
-//        mHeader.addView(header);
         return inflater.inflate(R.layout.menu_course_info_layout, container, false);
     }
 

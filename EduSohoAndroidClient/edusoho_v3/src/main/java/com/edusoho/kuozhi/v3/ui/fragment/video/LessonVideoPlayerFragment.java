@@ -52,6 +52,8 @@ import java.util.TimerTask;
 
 import cn.trinea.android.common.util.ToastUtils;
 
+import static com.edusoho.kuozhi.clean.bean.TaskFinishType.END;
+
 /**
  * Created by suju on 16/12/16.
  */
@@ -176,7 +178,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     }
 
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -210,6 +211,14 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     }
 
     @Override
+    public void onFinish() {
+        super.onFinish();
+        if (mCourseProject.enableFinish == 0 && !mCourseTask.isFinish() && END.toString().equals(mCourseTask.activity.finishType)) {
+            mTaskFinishHelper.stickyFinish();
+        }
+    }
+
+    @Override
     protected VideoControllerView.ControllerListener getDefaultControllerListener() {
 
         return new SimpleVideoControllerListener() {
@@ -228,14 +237,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
             public void onChangeOverlay(boolean isShow) {
                 super.onChangeOverlay(isShow);
                 changeHeaderViewStatus(isShow);
-            }
-
-            @Override
-            public void onSeek(int position) {
-                super.onSeek(position);
-                if (position == Integer.parseInt(mRemainTime)) {
-                    Log.d("player", "onSeek: success");
-                }
             }
 
             @Override
