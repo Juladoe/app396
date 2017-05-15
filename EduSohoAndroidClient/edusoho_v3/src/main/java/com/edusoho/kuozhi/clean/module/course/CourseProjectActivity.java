@@ -29,12 +29,15 @@ import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.MessageEvent;
+import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.Teacher;
 import com.edusoho.kuozhi.clean.module.base.BaseActivity;
+import com.edusoho.kuozhi.clean.module.course.dialog.TaskFinishDialog;
 import com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum;
 import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.utils.AppUtils;
+import com.edusoho.kuozhi.clean.utils.biz.TaskFinishHelper;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -65,6 +68,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.AUDIO;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.FLASH;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.VIDEO;
 
 
 /**
@@ -372,7 +379,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 mLearnTextView.setText(R.string.course_closed);
                 mLearnTextView.setBackgroundResource(R.color.secondary2_font_color);
                 break;
-
         }
     }
 
@@ -395,12 +401,49 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
                 .show();
     }
 
+    public void showNotSupportTaskDialog(final CourseTask task) {
+        new AlertDialog.Builder(this, R.style.DialogTheme)
+                .setMessage(getString(R.string.finish_not_support_task))
+                .setNegativeButton(getString(R.string.task_finish_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(getString(R.string.task_finish_confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TaskFinishHelper.Builder builder = new TaskFinishHelper.Builder()
+                                .setCourseId(mCourseProjectId)
+                                .setCourseTask(task)
+                                .setEnableFinish(mPresenter.getCourseProject().enableFinish);
+                        new TaskFinishHelper(builder, CourseProjectActivity.this)
+                                .setActionListener(new TaskFinishHelper.ActionListener() {
+                                    @Override
+                                    public void onFinish(TaskEvent taskEvent) {
+                                        EventBus.getDefault().post(new MessageEvent<>(task, MessageEvent.FINISH_TASK_SUCCESS));
+                                        TaskFinishDialog.newInstance(taskEvent, task).show(CourseProjectActivity.this
+                                                .getSupportFragmentManager(), "mTaskFinishDialog");
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+                                })
+                                .stickyFinish();
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
     public boolean isJoin() {
         return mPresenter.isJoin();
     }
 
     @Override
-    public void learnTask(CourseTask task, CourseProject courseProject, CourseMember courseMember) {
+    public void learnTask(final CourseTask task, CourseProject courseProject, CourseMember courseMember) {
         setPlayLayoutVisible(false);
         mFinishTask.setVisibility(View.GONE);
         clearTaskFragment();
@@ -450,6 +493,15 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
             case EXERCISE:
                 startActivity(new Intent().setClassName(getPackageName(), EXERCISE_CLASSNAME).putExtra(Const.LESSON_ID, task.id));
                 break;
+            case FLASH:
+            case DOWNLOAD:
+            case DISCUSS:
+                if (task.result == null || TaskResultEnum.START.toString().equals(task.result.status)) {
+                    showNotSupportTaskDialog(task);
+                } else {
+                    showToast(R.string.task_not_support);
+                }
+                break;
         }
     }
 
@@ -496,14 +548,6 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         } else {
             mFinishTask.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mFinishTask.setBackground(getResources().getDrawable(R.drawable.task_unfinish_button_bg));
-        }
-    }
-
-    @Override
-    public void setCurrentTaskStatus(TaskResultEnum status) {
-        CourseTask task = (CourseTask) mFinishTask.getTag();
-        if (task != null) {
-            task.result.status = TaskResultEnum.FINISH.toString();
         }
     }
 
@@ -653,7 +697,10 @@ public class CourseProjectActivity extends BaseActivity<CourseProjectContract.Pr
         if (messageEvent.getType() == MessageEvent.LOGIN) {
             mPresenter.subscribe();
         } else if (messageEvent.getType() == MessageEvent.FINISH_TASK_SUCCESS) {
-            setTaskFinishButtonBackground(true);
+            TaskTypeEnum type = TaskTypeEnum.fromString(((CourseTask) messageEvent.getMessageBody()).type);
+            if (type == AUDIO || type == VIDEO) {
+                setTaskFinishButtonBackground(true);
+            }
         }
     }
 
