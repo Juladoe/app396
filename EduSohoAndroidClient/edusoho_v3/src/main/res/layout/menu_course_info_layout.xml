@@ -5,20 +5,12 @@
     android:layout_height="match_parent"
     android:background="@color/disabled2_hint_color">
 
-    <ImageView
-        android:id="@+id/tv_course_schedule_bg"
-        android:layout_width="match_parent"
-        android:layout_height="210dp"
-        android:layout_alignParentTop="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/menu_course_info_with_schedule_bg" />
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:background="@android:color/transparent"
+        android:background="@color/primary_color"
         app:contentInsetStart="0dp">
 
         <RelativeLayout
@@ -60,70 +52,96 @@
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/tv_my_course_progress"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="28dp"
-        android:text="@string/my_course_progress"
-        android:textColor="@color/disabled2_hint_color"
-        android:textSize="@dimen/font_s" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
-    <ProgressBar
-        android:id="@+id/my_course_progress_rate"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:layout_below="@+id/tv_my_course_progress"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:isIndicator="true"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/bg_menu_my_course_progress" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/tv_course_schedule_bg"
+                android:layout_width="match_parent"
+                android:layout_height="154dp"
+                android:layout_alignParentTop="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/menu_course_info_with_schedule_bg" />
 
-    <TextView
-        android:id="@+id/tv_course_progress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/my_course_progress_rate"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/course_progress"
-        android:textColor="@color/disabled2_hint_color"
-        android:textSize="@dimen/font_s"
-        android:visibility="gone" />
+            <TextView
+                android:id="@+id/tv_my_course_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="28dp"
+                android:text="@string/my_course_progress"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_s" />
 
-    <ProgressBar
-        android:id="@+id/course_progress_rate"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:layout_below="@+id/tv_course_progress"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:isIndicator="true"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/bg_menu_course_progress"
-        android:visibility="gone" />
+            <ProgressBar
+                android:id="@+id/my_course_progress_rate"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_below="@+id/tv_my_course_progress"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:isIndicator="true"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/bg_menu_my_course_progress" />
 
-    <TextView
-        android:id="@+id/tv_deadline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/course_progress_rate"
-        android:layout_marginTop="25dp"
-        android:gravity="center"
-        android:text=""
-        android:textColor="@color/disabled2_hint_color"
-        android:textSize="@dimen/font_s" />
+            <TextView
+                android:id="@+id/tv_course_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/my_course_progress_rate"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/course_progress"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_s"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/course_progress_rate"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_below="@+id/tv_course_progress"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:isIndicator="true"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/bg_menu_course_progress"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_deadline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/course_progress_rate"
+                android:layout_marginBottom="44dp"
+                android:layout_marginTop="25dp"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_s" />
+
+            <include
+                layout="@layout/fragment_course_project_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/tv_deadline" />
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
