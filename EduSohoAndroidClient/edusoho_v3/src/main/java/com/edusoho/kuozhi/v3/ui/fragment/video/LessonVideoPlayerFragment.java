@@ -175,6 +175,8 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         }
     }
 
+
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
