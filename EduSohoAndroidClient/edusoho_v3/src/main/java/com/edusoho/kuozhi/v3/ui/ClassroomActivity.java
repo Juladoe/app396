@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -226,6 +225,8 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                     @Override
                     public void onAddClassroomError(String response) {
                         hideProcesDialog();
+                        CommonUtil.shortToast(ClassroomActivity.this, getResources()
+                                .getString(R.string.fail_add_classroom));
                     }
                 });
                 return;
@@ -249,6 +250,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                         @Override
                         public void onAddClassroomError(String error) {
                             hideProcesDialog();
+                            CommonUtil.shortToast(ClassroomActivity.this, error);
                         }
                     });
             mIsJump = true;

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
 import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +17,7 @@ public class RedirectBody implements Serializable {
     public String content;
     public String url;
     public String source;
+    public String threadId;
 
     public static RedirectBody createByJsonObj(JSONObject body) {
 
@@ -28,7 +30,7 @@ public class RedirectBody implements Serializable {
         redirectBody.url = body.optString("url");
         redirectBody.source = body.optString("source");
         redirectBody.id = body.optInt("id");
-
+        redirectBody.threadId = body.optString("threadId");
         return redirectBody;
     }
 
@@ -44,6 +46,20 @@ public class RedirectBody implements Serializable {
         redirectBody.url = url;
         redirectBody.source = "self";
         redirectBody.id = 0;
+
+        return redirectBody;
+    }
+
+    public static RedirectBody createByPostContent(String title, String content, String fromType, String type, int id, String threadId) {
+        RedirectBody redirectBody = new RedirectBody();
+
+        redirectBody.type = type;
+        redirectBody.fromType = fromType;
+        redirectBody.title = title;
+        redirectBody.content = content;
+        redirectBody.source = "self";
+        redirectBody.id = id;
+        redirectBody.threadId = threadId;
 
         return redirectBody;
     }

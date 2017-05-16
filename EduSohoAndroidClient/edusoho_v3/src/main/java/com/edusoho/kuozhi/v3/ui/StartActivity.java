@@ -3,9 +3,9 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -32,14 +32,8 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
-
-import java.io.File;
-import java.io.FileOutputStream;
-
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 
@@ -78,7 +72,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         findViewById(R.id.li_start_load).setBackgroundResource(R.drawable.load_bg);
     }
 
-    private void startAnim() {
+    protected void startAnim() {
         final View nameView = findViewById(R.id.tv_start_name);
         final View titleView = findViewById(R.id.tv_start_title);
         View iconView = findViewById(R.id.tv_start_icon);
@@ -408,6 +402,9 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
      * 处理网校异常dlg
      */
     protected void showSchoolErrorDlg() {
+        if (isFinishing()) {
+            return;
+        }
         PopupDialog popupDialog = PopupDialog.createMuilt(
                 mContext,
                 "提示信息",

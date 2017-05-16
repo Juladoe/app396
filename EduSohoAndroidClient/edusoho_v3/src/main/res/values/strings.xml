@@ -47,7 +47,7 @@
     <string name="setting_online_duration">在线时段</string>
     <string name="setting_wifi_download">允许使用4G网络观看或缓存视频</string>
     <string name="setting_receive_msg">消息免打扰</string>
-    <string name="setting_mediacodec_type">默认视频解码方式:[%s]</string>
+    <string name="setting_mediacodec_support_rate">视频支持倍速播放</string>
     <string name="setting_clean_cache">清理缓存</string>
     <string name="setting_about">关于</string>
     <string name="msg_reminder_new_msg">接收新消息通知</string>
@@ -73,6 +73,7 @@
     <string name="add_error_close">该课程限制加入，请联系管理员</string>
     <string name="fail_add_course">加入课程失败</string>
     <string name="success_add_classroom">成功加入班级</string>
+    <string name="fail_add_classroom">加入班级失败</string>
     <string name="clear_service_profile_record">清空历史记录</string>
     <string name="classroom_all_members">全体成员</string>
     <string name="classroom_announcement">班级公告</string>
@@ -275,7 +276,7 @@
     <string name="discuss_no_data">还没有问答</string>
     <string name="discuss_unlogin">还没有登录</string>
 
-    <string name="new_font_share">&#xe6a0;</string>
+    <string name="new_font_share">&#xe6a2;</string>
     <string name="new_font_back">&#xe668;</string>
     <string name="new_font_play">&#xe669;</string>
     <string name="new_font_collect">&#xe66a;</string>
@@ -409,7 +410,7 @@
     <string name="video_replay_title">直播回看</string>
     <string name="lesson_living">直播中</string>
     <string name="no_add_course">还没有添加课时</string>
-    <string name="no_add_class">还没有添加班级</string>
+    <string name="no_add_class">还没有添加课程</string>
 
     <string name="filter_type_latest">最近</string>
     <string name="filter_type_course">课程</string>
@@ -418,5 +419,7 @@
     <string name="question_post">发起</string>
     <string name="question_answer">回复</string>
     <string name="classroom_teacher_txt">班主任</string>
+    <string name="go_to_course">前往课程</string>
+    <string name="go_to_classroom">前往班级</string>
 
 </resources>

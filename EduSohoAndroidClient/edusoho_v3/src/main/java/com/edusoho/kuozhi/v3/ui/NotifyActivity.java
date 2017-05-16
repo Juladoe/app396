@@ -66,13 +66,14 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         mListView.setLayoutManager(linearLayoutManager);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
                 frame.refreshComplete();
-                final List<Notify> notifyList =  mNotifyDbHelper.getNofityList(mStart, LIMIT);
+                final List<Notify> notifyList = mNotifyDbHelper.getNofityList(mStart, LIMIT);
                 if (notifyList.isEmpty()) {
                     canLoad = false;
                     return;
@@ -120,8 +121,8 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
 
     private void initData() {
         School school = getAppSettingProvider().getCurrentSchool();
-        mNotifyDbHelper= new NotifyDbHelper(mContext, new ESDbManager(mContext, school.getDomain()));
-        List<Notify> notifyList =  mNotifyDbHelper.getNofityList(mStart, LIMIT);
+        mNotifyDbHelper = new NotifyDbHelper(mContext, new ESDbManager(mContext, school.getDomain()));
+        List<Notify> notifyList = mNotifyDbHelper.getNofityList(mStart, LIMIT);
         mStart += notifyList.size();
 
         mListAdapter = new NofityListAdapter(mContext);

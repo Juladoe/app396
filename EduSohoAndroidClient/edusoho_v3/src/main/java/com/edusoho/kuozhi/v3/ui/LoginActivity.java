@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -67,7 +68,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private static boolean isRun;
     private EditText etUsername;
     private EditText etPassword;
-    private View mTvLogin;
+    private TextView mTvLogin;
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
@@ -103,7 +104,7 @@ public class LoginActivity extends BaseNoTitleActivity {
         super.initView();
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
-        mTvLogin = findViewById(R.id.tv_login);
+        mTvLogin = (TextView) findViewById(R.id.tv_login);
         mTvLogin.setOnClickListener(mLoginClickListener);
         ivWeibo = (ImageView) findViewById(R.id.iv_weibo);
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
@@ -177,6 +178,7 @@ public class LoginActivity extends BaseNoTitleActivity {
             public void afterTextChanged(Editable s) {
                 mTvLogin.setAlpha(1f);
                 mTvLogin.setEnabled(true);
+                mTvLogin.setTextColor(Color.WHITE);
                 if (etUsername.getText().length() == 0) {
                     ivUserCancel.setVisibility(View.INVISIBLE);
                     mTvLogin.setAlpha(0.6f);

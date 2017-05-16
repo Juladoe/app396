@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -108,8 +109,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
                     @Override
                     public void onFailure(String code, String message) {
+                        if (TextUtils.isEmpty(message)) {
+                            CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_loading_fail));
+                            finish();
+                            return;
+                        }
                         if (message.contains("课程不存在") || message.contains("课程未发布")) {
-                            CommonUtil.shortToast(CourseStudyDetailActivity.this, message);
+                            CommonUtil.shortToast(getBaseContext(), message);
                             finish();
                         }
                     }
@@ -259,7 +265,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                         , course.title
                         , course.about.length() > 20 ? course.about.substring(0, 20) : course.about
                         , course.middlePicture);
-        new Handler((((EdusohoApp) getApplication()).mContext.getMainLooper())).post(new Runnable() {
+        new Handler((getApplication().getMainLooper())).post(new Runnable() {
             @Override
             public void run() {
                 shareTool.shardCourse();
@@ -589,7 +595,9 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             mIvGrade.setVisibility(View.GONE);
             mPlayLayout2.setVisibility(View.VISIBLE);
         } else {
-            mIvGrade.setVisibility(mIsPlay ? View.GONE : View.VISIBLE);
+            if (mIsMemder) {
+                mIvGrade.setVisibility(mIsPlay ? View.GONE : View.VISIBLE);
+            }
             mPlayLayout2.setVisibility(View.GONE);
         }
     }

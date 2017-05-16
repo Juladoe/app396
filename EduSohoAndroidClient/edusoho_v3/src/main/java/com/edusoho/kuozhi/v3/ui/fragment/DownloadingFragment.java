@@ -252,6 +252,11 @@ public class DownloadingFragment extends BaseFragment implements IDownloadFragme
                 app.sendMessage(DownloadedFragment.FINISH, bundle);
             }
         } else {
+            if (!mDownloadingAdapter.hasLessonItem(lessonId)) {
+                DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
+                mDownloadingAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
+                setEmptyState(mDownloadingAdapter.getCount() == 0);
+            }
             mDownloadingAdapter.updateProgress(lessonId, m3u8Model);
         }
     }

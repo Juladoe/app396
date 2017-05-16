@@ -17,19 +17,24 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.RemoteViews;
+
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.DownloadModel;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 /**
@@ -50,47 +55,10 @@ public class M3U8DownService extends Service {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
-            mUpdateThreadPoolExecutor.execute(new OnChangeRunnable(selfChange, uri));
         }
     };
-    private class OnChangeRunnable implements Runnable {
-        private boolean selfChange;
-        private Uri uri;
-        public OnChangeRunnable(boolean selfChange, Uri uri) {
-            this.selfChange = selfChange;
-            this.uri = uri;
-        }
-        @Override
-        public void run() {
-            long reference = AppUtil.parseLong(uri.getLastPathSegment());
-            if (reference == 0) {
-                return;
-            }
-            DownloadModel downloadModel = getDownloadModel(reference);
-            if (downloadModel == null) {
-                return;
-            }
-            M3U8Util m3U8Util = mM3U8UitlList.get(downloadModel.targetId);
-            if (m3U8Util == null) {
-                return;
-            }
-            int status = m3U8Util.queryDownloadUriStatus(reference);
-            switch (status) {
-                case DownloadManager.ERROR_CANNOT_RESUME:
-                case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                case DownloadManager.ERROR_UNKNOWN:
-                case DownloadManager.ERROR_FILE_ERROR:
-                case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                case DownloadManager.PAUSED_UNKNOWN:
-                case DownloadManager.STATUS_FAILED:
-                    Log.d(TAG, "onChange" + selfChange + " status fail:" + status);
-                    m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_FAILED);
-            }
-        }
-    }
+
+
     protected DownloadStatusReceiver mDownLoadStatusReceiver = new DownloadStatusReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -105,18 +73,19 @@ public class M3U8DownService extends Service {
     private BroadcastReceiver mDownLoadCompleteReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (reference == -1) {
-                return;
-            }
-            DownloadModel downloadModel = getDownloadModel(reference);
+            String url = intent.getStringExtra(HttpClientDownloadService.DOWNLOAD_COMPLETE_URL);
+            int status = intent.getIntExtra(HttpClientDownloadService.DOWNLOAD_STATUS, DownloadManager.STATUS_FAILED);
+            DownloadModel downloadModel = getDownloadModel(url);
+            Log.d(TAG, "complete:" + downloadModel);
             if (downloadModel == null) {
                 return;
             }
-            mThreadPoolExecutor.submit(new UpdateRunnable(reference, downloadModel));
+            mThreadPoolExecutor.submit(new UpdateRunnable(status, downloadModel));
         }
     };
-    private DownloadModel getDownloadModel(long reference) {
+
+
+    private DownloadModel getDownloadModel(String url) {
         SqliteUtil.QueryParser<DownloadModel> queryCallBack =
                 new SqliteUtil.QueryParser<DownloadModel>() {
                     @Override
@@ -128,11 +97,13 @@ public class M3U8DownService extends Service {
                         downloadModel.reference = cursor.getInt(cursor.getColumnIndex("reference"));
                         downloadModel.id = cursor.getInt(cursor.getColumnIndex("id"));
                         return downloadModel;
-                    }};
+
+                    }
+                };
         return SqliteUtil.getUtil(mContext).query(
                 queryCallBack,
-                "select * from download_item where reference=?",
-                String.valueOf(reference)
+                "select * from download_item where url=?",
+                url
         );
     }
     @Override
@@ -160,7 +131,6 @@ public class M3U8DownService extends Service {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
         registerReceiver(mDownLoadCompleteReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         registerReceiver(mDownLoadStatusReceiver, new IntentFilter(DownloadStatusReceiver.ACTION));
-        getContentResolver().registerContentObserver(Uri.parse("content://downloads/my_downloads"), true, mDownloadContentObserver);
     }
     public static M3U8DownService getService() {
         return mService;
@@ -256,15 +226,19 @@ public class M3U8DownService extends Service {
     }
 
     public void startTask(int lessonId, int courseId, String lessonTitle) {
-        if (EdusohoApp.app.loginUser == null) {
+        User loginUser = getAppSettingProvider().getCurrentUser();
+        if (loginUser == null) {
+            MobclickAgent.reportError(mContext, String.format("token_lose lessonId:%d, courseId:%d", lessonId, courseId));
+            CommonUtil.longToast(getBaseContext(), getString(R.string.token_lose_notice));
             return;
         }
-        Log.d(TAG, "m3u8 download_service onStartCommand");
+        Log.d(TAG, "startTask m3u8");
         M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
         if (m3U8Util == null) {
             m3U8Util = new M3U8Util(mContext);
             mM3U8UitlList.put(lessonId, m3U8Util);
             Log.d(TAG, "add m3u8 download");
+            MobclickAgent.reportError(mContext, String.format("add m3u8 download lessonId:%d, courseId:%d", lessonId, courseId));
         }
 
         if (m3U8Util.getDownloadStatus() == M3U8Util.PAUSE) {
@@ -278,7 +252,7 @@ public class M3U8DownService extends Service {
         }
 
         createNotification(courseId, lessonId, lessonTitle);
-        m3U8Util.download(lessonId, courseId, EdusohoApp.app.loginUser.id);
+        m3U8Util.download(lessonId, courseId, loginUser.id);
     }
 
     private boolean hasDownloadingTask() {
@@ -374,14 +348,17 @@ public class M3U8DownService extends Service {
     }
 
     private void updateM3U8DownloadStatus(M3U8Util m3U8Util, int lessonId) {
-        User loginUser = EdusohoApp.app.loginUser;
+        User loginUser = getAppSettingProvider().getCurrentUser();
+        School school = getAppSettingProvider().getCurrentSchool();
         if (loginUser == null) {
+            MobclickAgent.reportError(mContext, String.format("token_lose lessonId:%d", lessonId));
+            CommonUtil.longToast(getBaseContext(), getString(R.string.token_lose_notice));
             return;
         }
         String title = m3U8Util.getLessonTitle();
 
         M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
-                mContext, loginUser.id, lessonId, EdusohoApp.app.domain, M3U8Util.ALL);
+                mContext, loginUser.id, lessonId, school.getDomain(), M3U8Util.ALL);
         if (m3U8DbModel == null) {
             return;
         }
@@ -397,12 +374,14 @@ public class M3U8DownService extends Service {
     }
 
     public void startDownloadLasterTask() {
-        User loginUser = EdusohoApp.app.loginUser;
-        if (loginUser == null) {
+        User loginUser = getAppSettingProvider().getCurrentUser();
+        School school = getAppSettingProvider().getCurrentSchool();
+        if (loginUser == null || school == null) {
+            CommonUtil.longToast(getBaseContext(), getString(R.string.token_lose_notice));
             return;
         }
         ArrayList<M3U8DbModel> m3U8DbModels = M3U8Util.queryM3U8DownTasks(
-                mContext, EdusohoApp.app.domain, loginUser.id);
+                mContext, school.getDomain(), loginUser.id);
         int size = m3U8DbModels.size();
         size = size > 3 ? 3 : size;
 
@@ -424,22 +403,27 @@ public class M3U8DownService extends Service {
      */
     class UpdateRunnable implements Runnable {
 
-        private long reference;
+        private int status;
         private DownloadModel downloadModel;
 
-        public UpdateRunnable(long reference, DownloadModel downloadModel) {
-            this.reference = reference;
+        public UpdateRunnable(int status, DownloadModel downloadModel) {
+            this.status = status;
             this.downloadModel = downloadModel;
         }
 
         @Override
         public void run() {
             M3U8Util m3U8Util = mM3U8UitlList.get(downloadModel.targetId);
+            Log.d(TAG, "status:" + status + " m3U8Util: " + m3U8Util);
             if (m3U8Util == null) {
                 return;
             }
-            m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_SUCCESSFUL);
+            m3U8Util.updateDownloadStatus(downloadModel, status);
             updateM3U8DownloadStatus(m3U8Util, downloadModel.targetId);
         }
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 }

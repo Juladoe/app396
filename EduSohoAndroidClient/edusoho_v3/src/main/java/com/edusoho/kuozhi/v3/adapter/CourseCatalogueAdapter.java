@@ -28,17 +28,18 @@ import java.util.Map;
 public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> {
 
     public int mSelect = -1;
-    private static CourseCatalogue courseCatalogue;
+    public static CourseCatalogue sCourseCatalogue;
+    public static Map<String, String> sLearnStatuses;
     public Context mContext;
     private static boolean isJoin;
     private String chapterTitle;
     private String unitTitle;
+    private boolean mIsChange;
+    private final LayoutInflater mInflater;
     private static final int TYPE_CHAPTER = 0;
     private static final int TYPE_SECTION = 1;
     private static final int TYPE_LESSON = 2;
     private static final int TYPE_FOOTER = 3;
-    private final LayoutInflater mInflater;
-    private static Map<String, String> learnStatuses;
 
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
 
@@ -49,15 +50,19 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     public CourseCatalogueAdapter(Context context) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mContext = context;
-        CourseCatalogueAdapter.courseCatalogue = null;
+        CourseCatalogueAdapter.sCourseCatalogue = null;
 
+    }
+
+    public void setmIsChange(boolean mIsChange) {
+        this.mIsChange = mIsChange;
     }
 
     public void setData(CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
         this.chapterTitle = chapterTitle;
         this.unitTitle = unitTitle;
-        CourseCatalogueAdapter.courseCatalogue = courseCatalogue;
-        CourseCatalogueAdapter.learnStatuses = courseCatalogue.getLearnStatuses();
+        CourseCatalogueAdapter.sCourseCatalogue = courseCatalogue;
+        CourseCatalogueAdapter.sLearnStatuses = courseCatalogue.getLearnStatuses();
         CourseCatalogueAdapter.isJoin = isJoin;
         notifyDataSetChanged();
     }
@@ -71,8 +76,8 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         if (getItemCount() == 1 || (position == getItemCount() - 1)) {
             return;
         }
-        holder.render(courseCatalogue.getLessons().get(position), chapterTitle, unitTitle, position);
-        holder.itemView.setTag(courseCatalogue.getLessons().get(position));
+        holder.render(sCourseCatalogue.getLessons().get(position), chapterTitle, unitTitle, position);
+        holder.itemView.setTag(sCourseCatalogue.getLessons().get(position));
         if (holder.getItemViewType() == TYPE_LESSON) {
             if (holder.itemView.hasOnClickListeners()) {
                 return;
@@ -80,20 +85,22 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mSelect == holder.getAdapterPosition()) {
-                        return;
-                    }
                     if (mSelect == -1) {
                         mSelect = 0;
                     }
-                    courseCatalogue.getLessons().get(mSelect).isSelect = false;
+                    mIsChange = true;
+                    sCourseCatalogue.getLessons().get(mSelect).isSelect = false;
                     notifyItemChanged(mSelect);
                     mSelect = holder.getAdapterPosition();
-                    courseCatalogue.getLessons().get(mSelect).isSelect = true;
-                    notifyItemChanged(mSelect);
+                    sCourseCatalogue.getLessons().get(mSelect).isSelect = true;
                     if (onRecyclerViewItemClickListener != null) {
-                        onRecyclerViewItemClickListener.onItemClick(v, courseCatalogue.getLessons().get(mSelect));
+                        onRecyclerViewItemClickListener.onItemClick(v, sCourseCatalogue.getLessons().get(mSelect));
+                        if (sLearnStatuses != null && !sLearnStatuses.containsKey(sCourseCatalogue.getLessons().get(mSelect).getId())
+                                && mIsChange) {
+                            sLearnStatuses.put(sCourseCatalogue.getLessons().get(mSelect).getId(), "learning");
+                        }
                     }
+                    notifyItemChanged(mSelect);
                 }
             });
         }
@@ -104,7 +111,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         switch (viewType) {
             case TYPE_FOOTER:
                 View view = new View(mContext);
-                view.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mContext, 80)));
+                view.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mContext, 30)));
                 return new FooterViewHolder(view);
             case TYPE_CHAPTER:
                 return new ChatperViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chapter_catalog, parent, false));
@@ -117,10 +124,10 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
 
     @Override
     public int getItemCount() {
-        if (courseCatalogue == null) {
+        if (sCourseCatalogue == null) {
             return 1;
         }
-        return courseCatalogue.getLessons() == null ? 1 : courseCatalogue.getLessons().size() + 1;
+        return sCourseCatalogue.getLessons() == null ? 1 : sCourseCatalogue.getLessons().size() + 1;
     }
 
     protected static abstract class ViewHolder extends RecyclerView.ViewHolder {
@@ -175,7 +182,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         }
 
         private void initView(int position) {
-            lessonsBean = courseCatalogue.getLessons().get(position);
+            lessonsBean = sCourseCatalogue.getLessons().get(position);
             if (!isJoin) {
                 lessonState.setVisibility(View.GONE);
                 lessonUp.setVisibility(View.GONE);
@@ -186,28 +193,28 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                 lessonUp.setVisibility(View.VISIBLE);
                 lessonDown.setVisibility(View.VISIBLE);
                 if (position != 0) {
-                    if (!"lesson".equals(courseCatalogue.getLessons().get(position - 1).getItemType())) {
+                    if (!"lesson".equals(sCourseCatalogue.getLessons().get(position - 1).getItemType())) {
                         lessonUp.setVisibility(View.INVISIBLE);
                     }
-                    if (position == courseCatalogue.getLessons().size() - 1) {
+                    if (position == sCourseCatalogue.getLessons().size() - 1) {
                         lessonDown.setVisibility(View.INVISIBLE);
                     }
                 }
-                if (position < courseCatalogue.getLessons().size() - 1) {
-                    if (!"lesson".equals(courseCatalogue.getLessons().get(position + 1).getItemType())) {
+                if (position < sCourseCatalogue.getLessons().size() - 1) {
+                    if (!"lesson".equals(sCourseCatalogue.getLessons().get(position + 1).getItemType())) {
                         lessonDown.setVisibility(View.INVISIBLE);
                     }
                     if (position == 0) {
                         lessonUp.setVisibility(View.INVISIBLE);
                     }
                 }
-                if (courseCatalogue.getLessons().size() == 1) {
+                if (sCourseCatalogue.getLessons().size() == 1) {
                     lessonUp.setVisibility(View.INVISIBLE);
                     lessonDown.setVisibility(View.INVISIBLE);
                 }
             }
             decideKind();
-            if (courseCatalogue.getLessons().get(position).isSelect) {
+            if (sCourseCatalogue.getLessons().get(position).isSelect) {
                 lessonKind.setTextColor(mContext.getResources().getColor(R.color.primary));
                 lessonTitle.setTextColor(mContext.getResources().getColor(R.color.primary));
                 lessonTime.setTextColor(mContext.getResources().getColor(R.color.primary));
@@ -267,10 +274,10 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
 
         private void decideStatu() {
             lessonState.setImageResource(R.drawable.lesson_status);
-            if (learnStatuses != null && learnStatuses.containsKey(lessonsBean.getId())) {
-                if ("learning".equals(learnStatuses.get(lessonsBean.getId()))) {
+            if (sLearnStatuses != null && sLearnStatuses.containsKey(lessonsBean.getId())) {
+                if ("learning".equals(sLearnStatuses.get(lessonsBean.getId()))) {
                     lessonState.setImageResource(R.drawable.lesson_status_learning);
-                } else if ("finished".equals(learnStatuses.get(lessonsBean.getId()))) {
+                } else if ("finished".equals(sLearnStatuses.get(lessonsBean.getId()))) {
                     lessonState.setImageResource(R.drawable.lesson_status_finish);
                 }
             }
@@ -349,9 +356,9 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         if (getItemCount() == 1 || (position == getItemCount() - 1)) {
             return TYPE_FOOTER;
         }
-        if ("chapter".equals(courseCatalogue.getLessons().get(position).getType())) {
+        if ("chapter".equals(sCourseCatalogue.getLessons().get(position).getType())) {
             return TYPE_CHAPTER;
-        } else if ("unit".equals(courseCatalogue.getLessons().get(position).getType())) {
+        } else if ("unit".equals(sCourseCatalogue.getLessons().get(position).getType())) {
             return TYPE_SECTION;
         } else {
             return TYPE_LESSON;
@@ -359,7 +366,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     }
 
     public void setLearnStatuses(Map<String, String> learnStatuses) {
-        CourseCatalogueAdapter.learnStatuses = learnStatuses;
+        CourseCatalogueAdapter.sLearnStatuses = learnStatuses;
         notifyDataSetChanged();
     }
 

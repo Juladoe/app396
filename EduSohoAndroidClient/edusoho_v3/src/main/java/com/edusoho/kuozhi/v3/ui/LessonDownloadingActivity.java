@@ -38,6 +38,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -446,7 +447,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                MobclickAgent.reportError(getBaseContext(), error);
             }
         }, "");
     }

@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
@@ -109,7 +110,7 @@ public class FriendSelectFragment extends AbstractChatSendFragment implements Ad
         Fragment fragment = app.mEngine.runPluginWithFragmentByBundle(
                 "GroupSelectFragment", mActivity, getArguments());
         fragmentTransaction.addToBackStack("GroupSelectFragment");
-        fragmentTransaction.replace(android.R.id.content, fragment);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
     }
 
@@ -131,13 +132,38 @@ public class FriendSelectFragment extends AbstractChatSendFragment implements Ad
                 createChatConvNo(friend.id);
                 return;
             }
-            sendMsg(friend.id, convEntity.getConvNo(), Destination.USER);
+            sendMsg(friend.id, convEntity.getConvNo(), Destination.USER, friend.getNickname());
         }
     };
 
-    protected void sendMsg(int fromId, String convNo, String type) {
-        MessageBody messageBody = saveMessageToLoacl(fromId, convNo, type);
+    protected void sendMsg(int fromId, String convNo, String type, String title) {
+        MessageBody messageBody = saveMessageToLoacl(fromId, convNo, type, title);
         sendMessageToServer(convNo, messageBody);
+    }
+
+    @Override
+    protected void checkJoinedIM(String targetType, int targetId, final NormalCallback<String> callback) {
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        if (currentUser == null || currentUser.id == 0) {
+            callback.success("用户未登录!");
+            return;
+        }
+        new UserProvider(mContext).createConvNo(new int[]{currentUser.id, targetId})
+                .success(new NormalCallback<LinkedHashMap>() {
+                    @Override
+                    public void success(LinkedHashMap linkedHashMap) {
+                        if (linkedHashMap == null || !linkedHashMap.containsKey("no")) {
+                            callback.success("加入会话失败");
+                            return;
+                        }
+                        callback.success(null);
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                callback.success("加入会话失败");
+            }
+        });
     }
 
     protected void createChatConvNo(final int fromId) {
@@ -159,7 +185,7 @@ public class FriendSelectFragment extends AbstractChatSendFragment implements Ad
                                     @Override
                                     public void success(ConvEntity convEntity) {
                                         loadDialog.dismiss();
-                                        sendMsg(fromId, mConvNo, Destination.USER);
+                                        //sendMsg(fromId, mConvNo, Destination.USER);
                                     }
                                 });
                     }});

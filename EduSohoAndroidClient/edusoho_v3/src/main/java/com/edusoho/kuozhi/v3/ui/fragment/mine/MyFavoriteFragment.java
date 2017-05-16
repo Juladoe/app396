@@ -69,17 +69,18 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
         CourseDetailModel.getNormalCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(final LearningCourse liveCourseList) {
-                disabledLoadingView();
                 loadCourseList.addAll(liveCourseList.data);
                 CourseDetailModel.getLiveCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
                     @Override
                     public void onSuccess(LearningCourse courseList) {
+                        disabledLoadingView();
                         loadCourseList.addAll(courseList.data);
                         myFavoriteAdapter.setData(loadCourseList);
                     }
 
                     @Override
                     public void onFailure(String code, String message) {
+                        disabledLoadingView();
                         ToastUtils.show(mContext, message);
                     }
                 });
@@ -87,6 +88,7 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment.Ref
 
             @Override
             public void onFailure(String code, String message) {
+                disabledLoadingView();
                 ToastUtils.show(mContext, message);
             }
         });

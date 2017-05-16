@@ -3,14 +3,19 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.error.Error;
@@ -37,18 +42,42 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
 
     public static final int CLEAR = 0x10;
 
-    private Classroom mClassRoom;
+    private TextView tvGotoDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MessageEngine.getInstance().registMessageSource(this);
+        initData();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         MessageEngine.getInstance().unRegistMessageSource(this);
+    }
+
+    @Override
+    protected View createView() {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.activity_classroom_discuss, null);
+        tvGotoDetail = (TextView) view.findViewById(R.id.tv_goto_detail);
+        return view;
+    }
+
+    private void initData() {
+        tvGotoDetail.setOnClickListener(getGotoDetailClickListener());
+        mMessageListFragment.setInputTextMode(IMessageInputView.INPUT_MULTIPLE_TEXT);
+    }
+
+    private View.OnClickListener getGotoDetailClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.CLASSROOM_ID, mTargetId);
+                CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
+            }
+        };
     }
 
     @Override
@@ -68,26 +97,26 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
         }
 
         new IMProvider(mContext).joinIMConvNo(mTargetId, "classroom")
-        .success(new NormalCallback<LinkedHashMap>() {
-            @Override
-            public void success(LinkedHashMap map) {
-                if (map == null) {
-                    ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
-                    finish();
-                    return;
-                }
-                if (map.containsKey("error")) {
-                    Error error = getUtilFactory().getJsonParser().fromJson(map.get("error").toString(), Error.class);
-                    if (error != null) {
-                        ToastUtils.show(getBaseContext(), error.message);
+                .success(new NormalCallback<LinkedHashMap>() {
+                    @Override
+                    public void success(LinkedHashMap map) {
+                        if (map == null) {
+                            ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
+                            finish();
+                            return;
+                        }
+                        if (map.containsKey("error")) {
+                            Error error = getUtilFactory().getJsonParser().fromJson(map.get("error").toString(), Error.class);
+                            if (error != null) {
+                                ToastUtils.show(getBaseContext(), error.message);
+                            }
+                            finish();
+                            return;
+                        }
+                        String convNo = map.get("convNo").toString();
+                        promise.resolve(convNo);
                     }
-                    finish();
-                    return;
-                }
-                String convNo = map.get("convNo").toString();
-                promise.resolve(convNo);
-            }
-        }).fail(new NormalCallback<VolleyError>() {
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
                 promise.resolve(null);
@@ -111,7 +140,6 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
                                 finish();
                                 return;
                             }
-                            mClassRoom = classroom;
 
                             Role role = new Role();
                             role.setRid(classroom.id);
@@ -163,5 +191,31 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
     @Override
     public int getMode() {
         return REGIST_CLASS;
+    }
+
+    @Override
+    public void openQuestionActivity(final String fromType) {
+        CoreEngine.create(getApplicationContext()).runNormalPluginForResult("ThreadCreateActivity", this, MessageListFragment.SEND_THREAD, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mTargetId);
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, fromType);
+                startIntent.putExtra(ThreadCreateActivity.TYPE, "question");
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "common");
+            }
+        });
+    }
+
+    @Override
+    public void openDiscussActivity(final String fromType) {
+        CoreEngine.create(getApplicationContext()).runNormalPluginForResult("ThreadCreateActivity", this, MessageListFragment.SEND_THREAD, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mTargetId);
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, fromType);
+                startIntent.putExtra(ThreadCreateActivity.TYPE, "discussion");
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "common");
+            }
+        });
     }
 }

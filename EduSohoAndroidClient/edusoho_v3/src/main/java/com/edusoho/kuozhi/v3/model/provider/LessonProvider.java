@@ -39,8 +39,7 @@ public class LessonProvider extends ModelProvider {
     }
 
     public ProviderListener<LinkedHashMap> getLiveRoom(String roomUrl) {
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = ApiTokenUtil.getTokenString(mContext);
 
         RequestUrl requestUrl = new RequestUrl(roomUrl + "&debug=1");
         requestUrl.heads.put("Auth-Token", token);
@@ -81,8 +80,7 @@ public class LessonProvider extends ModelProvider {
 
     public ProviderListener<LearnStatus> cancelLearnLesson(int lessonId, int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = ApiTokenUtil.getTokenString(mContext);
 
         String url = String.format("%s/%s?lessonId=%d&courseId=%d", school.url, Const.UN_LEARN_COURSE, lessonId, courseId);
         RequestUrl requestUrl = new RequestUrl(url);

@@ -66,6 +66,6 @@ android {
 }
 
 dependencies {
-    compile project(':edusoho_v3')
     compile project(':homework')
+    compile project(':liveplayer')
 }

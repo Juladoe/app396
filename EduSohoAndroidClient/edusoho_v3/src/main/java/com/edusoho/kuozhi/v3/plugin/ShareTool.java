@@ -83,7 +83,6 @@ public class ShareTool {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                CommonUtil.longToast(mContext, "课程图片获取失败");
                 startShare(AppUtil.getUriById(mContext, R.drawable.default_classroom));
             }
         });

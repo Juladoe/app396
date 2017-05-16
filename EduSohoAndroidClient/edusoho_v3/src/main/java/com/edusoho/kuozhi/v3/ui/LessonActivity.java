@@ -226,6 +226,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             mToolBar.setBackgroundColor(getResources().getColor(R.color.transparent));
             mToolBar.setNavigationIcon(R.drawable.icon_actionbar_back);
             mToolBarTitle.setTextColor(getResources().getColor(R.color.textIcons));
+            mToolBar.setTitle("");
         }
     }
 
@@ -424,25 +425,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             bindListener();
         }
         switchLoadLessonContent(mLessonItem);
-    }
-
-    private String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface
-                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                        return inetAddress.getHostAddress().toString();
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            ex.printStackTrace();
-        }
-        return "localhost";
     }
 
     private LessonItem getLessonResultType(String object) {

@@ -23,6 +23,7 @@ import cn.trinea.android.common.util.ToastUtils;
  */
 public class ImChatActivity extends AbstractIMChatActivity {
 
+    @Override
     protected void createTargetRole(String type, int rid, final MessageListPresenterImpl.RoleUpdateCallback callback) {
         new UserProvider(mContext).getUserInfo(rid)
                 .success(new NormalCallback<User>() {

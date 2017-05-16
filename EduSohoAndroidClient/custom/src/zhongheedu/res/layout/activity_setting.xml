@@ -159,7 +159,7 @@
                     android:layout_marginLeft="4dp"
                     android:id="@+id/cb_mediacodec_txt"
                     android:layout_toLeftOf="@+id/cb_mediacodec_type"
-                    android:text="@string/setting_mediacodec_type"
+                    android:text="@string/setting_mediacodec_support_rate"
                     android:textColor="@color/base_black_87"
                     android:textSize="@dimen/medium_font_size" />
 

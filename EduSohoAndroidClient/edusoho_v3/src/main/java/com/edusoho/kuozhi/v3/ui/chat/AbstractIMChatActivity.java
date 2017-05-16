@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
@@ -30,6 +31,7 @@ import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -39,6 +41,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
@@ -65,7 +68,8 @@ import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
     public static final int SEND_IMAGE = 1;
-    public static final int SEND_CAMERA = 2;
+    public static final int SEND_QUESTION = 2;
+    public static final int SEND_DISCUSS = 3;
 
     public static final String BACK = "返回";
     public static final String TAG = "ChatActivity";
@@ -162,7 +166,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         bundle.putString(MessageListFragment.CONV_NO, mConversationNo);
         bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
         bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
-
+        mMessageListFragment.setInputTextMode(IMessageInputView.INPUT_IMAGE_AND_VOICE);
         return new ChatMessageListPresenterImpl(
                 bundle,
                 IMClient.getClient().getConvManager(),
@@ -263,7 +267,22 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onShowActivity(Bundle bundle) {
+            public void postQuestion(String fromType) {
+                openQuestionActivity(fromType);
+            }
+
+            @Override
+            public boolean isIMEnable() {
+                return getAppSettingProvider().getAppConfig().isEnableIMChat;
+            }
+
+            @Override
+            public void postDiscuss(String fromType) {
+                openDiscussActivity(fromType);
+            }
+
+            @Override
+            public void onShowActivity(final Bundle bundle) {
                 String activityName = bundle.getString("activityName");
                 switch (activityName) {
                     case "ThreadDiscussActivity":
@@ -289,6 +308,24 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                             );
                         } catch (JSONException e) {
                         }
+                        break;
+                    case "DiscussDetailActivity":
+                        CoreEngine.create(mContext).runNormalPlugin("DiscussDetailActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                try {
+                                    String body = bundle.getString("body");
+                                    RedirectBody redirectBody = RedirectBody.createByJsonObj(new JSONObject(body));
+                                    startIntent.putExtra(DiscussDetailActivity.THREAD_TARGET_TYPE, redirectBody.fromType);
+                                    startIntent.putExtra(DiscussDetailActivity.THREAD_TARGET_ID, redirectBody.id);
+                                    startIntent.putExtra(AbstractIMChatActivity.FROM_ID, Integer.parseInt(redirectBody.threadId));
+                                    startIntent.putExtra(AbstractIMChatActivity.TARGET_TYPE, redirectBody.type);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
                         break;
                 }
             }
@@ -325,6 +362,14 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         startActivityForResult(intent, SEND_IMAGE);
     }
 
+    public void openQuestionActivity(String fromType) {
+
+    }
+
+    public void openDiscussActivity(String fromType) {
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -335,14 +380,21 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        if (requestCode == SEND_IMAGE) {
-            ArrayList<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-            int size = getSupportFragmentManager().getFragments().size();
-            data.removeExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-            data.putStringArrayListExtra("ImageList", pathList);
-            for (int i = 0; i < size; i++) {
-                getSupportFragmentManager().getFragments().get(i).onActivityResult(requestCode, resultCode, data);
-            }
+        int size = getSupportFragmentManager().getFragments().size();
+        switch (requestCode) {
+            case SEND_IMAGE:
+                ArrayList<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+                data.removeExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+                data.putStringArrayListExtra("ImageList", pathList);
+                for (int i = 0; i < size; i++) {
+                    getSupportFragmentManager().getFragments().get(i).onActivityResult(requestCode, resultCode, data);
+                }
+                break;
+            case MessageListFragment.SEND_THREAD:
+                for (int i = 0; i < size; i++) {
+                    getSupportFragmentManager().getFragments().get(i).onActivityResult(requestCode, resultCode, data);
+                }
+                break;
         }
     }
 

@@ -6,10 +6,9 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -39,8 +38,8 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
     private TextView tvUserType;
     private TabLayout tbTitles;
     private ViewPager vpContent;
-    private String[] mTabTitles = {"学习", "缓存", "收藏", "问答"};
-    private String[] mFragmentNames = {"MyStudyFragment", "MyVideoCacheFragment", "MyFavoriteFragment", "MyQuestionFragment"};
+    private String[] mTabTitles;
+    private String[] mFragmentNames;
 
     private MinePagerAdapter minePagerAdapter;
 
@@ -62,7 +61,7 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
         tvUserType = (TextView) view.findViewById(R.id.tv_avatar_type);
         tbTitles = (TabLayout) view.findViewById(R.id.tl_titles);
         vpContent = (ViewPager) view.findViewById(R.id.vp_content);
-        vpContent.setOffscreenPageLimit(3);
+        vpContent.setOffscreenPageLimit(4);
         initUserInfo();
         initViewPager();
         appBarLayout.addOnOffsetChangedListener(this);
@@ -84,6 +83,13 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
     }
 
     private void initViewPager() {
+        if (app.loginUser != null && app.loginUser.userRole2String().contains("教师")) {
+            mTabTitles = new String[]{"教学", "学习", "缓存", "收藏", "问答"};
+            mFragmentNames = new String[]{"MyTeachFragment", "MyStudyFragment", "MyVideoCacheFragment", "MyFavoriteFragment", "MyQuestionFragment"};
+        } else {
+            mTabTitles = new String[]{"学习", "缓存", "收藏", "问答"};
+            mFragmentNames = new String[]{"MyStudyFragment", "MyVideoCacheFragment", "MyFavoriteFragment", "MyQuestionFragment"};
+        }
         minePagerAdapter = new MinePagerAdapter(getFragmentManager(), mTabTitles, mFragmentNames);
         vpContent.setAdapter(minePagerAdapter);
         tbTitles.setupWithViewPager(vpContent);
@@ -117,7 +123,7 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
         };
     }
 
-    private class MinePagerAdapter extends FragmentPagerAdapter {
+    private class MinePagerAdapter extends FragmentStatePagerAdapter {
         private String[] tabTitles;
         private String[] fragmentTags;
 
@@ -146,6 +152,10 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
                 case 3:
                     fragment = app.mEngine.runPluginWithFragment(
                             fragmentTags[position], getActivity(), null);
+                    break;
+                case 4:
+                    fragment = app.mEngine.runPluginWithFragment(
+                            fragmentTags[position], mActivity, null);
                     break;
             }
             if (!mRefreshFragmentList.contains(fragment)) {

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,10 @@ public class LessonDownloadingAdapter extends BaseAdapter {
         }
     }
 
+    public boolean hasLessonItem(int lessonId) {
+        return m3u8ModelList != null && m3u8ModelList.get(lessonId, null) != null;
+    }
+
     public void updateLocalData(List<LessonItem> localLessons) {
         mChildItems.clear();
         if (localLessons == null || localLessons.isEmpty()) {
@@ -91,8 +96,8 @@ public class LessonDownloadingAdapter extends BaseAdapter {
             childPanel.tvVideoLength.setText(getDownloadLessonSize(lessonItem.id));
         } else {
             M3U8DbModel model = m3u8ModelList.get(lessonItem.id);
-            childPanel.tvProgress.setMax(model.totalNum);
-            childPanel.tvProgress.setProgress(model.downloadNum);
+            childPanel.tvProgress.setMax(model.totalNum == 0 ? 10000 : model.totalNum);
+            childPanel.tvProgress.setProgress(model.downloadNum == 0 ? 1 : model.downloadNum);
 
             int downStatus = getDownloadStatus(lessonItem.id);
             if (downStatus == M3U8Util.ERROR) {

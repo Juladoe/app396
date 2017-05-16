@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -127,6 +128,9 @@ public class MyStudyFragment extends BaseFragment implements MineFragment.Refres
      * @param type
      */
     private void switchType(int type) {
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
         tvLatestCourse.setTextColor(getResources().getColor(R.color.primary_font_color));
         tvNormalCourse.setTextColor(getResources().getColor(R.color.primary_font_color));
         tvLiveCourse.setTextColor(getResources().getColor(R.color.primary_font_color));

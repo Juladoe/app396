@@ -6,16 +6,13 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -27,6 +24,7 @@ import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.error.Error;
@@ -43,7 +41,6 @@ import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
@@ -51,7 +48,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.umeng.analytics.MobclickAgent;
@@ -59,7 +55,6 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.LinkedHashMap;
 
 import cn.trinea.android.common.util.ToastUtils;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by JesseHuang on 15/9/16.
@@ -73,29 +68,22 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
 
     public static final int DISCUSS_TYPE = 0;
     public static final int LEARN_TYPE = 1;
+    private static final String FRAGMENT_NAME = "DiscussFragment";
 
     private static final String mFragmentTags[] = {"DiscussFragment", "CourseStudyFragment", "TeachFragment"};
     private static final String mEntranceType[] = {"Discuss", "StudyOrTeacher"};
     private static final String mRadioButtonTitle[] = {"学习", "教学"};
 
     private int mCourseId;
-    private String mFragmentType;
-    private String mCurrentFragmentTag;
-    private String mUserTypeInCourse;
     private Course mCourse;
     private Handler mHandler;
-    private ActionBar mActionBar;
-    private EduSohoCompoundButton switchButton;
-    private RadioButton rbStudyRadioButton;
-    private RadioButton rbDiscussRadioButton;
-    private CircleImageView civBadgeView;
+    private TextView tvGotoDetail;
 
     protected FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
         MessageEngine.getInstance().registMessageSource(this);
         initData();
@@ -113,7 +101,9 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
 
     @Override
     protected View createView() {
-        return LayoutInflater.from(mContext).inflate(R.layout.activity_news_course, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.activity_news_course, null);
+        tvGotoDetail = (TextView) view.findViewById(R.id.tv_goto_detail);
+        return view;
     }
 
     @Override
@@ -148,7 +138,6 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             ToastUtils.show(mContext, "课程信息不存在!");
             return;
         }
-        mFragmentType = getFragmentType(intent.getIntExtra(SHOW_TYPE, LEARN_TYPE));
 
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
@@ -164,120 +153,35 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                         }
                         mCourse = courseDetailsResult.course;
                         int userId = getAppSettingProvider().getCurrentUser().id;
-                        checkUserRole(userId);
+                        isCourseMember(userId);
                     }
                 });
+        tvGotoDetail.setOnClickListener(getGotoDetailClickListener());
     }
 
-    private void checkUserRole(int userId) {
+    private void isCourseMember(int userId) {
         getRoleInCourse(mCourseId, userId, new NormalCallback<String>() {
             @Override
             public void success(String role) {
-                mUserTypeInCourse = role;
-                Log.d(TAG, "check role:" + role);
-                if (PushUtil.ChatUserType.STUDENT.equals(mUserTypeInCourse)) {
-                    initSwitchButton(mRadioButtonTitle[0], mOnCheckedChangeListener);
-                    setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
-                } else if (PushUtil.ChatUserType.TEACHER.equals(mUserTypeInCourse)) {
-                    initSwitchButton(mRadioButtonTitle[1], mOnCheckedChangeListener);
-                    setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
-                } else {
+                if (TextUtils.isEmpty(role)) {
                     CommonUtil.longToast(mContext, "您不是该课程的学生");
                     finish();
+                } else {
+                    showDiscussFragment();
                 }
             }
         });
     }
 
-    private void setRadioButtonChecked(int id) {
-        if (rbStudyRadioButton.getId() == id) {
-            rbStudyRadioButton.setChecked(true);
-        } else {
-            rbDiscussRadioButton.setChecked(true);
-        }
-    }
-
-    protected void initSwitchButton(String roleTitle, RadioGroup.OnCheckedChangeListener clickListener) {
-        View switchButtonLayout = getLayoutInflater().inflate(R.layout.actionbar_course_switch_button, null);
-        switchButton = (EduSohoCompoundButton) switchButtonLayout.findViewById(R.id.ecb_switch);
-        rbStudyRadioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_study);
-        rbDiscussRadioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_discuss);
-        civBadgeView = (CircleImageView) switchButtonLayout.findViewById(R.id.civ_badge_view);
-        rbStudyRadioButton.setText(roleTitle);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER;
-        mActionBar.setCustomView(switchButtonLayout, layoutParams);
-        switchButton.setOnCheckedChangeListener(clickListener);
-    }
-
-    private void showFragment(String tag) {
+    private void showDiscussFragment() {
         Fragment fragment;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        Fragment currentFragment = mFragmentManager.findFragmentByTag(mCurrentFragmentTag);
-        if (currentFragment != null) {
-            fragmentTransaction.hide(currentFragment);
-        }
-        fragment = mFragmentManager.findFragmentByTag(tag);
-        if (fragment != null) {
-            if (fragment instanceof MessageListFragment) {
-                mMessageListFragment = (MessageListFragment) fragment;
-                initChatRoomController(mMessageListFragment);
-            }
-            fragmentTransaction.show(fragment);
-        } else {
-            if (tag.equals(mFragmentTags[0])) {
-                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mStudyPluginFragmentCallback);
-                mMessageListFragment = (MessageListFragment) fragment;
-                initChatRoomController((MessageListFragment) fragment);
-            } else if (tag.equals(mFragmentTags[1])) {
-                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mStudyPluginFragmentCallback);
-            } else if (tag.equals(mFragmentTags[2])) {
-                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mTeachPluginFragmentCallback);
-            }
-            fragmentTransaction.add(R.id.fragment_container, fragment, tag);
-        }
-        fragmentTransaction.commitAllowingStateLoss();
-        mCurrentFragmentTag = tag;
-        if (mCurrentFragmentTag.equals(mFragmentTags[0])) {
-            setSwitchBadgeViewVisible(View.INVISIBLE);
-        }
+        fragment = CoreEngine.create(mContext).runPluginWithFragment(FRAGMENT_NAME, this, mStudyPluginFragmentCallback);
+        mMessageListFragment = (MessageListFragment) fragment;
+        initChatRoomController((MessageListFragment) fragment);
+        fragmentTransaction.add(R.id.fragment_container, fragment, FRAGMENT_NAME);
+        fragmentTransaction.commit();
     }
-
-    private void setSwitchBadgeViewVisible(int visible) {
-        if (civBadgeView != null) {
-            civBadgeView.setVisibility(visible);
-        }
-    }
-
-    private RadioGroup.OnCheckedChangeListener mOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            if (checkedId == R.id.rb_study) {
-                if (PushUtil.ChatUserType.STUDENT.equals(mUserTypeInCourse)) {
-                    showFragment(mFragmentTags[1]);
-                } else {
-                    showFragment(mFragmentTags[2]);
-                }
-            } else if (checkedId == R.id.rb_discuss) {
-                MobclickAgent.onEvent(mContext, "dynamic_discussion");
-                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-                    CommonUtil.longToast(mContext, "聊天功能已关闭");
-                    return;
-                }
-                showFragment(mFragmentTags[0]);
-            }
-        }
-    };
-
-    private PluginFragmentCallback mTeachPluginFragmentCallback = new PluginFragmentCallback() {
-        @Override
-        public void setArguments(Bundle bundle) {
-            School school = getAppSettingProvider().getCurrentSchool();
-            String url = String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.TEACHER_MANAGERMENT, mCourseId));
-            bundle.putString(Const.WEB_URL, url);
-        }
-    };
 
     private PluginFragmentCallback mStudyPluginFragmentCallback = new PluginFragmentCallback() {
         @Override
@@ -288,6 +192,17 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             bundle.putString(MessageListFragment.TARGET_TYPE, Destination.COURSE);
         }
     };
+
+    private View.OnClickListener getGotoDetailClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.COURSE_ID, mCourseId);
+                CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
+            }
+        };
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -410,6 +325,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
         MessageControllerListener
      */
     private void initChatRoomController(MessageListFragment messageListFragment) {
+        messageListFragment.setInputTextMode(IMessageInputView.INPUT_MULTIPLE_TEXT);
         mIMessageListPresenter = new ChatMessageListPresenterImpl(
                 messageListFragment.getArguments(),
                 IMClient.getClient().getConvManager(),
@@ -499,5 +415,31 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
     @Override
     public int getMode() {
         return REGIST_CLASS;
+    }
+
+    @Override
+    public void openQuestionActivity(final String fromType) {
+        CoreEngine.create(getApplicationContext()).runNormalPluginForResult("ThreadCreateActivity", this, MessageListFragment.SEND_THREAD, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "");
+                startIntent.putExtra(ThreadCreateActivity.TYPE, "question");
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, fromType);
+            }
+        });
+    }
+
+    @Override
+    public void openDiscussActivity(final String fromType) {
+        CoreEngine.create(getApplicationContext()).runNormalPluginForResult("ThreadCreateActivity", this, MessageListFragment.SEND_THREAD, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "");
+                startIntent.putExtra(ThreadCreateActivity.TYPE, "discussion");
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, fromType);
+            }
+        });
     }
 }

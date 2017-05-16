@@ -29,7 +29,14 @@ import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
+import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
+import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -48,6 +55,9 @@ import com.edusoho.longinus.persenter.LiveVideoPresenterImpl;
 import com.edusoho.longinus.util.LiveIMBroadcastReceiver;
 import com.edusoho.longinus.util.LiveImClient;
 import com.umeng.analytics.MobclickAgent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -202,7 +212,7 @@ public class LessonLivePlayerActivity extends PLMediaPlayerActivity implements I
 
     @Override
     public void hideNoticeView() {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mNoticeView, "alpha",  1.0f, 0.0f);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mNoticeView, "alpha", 1.0f, 0.0f);
         objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         objectAnimator.setDuration(500);
         objectAnimator.start();
@@ -213,7 +223,7 @@ public class LessonLivePlayerActivity extends PLMediaPlayerActivity implements I
         if (mNoticeView.getTag() != null) {
             return;
         }
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mNoticeView, "alpha",  0.0f, 1.0f);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mNoticeView, "alpha", 0.0f, 1.0f);
         objectAnimator.setInterpolator(new DecelerateInterpolator());
         objectAnimator.setDuration(360);
         objectAnimator.addListener(new AnimatorListenerAdapter() {
@@ -374,6 +384,14 @@ public class LessonLivePlayerActivity extends PLMediaPlayerActivity implements I
             }
 
             @Override
+            public void postQuestion(String fromType) {
+            }
+
+            @Override
+            public void postDiscuss(String fromType) {
+            }
+
+            @Override
             public void selectPhoto() {
             }
 
@@ -382,9 +400,19 @@ public class LessonLivePlayerActivity extends PLMediaPlayerActivity implements I
             }
 
             @Override
-            public void onShowActivity(Bundle bundle) {
+            public void onShowActivity(final Bundle bundle) {
+
+            }
+
+            @Override
+            public boolean isIMEnable() {
+                return getAppSettingProvider().getAppConfig().isEnableIMChat;
             }
         };
+    }
+
+    public AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
     protected MessageListFragment createFragment() {
