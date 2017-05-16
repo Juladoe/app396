@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskEvent;
 import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -88,6 +89,7 @@ public class TaskFinishDialog extends DialogFragment {
 
         mCourseTitle.setText(String.format("%d-%d：%s", mCourseTask.number, mCourseTask.seq, mCourseTask.title));
         HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
                 .createApi(UserApi.class)
                 .getMyCourseLearningProgress(mTaskEvent.result.courseId)
                 .subscribeOn(Schedulers.io())
