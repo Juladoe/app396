@@ -86,7 +86,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         if (mCourseTask == null) {
             ToastUtils.show(getActivity(), "CourseTask is null");
         }
-        mRemainTime = mCourseTask.length;
+        mRemainTime = String.valueOf(mCourseTask.length);
 
         mSeekPositionSetting = getContext().getSharedPreferences(SEEK_POSITION, Context.MODE_PRIVATE);
         mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseProject.id, mCourseTask.id), 0);

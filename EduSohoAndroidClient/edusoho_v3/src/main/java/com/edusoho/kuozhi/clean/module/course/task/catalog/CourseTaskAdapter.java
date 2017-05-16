@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.clean.module.course.task.catalog;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,15 @@ import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskResultEnum;
 import com.edusoho.kuozhi.clean.bean.innerbean.TaskResult;
 import com.edusoho.kuozhi.clean.utils.SharedPreferencesHelper;
+import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 
+import java.util.Date;
 import java.util.List;
+
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.AUDIO;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.LIVE;
+import static com.edusoho.kuozhi.clean.module.course.task.catalog.TaskTypeEnum.VIDEO;
 
 /**
  * Created by JesseHuang on 2017/3/28.
@@ -101,7 +109,22 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         mLearnMode == CourseProject.LearnMode.FREEMODE ? R.drawable.lesson_status : R.drawable.lesson_status_lock);
             }
             taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskItemSequence(), taskItem.title));
-            taskHolder.taskDuration.setText(taskItem.task.length);
+
+            TaskTypeEnum taskType = getTaskType(taskItem.task.type);
+            if (taskType == VIDEO || taskType == AUDIO) {
+                taskHolder.taskDuration.setText(TimeUtils.getSecond2Min(taskItem.task.length));
+                taskHolder.taskDuration.setVisibility(View.VISIBLE);
+            } else {
+                taskHolder.taskDuration.setVisibility(View.GONE);
+            }
+
+            if (taskType == LIVE) {
+                taskHolder.taskLiveStatus.setVisibility(View.VISIBLE);
+                setLiveStatus(taskHolder, taskItem);
+            } else {
+                taskHolder.taskLiveStatus.setVisibility(View.GONE);
+            }
+
             taskHolder.taskIsFree.setVisibility(taskItem.task.isFree == 1 ? View.VISIBLE : View.GONE);
             taskHolder.taskType.setText(getTaskIconResId(taskItem.task.type));
             if (mCurrentClickPosition != null && position == mCurrentClickPosition) {
@@ -112,6 +135,32 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 taskHolder.taskType.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
                 taskHolder.taskName.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
                 taskHolder.taskDuration.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+            }
+        }
+    }
+
+    private void setLiveStatus(CourseTaskViewHolder taskViewHolder, CourseItem item) {
+        long currentTime = System.currentTimeMillis();
+        long startTime = item.task.startTime * 1000;
+        long endTime = item.task.endTime * 1000;
+        if (currentTime <= startTime) {
+            taskViewHolder.taskLiveStatus.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+            taskViewHolder.taskLiveStatus.setText(TimeUtils.getLiveTime(startTime));
+        } else {
+            if (currentTime > endTime) {
+                if ("ungenerated".equals(item.task.activity.replayStatus)) {
+                    taskViewHolder.taskLiveStatus.setText(R.string.live_state_finish);
+                    taskViewHolder.taskLiveStatus.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_font_color));
+                    taskViewHolder.taskLiveStatus.setBackground(ContextCompat.getDrawable(mContext, R.drawable.live_state_finish));
+                } else {
+                    taskViewHolder.taskLiveStatus.setText(R.string.live_state_replay);
+                    taskViewHolder.taskLiveStatus.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+                    taskViewHolder.taskLiveStatus.setBackground(ContextCompat.getDrawable(mContext, R.drawable.live_state_replay));
+                }
+            } else {
+                taskViewHolder.taskLiveStatus.setText(R.string.live_state_ing);
+                taskViewHolder.taskLiveStatus.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                taskViewHolder.taskLiveStatus.setBackground(ContextCompat.getDrawable(mContext, R.drawable.live_state_ing));
             }
         }
     }
@@ -159,7 +208,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private int getTaskIconResId(String type) {
-        TaskTypeEnum icon = TaskTypeEnum.fromString(type);
+        TaskTypeEnum icon = getTaskType(type);
         switch (icon) {
             case TEXT:
                 return R.string.task_text;
@@ -190,6 +239,10 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+    private TaskTypeEnum getTaskType(String type) {
+        return TaskTypeEnum.fromString(type);
+    }
+
     public CourseItem getItem(int position) {
         return mTaskItems.get(position);
     }
@@ -200,6 +253,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView taskDuration;
         TextView taskIsFree;
         ImageView taskStatus;
+        TextView taskLiveStatus;
 
         CourseTaskViewHolder(View view) {
             super(view);
@@ -208,6 +262,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             taskDuration = (TextView) view.findViewById(R.id.tv_task_duration);
             taskIsFree = (TextView) view.findViewById(R.id.tv_task_is_free);
             taskStatus = (ImageView) view.findViewById(R.id.iv_task_status);
+            taskLiveStatus = (TextView) view.findViewById(R.id.tv_live_status);
         }
     }
 
