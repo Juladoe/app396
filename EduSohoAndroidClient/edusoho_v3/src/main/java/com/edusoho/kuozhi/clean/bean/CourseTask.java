@@ -17,8 +17,8 @@ public class CourseTask implements Serializable {
     public String title;
     public int isFree;
     public String isOptional;
-    public String startTime;
-    public String endTime;
+    public long startTime;
+    public long endTime;
     public String mode;
     public String status;
     public int number;
@@ -26,7 +26,7 @@ public class CourseTask implements Serializable {
     public String mediaSource;
     public String maxOnlineNum;
     public String fromCourseSetId;
-    public String length;
+    public int length;
     public boolean lock;
     public String copyId;
     public String createdUserId;
@@ -51,6 +51,7 @@ public class CourseTask implements Serializable {
         public String endTime;
         public String createdTime;
         public String updatedTime;
+        public String replayStatus;
         /**
          * finish, end
          */
