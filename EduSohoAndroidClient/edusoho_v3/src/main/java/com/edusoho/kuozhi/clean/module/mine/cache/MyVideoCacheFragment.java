@@ -9,6 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.api.UserApi;
+import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.StudyCourse;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.entity.course.DownloadCourse;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.User;
@@ -17,6 +23,14 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.clean.module.mine.MineFragment;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by JesseHuang on 2017/2/10.
@@ -56,6 +70,10 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment.R
         });
     }
 
+    private void syncCourse() {
+
+    }
+
     private void initData() {
         mAdapter = new MyVideoCacheAdapter(mContext);
         rvContent.setAdapter(mAdapter);
@@ -69,7 +87,45 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment.R
         School school = getAppSettingProvider().getCurrentSchool();
         mCourseCacheHelper = new CourseCacheHelper(getContext(), school.getDomain(), user.id);
 
-        mAdapter.setData(mCourseCacheHelper.getLocalCourseList(M3U8Util.ALL, null, null));
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .getMyStudyCourse(0, 1000)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<DataPageResult<StudyCourse>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(DataPageResult<StudyCourse> studyCourseDataPageResult) {
+                        List<DownloadCourse> downloadCourses = mCourseCacheHelper.getLocalCourseList(M3U8Util.ALL, null, null);
+                        Iterator<DownloadCourse> iterator = downloadCourses.iterator();
+                        boolean isExist;
+                        while (iterator.hasNext()) {
+                            isExist = false;
+                            DownloadCourse downloadCourse = iterator.next();
+                            for (StudyCourse studyCourse : studyCourseDataPageResult.data) {
+                                if (studyCourse.id == downloadCourse.id) {
+                                    isExist = true;
+                                    break;
+                                }
+                            }
+                            if (!isExist) {
+                                iterator.remove();
+                                mCourseCacheHelper.clearLocalCacheByCourseId(downloadCourse.id);
+                            }
+                        }
+
+                        mAdapter.setData(downloadCourses);
+                    }
+                });
         disabledLoadingView();
     }
 
