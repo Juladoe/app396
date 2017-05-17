@@ -78,13 +78,8 @@ public class MineFragment extends BaseFragment {
     }
 
     private void initViewPager() {
-        if (app.loginUser != null && app.loginUser.userRole2String().contains("教师")) {
-            mTabTitles = new String[]{"教学", "学习", "缓存", "收藏", "问答"};
-            mFragmentNames = new String[]{"MyTeachFragment", "MyStudyFragment", "MyVideoCacheFragment", "MyFavoriteFragment", "MyQuestionFragment"};
-        } else {
-            mTabTitles = new String[]{"学习", "缓存", "收藏", "问答"};
-            mFragmentNames = new String[]{"MyStudyFragment", "MyVideoCacheFragment", "MyFavoriteFragment", "MyQuestionFragment"};
-        }
+        mTabTitles = new String[]{"学习", "缓存", "收藏", "问答"};
+        mFragmentNames = new String[]{"MyStudyFragment", "MyVideoCacheFragment", "MyFavoriteFragment", "MyQuestionFragment"};
         minePagerAdapter = new MinePagerAdapter(getFragmentManager(), mTabTitles, mFragmentNames);
         vpContent.setAdapter(minePagerAdapter);
         tbTitles.setupWithViewPager(vpContent);
@@ -147,10 +142,6 @@ public class MineFragment extends BaseFragment {
                 case 3:
                     fragment = app.mEngine.runPluginWithFragment(
                             fragmentTags[position], getActivity(), null);
-                    break;
-                case 4:
-                    fragment = app.mEngine.runPluginWithFragment(
-                            fragmentTags[position], mActivity, null);
                     break;
             }
             if (!mRefreshFragmentList.contains(fragment)) {
