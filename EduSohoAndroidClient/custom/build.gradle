@@ -34,8 +34,8 @@ android {
             manifestPlaceholders = [wxpkg: "com.edusoho.zhongheedu", startActivity: "com.edusoho.kuozhi.CustomStartActivity"]
             minSdkVersion 16
             targetSdkVersion 22
-            versionCode 47
-            versionName '3.9.4'
+            versionCode 49
+            versionName '3.9.6'
         }
     }
 
