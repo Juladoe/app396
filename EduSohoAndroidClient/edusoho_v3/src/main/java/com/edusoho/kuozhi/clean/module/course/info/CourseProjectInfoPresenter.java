@@ -47,7 +47,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     @Override
     public void subscribe() {
         mView.initCourseProjectInfo(mCourseProject);
-        if (this instanceof CourseMenuInfoPresenter) {
+        if (!(this instanceof CourseMenuInfoPresenter)) {
             showPrice();
         }
         showVip(mCourseProject.vipLevelId);
